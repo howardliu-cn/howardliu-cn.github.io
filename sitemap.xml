@@ -2,9 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.howardliu.cn/op/install-weblogic-plugin-in-eclipse/</loc>
+    
+    <lastmod>2019-10-15T11:11:41.051Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/op/install-weblogic-dev-on-windows/</loc>
+    
+    <lastmod>2019-10-15T11:09:55.320Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.howardliu.cn/op/ubuntu_ufw_settings/</loc>
     
-    <lastmod>2019-10-15T10:43:57.006Z</lastmod>
+    <lastmod>2019-10-15T10:46:51.184Z</lastmod>
     
   </url>
   
@@ -353,13 +367,6 @@
   
   <url>
     <loc>http://www.howardliu.cn/translation-the-dismax-query-parser/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.872Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/op/install-weblogic-dev-on-windows/</loc>
     
     <lastmod>2019-09-11T14:08:23.872Z</lastmod>
     
