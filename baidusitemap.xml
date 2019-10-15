@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://www.howardliu.cn/op/rabbitmq-operation/</loc>
+    <lastmod>2019-10-15</lastmod>
+  </url>  <url>
+    <loc>http://www.howardliu.cn/op/ubuntu_ufw_settings/</loc>
+    <lastmod>2019-10-15</lastmod>
+  </url>  <url>
     <loc>http://www.howardliu.cn/op/oom-permgen-space-in-weblogic/</loc>
-    <lastmod>2019-10-15</lastmod>
-  </url>  <url>
-    <loc>http://www.howardliu.cn/op/deploy-ear-from-eos-to-weblogic/</loc>
-    <lastmod>2019-10-15</lastmod>
-  </url>  <url>
-    <loc>http://www.howardliu.cn/op/install-weblogic-plugin-in-eos-platform/</loc>
     <lastmod>2019-10-15</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/op/install-weblogic-plugin-in-eclipse/</loc>
@@ -16,7 +16,10 @@
     <loc>http://www.howardliu.cn/op/install-weblogic-dev-on-windows/</loc>
     <lastmod>2019-10-15</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/op/ubuntu_ufw_settings/</loc>
+    <loc>http://www.howardliu.cn/op/deploy-ear-from-eos-to-weblogic/</loc>
+    <lastmod>2019-10-15</lastmod>
+  </url>  <url>
+    <loc>http://www.howardliu.cn/op/install-weblogic-plugin-in-eos-platform/</loc>
     <lastmod>2019-10-15</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/op/logon_windows_automatic_uncheck_password/</loc>
@@ -164,9 +167,6 @@
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/translation-the-dismax-query-parser/</loc>
-    <lastmod>2019-09-11</lastmod>
-  </url>  <url>
-    <loc>http://www.howardliu.cn/op/rabbitmq-operation/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/use-authority-in-mysql/</loc>
