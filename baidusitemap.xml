@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://www.howardliu.cn/op/oom-permgen-space-in-weblogic/</loc>
+    <lastmod>2019-10-15</lastmod>
+  </url>  <url>
     <loc>http://www.howardliu.cn/op/deploy-ear-from-eos-to-weblogic/</loc>
     <lastmod>2019-10-15</lastmod>
   </url>  <url>
@@ -70,10 +73,10 @@
     <loc>http://www.howardliu.cn/os/WindowsUpdate_800B0100-failed-to-updates/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/os/init-my-ubuntu/</loc>
+    <loc>http://www.howardliu.cn/os/all-about-linux-swap-space/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/os/all-about-linux-swap-space/</loc>
+    <loc>http://www.howardliu.cn/os/init-my-ubuntu/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/translation-distributed-locks-with-redis/</loc>
@@ -88,10 +91,10 @@
     <loc>http://www.howardliu.cn/why-it-is-difficult-to-get-high-salaries-for-iters/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/hadoop/rm-ha/</loc>
+    <loc>http://www.howardliu.cn/hadoop/hadoop-environment-cluster-setup/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/hadoop/hadoop-environment-cluster-setup/</loc>
+    <loc>http://www.howardliu.cn/hadoop/rm-ha/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
