@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.howardliu.cn/op/ubuntu_ufw_settings/</loc>
+    
+    <lastmod>2019-10-15T10:43:57.006Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.howardliu.cn/op/logon_windows_automatic_uncheck_password/</loc>
     
     <lastmod>2019-10-15T10:01:56.239Z</lastmod>
@@ -72,14 +79,14 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/storm/trident-tutorial/</loc>
+    <loc>http://www.howardliu.cn/storm/trident-state/</loc>
     
     <lastmod>2019-09-11T14:08:23.883Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/storm/trident-state/</loc>
+    <loc>http://www.howardliu.cn/storm/trident-tutorial/</loc>
     
     <lastmod>2019-09-11T14:08:23.883Z</lastmod>
     
@@ -198,14 +205,14 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/http/http-connection/</loc>
+    <loc>http://www.howardliu.cn/hadoop/yarn-architecture/</loc>
     
     <lastmod>2019-09-11T14:08:23.878Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/hadoop/yarn-architecture/</loc>
+    <loc>http://www.howardliu.cn/http/http-connection/</loc>
     
     <lastmod>2019-09-11T14:08:23.878Z</lastmod>
     
@@ -296,14 +303,14 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/java/gc-overhead-limit-exceeded/</loc>
+    <loc>http://www.howardliu.cn/bug/get-chinese-length/</loc>
     
     <lastmod>2019-09-11T14:08:23.874Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/bug/get-chinese-length/</loc>
+    <loc>http://www.howardliu.cn/java/gc-overhead-limit-exceeded/</loc>
     
     <lastmod>2019-09-11T14:08:23.874Z</lastmod>
     

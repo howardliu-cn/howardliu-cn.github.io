@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://www.howardliu.cn/op/ubuntu_ufw_settings/</loc>
+    <lastmod>2019-10-15</lastmod>
+  </url>  <url>
     <loc>http://www.howardliu.cn/op/logon_windows_automatic_uncheck_password/</loc>
     <lastmod>2019-10-15</lastmod>
   </url>  <url>
@@ -28,10 +31,10 @@
     <loc>http://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/storm/trident-tutorial/</loc>
+    <loc>http://www.howardliu.cn/storm/trident-state/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/storm/trident-state/</loc>
+    <loc>http://www.howardliu.cn/storm/trident-tutorial/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/the-eight-queens-puzzle/</loc>
@@ -82,10 +85,10 @@
     <loc>http://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/http/http-connection/</loc>
+    <loc>http://www.howardliu.cn/hadoop/yarn-architecture/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/hadoop/yarn-architecture/</loc>
+    <loc>http://www.howardliu.cn/http/http-connection/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/hadoop/hdfs-ha-using-qjm/</loc>
@@ -124,10 +127,10 @@
     <loc>http://www.howardliu.cn/constant-interface-anti-pattern/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/java/gc-overhead-limit-exceeded/</loc>
+    <loc>http://www.howardliu.cn/bug/get-chinese-length/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/bug/get-chinese-length/</loc>
+    <loc>http://www.howardliu.cn/java/gc-overhead-limit-exceeded/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/java/jdk-tools-and-utilities/</loc>
