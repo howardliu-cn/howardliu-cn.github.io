@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>实现ssh的免密码登录||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="SSH 为 Secure Shell 的缩写，由 IETF 的网络工作小组（Network Working Group）所制定；SSH 为建立在应用层和传输层基础上的安全协议。SSH 是目前较可靠，专为远程登录会话和其他网络服务提供安全性的协议。利用 SSH 协议可以有效防止远程管理过程中的信息泄露问题。SSH最初是UNIX系统上的一个程序，后来又迅速扩展到其他操作平台。SSH在正确使用时可弥补网">
+<meta name="keywords" content="系统运维,ssh,免密码登录">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实现ssh的免密码登录">
+<meta property="og:url" content="http://www.howardliu.cn/setup-passwordless-ssh/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="SSH 为 Secure Shell 的缩写，由 IETF 的网络工作小组（Network Working Group）所制定；SSH 为建立在应用层和传输层基础上的安全协议。SSH 是目前较可靠，专为远程登录会话和其他网络服务提供安全性的协议。利用 SSH 协议可以有效防止远程管理过程中的信息泄露问题。SSH最初是UNIX系统上的一个程序，后来又迅速扩展到其他操作平台。SSH在正确使用时可弥补网">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-09-11T14:08:23.869Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="实现ssh的免密码登录">
+<meta name="twitter:description" content="SSH 为 Secure Shell 的缩写，由 IETF 的网络工作小组（Network Working Group）所制定；SSH 为建立在应用层和传输层基础上的安全协议。SSH 是目前较可靠，专为远程登录会话和其他网络服务提供安全性的协议。利用 SSH 协议可以有效防止远程管理过程中的信息泄露问题。SSH最初是UNIX系统上的一个程序，后来又迅速扩展到其他操作平台。SSH在正确使用时可弥补网">
+
+<meta name="keywords" content="系统运维,ssh,免密码登录">
+
+
+<meta name="description" content="SSH 为 Secure Shell 的缩写，由 IETF 的网络工作小组（Network Working Group）所制定；SSH 为建立在应用层和传输层基础上的安全协议。SSH 是目前较可靠，专为远程登录会话和其他网络服务提供安全性的协议。利用 SSH 协议可以有效防止远程管理过程中的信息泄露">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/setup-passwordless-ssh/">实现ssh的免密码登录</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2014-10-14</time>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <div id="toc" class="toc"></div>
+            <p>SSH为系统提供了很多方便的功能，比如登陆远程的系统等、不同主机间通信等。随着分布式系统的兴起，很多机器间的通信需要用到SSH，但是这些主机彼此信任，那就可以通过实现SSH免密码登录，简化通信过程。</p>
+<a id="more"></a>
+<p>这里所说的ssh是指OpenSSH SSH客户端，是用于登录远程主机，并且在远程主机上执行命令。它的目的是替换rlogin和rsh，同时在不安全的网络之上，两个互不信任的主机之间，提供加密的、安全的通信连接。X11连接和任意TCP/IP端口均可以通过此安全通道转发。</p>
+<p>在RedHat 6.1中，默认安装的OpenSSL是一种比较常见的SSH服务端和客户端软件，默认端口是22。</p>
+<p>SSH服务端其实是一个守护进程（daemon），在后台运行并相应来自客户端的连接请求。服务端一般是sshd进程，提供了对远程连接的处理，一般包括公共密钥认证、密钥交换、对称密钥加密和非安全连接等。</p>
+<p>SSH客户端程序包括ssh程序，及scp（远程拷贝）、slogin（远程登录）、sftp（安全文件传输）等其他的应用程序。</p>
+<p>在有些情况下，需要实现ssh的无密码登录，或者称为免密码登录。比如：Hadoop的伪分布式模式部署、完全分布式模式部署。</p>
+<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><p>有两台主机：主机A：192.168.1.132，主机B：192.168.1.133，需要配置主机A无密码登录主机A、主机B。</p>
+<h2 id="生成私钥、公钥"><a href="#生成私钥、公钥" class="headerlink" title="生成私钥、公钥"></a>生成私钥、公钥</h2><p>在主机A上：</p>
+<pre><code>$ cd ~/.ssh（如果没有改文件夹，直接创建一个）
+$ ssh-keygen -t rsa</code></pre><p>上面的ssh-keygen命令中，参数-t是生成密钥的方式，有三种方式：协议版本1的rsa1、协议版本2的rsa和dsa。通常选rsa或dsa，既安全，又省事。</p>
+<p>这个时候会打印一些执行结果及交互操作，一路回车即可。</p>
+<pre><code>Generating public/private rsa key pair.
+Enter file in which to save the key (/home/lxh/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/lxh/.ssh/id_rsa.
+Your public key has been saved in /home/lxh/.ssh/id_rsa.pub.
+The key fingerprint is:
+2e:34:7c:3a:be:e4:3b:93:2f:1d:32:4f:2d:fe:13:a1 lxh@master
+The key&#39;s randomart image is:
++--[ RSA 2048]----+
+|                 |
+|                 |
+|                 |
+|     .    .      |
+|      + So .     |
+|     .o=E o      |
+|      =O.o .     |
+|     +=o+ .      |
+|      =B....     |
++-----------------+</code></pre><h2 id="生成存放RSA-DSA的公钥"><a href="#生成存放RSA-DSA的公钥" class="headerlink" title="生成存放RSA/DSA的公钥"></a>生成存放RSA/DSA的公钥</h2><p>直接复制生成的id_rsa.pub文件即可。</p>
+<pre><code>$ cp id_rsa.pub authorized_keys
+$ chmod 600 authorized_keys</code></pre><p>按理说此时就可以无密码登录本机了，即通过命令：</p>
+<pre><code>$ ssh localhost</code></pre><p>第一次需要输入一个yes，因为需要在第一次登录该主机时记录有用户登录，之后就不会出现了。</p>
+<h2 id="复制公钥"><a href="#复制公钥" class="headerlink" title="复制公钥"></a>复制公钥</h2><p>然后将公钥文件authorized_keys拷贝到主机B的相同位置上。</p>
+<pre><code>$ scp authorized_keys 192.168.1.133:~/.ssh</code></pre><p>因为已经在主机A上修改过authorized_keys的权限，一般主机B上也是600格式，如果不是，就修改主机B上的authorized_keys文件权限为600。</p>
+<pre><code>$ chmod 600 authorized_keys</code></pre><p>一般情况下，可以通过主机A无密码登录主机A和主机B了。</p>
+<h1 id="FQA"><a href="#FQA" class="headerlink" title="FQA"></a>FQA</h1><h2 id="登录时出现“Agent-admitted-failure-to-sign-using-the-key-”"><a href="#登录时出现“Agent-admitted-failure-to-sign-using-the-key-”" class="headerlink" title="登录时出现“Agent admitted failure to sign using the key.”"></a>登录时出现“Agent admitted failure to sign using the key.”</h2><p>在~/.ssh目录中执行</p>
+<pre><code>$ ssh-add</code></pre><p>出现下面的信息，就成了：</p>
+<pre><code>Identity added: /home/lxh/.ssh/id_rsa (/home/lxh/.ssh/id_rsa)</code></pre><p>如果提示下面的信息：</p>
+<pre><code>Could not open a connection to your authenticationh agent</code></pre><p>就执行：</p>
+<pre><code>ssh-agent bash</code></pre><h2 id="没有错误信息，但需要输入密码登录"><a href="#没有错误信息，但需要输入密码登录" class="headerlink" title="没有错误信息，但需要输入密码登录"></a>没有错误信息，但需要输入密码登录</h2><p>需要查看一下.ssh目录和authorized_keys文件的权限，需要.ssh目录的权限为700，authorized_keys文件的权限为600。如果主机A连接主机B，就在主机B上执行：</p>
+<pre><code>$chmod 700 ~/.ssh
+$chmod 600 ~/.ssh/authorized_keys</code></pre><h2 id="ssh代理未开启"><a href="#ssh代理未开启" class="headerlink" title="ssh代理未开启"></a>ssh代理未开启</h2><p>通过命令查看ssh代理是否开启</p>
+<pre><code>$ ps -ef|grep ssh-agent</code></pre><p>如果开启了，直接kill掉，然后启动ssh代理。</p>
+<pre><code>$ ssh-agent</code></pre><p>如果还是不行，就重启ssh服务：</p>
+<pre><code># service sshd restart（需要root权限）</code></pre>
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/系统运维/">系统运维</a>
+            
+            <a href="/tags/os/">os</a>
+            
+            <a href="/tags/ssh/">ssh</a>
+            
+            <a href="/tags/passwordless/">passwordless</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/hadoop-environment/">
+                <i class="icon-previous">Hadoop环境部署</i>
+            </a>
+            
+            
+            <a class="next" href="/the-origin-of-matrix-multiplication/">
+                <i class="icon-next">矩阵乘法的计算和来源</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/局部参数/" style="font-size: 15px;">局部参数</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/IT/" style="font-size: 15px;">IT</a> <a href="/tags/工作/" style="font-size: 15px;">工作</a> <a href="/tags/情感/" style="font-size: 15px;">情感</a> <a href="/tags/管理/" style="font-size: 15px;">管理</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/心灵鸡汤/" style="font-size: 15px;">心灵鸡汤</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/zookeeper/" style="font-size: 15px;">zookeeper</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/storm/" style="font-size: 15px;">storm</a> <a href="/tags/转帖/" style="font-size: 15px;">转帖</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/eDisMax查询解析器/" style="font-size: 15px;">eDisMax查询解析器</a> <a href="/tags/标准查询解析器/" style="font-size: 15px;">标准查询解析器</a> <a href="/tags/DisMax查询解析器/" style="font-size: 15px;">DisMax查询解析器</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/两阶段提交/" style="font-size: 15px;">两阶段提交</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http服务/" style="font-size: 15px;">http服务</a> <a href="/tags/http连接/" style="font-size: 15px;">http连接</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/异常处理/" style="font-size: 15px;">异常处理</a> <a href="/tags/层面分析/" style="font-size: 15px;">层面分析</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/集群/" style="font-size: 15px;">集群</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/实时计算/" style="font-size: 15px;">实时计算</a> <a href="/tags/kafka/" style="font-size: 15px;">kafka</a> <a href="/tags/http状态码/" style="font-size: 15px;">http状态码</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring-cloud</a> <a href="/tags/spring-cloud-config/" style="font-size: 15px;">spring-cloud-config</a> <a href="/tags/error/" style="font-size: 15px;">error</a> <a href="/tags/micro-service/" style="font-size: 15px;">micro-service</a> <a href="/tags/Trident/" style="font-size: 15px;">Trident</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/spring-cloud/spring-cloud-config-encrypt-keystore-path-error/">spring-cloud-config 非对称加密 keystore 文件加载异常</a></li><li class="post-list-item"><a class="post-list-link" href="/code_quality/sonarqube-jenkins-pipeline/">代码质量管理：SonarQube + Jenkins Pipeline配置</a></li><li class="post-list-item"><a class="post-list-link" href="/java/gc-overhead-limit-exceeded/">java.lang.OutOfMemoryError:GC overhead limit exceeded</a></li><li class="post-list-item"><a class="post-list-link" href="/bug/get-chinese-length/">中文字节长度引起的数据丢失</a></li><li class="post-list-item"><a class="post-list-link" href="/hadoop/rm-ha/">ResourceManager HA 配置</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2019</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="Hosted by Coding Pages" href="https://pages.coding.me" target="_blank">
+                        <img src="https://coding.net/static/f7272a0b7cd340571725c6734c6bdd6f.png">
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+<script>
+    // baidu analytics
+    (function () {
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

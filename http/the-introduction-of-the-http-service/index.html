@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>HTTP服务介绍||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="HTTP（Hyper Text Transfer Protocol）即超文本传输协议，采用请求/响应模型，是目前互联网使用最为广泛的一种网络协议。主要的过程：客户端向服务器发送一个请求，请求的请求头包含请求的方法、URI、协议版本、请求修饰符、客户信息、以及请求的内容等信息；服务器以一个状态行作为响应，包括消息协议的版本、成功或者错误编码、服务器信息、实体元信息以及实体内容。http服务默认端口是">
+<meta name="keywords" content="网络,概念,http,http服务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP服务介绍">
+<meta property="og:url" content="http://www.howardliu.cn/http/the-introduction-of-the-http-service/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="HTTP（Hyper Text Transfer Protocol）即超文本传输协议，采用请求/响应模型，是目前互联网使用最为广泛的一种网络协议。主要的过程：客户端向服务器发送一个请求，请求的请求头包含请求的方法、URI、协议版本、请求修饰符、客户信息、以及请求的内容等信息；服务器以一个状态行作为响应，包括消息协议的版本、成功或者错误编码、服务器信息、实体元信息以及实体内容。http服务默认端口是">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.howardliu.cn/images/http-service.jpg">
+<meta property="og:image" content="http://www.howardliu.cn/images/the-network-tab-in-chrome.png">
+<meta property="og:image" content="http://www.howardliu.cn/images/the-screenshot-of-postman.png">
+<meta property="og:updated_time" content="2019-09-11T14:08:23.877Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HTTP服务介绍">
+<meta name="twitter:description" content="HTTP（Hyper Text Transfer Protocol）即超文本传输协议，采用请求/响应模型，是目前互联网使用最为广泛的一种网络协议。主要的过程：客户端向服务器发送一个请求，请求的请求头包含请求的方法、URI、协议版本、请求修饰符、客户信息、以及请求的内容等信息；服务器以一个状态行作为响应，包括消息协议的版本、成功或者错误编码、服务器信息、实体元信息以及实体内容。http服务默认端口是">
+<meta name="twitter:image" content="http://www.howardliu.cn/images/http-service.jpg">
+
+<meta name="keywords" content="网络,概念,http,http服务">
+
+
+<meta name="description" content="HTTP（Hyper Text Transfer Protocol）即超文本传输协议，采用请求/响应模型，是目前互联网使用最为广泛的一种网络协议。主要的过程：客户端向服务器发送一个请求，请求的请求头包含请求的方法、URI、协议版本、请求修饰符、客户信息、以及请求的内容等信息；服务器以一个状态行作为响">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/http/the-introduction-of-the-http-service/">HTTP服务介绍</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2016-05-01</time>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <div id="toc" class="toc"></div>
+            <p>HTTP（Hyper Text Transfer Protocol）即超文本传输协议，采用请求/响应模型，是目前互联网使用最为广泛的一种网络协议。主要的过程：客户端向服务器发送一个请求，请求的请求头包含请求的方法、URI、协议版本、请求修饰符、客户信息、以及请求的内容等信息；服务器以一个状态行作为响应，包括消息协议的版本、成功或者错误编码、服务器信息、实体元信息以及实体内容。http服务默认端口是80,https默认端口是443。下图为HTTP服务简单的处理图。</p>
+<p><img src="http://www.howardliu.cn/images/http-service.jpg" alt="http服务处理图"></p>
+<p>本着实用主义，本文不对http协议的原理做过多解释，只是分享一下日常使用Chrome调试http服务的经验，希望能得到同行们的指点。</p>
+<a id="more"></a>
+<p>在开发http服务过程中，如果是编写服务端的，经常会是没有界面可以看到效果，只能通过一些小工具调用服务端服务，查看返回结果。如果一切顺利，自不必说，但是如果遇到一些很奇怪的错误，无法对服务端进行debug，就需要对http请求及响应进行跟踪，来了解客户端请求方式、传递什么类型、什么格式的什么数据，然后是服务端响应的结果等。通过这一系列的参数来诊断服务的健康状况，并进行错误排查。<br>经常使用Chrome，所以这里就只列出使用Chrome调试的方式，其他的浏览器，比如Firefox、IE等也有类似的功能，大家可以自由选择自己熟悉的。</p>
+<p><img src="http://www.howardliu.cn/images/the-network-tab-in-chrome.png" alt="Chrome的Network选项卡"></p>
+<p>上图是在Chrome浏览器中开发者工具（工具-&gt;开发者工具，或F12唤醒）。图中上半部分是当前页面各个请求的time line，可以查看每个请求的请求时间及时长，用于优化请求时间过长的请求。下半部分的左侧，是请求列表，通过点击左侧的请求列表，可以在右侧查看当前请求的各项参数。可以看到，每次请求有Headers、Preview、Response、Cookier、Timing几个选项卡，下面将一一介绍。</p>
+<h1 id="Headers"><a href="#Headers" class="headerlink" title="Headers"></a>Headers</h1><p>这里就是所谓的请求头，包括：general header、request header、response header、entity header几部分。</p>
+<h2 id="General"><a href="#General" class="headerlink" title="General"></a>General</h2><ul>
+<li>Request URL:客户端的请求地址，对应服务端的服务</li>
+<li>Request Method:请求类型，主要有get、post、put、delete等一系列，最常用的还是get、post</li>
+<li>Status Code:响应状态码，可以从<a href="http://www.howardliu.cn/the-introduction-of-http-status-codes/">这里</a>查看常用的响应状态码及对应解释</li>
+<li>Remote Address:域名对应的ip及端口，这个直接显示当前请求是请求的那个ip的服务，用于定位异常服务很有用</li>
+</ul>
+<h2 id="Response-Headers"><a href="#Response-Headers" class="headerlink" title="Response Headers"></a>Response Headers</h2><ul>
+<li>cache-control: 请求和响应遵循的缓存机制，当前请求的Cache-Control不会影响另一个请求的缓存处理。private(默认)、no-cache、must-revalidate、max-age。</li>
+<li>content-encoding: 服务器响应结果的编码类型（主要是压缩类型）identity、gzip、compress</li>
+<li>content-type: 服务器响应结果格式/类型，比如text/html; charset=utf-8</li>
+<li>content-language: 响应体的语言</li>
+<li>content-length: 响应体的长度</li>
+<li>date: 消息发出时间(GMT)</li>
+<li>expires: 响应过期时间</li>
+<li>status: <a href="http://www.howardliu.cn/the-introduction-of-http-status-codes/">http响应码</a></li>
+<li>vary: 提示使用缓存响应还是从原始服务器请求，即当缓存中存在一个未过期的响应是否能被后续的请求服用，Accept-Encoding、User-Agent。如果vary的值中返回了User-Agent，那么通过不同的浏览器打开相同的页面都会重新请求服务器；如果Vary中没返回User-Agent，那么客户端缓存把它看成是相同的页面，相同的请求，直接给用户返回缓存的内容；如果返回的值是Accept-Encoding，将请求头信息中的Accept-encoding字段的值（gzip等）作为缓存的key;如果vary的值为*表示缓存不会去做判断；</li>
+<li>transfer-encoding: 文件传输编码chunked标识传输内容长度不确定，如果以gzip方式输出时，就不必申请一个很大的字节数组了，可以一块一块的输出，更科学，占用资源更少。</li>
+</ul>
+<h2 id="Request-Headers"><a href="#Request-Headers" class="headerlink" title="Request Headers"></a>Request Headers</h2><ul>
+<li>Cache-Control: 请求和响应遵循的缓存机制，当前请求的Cache-Control不会影响另一个请求的缓存处理。private(默认)、no-cache、must-revalidate、max-age。</li>
+<li>Accept: 客户端/发送端能够接收的数据类型，包括text/html、application/xhtml+xml、application/xml等</li>
+<li>Accept-Encoding: 浏览器发给服务器的声明可以支持的编码类型（主要是压缩类型）identity、gzip、compress</li>
+<li>Accept-Language: 浏览器可接收的语言，在国内大部分应该是zh-CN,zh;q=0.8</li>
+<li>Connection: 是否保持与服务器的tcp长连接。keep-alive(默认)、close。keep-alive代表服务会保留当前连接一段时间被其他请求重复使用；close代表请求之后关闭连接。</li>
+<li>Referer: 当前请求的来源</li>
+<li>Upgrade-Insecure-Requests:1</li>
+<li>Host: 请求的服务器域名</li>
+<li>User-Agent: 发出请求的客户端信息，比如Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/49.0.2623.108 Chrome/49.0.2623.108 Safari/537.36</li>
+</ul>
+<h2 id="Query-String-Parameter"><a href="#Query-String-Parameter" class="headerlink" title="Query String Parameter"></a>Query String Parameter</h2><p>这个模块是get请求才会出现，是请求参数，比如：</p>
+<pre><code>soc-app:162
+cid:0
+soc-platform:1
+ozv:es_oz_20160428.15_p0
+f.sid:132385467
+_reqid:142769
+rt:j</code></pre><h2 id="Form-Data"><a href="#Form-Data" class="headerlink" title="Form Data"></a>Form Data</h2><p>这个模块是有form表单提交时候出现，比如：</p>
+<pre><code>f.req:%5B%5B%22OGB%22%2C%5B7%2C%22en%22%5D%5D%2C%5B%5B%5D%2C%5B1%5D%2C%5B3%5D%2C100%2C%22OGB%22%5D%2C%5B1%5D%5D
+at:AObGSAhUe1EYP164z9Z6L0cy8oPPAm_ezw%3A1462071694241
+:</code></pre><h1 id="Preview"><a href="#Preview" class="headerlink" title="Preview"></a>Preview</h1><p>显示请求响应后的预览。</p>
+<h1 id="Response"><a href="#Response" class="headerlink" title="Response"></a>Response</h1><p>显示响应的具体内容。</p>
+<h1 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h1><p>以key-value形式展示客户端所有的Cookie信息。</p>
+<h1 id="Timing"><a href="#Timing" class="headerlink" title="Timing"></a>Timing</h1><p>展示的是从请求开始到响应结束整个过程每个阶段经历的时间或者说耗时。</p>
+<h1 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h1><p>使用Chrome可以调试大多数http服务，但是有时候调试post、put、delete等方式的请求时，又没有界面，可以使用一些插件或工具来实现。在Chrome中可以使用Postman或DHC来实现这些功能，非常好用。下图是Postman的截图：</p>
+<p><img src="http://www.howardliu.cn/images/the-screenshot-of-postman.png" alt="postman截图"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/概念/">概念</a>
+            
+            <a href="/tags/网络/">网络</a>
+            
+            <a href="/tags/http服务/">http服务</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/os/all-about-linux-swap-space/">
+                <i class="icon-previous">关于Linux系统的swap交换空间</i>
+            </a>
+            
+            
+            <a class="next" href="/hadoop/hadoop-environment-cluster-setup/">
+                <i class="icon-next">hadoop集群部署(yarn)</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/局部参数/" style="font-size: 15px;">局部参数</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/IT/" style="font-size: 15px;">IT</a> <a href="/tags/工作/" style="font-size: 15px;">工作</a> <a href="/tags/情感/" style="font-size: 15px;">情感</a> <a href="/tags/管理/" style="font-size: 15px;">管理</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/心灵鸡汤/" style="font-size: 15px;">心灵鸡汤</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/zookeeper/" style="font-size: 15px;">zookeeper</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/storm/" style="font-size: 15px;">storm</a> <a href="/tags/转帖/" style="font-size: 15px;">转帖</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/eDisMax查询解析器/" style="font-size: 15px;">eDisMax查询解析器</a> <a href="/tags/标准查询解析器/" style="font-size: 15px;">标准查询解析器</a> <a href="/tags/DisMax查询解析器/" style="font-size: 15px;">DisMax查询解析器</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/两阶段提交/" style="font-size: 15px;">两阶段提交</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http服务/" style="font-size: 15px;">http服务</a> <a href="/tags/http连接/" style="font-size: 15px;">http连接</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/异常处理/" style="font-size: 15px;">异常处理</a> <a href="/tags/层面分析/" style="font-size: 15px;">层面分析</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/集群/" style="font-size: 15px;">集群</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/实时计算/" style="font-size: 15px;">实时计算</a> <a href="/tags/kafka/" style="font-size: 15px;">kafka</a> <a href="/tags/http状态码/" style="font-size: 15px;">http状态码</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring-cloud</a> <a href="/tags/spring-cloud-config/" style="font-size: 15px;">spring-cloud-config</a> <a href="/tags/error/" style="font-size: 15px;">error</a> <a href="/tags/micro-service/" style="font-size: 15px;">micro-service</a> <a href="/tags/Trident/" style="font-size: 15px;">Trident</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/spring-cloud/spring-cloud-config-encrypt-keystore-path-error/">spring-cloud-config 非对称加密 keystore 文件加载异常</a></li><li class="post-list-item"><a class="post-list-link" href="/code_quality/sonarqube-jenkins-pipeline/">代码质量管理：SonarQube + Jenkins Pipeline配置</a></li><li class="post-list-item"><a class="post-list-link" href="/java/gc-overhead-limit-exceeded/">java.lang.OutOfMemoryError:GC overhead limit exceeded</a></li><li class="post-list-item"><a class="post-list-link" href="/bug/get-chinese-length/">中文字节长度引起的数据丢失</a></li><li class="post-list-item"><a class="post-list-link" href="/hadoop/rm-ha/">ResourceManager HA 配置</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2019</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="Hosted by Coding Pages" href="https://pages.coding.me" target="_blank">
+                        <img src="https://coding.net/static/f7272a0b7cd340571725c6734c6bdd6f.png">
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+<script>
+    // baidu analytics
+    (function () {
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

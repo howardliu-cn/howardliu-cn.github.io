@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>solr-搜索-Solr解析器通用的查询参数||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="本文主要介绍下Solr解析器中通用的查询参数。这些参数能够在[标准查询解析器](http://www.howardliu.cn/translation-the-standard-query-parser)、[DisMax查询解析器](http://www.howardliu.cn/translation-the-dismax-query-parser/)及[eDisMax查询解析器](https:">
+<meta name="keywords" content="solr,翻译,查询参数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="solr-搜索-Solr解析器通用的查询参数">
+<meta property="og:url" content="http://www.howardliu.cn/translation-common-query-parameters/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="本文主要介绍下Solr解析器中通用的查询参数。这些参数能够在[标准查询解析器](http://www.howardliu.cn/translation-the-standard-query-parser)、[DisMax查询解析器](http://www.howardliu.cn/translation-the-dismax-query-parser/)及[eDisMax查询解析器](https:">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-09-11T14:08:23.872Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="solr-搜索-Solr解析器通用的查询参数">
+<meta name="twitter:description" content="本文主要介绍下Solr解析器中通用的查询参数。这些参数能够在[标准查询解析器](http://www.howardliu.cn/translation-the-standard-query-parser)、[DisMax查询解析器](http://www.howardliu.cn/translation-the-dismax-query-parser/)及[eDisMax查询解析器](https:">
+
+<meta name="keywords" content="solr,翻译,查询参数">
+
+
+<meta name="description" content="本文主要介绍下Solr解析器中通用的查询参数。这些参数能够在[标准查询解析器](http://www.howardliu.cn/translation-the-standard-query-parser)、[DisMax查询解析器](http://www.howardliu.cn/translati">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/translation-common-query-parameters/">solr-搜索-Solr解析器通用的查询参数</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2015-11-08</time>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <div id="toc" class="toc"></div>
+            <p>本文主要介绍下Solr解析器中通用的查询参数。这些参数能够在<a href="http://www.howardliu.cn/translation-the-standard-query-parser">标准查询解析器</a>、<a href="http://www.howardliu.cn/translation-the-dismax-query-parser/">DisMax查询解析器</a>及<a href="http://www.howardliu.cn/translation-the-extended-dismax-query-parser/">eDisMax查询解析器</a>中通用。</p>
+<a id="more"></a>
+<p>下表总结了Solr通用的查询参数，支持标准的、DisMax、eDisMax查询请求。</p>
+<table><thead><tr><td>参数</td><td>描述</td></tr></thead><tbody><tr><td>defType</td><td>选择用来处理查询的查询分析器。</td></tr><tr><td>sort</td><td>根据响应的分数或另一个指定的特性对查询的响应进行正序或倒序排序。</td></tr><tr><td>start</td><td>指定Solr查询响应展示内容的偏移量（默认0）。</td></tr><tr><td>rows</td><td>控制一次返回多少条数据（默认10）</td></tr><tr><td>fq</td><td>对查询结果指定一个查询过滤器</td></tr><tr><td>fl</td><td>指定字段列表限制查询响应中返回信息。这些字段应该在索引时设置为储存状态才能返回。</td></tr><tr><td>debug</td><td>请求响应中附加的调试信息。指定参数`debug=timing`，只返回时间信息；指定参数`debug=results`，返回每个文档的“解释”信息；指定参数`debug=query`返回所有调试信息。</td></tr><tr><td>explainOther</td><td>参数`explainOther`指定Lucene查询来标记文档集。如果非空，本次查询将返回调试信息，以及主查询（指定`q`参数）查询文档集的解释信息。</td></tr><tr><td>timeAllowed</td><td>定义要处理的查询的时间。如果处理超时，只返回部分信息。</td></tr><tr><td>omitHeader</td><td>如果设置为true，返回结果中不包含header数据。header数据包括请求信息，比如请求完成时间。默认是false。</td></tr><tr><td>wt</td><td>指定用于格式化响应结果的请求writer。</td></tr><tr><td>logParamsList</td><td>默认情况下，Solr记录所有参数。设置该参数来限制已记录的参数。要被记录的参数，以逗号分割（比如`logParamsList=param1,param2`）。空列表表示不记录任何参数，如果要记录所有参数，不要定义这个参数。</td></tr></tbody></table>
+
+<p>接下来的章节将详细描述各个参数。</p>
+<h2 id="defType"><a href="#defType" class="headerlink" title="defType"></a>defType</h2><p>参数<code>defType</code>指定Solr执行主查询时使用的查询解析器。比如：<code>defType=dismax</code>。<br>如果没有指定<code>defType</code>，将默认使用标准个查询解析器。</p>
+<h2 id="sort"><a href="#sort" class="headerlink" title="sort"></a>sort</h2><p>参数<code>sort</code>指定查询结果升序或降序。这个参数可以作用于数字或字母内容。可以使用全消息或全大写。（比如，全是<code>asc</code>或<code>ASC</code>）。<br>Solr可以根据文档分值或其他被索引或使用<code>DocValues</code>（即，在<code>schema.xml</code>文件中使用<code>multiValued=&quot;false&quot;</code>和<code>docValues=&quot;true&quot;</code>或者<code>indexed=&quot;true&quot;</code>的字段，如果没有启用<code>DocValues</code>，将使用检索数据）的单值字段值来进行排序。提供：</p>
+<ul>
+<li>没有进行标记（即，字段没有<code>analyzer</code>，并且内容被解析进标记，致使排序不一致），或</li>
+<li>使用分析器<code>analyzer</code>（比如KeywordTokenizer）且只产生一个检索词。<br>如果你向对一个需要进行标记便于检索的字段排序，可以在<code>schema.xml</code>文件中使用&lt;copyField&gt;指定复制字段。然后就可以查询该字段，在克隆字段上排序。<br>下面的表格将说明如果设置各种参数来对Solr响应进行排序：<table><thead><tr><th>示例</th><th>结果</th></tr></thead><tbody><tr><td></td><td>如果没有指定参数`sort`，将根据打分降序排列。</td></tr><tr><td>score desc</td><td>根据打分从高到底降序排列。</td></tr><tr><td>price asc</td><td>根据字段`price`升序排列。</td></tr><tr><td>inStock desc, price asc</td><td>根据字段`inStock`降序排列，然后根据字段`price`升序排列。</td></tr></tbody></table>
+
+</li>
+</ul>
+<p>关于排序参数：</p>
+<ul>
+<li>排序必须包含一个字段名（或打分），之后跟一个空白字符（在URL字符串中使用+或%20），之后跟排序方向（asc或desc）。</li>
+<li>多种排序规则可以使用逗号隔开，使用这样的语法：<code>sort=&lt;field name&gt;+&lt;direction&gt;,&lt;field name&gt;+&lt;direction&gt;],...</code><ul>
+<li>如果有多个排序条件，只有在第一个排序结果并列，第二个才生效。如果有第三个从句，只有当第一个和第二个都并列相同时，才生效。依次类推。</li>
+</ul>
+</li>
+</ul>
+<h2 id="start"><a href="#start" class="headerlink" title="start"></a>start</h2><p>该参数指定Solr查询响应展示内容的偏移量。默认值是0.换句话说，默认情况下，Solr返回的结果没有偏移，从头开始。设置一个值，比如3，Solr将跳过前面 几条数据，从指定偏移位置开始返回。你可以使用这种方式来分页。比如，如果参数<code>rows</code>设置为10，可以通过设置<code>start</code>为0来连续返回几页数据，然后使用相同的查询参数，设置<code>start</code>为10，再次查询，然后设置20.</p>
+<h2 id="rows"><a href="#rows" class="headerlink" title="rows"></a>rows</h2><p>可以使用参数<code>rows</code>来进行分页查询。这个参数指定了一次查询最大返回文档的数目。默认值是10.就是说，默认一次查询返回10个文档数据。</p>
+<h2 id="fq"><a href="#fq" class="headerlink" title="fq"></a>fq</h2><p>参数<code>fq</code>可以定义一个限制返回文档父集，不影响评分。通过指定参数<code>fq</code>将缓存主查询，用来提高复杂查询速度。当之后使用相同的过滤器，将会命中缓存，缓存中的结果立即返回。<br>使用参数<code>fq</code>时，需要注意：</p>
+<ul>
+<li>参数<code>fq</code>可以在一个查询中指定多次。只有每个参数实例的交集才能返回。在下面的例子中，只有popularity大于10且section是0的才能返回。<code>fq=popularity:[10 TO *]&amp;fq=section:0</code></li>
+<li>过滤查询可以包含复杂的布尔查询。上面的例子也可以使用两个从句一个<code>fq</code>实现：<code>fq=+popularity:[10 TO *] +section:0</code>。</li>
+<li>每个过滤查询的文档集都是独立缓存的。一次，关于签名的例子：使用一个<code>fq</code>两个从句，和使用两个分开的<code>fq</code>将不想同（了解调整高速缓存大小和确保过滤缓存，看<a href="https://cwiki.apache.org/confluence/display/solr/The+Well-Configured+Solr+Instance" target="_blank" rel="noopener">配置Solr实例</a>）。</li>
+<li>对所有参数：在URL中特殊字符需要进行转移为十六进制。在线工具<a href="http://meyerweb.com/eric/tools/dencoder/可以提供这种转码。" target="_blank" rel="noopener">http://meyerweb.com/eric/tools/dencoder/可以提供这种转码。</a></li>
+</ul>
+<h2 id="fl"><a href="#fl" class="headerlink" title="fl"></a>fl</h2><p>参数<code>fl</code>限制响应信息中包含的字段列表。该字段需要在索引时被存储。<br>字段列表可以通过空格或逗号分割。字符串”score”可以被用来指明特定查询的每个文档的分数作为字段返回。通配符”*”表示文档的所有字段。可以添加伪字段、函数、transformers作为字段返回。<br>下表是如果使用<code>fl</code>的基础示例：</p>
+<table><tr><th>字段</th><th>结果</th></tr><tr><td>id name price</td><td>只返回id, name, 和 price</td></tr><tr><td>id,name,price</td><td>只返回id, name, 和 price</td></tr><tr><td>id name, price</td><td>只返回id, name, 和 price</td></tr><tr><td>id score</td><td>只返回id和score</td></tr><tr><td>\*</td><td>返回文档所有字段。这是参数`fl`默认值。</td></tr><tr><td>\* score</td><td>返回文档所有字段，以及每个文档的分值。</td></tr></table>
+
+<h3 id="Function-Values"><a href="#Function-Values" class="headerlink" title="Function Values"></a>Function Values</h3><p><a href="https://cwiki.apache.org/confluence/display/solr/Function+Queries" target="_blank" rel="noopener">函数</a>可以为结果中每一个文档计算结果，并返回伪字段：<code>fl=id,title,product(price,popularity)</code>。</p>
+<h3 id="Document-Transformers"><a href="#Document-Transformers" class="headerlink" title="Document Transformers"></a>Document Transformers</h3><p><a href="https://cwiki.apache.org/confluence/display/solr/Transforming+Result+Documents" target="_blank" rel="noopener">Document Transformers</a>可以用来修改查询结果中的每一个文件的返回信息：<code>fl=id,title,[explain]</code>。</p>
+<h3 id="Field-Name-Aliases"><a href="#Field-Name-Aliases" class="headerlink" title="Field Name Aliases"></a>Field Name Aliases</h3><p>可以指定字段、函数、transformer的显示名，比如：<code>fl=id,sales_price:price,secret_sauce:prod(price,popularity),why_score:[explain style=nl]</code>，</p>
+<pre><code>  &quot;response&quot;:{&quot;numFound&quot;:2,&quot;start&quot;:0,&quot;docs&quot;:[
+      {
+        &quot;id&quot;:&quot;6H500F0&quot;,
+        &quot;secret_sauce&quot;:2100.0,
+        &quot;sales_price&quot;:350.0,
+        &quot;why_score&quot;:{
+          &quot;match&quot;:true,
+          &quot;value&quot;:1.052226,
+          &quot;description&quot;:&quot;weight(features:cache in 2) [DefaultSimilarity], result of:&quot;,
+          &quot;details&quot;:[{
+...</code></pre><h2 id="debug"><a href="#debug" class="headerlink" title="debug"></a>debug</h2><p>参数<code>debug</code>可以指定多次，并支持以下参数：</p>
+<ul>
+<li>debug=query: 至返回查询的调试信息</li>
+<li>debug=timing: 返回查询执行时间的调试信息</li>
+<li>debug=results: 返回结果分值的调试信息</li>
+<li>debug=all: 返回所有的调试信息（也可以使用<code>debug=true</code>）<br>为了向后兼容，<code>debugQuery=true</code>可以使用<code>debug=all</code>替代。<br>默认查询不包括调试信息。</li>
+</ul>
+<h2 id="explainOther"><a href="#explainOther" class="headerlink" title="explainOther"></a>explainOther</h2><p>参数<code>explainOther</code>指定Lucene查询来标记文档集。如果非空，本次查询将返回调试信息，以及主查询（指定<code>q</code>参数）查询文档集的解释信息。比如：<code>q=supervillians&amp;debugQuery=on&amp;explainOther=id:juggernaut</code>。<br>上面的查询允许你检查最佳匹配的分值解释信息，可以与<code>id:juggernaut</code>进行比较，可以知道为什么不是你期望的排名。<br>默认参数为空，没有额外解释信息返回。</p>
+<h2 id="timeAllowed"><a href="#timeAllowed" class="headerlink" title="timeAllowed"></a>timeAllowed</h2><p>This parameter specifies the amount of time, in milliseconds, allowed for a search to complete. If this time expires before the search is complete, any partial results will be returned.<br>此参数指定允许搜索完成的时间，以毫秒为单位。如果处理超时，只返回部分信息。</p>
+<h2 id="omitHeader"><a href="#omitHeader" class="headerlink" title="omitHeader"></a>omitHeader</h2><p>This parameter may be set to either true or false.<br>该参数可以设置为true或false。<br>如果设置为true，返回结果中不包含header数据。header数据包括请求信息，比如请求完成时间。默认是false。</p>
+<h2 id="wt"><a href="#wt" class="headerlink" title="wt"></a>wt</h2><p>指定用于格式化响应结果的请求writer。详细信息查看<a href="https://cwiki.apache.org/confluence/display/solr/Response+Writers" target="_blank" rel="noopener">Response Writers</a>。</p>
+<h2 id="cache-false"><a href="#cache-false" class="headerlink" title="cache=false"></a>cache=false</h2><p>Solr默认缓存所有的查询、过滤查询结果。为了禁用缓存，设置参数<code>cache=false</code>。<br>还可以使用cost选项来控制非缓存的过滤查询。这允许你能够指定低耗非缓存过滤，而不是高耗非缓存过滤器。<br>对于高耗过滤器，如果<code>cache=false</code>，<code>cost&gt;=100</code>，查询实现了<code>PostFilter</code>，在匹配主查询和其他过滤查询之后，一个收集器将被请求来进行查询和过滤文档。可以有多个后置过滤器，可以根据cost配置。<br>比如：</p>
+<pre><code>// normal function range query used as a filter, all matching documents
+// generated up front and cached
+fq={!frange l=10 u=100}mul(popularity,price)
+
+// function range query run in parallel with the main query like a traditional
+// lucene filter
+fq={!frange l=10 u=100 cache=false}mul(popularity,price)
+
+// function range query checked after each document that already matches the query
+// and all other filters.  Good for really expensive function queries.
+fq={!frange l=10 u=100 cache=false cost=100}mul(popularity,price)</code></pre><h2 id="logParamsList"><a href="#logParamsList" class="headerlink" title="logParamsList"></a>logParamsList</h2><p>默认情况下，Solr日志记录所有请求参数。从4.7版本开始，可以设置参数来限制哪些参数被记录。这有助于记录你认为比较重要的参数。比如，你可以定义：<code>logParamsList=q,fq</code>。只有<code>q</code>和<code>fq</code>参数会被记录。<br>如果不希望记录任何参数，你可以给参数<code>logParamsList</code>赋空值（比如：<code>logParamsList=</code>）。</p>
+<blockquote>
+<p>这个参数可以应用与所有的Solr请求，不只查询请求。</p>
+</blockquote>
+<p>原文链接：<a href="https://cwiki.apache.org/confluence/display/solr/Common+Query+Parameters" target="_blank" rel="noopener">Common Query Parameters</a><br>翻译：<a href="http://www.howardliu.cn">沉潜飞动</a><br>译文链接：<a href="http://www.howardliu.cn/translation-common-query-parameters/">通用查询参数</a></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/solr/">solr</a>
+            
+            <a href="/tags/翻译/">翻译</a>
+            
+            <a href="/tags/查询参数/">查询参数</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/translation-the-extended-dismax-query-parser/">
+                <i class="icon-previous">solr-搜索-eDisMax查询解析器</i>
+            </a>
+            
+            
+            <a class="next" href="/translation-the-dismax-query-parser/">
+                <i class="icon-next">solr-搜索-DisMax查询解析器</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/局部参数/" style="font-size: 15px;">局部参数</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/IT/" style="font-size: 15px;">IT</a> <a href="/tags/工作/" style="font-size: 15px;">工作</a> <a href="/tags/情感/" style="font-size: 15px;">情感</a> <a href="/tags/管理/" style="font-size: 15px;">管理</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/心灵鸡汤/" style="font-size: 15px;">心灵鸡汤</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/zookeeper/" style="font-size: 15px;">zookeeper</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/storm/" style="font-size: 15px;">storm</a> <a href="/tags/转帖/" style="font-size: 15px;">转帖</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/eDisMax查询解析器/" style="font-size: 15px;">eDisMax查询解析器</a> <a href="/tags/标准查询解析器/" style="font-size: 15px;">标准查询解析器</a> <a href="/tags/DisMax查询解析器/" style="font-size: 15px;">DisMax查询解析器</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/两阶段提交/" style="font-size: 15px;">两阶段提交</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http服务/" style="font-size: 15px;">http服务</a> <a href="/tags/http连接/" style="font-size: 15px;">http连接</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/异常处理/" style="font-size: 15px;">异常处理</a> <a href="/tags/层面分析/" style="font-size: 15px;">层面分析</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/集群/" style="font-size: 15px;">集群</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/实时计算/" style="font-size: 15px;">实时计算</a> <a href="/tags/kafka/" style="font-size: 15px;">kafka</a> <a href="/tags/http状态码/" style="font-size: 15px;">http状态码</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring-cloud</a> <a href="/tags/spring-cloud-config/" style="font-size: 15px;">spring-cloud-config</a> <a href="/tags/error/" style="font-size: 15px;">error</a> <a href="/tags/micro-service/" style="font-size: 15px;">micro-service</a> <a href="/tags/Trident/" style="font-size: 15px;">Trident</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/spring-cloud/spring-cloud-config-encrypt-keystore-path-error/">spring-cloud-config 非对称加密 keystore 文件加载异常</a></li><li class="post-list-item"><a class="post-list-link" href="/code_quality/sonarqube-jenkins-pipeline/">代码质量管理：SonarQube + Jenkins Pipeline配置</a></li><li class="post-list-item"><a class="post-list-link" href="/java/gc-overhead-limit-exceeded/">java.lang.OutOfMemoryError:GC overhead limit exceeded</a></li><li class="post-list-item"><a class="post-list-link" href="/bug/get-chinese-length/">中文字节长度引起的数据丢失</a></li><li class="post-list-item"><a class="post-list-link" href="/hadoop/rm-ha/">ResourceManager HA 配置</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2019</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="Hosted by Coding Pages" href="https://pages.coding.me" target="_blank">
+                        <img src="https://coding.net/static/f7272a0b7cd340571725c6734c6bdd6f.png">
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+<script>
+    // baidu analytics
+    (function () {
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

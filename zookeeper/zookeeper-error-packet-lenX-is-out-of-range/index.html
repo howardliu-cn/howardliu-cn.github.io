@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Zookeeper客户端错误：Packet len8854970 is out of range!||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="这是一个生产环境使用zookeeper异常的情况，错误是java.io.IOException:Packet len8854970 is out of range!。因为是偶然发生，所以没有重视。但是年后又发现问题，才意识到问题的严重性。">
+<meta name="keywords" content="开源,大数据,zookeeper,异常处理,Packet len is out of range">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Zookeeper客户端错误：Packet len8854970 is out of range!">
+<meta property="og:url" content="http://www.howardliu.cn/zookeeper/zookeeper-error-packet-lenX-is-out-of-range/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="这是一个生产环境使用zookeeper异常的情况，错误是java.io.IOException:Packet len8854970 is out of range!。因为是偶然发生，所以没有重视。但是年后又发现问题，才意识到问题的严重性。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-09-11T14:08:23.875Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Zookeeper客户端错误：Packet len8854970 is out of range!">
+<meta name="twitter:description" content="这是一个生产环境使用zookeeper异常的情况，错误是java.io.IOException:Packet len8854970 is out of range!。因为是偶然发生，所以没有重视。但是年后又发现问题，才意识到问题的严重性。">
+
+<meta name="keywords" content="开源,大数据,zookeeper,异常处理,Packet len is out of range">
+
+
+<meta name="description" content="这是一个生产环境使用zookeeper异常的情况，错误是java.io.IOException:Packet len8854970 is out of range!。因为是偶然发生，所以没有重视。但是年后又发现问题，才意识到问题的严重性。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/zookeeper/zookeeper-error-packet-lenX-is-out-of-range/">Zookeeper客户端错误：Packet len8854970 is out of range!</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2017-02-20</time>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <div id="toc" class="toc"></div>
+            <p>这是一个生产环境使用zookeeper异常的情况，错误是<code>java.io.IOException: Packet len8854970 is out of range!</code>。然后就换了一个namespace，就没有在出错，以为是偶然发生，所以没有重视。但是年后居然又出现问题，才意识到严重性。分析之后发现，每隔一段时间，某一个znode节点下超过客户端所设置的大小，客户端连接会失败，zkCli.sh操作该节点也会失败。如果对于简单依赖zookeeper的系统，这种错误可以容忍（但是必须解决）；如果是强依赖zookeeper的系统，这种错误可以说是灾难。</p>
+<a id="more"></a>
+<h1 id="1-发现问题"><a href="#1-发现问题" class="headerlink" title="1 发现问题"></a>1 发现问题</h1><p>问题的发现比较曲折，首先是发现服务器磁盘写满了（吐槽下运维居然没有对磁盘添加监控），致使项目中的报警功能失效。然后就把无用日志删除，习（tou）惯（lan）的把异常的应用重启了下。幸好有个比较好的习惯就是，项目启动成功后，都会打看日志跟踪下，确定无误才会关掉终端。结果就被错误日志刷屏了：</p>
+<pre><code class="java">ERROR 2017-02-20 10:45:44,729 [Curator-Framework-0] o.a.c.f.i.CuratorFrameworkImpl.logError() (CuratorFrameworkImpl.java:557) - Background retry gave up
+org.apache.curator.CuratorConnectionLossException: KeeperErrorCode = ConnectionLoss
+        at org.apache.curator.framework.imps.CuratorFrameworkImpl.performBackgroundOperation(CuratorFrameworkImpl.java:838) [curator-framework-2.10.0.jar:na]
+        at org.apache.curator.framework.imps.CuratorFrameworkImpl.backgroundOperationsLoop(CuratorFrameworkImpl.java:809) [curator-framework-2.10.0.jar:na]
+        at org.apache.curator.framework.imps.CuratorFrameworkImpl.access$300(CuratorFrameworkImpl.java:64) [curator-framework-2.10.0.jar:na]
+        at org.apache.curator.framework.imps.CuratorFrameworkImpl$4.call(CuratorFrameworkImpl.java:267) [curator-framework-2.10.0.jar:na]
+        at java.util.concurrent.FutureTask.run(FutureTask.java:266) [na:1.8.0_111]
+        at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:180) [na:1.8.0_111]
+        at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:293) [na:1.8.0_111]
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142) [na:1.8.0_111]
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617) [na:1.8.0_111]
+        at java.lang.Thread.run(Thread.java:745) [na:1.8.0_111]</code></pre>
+<p>因为zookeeper的客户端使用的是<a href="http://curator.apache.org/" target="_blank" rel="noopener">Apache Curator</a>，与zookeeper的连接断开会重新创建连接，所以会出现大量的连接失败异常。</p>
+<h1 id="2-分析问题"><a href="#2-分析问题" class="headerlink" title="2 分析问题"></a>2 分析问题</h1><p>在这个项目中，对于zookeepr的使用有下面几种场景：</p>
+<ol>
+<li>服务状态数据：将服务状态写入znode节点</li>
+<li>服务注册：将服务地址写入znode节点</li>
+<li>服务发现：获取znode节点中的可用服务地址</li>
+<li>监听节点：监听某个znode节点或该节点的字节点状态</li>
+</ol>
+<p>这几种情况都需要与zookeeper的znode节点创建连接，然后执行操作。根据错误提示，<code>java.io.IOException: Packet len8854970 is out of range!</code>，out of range就是超过了某个限制，只能查看代码了。</p>
+<pre><code class="java">protected final ByteBuffer lenBuffer = ByteBuffer.allocateDirect(4);
+protected ByteBuffer incomingBuffer = lenBuffer;
+
+protected void readLength() throws IOException {
+    int len = incomingBuffer.getInt();
+    if (len &lt; 0 || len &gt;= ClientCnxn.packetLen) {
+        throw new IOException(&quot;Packet len&quot; + len + &quot; is out of range!&quot;);
+    }
+    incomingBuffer = ByteBuffer.allocate(len);
+}
+
+public static final int packetLen = Integer.getInteger(&quot;jute.maxbuffer&quot;, 4096 * 1024);</code></pre>
+<p>从代码就能够很容易的看出，这个错误是因为<code>len</code>小于0或大于<code>packetLen</code>，根据代码逻辑，<code>len</code>不小于0，那就是大于<code>packetLen</code>。而<code>packetLen</code>的值是<code>jute.maxbuffer</code>系统变量定义或默认的4096 * 1024（4M）。</p>
+<p>继续深扒代码，因为代码比较长，这里就不写了。大体逻辑就是，创建与zookeeper连接之后，要对某个节点进行读写操作，为了提高吞吐量，先判断下该节点数据量大小是否超过设置的<code>jute.maxbuffer</code>，如果是，就抛出异常。在zookeeper客户端中，这一部分异常的处理比较粗糙，因为注释上也写着“this is ugly, you have a better way speak up”。</p>
+<h1 id="3-解决问题"><a href="#3-解决问题" class="headerlink" title="3 解决问题"></a>3 解决问题</h1><p>根据上面的纠错，答案就很明显了。只有两种方案：</p>
+<ul>
+<li>把待操作节点的大小减下来，小于默认的4M</li>
+<li>把默认的<code>jute.maxbuffer</code>大小提高</li>
+</ul>
+<p>对于第一种方式，需要根据自身具体情况具体操作。这里没有什么有效建议。</p>
+<p>对于第二种方式，就比较简单了。只要在创建Zookeeper对象之前，设置<code>System.setProperty(&quot;jute.maxbuffer&quot;, 4096 * 1024 * 10 + &quot;&quot;);</code>，这里的大小根据自己的系统设置，我这里只是一个测试值（如果设置太大，这个节点真的比较大的话，会影响吞吐）。</p>
+<blockquote>
+<p>因为我这里使用的是<a href="http://curator.apache.org/" target="_blank" rel="noopener">Apache Curator</a>，不需要自己创建Zookeeper对象，所以需要在创建CuratorFramework对象之前添加这个变量。</p>
+</blockquote>
+<p>解决问题要彻底，不能留下祸患。（此处应该伴随阴笑和冷风。。。）</p>
+<p>java客户端的问题解决了，但是通过zkCli.sh连接时，还是会出现这个问题。报错如下：</p>
+<pre><code>2017-02-20 12:08:03,999 [myid:] - WARN  [main-SendThread(localhost:2181):ClientCnxn$SendThread@1102] - Session 0x1591b713cefd2b3 for server localhost/127.0.0.1:2181, unexpected error, closing socket connection and attempting reconnect
+java.io.IOException: Packet len8854970 is out of range!
+    at org.apache.zookeeper.ClientCnxnSocket.readLength(ClientCnxnSocket.java:112)
+    at org.apache.zookeeper.ClientCnxnSocketNIO.doIO(ClientCnxnSocketNIO.java:79)
+    at org.apache.zookeeper.ClientCnxnSocketNIO.doTransport(ClientCnxnSocketNIO.java:366)
+    at org.apache.zookeeper.ClientCnxn$SendThread.run(ClientCnxn.java:1081)
+
+WATCHER::
+
+WatchedEvent state:Disconnected type:None path:null
+Exception in thread &quot;main&quot; org.apache.zookeeper.KeeperException$ConnectionLossException: KeeperErrorCode = ConnectionLoss for /it-monitor/com/wfj/monitor/sales-overview-info
+    at org.apache.zookeeper.KeeperException.create(KeeperException.java:99)
+    at org.apache.zookeeper.KeeperException.create(KeeperException.java:51)
+    at org.apache.zookeeper.ZooKeeper.getChildren(ZooKeeper.java:1472)
+    at org.apache.zookeeper.ZooKeeper.getChildren(ZooKeeper.java:1500)
+    at org.apache.zookeeper.ZKUtil.listSubTreeBFS(ZKUtil.java:114)
+    at org.apache.zookeeper.ZKUtil.deleteRecursive(ZKUtil.java:49)
+    at org.apache.zookeeper.ZooKeeperMain.processZKCmd(ZooKeeperMain.java:703)
+    at org.apache.zookeeper.ZooKeeperMain.processCmd(ZooKeeperMain.java:588)
+    at org.apache.zookeeper.ZooKeeperMain.executeLine(ZooKeeperMain.java:360)
+    at org.apache.zookeeper.ZooKeeperMain.run(ZooKeeperMain.java:323)
+    at org.apache.zookeeper.ZooKeeperMain.main(ZooKeeperMain.java:282)</code></pre><p>找到zkCli.sh，最下面的java命令中添加对<code>jute.maxbuffer</code>的定义（使用D参数）：</p>
+<pre><code class="sh">&quot;$JAVA&quot; &quot;-Dzookeeper.log.dir=${ZOO_LOG_DIR}&quot; &quot;-Dzookeeper.root.logger=${ZOO_LOG4J_PROP}&quot; \
+     &quot;-Djute.maxbuffer=41943040&quot; \
+     -cp &quot;$CLASSPATH&quot; $CLIENT_JVMFLAGS $JVMFLAGS \
+     org.apache.zookeeper.ZooKeeperMain &quot;$@&quot;</code></pre>
+<p>当然，为了运维方便，可以把<code>jute.maxbuffer</code>的值设置成变量，通过修改配置来设置值。避免因为修改sh脚本出现其他问题。</p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/开源/">开源</a>
+            
+            <a href="/tags/大数据/">大数据</a>
+            
+            <a href="/tags/zookeeper/">zookeeper</a>
+            
+            <a href="/tags/异常处理/">异常处理</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/http/http-connection/">
+                <i class="icon-previous">HTTP长连接和短连接</i>
+            </a>
+            
+            
+            <a class="next" href="/thinking/the-solution-about-job-queue/">
+                <i class="icon-next">解决方案之任务队列</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/局部参数/" style="font-size: 15px;">局部参数</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/IT/" style="font-size: 15px;">IT</a> <a href="/tags/工作/" style="font-size: 15px;">工作</a> <a href="/tags/情感/" style="font-size: 15px;">情感</a> <a href="/tags/管理/" style="font-size: 15px;">管理</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/心灵鸡汤/" style="font-size: 15px;">心灵鸡汤</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/zookeeper/" style="font-size: 15px;">zookeeper</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/storm/" style="font-size: 15px;">storm</a> <a href="/tags/转帖/" style="font-size: 15px;">转帖</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/eDisMax查询解析器/" style="font-size: 15px;">eDisMax查询解析器</a> <a href="/tags/标准查询解析器/" style="font-size: 15px;">标准查询解析器</a> <a href="/tags/DisMax查询解析器/" style="font-size: 15px;">DisMax查询解析器</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/两阶段提交/" style="font-size: 15px;">两阶段提交</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http服务/" style="font-size: 15px;">http服务</a> <a href="/tags/http连接/" style="font-size: 15px;">http连接</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/异常处理/" style="font-size: 15px;">异常处理</a> <a href="/tags/层面分析/" style="font-size: 15px;">层面分析</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/集群/" style="font-size: 15px;">集群</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/实时计算/" style="font-size: 15px;">实时计算</a> <a href="/tags/kafka/" style="font-size: 15px;">kafka</a> <a href="/tags/http状态码/" style="font-size: 15px;">http状态码</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring-cloud</a> <a href="/tags/spring-cloud-config/" style="font-size: 15px;">spring-cloud-config</a> <a href="/tags/error/" style="font-size: 15px;">error</a> <a href="/tags/micro-service/" style="font-size: 15px;">micro-service</a> <a href="/tags/Trident/" style="font-size: 15px;">Trident</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/spring-cloud/spring-cloud-config-encrypt-keystore-path-error/">spring-cloud-config 非对称加密 keystore 文件加载异常</a></li><li class="post-list-item"><a class="post-list-link" href="/code_quality/sonarqube-jenkins-pipeline/">代码质量管理：SonarQube + Jenkins Pipeline配置</a></li><li class="post-list-item"><a class="post-list-link" href="/java/gc-overhead-limit-exceeded/">java.lang.OutOfMemoryError:GC overhead limit exceeded</a></li><li class="post-list-item"><a class="post-list-link" href="/bug/get-chinese-length/">中文字节长度引起的数据丢失</a></li><li class="post-list-item"><a class="post-list-link" href="/hadoop/rm-ha/">ResourceManager HA 配置</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2019</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="Hosted by Coding Pages" href="https://pages.coding.me" target="_blank">
+                        <img src="https://coding.net/static/f7272a0b7cd340571725c6734c6bdd6f.png">
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+<script>
+    // baidu analytics
+    (function () {
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

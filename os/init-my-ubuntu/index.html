@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>初始化Ubuntu工作环境||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="去年6月份开始使用Ubuntu 14.04 LTS，当时是在公司电脑上装的，因为是第一次搭建工作环境，很多东西不是很随心意。终于等到16.04 LTS版发布，就重装系统，公司的那个老爷本也不用了。ubuntu desktop是一个很简单的桌面系统，比较适合菜鸟级的使用，学习曲线比较平缓。本文主要是记录一下这次搭建工作环境的经过，留作备份，下一次再需要重装的时候可以有个依据。">
+<meta name="keywords" content="os,操作系统,linux,ubuntu,乌班图,工作环境">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初始化Ubuntu工作环境">
+<meta property="og:url" content="http://www.howardliu.cn/os/init-my-ubuntu/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="去年6月份开始使用Ubuntu 14.04 LTS，当时是在公司电脑上装的，因为是第一次搭建工作环境，很多东西不是很随心意。终于等到16.04 LTS版发布，就重装系统，公司的那个老爷本也不用了。ubuntu desktop是一个很简单的桌面系统，比较适合菜鸟级的使用，学习曲线比较平缓。本文主要是记录一下这次搭建工作环境的经过，留作备份，下一次再需要重装的时候可以有个依据。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.howardliu.cn/images/ubuntu-cloud.svg">
+<meta property="og:updated_time" content="2019-09-11T14:08:23.881Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="初始化Ubuntu工作环境">
+<meta name="twitter:description" content="去年6月份开始使用Ubuntu 14.04 LTS，当时是在公司电脑上装的，因为是第一次搭建工作环境，很多东西不是很随心意。终于等到16.04 LTS版发布，就重装系统，公司的那个老爷本也不用了。ubuntu desktop是一个很简单的桌面系统，比较适合菜鸟级的使用，学习曲线比较平缓。本文主要是记录一下这次搭建工作环境的经过，留作备份，下一次再需要重装的时候可以有个依据。">
+<meta name="twitter:image" content="http://www.howardliu.cn/images/ubuntu-cloud.svg">
+
+<meta name="keywords" content="os,操作系统,linux,ubuntu,乌班图,工作环境">
+
+
+<meta name="description" content="去年6月份开始使用Ubuntu 14.04 LTS，当时是在公司电脑上装的，因为是第一次搭建工作环境，很多东西不是很随心意。终于等到16.04 LTS版发布，就重装系统，公司的那个老爷本也不用了。ubuntu desktop是一个很简单的桌面系统，比较适合菜鸟级的使用，学习曲线比较平缓。本文主要是记">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/os/init-my-ubuntu/">初始化Ubuntu工作环境</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2016-05-19</time>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <div id="toc" class="toc"></div>
+            <p>去年6月份开始使用Ubuntu 14.04 LTS，当时是在公司电脑上装的，因为是第一次搭建工作环境，很多东西不是很随心意。终于等到16.04 LTS版发布，就重装系统，公司的那个老爷本也不用了。<br>ubuntu desktop是一个很简单的桌面系统，比较适合菜鸟级的使用，学习曲线比较平缓。本文主要是记录一下这次搭建工作环境的经过，留作备份，下一次再需要重装的时候可以有个依据。<br><img src="/images/ubuntu-cloud.svg" alt="ubuntu-cloud"></p>
+<a id="more"></a>
+
+<h1 id="1-系统语言"><a href="#1-系统语言" class="headerlink" title="1 系统语言"></a>1 系统语言</h1><p>作为英语的半吊子，没办法直接使用英文环境，所以系统安装的是简体中文环境，但是系统创建的home路径中的文件夹都是中文的：桌面、文档、下载。。。作为一个懒人，不想在终端输命令的时候还要切换输入法，所以把这几个路径全部改为英文。</p>
+<pre><code class="bash">$ export LANG=en_US
+$ xdg-user-dirs-gtk-update</code></pre>
+<p>会弹出一个对话框，问是否修改home下的文件夹名字，直接点击”Update Names”，问题解决，然后把系统语言改回简体中文。</p>
+<pre><code class="bash">$ export LANG=zh_CN.UTF-8
+$ xdg-user-dirs-gtk-update</code></pre>
+<p>这次又弹出的对话框是询问是否把文件夹名字改为简体中文的，直接点否就行。为了以后不再询问，选中不要再次询问，以后就不会弹出了。</p>
+<h1 id="2-软件源"><a href="#2-软件源" class="headerlink" title="2 软件源"></a>2 软件源</h1><p>大家都知道，国内的网络环境不是很好，ubuntu的镜像服务器在地球另一端，所以装完系统通常需要修改软件源，国内比较可靠的是阿里云的镜像，为阿里赞一个。需要使用root权限修改/etc/apt/sources.list文件：<code>sudo vi /etc/apt/sources.list</code>，我这里是需要把”cn.archive.ubuntu.com”和”security.ubuntu.com”改为”mirrors.aliyun.com”，根据自己的情况修改。这样ubuntu的系统更新、安全更新、软件更新都是走阿里云的镜像了，速度还是很快的。<br>下面是我的软件源文件(精简过的，原文件很多注释)：</p>
+<pre><code>deb http://mirrors.aliyun.com/ubuntu/ xenial main restricted
+deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main restricted
+deb http://mirrors.aliyun.com/ubuntu/ xenial universe
+deb http://mirrors.aliyun.com/ubuntu/ xenial-updates universe
+deb http://mirrors.aliyun.com/ubuntu/ xenial multiverse
+deb http://mirrors.aliyun.com/ubuntu/ xenial-updates multiverse
+deb http://mirrors.aliyun.com/ubuntu/ xenial-backports main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ xenial-security main restricted
+deb http://mirrors.aliyun.com/ubuntu/ xenial-security universe
+deb http://mirrors.aliyun.com/ubuntu/ xenial-security multiverse</code></pre><h1 id="3-快捷初始化"><a href="#3-快捷初始化" class="headerlink" title="3 快捷初始化"></a>3 快捷初始化</h1><p>ubuntu使用可能会用到一些解码器之类的组件、插件、字体，一个个找实在麻烦，好在有一个ubuntu-restricted-extras，可以直接帮忙安装这一堆繁琐的东西。命令行输入：<code>sudo apt install ubuntu-restricted-extras</code>，然后等待安装完成即可。</p>
+<h1 id="4-常用软件"><a href="#4-常用软件" class="headerlink" title="4 常用软件"></a>4 常用软件</h1><p>基础环境简单配置完成，接下来就开始安装常用的软件。</p>
+<h2 id="4-1-vim"><a href="#4-1-vim" class="headerlink" title="4.1 vim"></a>4.1 vim</h2><p>因为开发使用的是IDE，vi工具只是用来编辑一些简单的文件，所以没装太多插件。作为一个vi的菜鸟，只会一些简单的快捷键，所以还是装上vim吧：</p>
+<pre><code class="bash">$ sudo apt install vim</code></pre>
+<h2 id="4-2-Chromium-amp-Chrome"><a href="#4-2-Chromium-amp-Chrome" class="headerlink" title="4.2 Chromium &amp; Chrome"></a>4.2 Chromium &amp; Chrome</h2><p>ubuntu自带的浏览器是Firefox，一款非常优秀的浏览器，Chrome中也有部分是firefox的代码，奈何已经熟悉Chrome，还是装上Chrome浏览器。这里的Chromium相当于Chrome的先行军，开源项目，全球优秀的开发人员进行维护，增加功能，然后Google再把这些新功能加到Chrome中，ubuntu的软件库中自带Chromium，想装Chrome还得翻墙出去下，为了快(tou)捷(lan)，直接装Chromium：</p>
+<pre><code class="bash">$ sudo apt-get install chromium-browser unity-chromium-extension chromium-codecs-ffmpeg-extra</code></pre>
+<p>Chromium和Firefox一样，有很多扩展扩展程序（依赖浏览器）和应用（可以不启动浏览器独立运行）：</p>
+<ul>
+<li>The QR Code Extension: 把地址栏地址转为二维码</li>
+<li>有道云笔记网页剪报: 用过有道云笔记的比较熟悉，抓取网页内容，保存到有道云笔记中</li>
+<li>cVim: 一个摆脱鼠标的扩展程序，键盘流的福音，好像还有很多类似的扩展，大同小异</li>
+<li>JSON Formatter: 可以把json响应内容格式化</li>
+<li>JSON Editor: 应用，用于编辑json数据</li>
+<li>Postman: 应用，http的客户端</li>
+</ul>
+<h2 id="4-3-JDK"><a href="#4-3-JDK" class="headerlink" title="4.3 JDK"></a>4.3 JDK</h2><p>作为Java开发，最需要安装的就是jdk了，ubuntu库中只有Open JDK，但是工作环境中还是使用Oracle JDK，其实可以在Oracle官网下载tar.gz包，解压，然后配置环境变量，但是安装ant、maven的时候还是会再次引入open jdk，烦不胜烦，直接使用webupd8的源，省去乱七八糟的烦恼。</p>
+<pre><code class="bash">$ sudo add-apt-repository ppa:webupd8team/java
+$ sudo apt-get update
+$ sudo apt-get install oracle-java6-installer oracle-java7-installer oracle-java8-installer</code></pre>
+<p>这里把jdk 6\7\8几个版本都装上了，虽然自己的项目中使用JDK 8，但是有时候需要把一个公共组件提供给其他组，就需要jdk 6来开发编译打包，这个时候需要切换下默认jdk的版本:</p>
+<pre><code class="bash">$ sudo apt-get install oracle-java6-set-default # 切换为jdk6
+$ sudo apt-get install oracle-java7-set-default # 切换为jdk7
+$ sudo apt-get install oracle-java8-set-default # 切换为jdk8</code></pre>
+<p>修改jdk的环境变量，为了各用户统一，直接在系统环境变量中增加配置：</p>
+<pre><code class="bash">cd /etc/profile.d
+sudo touch set_classpath.sh
+sudo chmod +x set_classpath.sh</code></pre>
+<p>set_classpath.sh文件的内容如下：</p>
+<pre><code class="bash">#!/bin/bash
+export JRE_HOME=$JAVA_HOME/jre
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar</code></pre>
+<p>可以通过<code>source set_classpath.sh</code>使环境变量立即生效，也可以等下次重启之后生效。</p>
+<h2 id="4-4-Ant"><a href="#4-4-Ant" class="headerlink" title="4.4 Ant"></a>4.4 Ant</h2><p>工作中基本不用Ant了，一般maven就够用了。先装上，用不用再说：<code>sudo apt-get install ant</code>，安装完之后配置环境变量：</p>
+<pre><code class="bash">$ cd /etc/profile.d
+$ sudo touch ant_env.sh
+$ sudo chmod +x ant_env.sh</code></pre>
+<p>ant_env.sh内容如下：</p>
+<pre><code class="bash">#!/bin/bash
+export ANT_HOME=/usr/share/ant
+export PATH=$PATH:$ANT_HOME/bin</code></pre>
+<h2 id="4-5-Maven"><a href="#4-5-Maven" class="headerlink" title="4.5 Maven"></a>4.5 Maven</h2><p>构建工具最常用maven了，基本不需要关心jar包之间的依赖，而且在IDE中，maven的插件也比较完善了。</p>
+<pre><code class="bash">$ sudo apt-get install maven
+
+# 安装完成后通过mvn -n查看maven版本
+$ mvn -v
+Apache Maven 3.3.3
+Maven home: /usr/share/maven
+Java version: 1.8.0_66, vendor: Oracle Corporation
+Java home: /usr/lib/jvm/java-8-oracle/jre
+Default locale: zh_CN, platform encoding: UTF-8
+OS name: &quot;linux&quot;, version: &quot;4.2.0-22-generic&quot;, arch: &quot;amd64&quot;, family: &quot;unix&quot;</code></pre>
+<h2 id="4-6-SVN"><a href="#4-6-SVN" class="headerlink" title="4.6 SVN"></a>4.6 SVN</h2><p>公司喜欢用svn，不过也马上要换成Git了，还是把svn安装记录下，万一以后需要呢。</p>
+<pre><code class="bash">$ sudo apt-get install subversion
+$ sudo apt-get install libsvn-java # 如果要用Eclipse SVN插件还得装下libsvn-java
+
+# 使用ln建立链接，不然插件还是会报错：
+$ sudo mkdir -P /usr/java/packages/lib/amd64/
+$ sudo ln -s /usr/lib/x86_64-linux-gnu/jni/libsvnjavahl-1.so.0.0.0 /usr/java/packages/lib/amd64/libsvnjavahl-1
+$ sudo ln -s /usr/lib/x86_64-linux-gnu/jni/libsvnjavahl-1.so.0.0.0 /usr/java/packages/lib/amd64/libsvnjavahl-1.so</code></pre>
+<p>在Linux中可用的svn的GUI工具只有一个rapidsvn，已经很久没有更新过了，不过也还凑合用，复杂操作可以使用命令，</p>
+<pre><code class="bash">$ sudo apt-get install rapidsvn</code></pre>
+<h2 id="4-7-Git"><a href="#4-7-Git" class="headerlink" title="4.7 Git"></a>4.7 Git</h2><p>直接安装</p>
+<pre><code class="bash">sudo apt-get install liberror-perl git-man git git-doc</code></pre>
+<p>git的GUI工具就不装了，毕竟git的命令很简单，而且IDE中的插件效果也挺不错的。</p>
+<h2 id="4-8-其他工具"><a href="#4-8-其他工具" class="headerlink" title="4.8 其他工具"></a>4.8 其他工具</h2><ul>
+<li>unison: 一个同步工具，可以比较文件夹之间是否有修改，可以很直观的操作同步数据，相当于有GUI的sync，<code>sudo apt-get install unison unison-gtk</code></li>
+<li>ssh: 这个不多说，<code>sudo apt-get install openssh-client openssh-server openssh-sftp-server</code></li>
+<li>openvpn: 在家办公的时候，需要通过VPN连接公司内网，<code>sudo apt-get install network-manager-openvpn</code></li>
+<li>FileZilla: 连接服务器的文件管理器，<code>sudo apt-get install filezilla</code></li>
+<li>Meld: 文件\文件夹对比工具，相当于带GUI的diff，<code>sudo apt-get install meld</code></li>
+<li>mysql: 不多说，<code>sudo apt-get install mysql-client mysql-workbench</code></li>
+<li>nethogs: 各应用实时网速检查，需要sudo权限，<code>sudo apt-get install nethogs</code></li>
+<li>indicator-multiload: 综合负载指示器，可实时显示CPU使用率、内存占用、网速、负载、磁盘IO、交换空间等，<code>sudo apt-get install indicator-multiload</code></li>
+<li>GIMP: 图像编辑，<code>sudo apt-get install gimp gimp-data-extras</code></li>
+<li>GParted: 分区管理器，需要root权限，<code>sudo apt-get install gparted</code></li>
+</ul>
+<h1 id="5-基本配置"><a href="#5-基本配置" class="headerlink" title="5 基本配置"></a>5 基本配置</h1><h2 id="5-1-ubuntu终端"><a href="#5-1-ubuntu终端" class="headerlink" title="5.1 ubuntu终端"></a>5.1 ubuntu终端</h2><p>ubuntu终端会显示当前位置的全路径，当目录比较深的时候，占用空间太大，所以直接进行优化：</p>
+<pre><code class="bash">export PS1=&#39;\[\e]0;\u@\h: \w\a\]\[\033[01;32m\]\u\[\033[01;33m\]@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\]$ &#39;</code></pre>
+<h2 id="5-2-本地打开文件数限制解除"><a href="#5-2-本地打开文件数限制解除" class="headerlink" title="5.2 本地打开文件数限制解除"></a>5.2 本地打开文件数限制解除</h2><pre><code class="bash">echo &quot;fs.file-max = 819200&quot; | sudo tee /etc/sysctl.d/60-fs-file-max.conf
+echo &quot;fs.inotify.max_user_watches = 524288&quot; | sudo tee /etc/sysctl.d/60-fs-max-user-watches.conf</code></pre>
+<h1 id="6-结束"><a href="#6-结束" class="headerlink" title="6 结束"></a>6 结束</h1><p>到这里，这个ubuntu环境就基本配置完成了。<br>话说自从把系统换成ubuntu了，好像很久没有玩游戏了。舍友的系统是windows，前一段时间，想玩了，就玩他的，后来媳妇抱怨说我总是跟他们混在一起，也就不怎么玩了，最近好像就想不起来玩。算是把游戏戒了。<br>然后使用linux，为了图省事，经常会用到终端，几条简单命令就成，慢慢向键盘党靠拢，虽然不说能够提高效率，至少不会因为找鼠标打断思路。</p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/os/">os</a>
+            
+            <a href="/tags/linux/">linux</a>
+            
+            <a href="/tags/ubuntu/">ubuntu</a>
+            
+            <a href="/tags/工作环境/">工作环境</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/micro-services/data-consistency-in-micro-services/">
+                <i class="icon-previous">微服务架构下的数据一致性：概念及相关模式</i>
+            </a>
+            
+            
+            <a class="next" href="/os/all-about-linux-swap-space/">
+                <i class="icon-next">关于Linux系统的swap交换空间</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/局部参数/" style="font-size: 15px;">局部参数</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/IT/" style="font-size: 15px;">IT</a> <a href="/tags/工作/" style="font-size: 15px;">工作</a> <a href="/tags/情感/" style="font-size: 15px;">情感</a> <a href="/tags/管理/" style="font-size: 15px;">管理</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/心灵鸡汤/" style="font-size: 15px;">心灵鸡汤</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/zookeeper/" style="font-size: 15px;">zookeeper</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/storm/" style="font-size: 15px;">storm</a> <a href="/tags/转帖/" style="font-size: 15px;">转帖</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/eDisMax查询解析器/" style="font-size: 15px;">eDisMax查询解析器</a> <a href="/tags/标准查询解析器/" style="font-size: 15px;">标准查询解析器</a> <a href="/tags/DisMax查询解析器/" style="font-size: 15px;">DisMax查询解析器</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/两阶段提交/" style="font-size: 15px;">两阶段提交</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http服务/" style="font-size: 15px;">http服务</a> <a href="/tags/http连接/" style="font-size: 15px;">http连接</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/异常处理/" style="font-size: 15px;">异常处理</a> <a href="/tags/层面分析/" style="font-size: 15px;">层面分析</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/集群/" style="font-size: 15px;">集群</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/实时计算/" style="font-size: 15px;">实时计算</a> <a href="/tags/kafka/" style="font-size: 15px;">kafka</a> <a href="/tags/http状态码/" style="font-size: 15px;">http状态码</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring-cloud</a> <a href="/tags/spring-cloud-config/" style="font-size: 15px;">spring-cloud-config</a> <a href="/tags/error/" style="font-size: 15px;">error</a> <a href="/tags/micro-service/" style="font-size: 15px;">micro-service</a> <a href="/tags/Trident/" style="font-size: 15px;">Trident</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/spring-cloud/spring-cloud-config-encrypt-keystore-path-error/">spring-cloud-config 非对称加密 keystore 文件加载异常</a></li><li class="post-list-item"><a class="post-list-link" href="/code_quality/sonarqube-jenkins-pipeline/">代码质量管理：SonarQube + Jenkins Pipeline配置</a></li><li class="post-list-item"><a class="post-list-link" href="/java/gc-overhead-limit-exceeded/">java.lang.OutOfMemoryError:GC overhead limit exceeded</a></li><li class="post-list-item"><a class="post-list-link" href="/bug/get-chinese-length/">中文字节长度引起的数据丢失</a></li><li class="post-list-item"><a class="post-list-link" href="/hadoop/rm-ha/">ResourceManager HA 配置</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2019</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="Hosted by Coding Pages" href="https://pages.coding.me" target="_blank">
+                        <img src="https://coding.net/static/f7272a0b7cd340571725c6734c6bdd6f.png">
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+<script>
+    // baidu analytics
+    (function () {
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

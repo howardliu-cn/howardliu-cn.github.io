@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>solr-搜索-标准查询解析器||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="Solr默认的查询解析器使用的lucene解析器。标准查询解析器的主要优势在于它支持强大且直观的语法，允许创建各种结构化的查询。与DisMax查询解析器相比，最大的缺点是它不能够容忍语法错误，而DisMax查询解析器比设计为尽可能少的返回错误。">
+<meta name="keywords" content="solr,翻译,标准查询解析器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="solr-搜索-标准查询解析器">
+<meta property="og:url" content="http://www.howardliu.cn/translation-the-standard-query-parser/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="Solr默认的查询解析器使用的lucene解析器。标准查询解析器的主要优势在于它支持强大且直观的语法，允许创建各种结构化的查询。与DisMax查询解析器相比，最大的缺点是它不能够容忍语法错误，而DisMax查询解析器比设计为尽可能少的返回错误。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-09-11T14:08:23.876Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="solr-搜索-标准查询解析器">
+<meta name="twitter:description" content="Solr默认的查询解析器使用的lucene解析器。标准查询解析器的主要优势在于它支持强大且直观的语法，允许创建各种结构化的查询。与DisMax查询解析器相比，最大的缺点是它不能够容忍语法错误，而DisMax查询解析器比设计为尽可能少的返回错误。">
+
+<meta name="keywords" content="solr,翻译,标准查询解析器">
+
+
+<meta name="description" content="Solr默认的查询解析器使用的lucene解析器。标准查询解析器的主要优势在于它支持强大且直观的语法，允许创建各种结构化的查询。与DisMax查询解析器相比，最大的缺点是它不能够容忍语法错误，而DisMax查询解析器比设计为尽可能少的返回错误。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/translation-the-standard-query-parser/">solr-搜索-标准查询解析器</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2015-11-04</time>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <div id="toc" class="toc"></div>
+            <p>Solr默认的查询解析器使用的lucene解析器。<br>标准查询解析器的主要优势在于它支持强大且直观的语法，允许创建各种结构化的查询。与DisMax查询解析器相比，最大的缺点是它不能够容忍语法错误，而DisMax查询解析器比设计为尽可能少的返回错误。</p>
+<a id="more"></a>
+<h2 id="标准查询解析器参数"><a href="#标准查询解析器参数" class="headerlink" title="标准查询解析器参数"></a>标准查询解析器参数</h2><p>除了公用查询参数、层面分析参数、高亮参数、匹配相似参数，标准查询解析器支持下表中描述的参数：</p>
+<table><thead><tr><th>参数</th><th>描述</th></tr></thead><tbody><tr><td>q</td><td> 定义一个使用标准查询语法的查询。（必需字段）</td></tr><tr><td>q.op</td><td>指定查询短语默认操作符，覆盖`schema.xml`文件中定义的默认操作符。（`AND` 或 `OR`）</td></tr><tr><td>df</td><td>指定一个默认查询字段，覆盖`schema.xml`文件中定义的默认查询字段。（q字段不明确指定字段时，使用该字段）</td></tr></tbody></table>
+
+<h2 id="标准查询解析器的结果"><a href="#标准查询解析器的结果" class="headerlink" title="标准查询解析器的结果"></a>标准查询解析器的结果</h2><p>默认情况下，标准查询解析器的结果包含一个未命名的 <result>块。如果使用调试参数，那么会返回一个额外名为 “debug” 的 <lst> 块，包含有用的调试信息，包括原查询语句，解析后的查询语句，和对 <result> 块中每个document的解释信息。如果explainOther字段也被使用，那么附加说明信息或被添加到所有的匹配document中。</result></lst></result></p>
+<h3 id="结果示例"><a href="#结果示例" class="headerlink" title="结果示例"></a>结果示例</h3><p>本节提供使用标准查询解析器的返回结果样例。<br>下面的URL请求一个简单的查询，请求使用使XML结果更可读的缩进方式的XML响应读取器。</p>
+<pre><code>http://localhost:8983/solr/techproducts/select?q=id:SP2514N</code></pre><p>结果:</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;response&gt;
+    &lt;responseHeader&gt;&lt;status&gt;0&lt;/status&gt;&lt;QTime&gt;1&lt;/QTime&gt;&lt;/responseHeader&gt;
+    &lt;result numFound=&quot;1&quot; start=&quot;0&quot;&gt;
+        &lt;doc&gt;
+            &lt;arr name=&quot;cat&quot;&gt;
+                &lt;str&gt;electronics&lt;/str&gt;&lt;str&gt;hard drive&lt;/str&gt;
+            &lt;/arr&gt;
+            &lt;arr name=&quot;features&quot;&gt;
+                &lt;str&gt;7200RPM, 8MB cache, IDE Ultra ATA-133&lt;/str&gt;
+                &lt;str&gt;NoiseGuard, SilentSeek technology, Fluid Dynamic Bearing (FDB) motor&lt;/str&gt;
+            &lt;/arr&gt;
+            &lt;str name=&quot;id&quot;&gt;SP2514N&lt;/str&gt;
+            &lt;bool name=&quot;inStock&quot;&gt;true&lt;/bool&gt;
+            &lt;str name=&quot;manu&quot;&gt;Samsung Electronics Co. Ltd.&lt;/str&gt;
+            &lt;str name=&quot;name&quot;&gt;Samsung SpinPoint P120 SP2514N - hard drive - 250 GB - ATA-133&lt;/str&gt;
+            &lt;int name=&quot;popularity&quot;&gt;6&lt;/int&gt;
+            &lt;float name=&quot;price&quot;&gt;92.0&lt;/float&gt;
+            &lt;str name=&quot;sku&quot;&gt;SP2514N&lt;/str&gt;
+        &lt;/doc&gt;
+    &lt;/result&gt;
+&lt;/response&gt;</code></pre>
+<p>下面的是一个使用限制字段列表的查询示例：</p>
+<pre><code>http://localhost:8983/solr/techproducts/select?q=id:SP2514N&amp;fl=id+name</code></pre><p>结果：</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;response&gt;
+    &lt;responseHeader&gt;&lt;status&gt;0&lt;/status&gt;&lt;QTime&gt;2&lt;/QTime&gt;&lt;/responseHeader&gt;
+    &lt;result numFound=&quot;1&quot; start=&quot;0&quot;&gt;
+        &lt;doc&gt;
+            &lt;str name=&quot;id&quot;&gt;SP2514N&lt;/str&gt;
+            &lt;str name=&quot;name&quot;&gt;Samsung SpinPoint P120 SP2514N - hard drive - 250 GB - ATA-133&lt;/str&gt;
+        &lt;/doc&gt;
+    &lt;/result&gt;
+&lt;/response&gt;</code></pre>
+<h2 id="指定标准查询解析器的条件"><a href="#指定标准查询解析器的条件" class="headerlink" title="指定标准查询解析器的条件"></a>指定标准查询解析器的条件</h2><p>对标准查询解析器的查询被分解为检索词和操作符。有2种类型的检索词：单词和短语。</p>
+<ul>
+<li>单词是一个单独的词，例如 “test” 或 “hello”</li>
+<li>短语是一组由双引号包围的词组，如 “hello dolly”</li>
+</ul>
+<p>多个检索词可以与布尔运算符组合在一起，形成更复杂的查询（如下所述）：</p>
+<blockquote>
+<p>注：<br>解析器用于查询分析单词或短语的方式与解析器用于索引分析单词或短语的方式一致是和重要的；否则，搜索时可能会出现难以预料的结果。也就是说，索引分析和查询分析时使用的analyzer应该一致。</p>
+</blockquote>
+<h3 id="条件修饰"><a href="#条件修饰" class="headerlink" title="条件修饰"></a>条件修饰</h3><p>根据需要，Solr支持多样的能够增加灵活度或精度的检索词模糊匹配。这些模糊匹配包括可以进行模糊查询或一般查询的通配符。下面的章节消息描述了这些修改。</p>
+<h3 id="通配符查询"><a href="#通配符查询" class="headerlink" title="通配符查询"></a>通配符查询</h3><p>solr标准查询支持在单词中使用一个或多个通配符。通配符可以应用与单词，但不能用于短语中。</p>
+<table><thead><tr><td>通配符查询类型</td><td>字符</td><td>示例</td></tr></thead><tbody><tr><td>单字符（匹配一个字符）</td><td>?</td><td>查询串为'te?t'的将匹配'test'和'text'</td></tr><tr><td>多字符（匹配0个或多个字符）</td><td>*</td><td>tes* -> test, testing, 或 tester。<br> te*t -> test 或 text. <br>*est -> pest 或 test</td></tr></tbody></table>
+
+<h3 id="模糊查询"><a href="#模糊查询" class="headerlink" title="模糊查询"></a>模糊查询</h3><p>solr标准查询支持基于最小编辑距离算法的模糊查询。模糊查询可以查询到一个与指定模糊查询相似但不精确匹配的短语。进行模糊查询，只需要在检索词末尾添加<code>~</code>符号。比如，使用模糊查询与模糊查询<code>roam</code>相似的结果：<code>roam~</code>将匹配 roams, foam, 和 foams。它还将匹配 roam 这个词本身。<br>一个可选的距离参数指定的最大可编辑数介于0和2之间，默认为2。例如：<code>roam~1</code>将匹配roams 和 foam。但不会匹配 foams，因为这个结果需要指定编辑距离为2。</p>
+<blockquote>
+<p>注：<br>在大多数情况下，多个词干（减少检索词使用词干）能产生与模糊搜索和通配符搜索类似的效果。</p>
+</blockquote>
+<h3 id="邻近查询"><a href="#邻近查询" class="headerlink" title="邻近查询"></a>邻近查询</h3><p>邻近查询将查询一个检索词与另一个检索词有指定距离的结果。<br>执行邻近查询，在查询检索词组最后添加<code>～</code>符号和一个数值。比如，要查询文档中的 “apache” 和 “jakarta” 之间有10个单词：<code>&quot;jakarta apache&quot;~10</code>。<br>这里所说的距离，是匹配指定检索词所需移动单词的数量。在上面的例子中，”apache” 和 “jakarta” 之间有10个词的距离则匹配。如果 “apache” 在 “jakarta” 前面，则需要更大的数，使 “apache” 能够在 “jakarta” 后面。</p>
+<h3 id="范围查询"><a href="#范围查询" class="headerlink" title="范围查询"></a>范围查询</h3><p>范围查询需要指定一个检索字段的范围（上限和下限），将匹配出指定检索字段的值在该范围内的结果。范围查询可以包括或不包括上下限。如果是非数字字段，按照字典排序。比如，下面的例子是匹配所有的<code>mod_date</code>检索字段在20020101和20030101之间的结果（包括20020101和20030101）：<br><code>mod_date:[20020101 TO 20030101]</code><br>范围查询不限于日期字段或数字格式，还可以查询非日期字段：<br><code>title:{Aida TO Carmen}</code> 将会查询所有 <code>title</code> 在 <code>Aida</code> 与 <code>Carmen</code>之间的文档（不包括<code>Aida</code> 和 <code>Carmen</code>）。<br>通过括号决定是否包括上限和下限：</p>
+<ul>
+<li>方括号[]表示包含上限和下限；</li>
+<li>花括号{}表示不包含上限和下限；</li>
+<li>也可以同时使用两种括号，表示一个包含，一个不包含，比如：count:{ 1 TO 10 ]。</li>
+</ul>
+<h3 id="控制相关度查询"><a href="#控制相关度查询" class="headerlink" title="控制相关度查询"></a>控制相关度查询</h3><p>Lucene/Solr提供了基于短语发现的控制相关度查询。在你要查询的短语结尾使用脱字符<code>^</code>和加权因子来对单词加权。加权因子越大，单词相关度越高。<br>加权查询允许通过加权单词控制文档的相关度。比如，你查询 “jakarta apache” ，并且希望 “jakarta” 相关度更高，你可以使用 <code>^</code> 符号，比如：<code>jakarta^4 apache</code>。你也可以对短语加权，比如：<code>&quot;jakarta apache&quot;^4 &quot;Apache Lucene&quot;</code>。<br>默认，加权因子是1。尽管加权因子必须是正数，但是可以小于1（比如，0.2）。</p>
+<h3 id="使用-打分"><a href="#使用-打分" class="headerlink" title="使用^=打分"></a>使用<code>^=</code>打分</h3><p>常量打分查询使用 <code>&lt;query_clause&gt;^=&lt;score&gt;</code>，对整个变量设置指定分值。当你只关心一个特定的匹配条件，不希望其他因素产生影响，比如检索词频率或逆文献频率。比如：<code>(description:blue OR color:blue)^=1.0 text:shoes</code>。</p>
+<h2 id="在标准查询时指定字段"><a href="#在标准查询时指定字段" class="headerlink" title="在标准查询时指定字段"></a>在标准查询时指定字段</h2><p>在Solr索引数据组织的领域，这是在Solr SCHEMA.XML 文件定义。搜索可以利用字段添加到查询的精度。 例如， 你可以在一个特定的领域寻找一个术语， 比如一个标题字段。<br>在solr中对数据创建索引是以字段为基准的，这是在solr的<code>schema.xml</code>文件中定义的。 搜索可以利用字段增加查询精度。比如，你可以指定一个字段来搜索检索词查询一个，比如一个<code>title</code>字段。<br>在<code>schema.xml</code>文件中定义一个字段作为默认字段。如果你在查询的时候没有指定字段，solr只搜索默认字段。另外，你可以在查询过程中指定一个字段或字段组合。<br>要指定一个字段，只需要在检索词前面加上字段和冒号（:），然后就能够使用这个字段进行查询了。<br>比如，假设一个索引包括两个字段，<code>title</code>和<code>text</code>，并且<code>text</code>是默认字段。如果你想查询查询名为<code>The Right Way</code>的文档和包含<code>don&#39;t go this way</code>的文档，你可以使用下面的检索方法：</p>
+<pre><code>title:&quot;The Right Way&quot; AND text:&quot;don&#39;t go this way&quot;
+title:&quot;Do it right&quot; AND &quot;don&#39;t go this way&quot;</code></pre><p>既然<code>text</code>是默认字段，可以不用明确指明；所以，上面第二种方式忽略它。<br>默认字段先于指定字段，所以查询<code>title:Do it right</code>将只在<code>title</code>字段查询<code>Do</code>，在默认字段上查询<code>it</code>和<code>right</code>。</p>
+<h2 id="标准查询支持的布尔运算符"><a href="#标准查询支持的布尔运算符" class="headerlink" title="标准查询支持的布尔运算符"></a>标准查询支持的布尔运算符</h2><p>布尔运算符可以在查询时使用布尔逻辑，在匹配文档时查询存在或不存在指定检索词或条件。下面的表格总结了标准查询可以使用的布尔运算符。</p>
+<table><thead><tr><td>布尔运算符</td><td>替代符号</td><td>描述</td></tr></thead><tbody><tr><td>AND</td><td>&&</td><td>要求在布尔运算符两侧的任何一方都要匹配。</td></tr><tr><td>NOT</td><td>!</td><td>要求对应搜索词不存在。</td></tr><tr><td>OR</td><td>||</td><td>要求布尔运算符两侧一个或两个检索词都会出现。</td></tr><tr><td></td><td>+</td><td>要求符号”+”后的项必须在文档相应的域中存在</td></tr><tr><td></td><td>-</td><td>要求符号”-”后的项不存在。与布尔运算符`!`的功能相似，是主流搜索引擎（如谷歌，比较了解用户社区）常用运算符。</td></tr></tbody></table>
+
+<p>布尔运算符允许使用逻辑运算符的组合检索词。Lucene支持<code>AND</code>、<code>+</code>、<code>OR</code>、<code>NOT</code>和<code>-</code>作为逻辑运算符。</p>
+<blockquote>
+<p>注：<br>当使用关键词（如<code>AND</code>、<code>NOT</code>）指定布尔表达式时，必须使用大写字母。<br>标准查询支持上面列出的所有布尔运算符。DisMax查询只支持<code>+</code>和<code>-</code>。</p>
+</blockquote>
+<h3 id="布尔运算符OR"><a href="#布尔运算符OR" class="headerlink" title="布尔运算符OR (||)"></a>布尔运算符<code>OR</code> (<code>||</code>)</h3><p><code>OR</code>运算符是默认运算符。这就意味着，如果两个检索词之间没有布尔表达式，默认使用<code>OR</code>运算符。<code>OR</code>运算符链接的两个检索词，如果任何一个检索词存在文档中，这个文档将成为匹配文档。这就相当于并集。可以使用<code>||</code>代替<code>OR</code>。<br>在<code>schema.xml</code>文件中，可以指定哪个符号代替布尔运算符，比如<code>OR</code>。查询包含 “jakarta apache” 或 “jakarta,”，可以使用<br><code>&quot;jakarta apache&quot; jakarta</code> 或 <code>&quot;jakarta apache&quot; OR jakarta</code> 。</p>
+<h3 id="布尔运算符AND-amp-amp"><a href="#布尔运算符AND-amp-amp" class="headerlink" title="布尔运算符AND (&amp;&amp;)"></a>布尔运算符<code>AND</code> (<code>&amp;&amp;</code>)</h3><p><code>AND</code>操作要求在一个文档中包含两个检索词。这相当于交集。可以使用<code>&amp;&amp;</code>代替<code>AND</code>。<br>要查询包含 “jakarta apache” 和 “Apache Lucene”的文档，可以使用 <code>&quot;jakarta apache&quot; AND &quot;Apache Lucene&quot;</code>或 <code>&quot;jakarta apache&quot; &amp;&amp; &quot;Apache Lucene&quot;</code> 。</p>
+<h3 id="布尔运算符NOT"><a href="#布尔运算符NOT" class="headerlink" title="布尔运算符NOT (!)"></a>布尔运算符<code>NOT</code> (<code>!</code>)</h3><p><code>NOT</code>运算符不包括那些包含<code>NOT</code>之后的检索词的文档。这相当于差集。可以使用<code>!</code>代替<code>NOT</code>。<br>要查询包含 “jakarta apache” 但不包括 “Apache Lucene”的文档，可以使用 <code>&quot;jakarta apache&quot; NOT &quot;Apache Lucene&quot;</code>或 <code>&quot;jakarta apache&quot; ! &quot;Apache Lucene&quot;</code> 。</p>
+<h3 id="布尔运算符"><a href="#布尔运算符" class="headerlink" title="布尔运算符+"></a>布尔运算符<code>+</code></h3><p><code>+</code>要求<code>+</code>之后检索词存在于至少一个文档的某个字段中，以便查询返回。<br>比如，要查询文件，必须包含”jakarta”，可能或可能不包含”lucene”，可以使用查询：<code>+jakarta lucene</code><br>这个操作符被标准查询和DisMax查询支持。</p>
+<h3 id="布尔运算符-1"><a href="#布尔运算符-1" class="headerlink" title="布尔运算符-"></a>布尔运算符<code>-</code></h3><p><code>-</code>或“禁止”运算符不包括符号后包含检索词的文件。<br>比如，要查询文件，必须包含”jakarta apache”，不包含”Apache Lucene”，可以使用查询：<code>&quot;jakarta apache&quot; -&quot;Apache Lucene&quot;。</code></p>
+<h3 id="转义特殊字符"><a href="#转义特殊字符" class="headerlink" title="转义特殊字符"></a>转义特殊字符</h3><p>在solr的一次查询中，下列字符存在特殊含义：<code>+ - &amp;&amp; || ! ( ) { } [ ] ^ &quot; ~ * ? : /</code>。<br>为了让solr解读这些字符时使用字面量，而不是特殊字符，可以在字符前加一个反斜杠<code>\</code>字符。例如，查询<code>(1+1):2</code>，为了不让solr把<code>+</code>、括号<code>()</code>对两个检索词进行子查询，需要在特殊字符前加上反斜杠转义字符：<code>\(1\+1\)\:2</code>。</p>
+<h2 id="分组子查询"><a href="#分组子查询" class="headerlink" title="分组子查询"></a>分组子查询</h2><p>Lucene/Solr支持使用括号来组合子句形式的子查询。如果你想控制一个查询的布尔逻辑，这是非常有用的。<br>The query below searches for either “jakarta” or “apache” and “website”:<br>下面的查询搜索 “jakarta” 或 “apache” 和 “website”：<code>(jakarta OR apache) AND website</code>。<br>这样增加了查询的准确性，”website”必须存在，需要”jakarta” 或 “apache” 存在。</p>
+<h3 id="group从句作为字段"><a href="#group从句作为字段" class="headerlink" title="group从句作为字段"></a>group从句作为字段</h3><p>在查询过程中多一个字段使用两个或多个布尔运算符，需要使用括号组织布尔从句。比如，下面查询<code>title</code>字段必须包含<code>&quot;return&quot;</code>单词和<code>&quot;pink panther&quot;</code>短语：<code>title:(+return +&quot;pink panther&quot;)</code>。</p>
+<h2 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h2><p>在查询串中支持C语言风格的注释。比如：<code>&quot;jakarta apache&quot; /* 这是在一个普通查询串中间的注释 */ OR jakarta</code>。<br>注释可以被嵌套。</p>
+<h2 id="Lucene查询和Solr标准查询的差别"><a href="#Lucene查询和Solr标准查询的差别" class="headerlink" title="Lucene查询和Solr标准查询的差别"></a>Lucene查询和Solr标准查询的差别</h2><p>Solr的标准查询与Lucene的查询的不同在以下几个方面：</p>
+<ul>
+<li><code>*</code>可用于指定个一个不确定返回的查询<ul>
+<li>field:[* TO 100] 查询所有小于等于100的数据</li>
+<li>field:[100 TO *] 查询所有大于等于100的数据</li>
+<li>field:[* TO *] 查询所有数据</li>
+</ul>
+</li>
+<li>作为顶级从句时，允许纯否定（所有禁止从句）<ul>
+<li>-inStock:false 查询所有inStock不是false</li>
+<li>-field:[* TO *] 查找所有文档</li>
+</ul>
+</li>
+<li>FunctionQuery语法。可以引用存在括号的方法的封装函数。<ul>
+<li><em>val</em>:myfield</li>
+<li><em>val</em>:”recip(rord(myfield),1,2,3)”</li>
+</ul>
+</li>
+<li>支持任何查询类型的嵌套从句<ul>
+<li>inStock:true OR {!dismax qf=’name manu’ v=’ipod’}</li>
+</ul>
+</li>
+<li>范围查询(“[a TO z]”)、前缀查询(“a*”)和通配符查询(“a*b”)是常量打分（所有匹配的文件得到相同的分数）。评分因素TF、IDF、索引加权和坐标都没有使用。不限制检索词匹配次数（在Lucene的过去的版本）。</li>
+</ul>
+<h3 id="指定日期和时间"><a href="#指定日期和时间" class="headerlink" title="指定日期和时间"></a>指定日期和时间</h3><p>使用TrieDateField类型（一般范围查询）的查询应使用适当的日期语法：</p>
+<ul>
+<li>timestamp:[* TO NOW]</li>
+<li>createdate:[1976-03-06T23:59:59.999Z TO *]</li>
+<li>createdate:[1995-12-31T23:59:59.999Z TO 2007-03-06T00:00:00Z]</li>
+<li>pubdate:[NOW-1YEAR/DAY TO NOW/DAY+1DAY]</li>
+<li>createdate:[1976-03-06T23:59:59.999Z TO 1976-03-06T23:59:59.999Z+1YEAR]</li>
+<li>createdate:[1976-03-06T23:59:59.999Z/YEAR TO 1976-03-06T23:59:59.999Z]</li>
+</ul>
+<p>原文链接：<a href="https://cwiki.apache.org/confluence/display/solr/The+Standard+Query+Parser" target="_blank" rel="noopener">The Standard Query Parser</a><br>翻译：<a href="http://www.howardliu.cn">沉潜飞动</a><br>译文链接：<a href="http://www.howardliu.cn/translation-the-standard-query-parser">solr查询 - 标准查询解析器</a></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/solr/">solr</a>
+            
+            <a href="/tags/翻译/">翻译</a>
+            
+            <a href="/tags/标准查询解析器/">标准查询解析器</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/translation-the-dismax-query-parser/">
+                <i class="icon-previous">solr-搜索-DisMax查询解析器</i>
+            </a>
+            
+            
+            <a class="next" href="/reprint-10-reasons-to-replace-your-jsps-with-freemarker-templates/">
+                <i class="icon-next">使用FreeMarker替换JSP的10个理由</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/局部参数/" style="font-size: 15px;">局部参数</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/IT/" style="font-size: 15px;">IT</a> <a href="/tags/工作/" style="font-size: 15px;">工作</a> <a href="/tags/情感/" style="font-size: 15px;">情感</a> <a href="/tags/管理/" style="font-size: 15px;">管理</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/心灵鸡汤/" style="font-size: 15px;">心灵鸡汤</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/zookeeper/" style="font-size: 15px;">zookeeper</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/storm/" style="font-size: 15px;">storm</a> <a href="/tags/转帖/" style="font-size: 15px;">转帖</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/eDisMax查询解析器/" style="font-size: 15px;">eDisMax查询解析器</a> <a href="/tags/标准查询解析器/" style="font-size: 15px;">标准查询解析器</a> <a href="/tags/DisMax查询解析器/" style="font-size: 15px;">DisMax查询解析器</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/两阶段提交/" style="font-size: 15px;">两阶段提交</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http服务/" style="font-size: 15px;">http服务</a> <a href="/tags/http连接/" style="font-size: 15px;">http连接</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/异常处理/" style="font-size: 15px;">异常处理</a> <a href="/tags/层面分析/" style="font-size: 15px;">层面分析</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/集群/" style="font-size: 15px;">集群</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/实时计算/" style="font-size: 15px;">实时计算</a> <a href="/tags/kafka/" style="font-size: 15px;">kafka</a> <a href="/tags/http状态码/" style="font-size: 15px;">http状态码</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring-cloud</a> <a href="/tags/spring-cloud-config/" style="font-size: 15px;">spring-cloud-config</a> <a href="/tags/error/" style="font-size: 15px;">error</a> <a href="/tags/micro-service/" style="font-size: 15px;">micro-service</a> <a href="/tags/Trident/" style="font-size: 15px;">Trident</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/spring-cloud/spring-cloud-config-encrypt-keystore-path-error/">spring-cloud-config 非对称加密 keystore 文件加载异常</a></li><li class="post-list-item"><a class="post-list-link" href="/code_quality/sonarqube-jenkins-pipeline/">代码质量管理：SonarQube + Jenkins Pipeline配置</a></li><li class="post-list-item"><a class="post-list-link" href="/java/gc-overhead-limit-exceeded/">java.lang.OutOfMemoryError:GC overhead limit exceeded</a></li><li class="post-list-item"><a class="post-list-link" href="/bug/get-chinese-length/">中文字节长度引起的数据丢失</a></li><li class="post-list-item"><a class="post-list-link" href="/hadoop/rm-ha/">ResourceManager HA 配置</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2019</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="Hosted by Coding Pages" href="https://pages.coding.me" target="_blank">
+                        <img src="https://coding.net/static/f7272a0b7cd340571725c6734c6bdd6f.png">
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+<script>
+    // baidu analytics
+    (function () {
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

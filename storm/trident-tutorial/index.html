@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>storm笔记：Trident应用||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="Trident是基于Storm的实时计算模型的高级抽象。它可以实现高吞吐（每秒数百万条消息）的有状态流处理和低延迟分布式查询。如果以前使用过高级批处理工具（比如Pig或Cascading），则对Trident的概念会非常熟悉，比如连接、聚合、分组、功能处理和过滤等。除此之外，Trident还增加了用于在数据库或持久化存储上进行有状态的增量处理的原语。Trident具有一致性、一次性语义，所以很容易">
+<meta name="keywords" content="大数据,实时计算模式,实时计算,storm,Trident">
+<meta property="og:type" content="article">
+<meta property="og:title" content="storm笔记：Trident应用">
+<meta property="og:url" content="http://www.howardliu.cn/storm/trident-tutorial/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="Trident是基于Storm的实时计算模型的高级抽象。它可以实现高吞吐（每秒数百万条消息）的有状态流处理和低延迟分布式查询。如果以前使用过高级批处理工具（比如Pig或Cascading），则对Trident的概念会非常熟悉，比如连接、聚合、分组、功能处理和过滤等。除此之外，Trident还增加了用于在数据库或持久化存储上进行有状态的增量处理的原语。Trident具有一致性、一次性语义，所以很容易">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.howardliu.cn/images/storm/batched-stream.png">
+<meta property="og:image" content="http://www.howardliu.cn/images/storm/trident-to-storm1.png">
+<meta property="og:image" content="http://www.howardliu.cn/images/storm/trident-to-storm2.png">
+<meta property="og:updated_time" content="2019-09-11T14:08:23.883Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="storm笔记：Trident应用">
+<meta name="twitter:description" content="Trident是基于Storm的实时计算模型的高级抽象。它可以实现高吞吐（每秒数百万条消息）的有状态流处理和低延迟分布式查询。如果以前使用过高级批处理工具（比如Pig或Cascading），则对Trident的概念会非常熟悉，比如连接、聚合、分组、功能处理和过滤等。除此之外，Trident还增加了用于在数据库或持久化存储上进行有状态的增量处理的原语。Trident具有一致性、一次性语义，所以很容易">
+<meta name="twitter:image" content="http://www.howardliu.cn/images/storm/batched-stream.png">
+
+<meta name="keywords" content="大数据,实时计算模式,实时计算,storm,Trident">
+
+
+<meta name="description" content="Trident是基于Storm的实时计算模型的高级抽象。它可以实现高吞吐（每秒数百万条消息）的有状态流处理和低延迟分布式查询。如果以前使用过高级批处理工具（比如Pig或Cascading），则对Trident的概念会非常熟悉，比如连接、聚合、分组、功能处理和过滤等。除此之外，Trident还增加了用">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/storm/trident-tutorial/">storm笔记：Trident应用</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2017-03-31</time>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <div id="toc" class="toc"></div>
+            <p>本文内容部分来自<a href="http://storm.apache.org/releases/current/Trident-tutorial.html" target="_blank" rel="noopener">Trident Tutorial</a>。</p>
+<p>Trident是基于Storm的实时计算模型的高级抽象。它可以实现高吞吐（每秒数百万条消息）的有状态流处理和低延迟分布式查询。如果以前使用过高级批处理工具（比如Pig或Cascading），则对Trident的概念会非常熟悉，比如连接、聚合、分组、功能处理和过滤等。除此之外，Trident还增加了用于在数据库或持久化存储上进行有状态的增量处理的原语。Trident具有一致性、一次性语义，所以很容易就能够推导出Trident拓扑结构。</p>
+<p>Trident的出现算是程序猿非常懒的又一个铁证。Strom是一个实时流处理工具，有很高的吞吐。在实际应用场景中，很多场景是借助这种实时处理能力，对实时数据进行统计，然后将统计结果实时推送到大屏或者其他可以实时浏览的地方，这样领导或者活动运营就可以实时查看销售或活动情况，比如，双十一时候的大屏，就可以使用Storm来做（我们现在就是这样做的，把全渠道的销售情况进行实时统计，然后显示在大屏上，据说领导会看）。然后，程序猿们就发现，很多统计功能非常类似，所以进行抽象，使用更加高级的功能代替一个一个的Spout、Bolt（当然，Trident拓扑结构运行的时候也是解析成Spout和Bolt运行）。</p>
+<p>然后又有人发现，Trident这种方式也是比较麻烦，即使程序猿们通过高级抽先的Trident省去了很多麻烦，但是还是架不住运维、运营、产品等不断改变的需求，所以就有很多SQL方式解析为Trident或普通Topology的工具产生。既然运维、运营、产品等不断修改需求，那就简单的通过SQL查询（不同的SQL解析为不同的拓扑结构，在Storm中运行，可以得出不同的结果）。比如：<a href="https://github.com/epfldata/squall" target="_blank" rel="noopener">squall</a>。</p>
+<p>这些都是题外话，下面继续说Trident。</p>
+<a id="more"></a>
+<h1 id="1-一个例子"><a href="#1-一个例子" class="headerlink" title="1 一个例子"></a>1 一个例子</h1><p>接下来看一个Trident的例子：</p>
+<ol>
+<li>统计输入句子中单词数量</li>
+<li>实现单词统计结果的查询</li>
+</ol>
+<p>首先实现一个不断发送句子的Spout：</p>
+<pre><code class="java">FixedBatchSpout spout = new FixedBatchSpout(new Fields(&quot;sentence&quot;), 3,
+               new Values(&quot;the cow jumped over the moon&quot;),
+               new Values(&quot;the man went to the store and bought some candy&quot;),
+               new Values(&quot;four score and seven years ago&quot;),
+               new Values(&quot;how many apples can you eat&quot;));
+spout.setCycle(true);</code></pre>
+<p>上面的Spout循环发送句子流，下面是计算流中单词数量的代码，也就是Trident的本体：</p>
+<pre><code class="java">TridentTopology topology = new TridentTopology(); // 1
+TridentState wordCounts =
+     topology.newStream(&quot;spout1&quot;, spout) // 2
+       .each(new Fields(&quot;sentence&quot;), new Split(), new Fields(&quot;word&quot;)) // 3
+       .groupBy(new Fields(&quot;word&quot;)) // 4
+       .persistentAggregate(new MemoryMapState.Factory(), new Count(), new Fields(&quot;count&quot;)) // 5
+       .parallelismHint(6);</code></pre>
+<p>一步步说下代码：</p>
+<p>行1，创建<code>TridentTopology</code>对象topology，这个对象就是Trident计算的入口。</p>
+<p>行2，<code>TridentTopology</code>的<code>newStream</code>方法是定义Trident的输入源，这里使用的是一开始定义的<code>FixedBatchSpout</code>对象。当然，输入源也可以是Kafka之类的队列Broker（这个实在不知道应该翻译成什么，不过好在是说Broker，大家就都明白是干啥的）。这个地方，Trident会在Zookeeper中跟踪每个输入源的状态元数据。也就是Trident中比较重要的状态的概念，这个后面再说。Trident会将输入的流分成更小的批量数据（这里比较绕口，可以理解为Trident的入口进来一个大的批量数据，然后Trident把这个大的批量数据进行分割，变成一堆小的批量数据，比如进来的是1000条，分割成10个100条）进行处理，比如，把传入的流分成下面的样子：</p>
+<p><img src="http://www.howardliu.cn/images/storm/batched-stream.png" alt="batched stream"></p>
+<p>通常，小批量数据的数量会是数千或数百万个，这取决于吞吐量。</p>
+<p>Trident提供了一整套完整的批量处理API来处理这些小批量数据。类似于Hadoop的高级抽象中处理Pig或Cascading的内容：分组、连接、聚合、功能操作、过滤等。当然，分别处理每个小的批量数据并不容易（使用Hadoop处理大的矩阵乘法的就会深有体会），所以Trident提供了跨批次进行聚合处理的功能，并可以将这些聚合结果持久化在内存中、Memcached、Cassandra或其他存储中。Trident还具有一流的实时状态查询功能，这个状态可以有Trident更新，或者其他独立的状态来源。</p>
+<p>行3，Spout发出包含名为sentence的field的流。通过使用<code>Split</code>函数，对每个tuple进行处理，把名为sentence的字段分割为一个个单词。将分割的单词命名为word，继续向下分发。下面是<code>Split</code>的定义：</p>
+<pre><code class="java">public class Split extends BaseFunction {
+   public void execute(TridentTuple tuple, TridentCollector collector) {
+       String sentence = tuple.getString(0);
+       for(String word: sentence.split(&quot; &quot;)) {
+           collector.emit(new Values(word));                
+       }
+   }
+}</code></pre>
+<p>行4，Trident进行了单词计数和结果的持续存储。先对word字段进行分组，然后用<code>Count</code>聚合器持续聚合。</p>
+<p>Trident的一个很强的特性是能够完全容错和一次性处理语义。Trident能够保持状态，如果发生故障需要重试，则不会对同一源数据多次更新数据。</p>
+<p>行5，<code>persistentAggregate</code>函数实现了存储和更新聚合结果的功能，不需要操心。例子中，计数结果保存在内存中，当然也可以使用Memcached、Cassandra或其他持久化存储。这里先不做讨论。<code>persistentAggregate</code>方法将<code>Stream</code>转换为<code>TridentState</code>对象。在这里，<code>TridentState</code>对象表示所有单词计数，然后使用<code>TridentState</code>对象来实现分布式查询。</p>
+<p>接下来实现对单词计数实现低延迟分布式查询，以空格分割的单词列表作为输入，返回这些单词的计数总和。这个查询会在后台做并行化处理，其他的与普通的RPC调用一样。比如像下面这样调用：</p>
+<pre><code class="java">DRPCClient client = new DRPCClient(&quot;drpc.server.location&quot;, 3772);
+System.out.println(client.execute(&quot;words&quot;, &quot;cat dog the man&quot;);
+// prints the JSON-encoded result, e.g.: &quot;[[5078]]&quot;</code></pre>
+<p>如上面的代码，除了它是在Storm集群中并行执行外，与普通的RPC调用没什么区别。通常简单的RPC查询，延迟在10ms左右，复杂的DRPC查询可能需要更长的时间，具体的时间取决于计算被分配的资源多少。</p>
+<p>拓扑中分布式查询部分的实现如下所示：</p>
+<pre><code class="java">topology.newDRPCStream(&quot;words&quot;)
+       .each(new Fields(&quot;args&quot;), new Split(), new Fields(&quot;word&quot;)) // 6
+       .groupBy(new Fields(&quot;word&quot;)) // 7
+       .stateQuery(wordCounts, new Fields(&quot;word&quot;), new MapGet(), new Fields(&quot;count&quot;)) // 8
+       .each(new Fields(&quot;count&quot;), new FilterNull()) // 9
+       .aggregate(new Fields(&quot;count&quot;), new Sum(), new Fields(&quot;sum&quot;)); // 10</code></pre>
+<p>使用同一个<code>TridentTopology</code>对象来创建DRPC流，命名该函数为words，函数名与<code>DRPCClient</code>执行时的第一个参数名称相同。每个DRPC请求都是一个小的批量作业，将请求的单个tuple作为输入，tuple中包含名为args的字段，args中包含了客户端的请求参数。在这个例子中，请求参数就是“cat dog the man”。</p>
+<p>行6，通过<code>Split</code>函数将请求参数分解为一个个单词，组成“word”流。</p>
+<p>行7，将上一步分解的“word”流分组。</p>
+<p>行8，<code>stateQuery</code>方法用于查询第一部分生成的<code>TridentState</code>对象。<code>MapGet</code>将被执行，根据输入的单词，查询单词的数量。因为DRPC流的分组方式与<code>TridentState</code>分组方式相同（都是通过word字段），所以每个单词查询会被自动路由到该单词的<code>TridentState</code>对象的分区。</p>
+<p>行9，通过<code>FilterNull</code>函数过滤掉没有计数结果的单词。</p>
+<p>行10，使用<code>Sum</code>函数对存在计数结果的进行加和，然后通过<code>Trident</code>自动将结果返回客户端。</p>
+<p><code>Trident</code>在如何以最大限度的提高性能来执行拓扑方面是非常智能的。比如，它会进行下面两个提高性能的自动化操作：</p>
+<ol>
+<li>对状态的读取或写入操作（如<code>persistentAggregate</code>和<code>stateQuery</code>），会自动的进行批处理。比如，如果需要在当前批处理操作中执行20次更新操作，<code>Trident</code>会自动批量的读取或写入，仅执行一次读请求或写请求，而不是20次。</li>
+<li><code>Trident</code>聚合操作进行了大量优化。<code>Trident</code>会将同一个组中的所有tuple发送到同一台机器，进行部分聚合操作，然后再通过网络发送tuple。比如，<code>Count</code>聚合操作会先计算每个分区的数量，然后将这些统计结果通过网络传输到一起，再根据这些初始统计结果计算最后的结果。</li>
+</ol>
+<h1 id="2-再来个例子"><a href="#2-再来个例子" class="headerlink" title="2 再来个例子"></a>2 再来个例子</h1><p>下面的例子是一个纯DRPC拓扑，用于计算URL的覆盖范围，就是在<a href="https://twitter.com/" target="_blank" rel="noopener">Twitter</a>上发布的URL影响的范围。要计算这个数据，需要先获取所有推送URL的人，然后获取所有这些人的粉丝，去重，计算总数。这种计算需要消耗非常多的资源，可能需要数千次数据库查询操作和数千万的tuple（当然，这是针对Twitter这种应用体量来说的。如果用户只有几个，一个SQL估计就出结果了）。所以就需要Storm和Trident这种可以并行化跨集群的计算。</p>
+<p>下面这个拓扑会从两个状态读取数据：一个是将URL与分享过该URL的人做的映射，另一个是将一个人与这个人的粉丝做的映射。查询拓扑如下：</p>
+<pre><code class="java">TridentState urlToTweeters = topology.newStaticState(getUrlToTweetersState());
+TridentState tweetersToFollowers = topology.newStaticState(getTweeterToFollowersState());
+
+topology.newDRPCStream(&quot;reach&quot;)
+       .stateQuery(urlToTweeters, new Fields(&quot;args&quot;), new MapGet(), new Fields(&quot;tweeters&quot;)) // 1
+       .each(new Fields(&quot;tweeters&quot;), new ExpandList(), new Fields(&quot;tweeter&quot;)) // 2
+       .shuffle()
+       .stateQuery(tweetersToFollowers, new Fields(&quot;tweeter&quot;), new MapGet(), new Fields(&quot;followers&quot;)) // 3
+       .parallelismHint(200)
+       .each(new Fields(&quot;followers&quot;), new ExpandList(), new Fields(&quot;follower&quot;)) // 4
+       .groupBy(new Fields(&quot;follower&quot;)) // 5
+       .aggregate(new One(), new Fields(&quot;one&quot;)) // 6
+       .parallelismHint(20)
+       .aggregate(new Count(), new Fields(&quot;reach&quot;));</code></pre>
+<p>该拓扑使用<code>newStaticState</code>方法创建从外部数据库获取的<code>TridentState</code>对象，然后在拓扑中进行查询。与其他类似，这些数据库查询可以自动批量化，以求效率最大化。下面分解来说：</p>
+<p>行1，将前面从urlToTweeters数据库读取的数据作为输入，通过<code>MapGet</code>函数进行处理。</p>
+<p>行2，通过<code>ExpandList</code>函数将每个人分解为不同的tuple数据。</p>
+<p>行3，将前面从tweeterToFollowers数据库读取的数据作为输入，与行2中的数据，通过<code>MapGet</code>函数进行处理，查询每个人的粉丝列表。这里最重要的就是并行话，所以需要<code>shuffle</code>来将所有人均匀分布到所有的<code>workder</code>上。可以看到在下面的<code>parallelismHint</code>中，并行数是200，说明该操作并行程度非常高，占据了计算的大部分资源。</p>
+<p>行4、行5、行6，这里是对粉丝进行单独统计和计数。首先是粉丝列表数据通过<code>ExpandList</code>函数进行分解为不同tuple数据，然后将粉丝数据进行分组，在对粉丝数据进行<code>One</code>聚合。这里也是通过<code>parallelismHint</code>进行并行计算。</p>
+<p><code>One</code>聚合器定义如下：</p>
+<pre><code class="java">public class One implements CombinerAggregator&lt;Integer&gt; {
+   public Integer init(TridentTuple tuple) {
+       return 1;
+   }
+
+   public Integer combine(Integer val1, Integer val2) {
+       return 1;
+   }
+
+   public Integer zero() {
+       return 1;
+   }        
+}</code></pre>
+<p>这是一个<code>combiner</code>聚合器，它能够先进行部分聚合，然后通过网络传输tuple进行最后的聚合，以最大限度地提高效率。</p>
+<p>接下来说说Trident的数据结构。</p>
+<h1 id="3-字段和tuple数据"><a href="#3-字段和tuple数据" class="headerlink" title="3 字段和tuple数据"></a>3 字段和tuple数据</h1><p>Trident中用来传输的数据模型名为<code>TridentTuple</code>，是一个命名的值列表。在一个拓扑中，tuple通过一系列的操作逐步创建。这些操作就是将输入数据进行处理，然后返回输出数据。</p>
+<p>比如，有一个名为“stream”的流，它包含字段“x”，“y”和“z”。 要运行一个以“y”为输入的过滤器MyFilter，可以这样做：</p>
+<pre><code class="java">stream.each(new Fields(&quot;y&quot;), new MyFilter())</code></pre>
+<p><code>MyFilter</code>定义如下：</p>
+<pre><code class="java">public class MyFilter extends BaseFilter {
+   public boolean isKeep(TridentTuple tuple) {
+       return tuple.getInteger(0) &lt; 10;
+   }
+}</code></pre>
+<p>这里保留了“y”字段小于10的所有tuple数据。<code>MyFilter</code>输入的<code>TridentTuple</code>只有“y”字段。Trident可以高效的选择一组tuple作为输入，这种选择是0消耗的。</p>
+<p>接下来看看<code>function fields</code>是如何工作的，不如下面这个函数：</p>
+<pre><code class="java">public class AddAndMultiply extends BaseFunction {
+   public void execute(TridentTuple tuple, TridentCollector collector) {
+       int i1 = tuple.getInteger(0);
+       int i2 = tuple.getInteger(1);
+       collector.emit(new Values(i1 + i2, i1 * i2));
+   }
+}</code></pre>
+<p>这个操作是将两个数字作为数据，然后发出两个新值：两数字的和与积。比如有“x”，“y”和“z”三个字段的流，可以如下操作：</p>
+<pre><code class="java">stream.each(new Fields(&quot;x&quot;, &quot;y&quot;), new AddAndMultiply(), new Fields(&quot;added&quot;, &quot;multiplied&quot;));</code></pre>
+<p><code>function</code>函数操作的输出结果是追加在输入tuple中的，因此经过<code>AddAndMultiply</code>操作之后输出tuple包含五个字段：“x”，“y”，“z”，“added”和“multipl”。“added”对应的是<code>AddAndMultiply</code>发出的第一个值，”multiplied”对应的是第二个值。</p>
+<p><code>aggregator</code>聚合操作是替换tuple数据，比如，有一个包含“val1”和“val2”的流：</p>
+<pre><code class="java">stream.aggregate(new Fields(&quot;val2&quot;), new Sum(), new Fields(&quot;sum&quot;))</code></pre>
+<p>输入结果将只包含“sum”一个字段的tuple，表示“val2”的和。</p>
+<p><code>groupBy</code>分组操作，输出结果将包含分组字段和聚合器发出的字段，比如：</p>
+<pre><code class="java">stream.groupBy(new Fields(&quot;val1&quot;))
+     .aggregate(new Fields(&quot;val2&quot;), new Sum(), new Fields(&quot;sum&quot;))</code></pre>
+<p>例子中，输出结果包含“val2”和“sum”两个字段。</p>
+<h1 id="4-状态"><a href="#4-状态" class="headerlink" title="4 状态"></a>4 状态</h1><p>实时计算解决问题的一个关键是如何管理状态，以便在失败或重试时能够实现幂等性。消除实时计算过程中的故障是不可能的，所以，当一个节点死亡或其他问题出现时，就需要重试。问题是，如何更新状态（通过外部存储或拓扑内部状态），以便每个消息只处理一次。</p>
+<p>这是一个棘手的问题，有一下几种情况。假设，如果要做一个计数的聚合操作，然后将技术存储在数据库中。如果只是将结果存储，当需要更新结果的时候，无法知道这个结果是否是新结果还是重试结果。该结果可能是之前尝试过更新过的，已经成功更新了数据库，但是后续步骤中失败了。也可能是尝试更新数据库的时候，更新数据库失败了。</p>
+<p>Trident通过下面的方式解决这个问题：</p>
+<ol>
+<li>每个批次的数据被赋予唯一的ID，称为“transaction id”。如果这批数据重新计算，会携带相同的ID。</li>
+<li>批次将状态隔离。在批次2状态更新之前，不会更新批次3的状态。</li>
+</ol>
+<p>更加这两个原子操作，可以通过状态更新完成一次语义操作。需要将事务ID与计数结果一起存储，作为原子值。然后，当更新操作时，通过数据库中的事务ID与当前批次的事务ID进行比较。如果相同，说明是同一批次的数据，就跳过更新。如果不同，就增加计数。</p>
+<p>当然，不需要在拓扑中手动执行这个逻辑，这个逻辑包装在State中并自动完成。而且，State 状态对象也不是实现事务ID所必需的，如果不想在数据库中存储事务ID，也可以不存储。这样的话，State 在失败的情况下也会至少执行一次（可能会更好）。可以在<a href="/storm/trident-state/">这里</a>或<a href="http://storm.apache.org/releases/current/Trident-state.html" target="_blank" rel="noopener">这里</a>学习更多的关于State状态的内容。</p>
+<p>State 状态可以存储在任何地方，外部存储，内部状态等。如果想使用一个内存状态实现，保留几个小时的数据可用，然后就将其丢弃，可以看<a href="https://github.com/nathanmarz/trident-memcached/blob/master/src/jvm/trident/memcached/MemcachedState.java" target="_blank" rel="noopener">这里</a>。</p>
+<h1 id="5-执行拓扑"><a href="#5-执行拓扑" class="headerlink" title="5 执行拓扑"></a>5 执行拓扑</h1><p>Trident拓扑结果最后会编译成高效的Strom拓扑。当需要重新分区数据时，比如<code>groupBy</code>或<code>shuffle</code>，tuple就只能通过网络传输。所以如果Trident拓扑结构如下：</p>
+<p><img src="http://www.howardliu.cn/images/storm/trident-to-storm1.png" alt="trident to storm"></p>
+<p>最后会被编译成Strom spout/bolt的结构，如下：</p>
+<p><img src="http://www.howardliu.cn/images/storm/trident-to-storm2.png" alt="trident to storm"></p>
+<h1 id="6-结论"><a href="#6-结论" class="headerlink" title="6 结论"></a>6 结论</h1><p>Trident 使实时计算更加优雅。可以通过Trident的API实现高吞吐的流处理、状态处理、低延迟查询等功能。而且Trident中做了很多优化，可以获取最大性能。</p>
+<hr>
+<p>个人主页: <a href="http://www.howardliu.cn">http://www.howardliu.cn</a></p>
+<p>个人博文: <a href="http://www.howardliu.cn/storm/trident-tutorial">storm笔记：Trident应用</a></p>
+<p>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a></p>
+<p>CSDN博文: <a href="http://blog.csdn.net/liuxinghao/article/details/68944280" target="_blank" rel="noopener">storm笔记：Trident应用</a></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/大数据/">大数据</a>
+            
+            <a href="/tags/storm/">storm</a>
+            
+            <a href="/tags/实时计算/">实时计算</a>
+            
+            <a href="/tags/Trident/">Trident</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/java/jdk-tools-and-utilities/">
+                <i class="icon-previous">JDK 工具一览</i>
+            </a>
+            
+            
+            <a class="next" href="/middleware/the-different-between-some-distributed-message-queue/">
+                <i class="icon-next">常用消息队列对比</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/局部参数/" style="font-size: 15px;">局部参数</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/IT/" style="font-size: 15px;">IT</a> <a href="/tags/工作/" style="font-size: 15px;">工作</a> <a href="/tags/情感/" style="font-size: 15px;">情感</a> <a href="/tags/管理/" style="font-size: 15px;">管理</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/心灵鸡汤/" style="font-size: 15px;">心灵鸡汤</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/zookeeper/" style="font-size: 15px;">zookeeper</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/storm/" style="font-size: 15px;">storm</a> <a href="/tags/转帖/" style="font-size: 15px;">转帖</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/eDisMax查询解析器/" style="font-size: 15px;">eDisMax查询解析器</a> <a href="/tags/标准查询解析器/" style="font-size: 15px;">标准查询解析器</a> <a href="/tags/DisMax查询解析器/" style="font-size: 15px;">DisMax查询解析器</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/两阶段提交/" style="font-size: 15px;">两阶段提交</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http服务/" style="font-size: 15px;">http服务</a> <a href="/tags/http连接/" style="font-size: 15px;">http连接</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/异常处理/" style="font-size: 15px;">异常处理</a> <a href="/tags/层面分析/" style="font-size: 15px;">层面分析</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/集群/" style="font-size: 15px;">集群</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/实时计算/" style="font-size: 15px;">实时计算</a> <a href="/tags/kafka/" style="font-size: 15px;">kafka</a> <a href="/tags/http状态码/" style="font-size: 15px;">http状态码</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring-cloud</a> <a href="/tags/spring-cloud-config/" style="font-size: 15px;">spring-cloud-config</a> <a href="/tags/error/" style="font-size: 15px;">error</a> <a href="/tags/micro-service/" style="font-size: 15px;">micro-service</a> <a href="/tags/Trident/" style="font-size: 15px;">Trident</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/spring-cloud/spring-cloud-config-encrypt-keystore-path-error/">spring-cloud-config 非对称加密 keystore 文件加载异常</a></li><li class="post-list-item"><a class="post-list-link" href="/code_quality/sonarqube-jenkins-pipeline/">代码质量管理：SonarQube + Jenkins Pipeline配置</a></li><li class="post-list-item"><a class="post-list-link" href="/java/gc-overhead-limit-exceeded/">java.lang.OutOfMemoryError:GC overhead limit exceeded</a></li><li class="post-list-item"><a class="post-list-link" href="/bug/get-chinese-length/">中文字节长度引起的数据丢失</a></li><li class="post-list-item"><a class="post-list-link" href="/hadoop/rm-ha/">ResourceManager HA 配置</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2019</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="Hosted by Coding Pages" href="https://pages.coding.me" target="_blank">
+                        <img src="https://coding.net/static/f7272a0b7cd340571725c6734c6bdd6f.png">
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+<script>
+    // baidu analytics
+    (function () {
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

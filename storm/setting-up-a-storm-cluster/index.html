@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>storm笔记：storm集群||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="Strom集群结构是有一个主节点（nimbus）和多个工作节点（supervisor）组成的主从结构，主节点通过配置静态指定（还有一种主从结构是在运行时动态选举，比如zookeeper）。通常这种主从结构存在出现单点故障的风险，Storm通过特殊处理规避这种风险，后面将解释Storm的半容错结构。nimbus与supervisor都是Storm提供的后台守护进程，之间的通信是结合Zookeeper">
+<meta name="keywords" content="storm,storm集群,cluster">
+<meta property="og:type" content="article">
+<meta property="og:title" content="storm笔记：storm集群">
+<meta property="og:url" content="http://www.howardliu.cn/storm/setting-up-a-storm-cluster/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="Strom集群结构是有一个主节点（nimbus）和多个工作节点（supervisor）组成的主从结构，主节点通过配置静态指定（还有一种主从结构是在运行时动态选举，比如zookeeper）。通常这种主从结构存在出现单点故障的风险，Storm通过特殊处理规避这种风险，后面将解释Storm的半容错结构。nimbus与supervisor都是Storm提供的后台守护进程，之间的通信是结合Zookeeper">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.howardliu.cn/images/storm-cluster.png">
+<meta property="og:updated_time" content="2019-09-11T14:08:23.883Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="storm笔记：storm集群">
+<meta name="twitter:description" content="Strom集群结构是有一个主节点（nimbus）和多个工作节点（supervisor）组成的主从结构，主节点通过配置静态指定（还有一种主从结构是在运行时动态选举，比如zookeeper）。通常这种主从结构存在出现单点故障的风险，Storm通过特殊处理规避这种风险，后面将解释Storm的半容错结构。nimbus与supervisor都是Storm提供的后台守护进程，之间的通信是结合Zookeeper">
+<meta name="twitter:image" content="http://www.howardliu.cn/images/storm-cluster.png">
+
+<meta name="keywords" content="storm,storm集群,cluster">
+
+
+<meta name="description" content="Strom集群结构是有一个主节点（nimbus）和多个工作节点（supervisor）组成的主从结构，主节点通过配置静态指定（还有一种主从结构是在运行时动态选举，比如zookeeper）。通常这种主从结构存在出现单点故障的风险，Storm通过特殊处理规避这种风险，后面将解释Storm的半容错结构。n">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/storm/setting-up-a-storm-cluster/">storm笔记：storm集群</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2016-01-22</time>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <div id="toc" class="toc"></div>
+            <p>Strom集群结构是有一个主节点（nimbus）和多个工作节点（supervisor）组成的主从结构，主节点通过配置静态指定（还有一种主从结构是在运行时动态选举，比如zookeeper）。通常这种主从结构存在出现单点故障的风险，Storm通过特殊处理规避这种风险，后面将解释Storm的半容错结构。</p>
+<a id="more"></a>
+<p>nimbus与supervisor都是Storm提供的后台守护进程，之间的通信是结合Zookeeper的状态变更通知和监控通知来处理。如下图所示：</p>
+<p><img src="http://www.howardliu.cn/images/storm-cluster.png" alt="storm cluster"></p>
+<p>Storm对Zookeeper的使用相对比较轻量，不会造成很重的资源负担。单节点的Zookeeper集群能够满足大部分的需求，但是如果部署大型Storm集群，为了Storm的稳定性，就需要相对大点的Zookeeper集群。</p>
+<h1 id="nimbus"><a href="#nimbus" class="headerlink" title="nimbus"></a>nimbus</h1><p>nimbus进程的主要职责是管理、协调和监控集群上运行的topology（包括topology的发布、任务指派、时间处理时重新指派任务等）。</p>
+<p>topology的发布，需要将预先打成jar的topology和配置信息提交到nimbus服务器，当nimbus接收到topology压缩包，会将jar包分发到足够数量的supervisor节点上。当supervisor节点接收到topology压缩文件，nimbus就会指派task（bolt、spout实例）到每个supervisor并且发送信号指示supervisor生成足够的worker来执行指定task。</p>
+<p>nimbus通过Zookeeper记录所有supervisor节点的状态和分配给它们的task。如果nimbus发现某个supervisor没有上报心跳或已经不可达，它将会把分配给故障supervisor的task重新分配给其他节点。</p>
+<p>严格来讲，nimbus不会出现单点故障。这个特性是因为nimbus进程不参与topology（拓扑）的数据处理过程，仅仅是管理topology的初始化、任务分发和进行监控，所以如果nimbus在topology运行时停止，不会影响topology的运行。</p>
+<h1 id="supervisor"><a href="#supervisor" class="headerlink" title="supervisor"></a>supervisor</h1><p>supervisor进程等待nimbus分配任务后生成并监控worker（jvm进程）执行任务。supervisor与worker运行在不同的jvm上，如果由supervisor启动的某个worker因为错误异常退出（或被kill掉），supervisor会尝试重新生成新的worker进程。</p>
+<h1 id="ui"><a href="#ui" class="headerlink" title="ui"></a>ui</h1><p>ui进程是为Stom集群提供一个web的gui监控界面，对正在运行的nimbus、supervisor、topology进行展示，对正在运行的topology有一定管理功能，提供其统计信息，对监控Storm集群的运转和topology的功能有很大的帮助。ui进程属于Storm的可选服务，可以自由选择启动或不启动。</p>
+<h1 id="集群部署"><a href="#集群部署" class="headerlink" title="集群部署"></a>集群部署</h1><p>Strom的集群部署非常简单，而且nimbus、supervisor、zookeeper可以部署在同一台机器上，实现简单的伪分布式模式，其部署过程分为下面几步：</p>
+<ol>
+<li>部署Zookeeper集群</li>
+<li>在nimbus、supervisor节点上安装依赖</li>
+<li>下载定解压storm的执行包到nimbus、supervisor机器上（使用直接使用tar命令进行解压即可）</li>
+<li>在storm.yaml配置必填项</li>
+<li>通过<code>storm</code>命令启动进程</li>
+</ol>
+<h2 id="Zookeeper集群"><a href="#Zookeeper集群" class="headerlink" title="Zookeeper集群"></a>Zookeeper集群</h2><p>关于Zookeeper集群的部署，可以查看<a href="http://www.howardliu.cn/zookeeper-environment/">ZooKeeper安装部署</a>或<a href="http://zookeeper.apache.org/doc/current/zookeeperAdmin.html" target="_blank" rel="noopener">A Guide to Deployment and Administration</a>。</p>
+<h2 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h2><p>在nimbus、supervisor所在的机器上安装依赖，主要包括java和python，当前版本java最低使用jdk6，因为python2和3版本不兼容，官方推荐使用Python2.6.6。</p>
+<h2 id="下载解压"><a href="#下载解压" class="headerlink" title="下载解压"></a>下载解压</h2><p>wget或culr直接从<a href="https://github.com/apache/storm/releases" target="_blank" rel="noopener">这里</a>下载压缩包，通过tar命令解压即可。</p>
+<h2 id="配置storm-yaml"><a href="#配置storm-yaml" class="headerlink" title="配置storm.yaml"></a>配置storm.yaml</h2><p>Storm需要配置的文件是<code>conf/storm.yaml</code>，其默认配置在<a href="https://github.com/apache/storm/blob/master/conf/defaults.yaml" target="_blank" rel="noopener">这里</a>，storm.yaml会覆盖defaults.yaml中的配置。</p>
+<ol>
+<li>storm.zookeeper.servers：Zookeeper集群的host列表，如下：<pre><code class="yaml">storm.zookeeper.servers:
+- &quot;111.222.333.444&quot;
+- &quot;555.666.777.888&quot;</code></pre>
+</li>
+<li>storm.zookeeper.port：如果Zookeeper集群没有是用默认的端口号8080，使用<code>storm.zookeeper.port</code>修改配置，比如：<code>storm.zookeeper.port: 9999</code>。</li>
+<li>storm.local.dir：nimbus与supervisor守护进程需要一个文件夹来存储少量的状态数据（比如jar包、配置等）。该配置决定了nimbus和supervisor将信息存储在哪。该目录必须存在，且对当前用户有适当的操作权限，这个目录的内容必须在集群运行的过程中一直存在，所以避免在/tmp目录下创建。比如：<pre><code class="yaml">storm.local.dir: &quot;/mnt/storm&quot;</code></pre>
+</li>
+<li>nimbus.host：集群中的nimubs节点位置，worker需要知道从哪里下载topology的jar包和配置信息，比如：<pre><code class="yaml">nimbus.host: &quot;111.222.333.444&quot;</code></pre>
+</li>
+<li>supervisor.slots.ports：配置supervisor节点上每个worker使用的监听端口，每个worker使用单独的监听端口，这样，端口个数就限制了worker数量。默认有4个worker，对应端口是6700\6701\6702\6703，比如：<pre><code class="yaml">supervisor.slots.ports:
+ - 6700
+ - 6701
+ - 6702
+ - 6703</code></pre>
+</li>
+</ol>
+<p>另外，storm集群还有一些可选配置，可以根据需要重新配置。storm的所有配置都可以通过前缀区分作用域，如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th align="left">前缀</th>
+<th align="left">分类</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">storm.*</td>
+<td align="left">通用配置</td>
+</tr>
+<tr>
+<td align="left">nimbus.*</td>
+<td align="left">Nimbus配置</td>
+</tr>
+<tr>
+<td align="left">supervisor.*</td>
+<td align="left">Supervisor配置</td>
+</tr>
+<tr>
+<td align="left">topology.*</td>
+<td align="left">Topology配置</td>
+</tr>
+<tr>
+<td align="left">ui.*</td>
+<td align="left">Storm UI配置</td>
+</tr>
+<tr>
+<td align="left">worker.*</td>
+<td align="left">Worker配置</td>
+</tr>
+<tr>
+<td align="left">zmq.*</td>
+<td align="left">Zero MQ配置</td>
+</tr>
+<tr>
+<td align="left">drpc.*</td>
+<td align="left">DRPC服务配置</td>
+</tr>
+</tbody></table>
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><p>最后是启动Storm守护进程，关键是需要在监控（supervison）下启动每个进程。因为Storm是快速失败的模式，也就是说，进程遇到任何意外情况，都会立即停止。Storm被设计成能够安全退成、快速回复的无状态进程。如果nimbus或supervisor重启了，不会对运行中的topology产生任何影响。</p>
+<h1 id="可执行程序"><a href="#可执行程序" class="headerlink" title="可执行程序"></a>可执行程序</h1><p>Storm提供了多用途的命令行程序，可以用来启动守护进程、执行topology管理等操作，基础命令格式为：<code>storm [command] [arguments]...</code>。</p>
+<h2 id="守护进程命令"><a href="#守护进程命令" class="headerlink" title="守护进程命令"></a>守护进程命令</h2><ol>
+<li>nimbus：<code>./bin/storm nimbus</code>，启动nimbus守护进程；</li>
+<li>supervisor：<code>./bin/storm supervisor</code>，启动supervisor守护进程；</li>
+<li>ui：<code>./bin/storm ui</code>，默认端口是8080，可以通过浏览器访问。</li>
+</ol>
+<h2 id="管理命令"><a href="#管理命令" class="headerlink" title="管理命令"></a>管理命令</h2><p>Storm的管理命令用来发布和管理集群的topology，通常需要在Storm集群外的工作站执行，管理命令从<code>~/.storm/storm.yaml</code>文件中查找nimbus主机名，比如：</p>
+<pre><code class="yaml">nimbus.host: &quot;nimbus&quot;</code></pre>
+<ol>
+<li>jar：<code>storm jar topology_jar topology_class [arguments...]</code>，用来向Storm提交topology，会上传topology_jar文件到nimbus并分发到整个集群，使用指定topology_class中的main方法。提交完成后，Storm会激活并开始运行topology。main方法中需要有<code>StormSubmitter.submitTopology</code>方法，并需要有一个唯一的topology名，如果集群中有同名的topology，jar命令会执行失败。</li>
+<li>kill：<code>storm kill topology_name [-w wait_time]</code>，用来关闭已经部署的topology。该命令通过topology_name来关闭topology，Storm会在<code>topology.message.timeout.secs</code>定义的时间或<code>-m</code>参数定义的时间后，是topology的spout取消激活。然后停止worker进程，并尝试清理所有存储的状态信息。也可以在Storm UI上进行操作。</li>
+<li>deactivate：<code>storm deactivate topology_name</code>，用来通知Storm停止特定的topology的spout发送tuple，可以在Storm UI上取消激活操作。</li>
+<li>active：<code>storm activate topology_name</code>，用来通知Storm重新回复指定的topology的spout发送tuple，可以在Storm UI上重新激活操作。</li>
+<li>rebalance：<code>storm rebalance topology_name [-w wait_time] [-n worker_count] [-e component_name=executer_count]</code>，只是Storm在集群的worker之间重新平均分派任务，不需要关闭或重新提交现有topology。还可以通过-n或-e参数修改topology分配的worker数及每个task分配的executor数。当执行rebalance命令时，Storm会先取消激活topology，等待配置的时间是剩余的tuple完成处理，然后在supervisor节点中均匀分配worker。重新平衡后，Storm会将topology重新激活。比如：等待15秒，指定5个worker，指定sentece-spout使用4个executor、split-bolt使用8个eexecutor，命令为：<code>storm rebalance wordcount-topology -w 15 -n 5 -e sentence-spout=4 -e split-bolt=8</code>。</li>
+<li>remoteconfvalue：<code>storm remoteconfvalue conf-name</code>，用来查看集群中配置参数。可以看到整个集群的公共配置，不能单独查看topology中覆盖的特殊配置。</li>
+</ol>
+<hr>
+<p>个人主页: <a href="http://www.howardliu.cn">http://www.howardliu.cn</a></p>
+<p>个人博文: <a href="http://www.howardliu.cn/storm/setting-up-a-storm-cluster">storm笔记：storm集群</a></p>
+<p>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a></p>
+<p>CSDN博文: <a href="http://blog.csdn.net/liuxinghao/article/details/50577799" target="_blank" rel="noopener">storm笔记：storm集群</a></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/storm/">storm</a>
+            
+            <a href="/tags/集群/">集群</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/hadoop/hadoop-environment-cluster-setup/">
+                <i class="icon-previous">hadoop集群部署(yarn)</i>
+            </a>
+            
+            
+            <a class="next" href="/storm/the-concepts-of-storm/">
+                <i class="icon-next">storm笔记：storm基本概念</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/局部参数/" style="font-size: 15px;">局部参数</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/IT/" style="font-size: 15px;">IT</a> <a href="/tags/工作/" style="font-size: 15px;">工作</a> <a href="/tags/情感/" style="font-size: 15px;">情感</a> <a href="/tags/管理/" style="font-size: 15px;">管理</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/心灵鸡汤/" style="font-size: 15px;">心灵鸡汤</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/zookeeper/" style="font-size: 15px;">zookeeper</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/storm/" style="font-size: 15px;">storm</a> <a href="/tags/转帖/" style="font-size: 15px;">转帖</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/eDisMax查询解析器/" style="font-size: 15px;">eDisMax查询解析器</a> <a href="/tags/标准查询解析器/" style="font-size: 15px;">标准查询解析器</a> <a href="/tags/DisMax查询解析器/" style="font-size: 15px;">DisMax查询解析器</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/两阶段提交/" style="font-size: 15px;">两阶段提交</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http服务/" style="font-size: 15px;">http服务</a> <a href="/tags/http连接/" style="font-size: 15px;">http连接</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/异常处理/" style="font-size: 15px;">异常处理</a> <a href="/tags/层面分析/" style="font-size: 15px;">层面分析</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/集群/" style="font-size: 15px;">集群</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/实时计算/" style="font-size: 15px;">实时计算</a> <a href="/tags/kafka/" style="font-size: 15px;">kafka</a> <a href="/tags/http状态码/" style="font-size: 15px;">http状态码</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring-cloud</a> <a href="/tags/spring-cloud-config/" style="font-size: 15px;">spring-cloud-config</a> <a href="/tags/error/" style="font-size: 15px;">error</a> <a href="/tags/micro-service/" style="font-size: 15px;">micro-service</a> <a href="/tags/Trident/" style="font-size: 15px;">Trident</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/spring-cloud/spring-cloud-config-encrypt-keystore-path-error/">spring-cloud-config 非对称加密 keystore 文件加载异常</a></li><li class="post-list-item"><a class="post-list-link" href="/code_quality/sonarqube-jenkins-pipeline/">代码质量管理：SonarQube + Jenkins Pipeline配置</a></li><li class="post-list-item"><a class="post-list-link" href="/java/gc-overhead-limit-exceeded/">java.lang.OutOfMemoryError:GC overhead limit exceeded</a></li><li class="post-list-item"><a class="post-list-link" href="/bug/get-chinese-length/">中文字节长度引起的数据丢失</a></li><li class="post-list-item"><a class="post-list-link" href="/hadoop/rm-ha/">ResourceManager HA 配置</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2019</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="Hosted by Coding Pages" href="https://pages.coding.me" target="_blank">
+                        <img src="https://coding.net/static/f7272a0b7cd340571725c6734c6bdd6f.png">
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+<script>
+    // baidu analytics
+    (function () {
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

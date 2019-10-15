@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>storm笔记：Storm+Kafka简单应用||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="这几天工作需要使用storm+kafka，基本场景是应用出现错误，发送日志到kafka的某个topic，storm订阅该topic，然后进行后续处理。场景非常简单，但是在学习过程中，遇到一个奇怪的异常情况：使用KafkaSpout读取topic数据时，没有向ZK写offset数据，致使每次都从头开始读取。纠结了两天，终于碰巧找到原因：应该使用`BaseBasicBolt`作为bolt的父类，而不是">
+<meta name="keywords" content="大数据,实时计算模式,实时计算,storm,kafka">
+<meta property="og:type" content="article">
+<meta property="og:title" content="storm笔记：Storm+Kafka简单应用">
+<meta property="og:url" content="http://www.howardliu.cn/storm/storm-integration-with-kafka/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="这几天工作需要使用storm+kafka，基本场景是应用出现错误，发送日志到kafka的某个topic，storm订阅该topic，然后进行后续处理。场景非常简单，但是在学习过程中，遇到一个奇怪的异常情况：使用KafkaSpout读取topic数据时，没有向ZK写offset数据，致使每次都从头开始读取。纠结了两天，终于碰巧找到原因：应该使用`BaseBasicBolt`作为bolt的父类，而不是">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-09-11T14:08:23.884Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="storm笔记：Storm+Kafka简单应用">
+<meta name="twitter:description" content="这几天工作需要使用storm+kafka，基本场景是应用出现错误，发送日志到kafka的某个topic，storm订阅该topic，然后进行后续处理。场景非常简单，但是在学习过程中，遇到一个奇怪的异常情况：使用KafkaSpout读取topic数据时，没有向ZK写offset数据，致使每次都从头开始读取。纠结了两天，终于碰巧找到原因：应该使用`BaseBasicBolt`作为bolt的父类，而不是">
+
+<meta name="keywords" content="大数据,实时计算模式,实时计算,storm,kafka">
+
+
+<meta name="description" content="这几天工作需要使用storm+kafka，基本场景是应用出现错误，发送日志到kafka的某个topic，storm订阅该topic，然后进行后续处理。场景非常简单，但是在学习过程中，遇到一个奇怪的异常情况：使用KafkaSpout读取topic数据时，没有向ZK写offset数据，致使每次都从头开始">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/storm/storm-integration-with-kafka/">storm笔记：Storm+Kafka简单应用</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2016-01-20</time>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <div id="toc" class="toc"></div>
+            <p>这几天工作需要使用storm+kafka，基本场景是应用出现错误，发送日志到kafka的某个topic，storm订阅该topic，然后进行后续处理。场景非常简单，但是在学习过程中，遇到一个奇怪的异常情况：使用KafkaSpout读取topic数据时，没有向ZK写offset数据，致使每次都从头开始读取。纠结了两天，终于碰巧找到原因：应该使用<code>BaseBasicBolt</code>作为bolt的父类，而不是<code>BaseRichBolt</code>。</p>
+<p>通过本文记录一下这种情况，后文中根据上述场景提供几个简单的例子。基础理论查看<a href="http://www.howardliu.cn/the-concepts-of-storm">storm笔记：storm基本概念</a>，或查看<a href="http://www.howardliu.cn/reprint-the-introduction-of-storm">Storm 简介</a>。</p>
+<a id="more"></a>
+<h1 id="基本订阅"><a href="#基本订阅" class="headerlink" title="基本订阅"></a>基本订阅</h1><p>基本场景：订阅kafka的某个topic，然后在读取的消息前加上自定义的字符串，然后写回到kafka另外一个topic。</p>
+<p>从Kafka读取数据的Spout使用<code>storm.kafka.KafkaSpout</code>，向Kafka写数据的Bolt使用<code>storm.kafka.bolt.KafkaBolt</code>。中间进行进行数据处理的Bolt定义为<code>TopicMsgBolt</code>。闲言少叙，奉上代码：</p>
+<pre><code class="java">public class TopicMsgTopology {
+    public static void main(String[] args) throws Exception {
+        // 配置Zookeeper地址
+        BrokerHosts brokerHosts = new ZkHosts(&quot;zk1:2181,zk2:2281,zk3:2381&quot;);
+        // 配置Kafka订阅的Topic，以及zookeeper中数据节点目录和名字
+        SpoutConfig spoutConfig = new SpoutConfig(brokerHosts, &quot;msgTopic1&quot;, &quot;/topology/root&quot;, &quot;topicMsgTopology&quot;);
+        // 配置KafkaBolt中的kafka.broker.properties
+        Config conf = new Config();
+        Properties props = new Properties();
+        // 配置Kafka broker地址
+        props.put(&quot;metadata.broker.list&quot;, &quot;dev2_55.wfj-search:9092&quot;);
+        // serializer.class为消息的序列化类
+        props.put(&quot;serializer.class&quot;, &quot;kafka.serializer.StringEncoder&quot;);
+        conf.put(&quot;kafka.broker.properties&quot;, props);
+        // 配置KafkaBolt生成的topic
+        conf.put(&quot;topic&quot;, &quot;msgTopic2&quot;);
+        spoutConfig.scheme = new SchemeAsMultiScheme(new MessageScheme());
+        TopologyBuilder builder = new TopologyBuilder();
+        builder.setSpout(&quot;msgKafkaSpout&quot;, new KafkaSpout(spoutConfig));
+        builder.setBolt(&quot;msgSentenceBolt&quot;, new TopicMsgBolt()).shuffleGrouping(&quot;msgKafkaSpout&quot;);
+        builder.setBolt(&quot;msgKafkaBolt&quot;, new KafkaBolt&lt;String, Integer&gt;()).shuffleGrouping(&quot;msgSentenceBolt&quot;);
+        if (args.length == 0) {
+            String topologyName = &quot;kafkaTopicTopology&quot;;
+            LocalCluster cluster = new LocalCluster();
+            cluster.submitTopology(topologyName, conf, builder.createTopology());
+            Utils.sleep(100000);
+            cluster.killTopology(topologyName);
+            cluster.shutdown();
+        } else {
+            conf.setNumWorkers(1);
+            StormSubmitter.submitTopology(args[0], conf, builder.createTopology());
+        }
+    }
+}</code></pre>
+<p><code>storm.kafka.ZkHosts</code>构造方法的参数是zookeeper标准配置地址的形式（ZooKeeper环境搭建可以查看<a href="http://www.howardliu.cn/zookeeper-environment">ZooKeeper安装部署</a>），zk1、zk2、zk3在本地配置了host，因为服务器使用的伪分布式模式，因此几个端口号不是默认的2181。</p>
+<p><code>storm.kafka.SpoutConfig</code>构造方法第一个参数为上述的<code>storm.kafka.ZkHosts</code>对象，第二个为待订阅的topic名称，第三个参数zkRoot为写读取topic时的偏移量offset数据的节点（zk node），第四个参数为该节点上的次级节点名（有个地方说这个是spout的id）。</p>
+<p><code>backtype.storm.Config</code>对象是配置storm的topology（拓扑）所需要的基础配置。</p>
+<p><code>backtype.storm.spout.SchemeAsMultiScheme</code>的构造方法输入的参数是订阅kafka数据的处理参数，这里的<code>MessageScheme</code>是自定义的，代码如下：</p>
+<pre><code class="java">public class MessageScheme implements Scheme {
+    private static final Logger logger = LoggerFactory.getLogger(MessageScheme.class);
+
+    @Override
+    public List&lt;Object&gt; deserialize(byte[] ser) {
+        try {
+            String msg = new String(ser, &quot;UTF-8&quot;);
+            logger.info(&quot;get one message is {}&quot;, msg);
+            return new Values(msg);
+        } catch (UnsupportedEncodingException ignored) {
+            return null;
+        }
+    }
+
+    @Override
+    public Fields getOutputFields() {
+        return new Fields(&quot;msg&quot;);
+    }
+}</code></pre>
+<p><code>MessageScheme</code>类中getOutputFields方法是KafkaSpout向后发送tuple（storm传输数据的最小结构）的名字，需要与接收数据的Bolt中统一（在这个例子中可以不统一，因为后面直接取第0条数据，但是在wordCount的那个例子中就需要统一了）。</p>
+<p><code>TopicMsgBolt</code>类是从<code>storm.kafka.KafkaSpout</code>接收数据的Bolt，对接收到的数据进行处理，然后向后传输给<code>storm.kafka.bolt.KafkaBolt</code>。代码如下：</p>
+<pre><code class="java">public class TopicMsgBolt extends BaseBasicBolt {
+    private static final Logger logger = LoggerFactory.getLogger(TopicMsgBolt.class);
+
+    @Override
+    public void execute(Tuple input, BasicOutputCollector collector) {
+        String word = (String) input.getValue(0);
+        String out = &quot;Message got is &#39;&quot; + word + &quot;&#39;!&quot;;
+        logger.info(&quot;out={}&quot;, out);
+        collector.emit(new Values(out));
+    }
+
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+        declarer.declare(new Fields(&quot;message&quot;));
+    }
+}</code></pre>
+<blockquote>
+<p>此处需要特别注意的是，要使用<code>backtype.storm.topology.base.BaseBasicBolt</code>对象作为父类，否则不会在zk记录偏移量offset数据。</p>
+</blockquote>
+<p>需要编写的代码已完成，接下来就是在搭建好的storm、kafka中进行测试：</p>
+<pre><code class="sh"># 创建topic
+./bin/kafka-topics.sh --create --zookeeper zk1:2181,zk2:2281,zk3:2381 --replication-factor 1 --partitions 1 --topic msgTopic1
+./bin/kafka-topics.sh --create --zookeeper zk1:2181,zk2:2281,zk3:2381 --replication-factor 1 --partitions 1 --topic msgTopic2</code></pre>
+<p>接下来需要分别对msgTopic1、msgTopic2启动producer（生产者）与consumer（消费者）：</p>
+<pre><code class="sh"># 对msgTopic1启动producer，用于发送数据
+./bin/kafka-console-producer.sh --broker-list dev2_55.wfj-search:9092 --topic msgTopic1
+# 对msgTopic2启动consumer，用于查看发送数据的处理结果
+./bin/kafka-console-consumer.sh --zookeeper zk1:2181,zk2:2281,zk3:2381 --topic msgTopic2 --from-beginning</code></pre>
+<p>然后将打好的jar包上传到storm的nimbus（可以使用远程上传或先上传jar包到nimbus节点所在服务器，然后本地执行）：</p>
+<pre><code class="sh"># ./bin/storm jar topology TopicMsgTopology.jar cn.howardliu.demo.storm.kafka.topicMsg.TopicMsgTopology TopicMsgTopology</code></pre>
+<p>待对应的worker启动好之后，就可以在msgTopic1的producer对应终端输入数据，然后在msgTopic2的consumer对应终端查看输出结果了。</p>
+<blockquote>
+<p>有几点需要注意的：</p>
+</blockquote>
+<ol>
+<li>必须先创建msgTopic1、msgTopic2两个topic；</li>
+<li>定义的bolt必须使用BaseBasicBolt作为父类，不能够使用BaseRichBolt，否则无法记录偏移量；</li>
+<li>zookeeper最好使用至少三个节点的分布式模式或伪分布式模式，否则会出现一些异常情况；</li>
+<li>在整个storm下，spout、bolt的id必须唯一，否则会出现异常。</li>
+<li><code>TopicMsgBolt</code>类作为<code>storm.kafka.bolt.KafkaBolt</code>前的最后一个Bolt，需要将输出数据名称定义为message，否则KafkaBolt无法接收数据。</li>
+</ol>
+<h1 id="wordCount"><a href="#wordCount" class="headerlink" title="wordCount"></a>wordCount</h1><p>简单的输入输出做完了，来点复杂点儿的场景：从某个topic定于消息，然后根据空格分词，统计单词数量，然后将当前输入的单词数量推送到另一个topic。</p>
+<p>首先规划需要用到的类：</p>
+<ol>
+<li>从KafkaSpout接收数据并进行处理的<code>backtype.storm.spout.Scheme</code>子类；</li>
+<li>数据切分bolt：<code>SplitSentenceBolt</code>；</li>
+<li>计数bolt：<code>WordCountBolt</code>；</li>
+<li>报表bolt：<code>ReportBolt</code>；</li>
+<li>topology定义：<code>WordCountTopology</code>；</li>
+<li>最后再加一个原样显示订阅数据的bolt：<code>SentenceBolt</code>。</li>
+</ol>
+<p><code>backtype.storm.spout.Scheme</code>子类可以使用上面已经定义过的<code>MessageScheme</code>，此处不再赘述。</p>
+<p><code>SplitSentenceBolt</code>是对输入数据进行分割，简单的使用String类的split方法，然后将每个单词命名为“word”，向后传输，代码如下：</p>
+<pre><code class="java">public class SplitSentenceBolt extends BaseBasicBolt {
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
+        outputFieldsDeclarer.declare(new Fields(&quot;word&quot;));
+    }
+
+    @Override
+    public void execute(Tuple input, BasicOutputCollector collector) {
+        String sentence = input.getStringByField(&quot;msg&quot;);
+        String[] words = sentence.split(&quot; &quot;);
+        Arrays.asList(words).forEach(word -&gt; collector.emit(new Values(word)));
+    }
+}</code></pre>
+<p><code>SentenceBolt</code>是从KafkaSpout接收数据，然后直接输出。在拓扑图上就是从输入分叉，一个进入<code>SplitSentenceBolt</code>，一个进入<code>SentenceBolt</code>。这种结构可以应用在Lambda架构中，代码如下：</p>
+<pre><code class="java">public class SentenceBolt extends BaseBasicBolt {
+    private static final Logger logger = LoggerFactory.getLogger(SentenceBolt.class);
+
+    @Override
+    public void execute(Tuple tuple, BasicOutputCollector basicOutputCollector) {
+        String msg = tuple.getStringByField(&quot;msg&quot;);
+        logger.info(&quot;get one message is {}&quot;, msg);
+        basicOutputCollector.emit(new Values(msg));
+    }
+
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
+        outputFieldsDeclarer.declare(new Fields(&quot;sentence&quot;));
+    }
+}</code></pre>
+<p><code>WordCountBolt</code>是对接收到的单词进行汇总统一，然后将单词“word”及其对应数量“count”向后传输，代码如下：</p>
+<pre><code class="java">public class WordCountBolt extends BaseBasicBolt {
+    private Map&lt;String, Long&gt; counts = null;
+
+    @Override
+    public void prepare(Map stormConf, TopologyContext context) {
+        this.counts = new ConcurrentHashMap&lt;&gt;();
+        super.prepare(stormConf, context);
+    }
+
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
+        outputFieldsDeclarer.declare(new Fields(&quot;word&quot;, &quot;count&quot;));
+    }
+
+    @Override
+    public void execute(Tuple input, BasicOutputCollector collector) {
+        String word = input.getStringByField(&quot;word&quot;);
+        Long count = this.counts.get(word);
+        if (count == null) {
+            count = 0L;
+        }
+        count++;
+        this.counts.put(word, count);
+        collector.emit(new Values(word, count));
+    }
+}</code></pre>
+<p><code>ReportBolt</code>是对接收到的单词及数量进行整理，拼成json格式，然后继续向后传输，代码如下：</p>
+<pre><code class="java">public class ReportBolt extends BaseBasicBolt {
+    @Override
+    public void execute(Tuple input, BasicOutputCollector collector) {
+        String word = input.getStringByField(&quot;word&quot;);
+        Long count = input.getLongByField(&quot;count&quot;);
+        String reportMessage = &quot;{&#39;word&#39;: &#39;&quot; + word + &quot;&#39;, &#39;count&#39;: &#39;&quot; + count + &quot;&#39;}&quot;;
+        collector.emit(new Values(reportMessage));
+    }
+
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
+        outputFieldsDeclarer.declare(new Fields(&quot;message&quot;));
+    }
+}</code></pre>
+<p>最后是定义topology（拓扑）<code>WordCountTopology</code>，代码如下：</p>
+<pre><code class="java">public class WordCountTopology {
+    private static final String KAFKA_SPOUT_ID = &quot;kafkaSpout&quot;;
+    private static final String SENTENCE_BOLT_ID = &quot;sentenceBolt&quot;;
+    private static final String SPLIT_BOLT_ID = &quot;sentenceSplitBolt&quot;;
+    private static final String WORD_COUNT_BOLT_ID = &quot;sentenceWordCountBolt&quot;;
+    private static final String REPORT_BOLT_ID = &quot;reportBolt&quot;;
+    private static final String KAFKA_BOLT_ID = &quot;kafkabolt&quot;;
+    private static final String CONSUME_TOPIC = &quot;sentenceTopic&quot;;
+    private static final String PRODUCT_TOPIC = &quot;wordCountTopic&quot;;
+    private static final String ZK_ROOT = &quot;/topology/root&quot;;
+    private static final String ZK_ID = &quot;wordCount&quot;;
+    private static final String DEFAULT_TOPOLOGY_NAME = &quot;sentenceWordCountKafka&quot;;
+
+    public static void main(String[] args) throws Exception {
+        // 配置Zookeeper地址
+        BrokerHosts brokerHosts = new ZkHosts(&quot;zk1:2181,zk2:2281,zk3:2381&quot;);
+        // 配置Kafka订阅的Topic，以及zookeeper中数据节点目录和名字
+        SpoutConfig spoutConfig = new SpoutConfig(brokerHosts, CONSUME_TOPIC, ZK_ROOT, ZK_ID);
+        spoutConfig.scheme = new SchemeAsMultiScheme(new MessageScheme());
+
+        TopologyBuilder builder = new TopologyBuilder();
+        builder.setSpout(KAFKA_SPOUT_ID, new KafkaSpout(spoutConfig));
+        builder.setBolt(SENTENCE_BOLT_ID, new SentenceBolt()).shuffleGrouping(KAFKA_SPOUT_ID);
+        builder.setBolt(SPLIT_BOLT_ID, new SplitSentenceBolt()).shuffleGrouping(KAFKA_SPOUT_ID);
+        builder.setBolt(WORD_COUNT_BOLT_ID, new WordCountBolt()).fieldsGrouping(SPLIT_BOLT_ID, new Fields(&quot;word&quot;));
+        builder.setBolt(REPORT_BOLT_ID, new ReportBolt()).shuffleGrouping(WORD_COUNT_BOLT_ID);
+        builder.setBolt(KAFKA_BOLT_ID, new KafkaBolt&lt;String, Long&gt;()).shuffleGrouping(REPORT_BOLT_ID);
+
+        Config config = new Config();
+        Map&lt;String, String&gt; map = new HashMap&lt;&gt;();
+        map.put(&quot;metadata.broker.list&quot;, &quot;dev2_55.wfj-search:9092&quot;);// 配置Kafka broker地址
+        map.put(&quot;serializer.class&quot;, &quot;kafka.serializer.StringEncoder&quot;);// serializer.class为消息的序列化类
+        config.put(&quot;kafka.broker.properties&quot;, map);// 配置KafkaBolt中的kafka.broker.properties
+        config.put(&quot;topic&quot;, PRODUCT_TOPIC);// 配置KafkaBolt生成的topic
+
+        if (args.length == 0) {
+            LocalCluster cluster = new LocalCluster();
+            cluster.submitTopology(DEFAULT_TOPOLOGY_NAME, config, builder.createTopology());
+            Utils.sleep(100000);
+            cluster.killTopology(DEFAULT_TOPOLOGY_NAME);
+            cluster.shutdown();
+        } else {
+            config.setNumWorkers(1);
+            StormSubmitter.submitTopology(args[0], config, builder.createTopology());
+        }
+    }
+}</code></pre>
+<blockquote>
+<p>除了上面提过应该注意的地方，此处还需要注意，<code>storm.kafka.SpoutConfig</code>定义的zkRoot与id应该与第一个例子中不同（至少保证id不同，否则两个topology将使用一个节点记录偏移量）。</p>
+</blockquote>
+<hr>
+<p>个人主页: <a href="http://www.howardliu.cn">http://www.howardliu.cn</a></p>
+<p>个人博文: <a href="http://www.howardliu.cn/storm/storm-integration-with-kafka">storm笔记：Storm+Kafka简单应用</a></p>
+<p>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a></p>
+<p>CSDN博文: <a href="http://blog.csdn.net/liuxinghao/article/details/50553060" target="_blank" rel="noopener">storm笔记：Storm+Kafka简单应用</a></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/大数据/">大数据</a>
+            
+            <a href="/tags/storm/">storm</a>
+            
+            <a href="/tags/实时计算/">实时计算</a>
+            
+            <a href="/tags/kafka/">kafka</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/storm/the-concepts-of-storm/">
+                <i class="icon-previous">storm笔记：storm基本概念</i>
+            </a>
+            
+            
+            <a class="next" href="/the-introduction-of-http-status-codes/">
+                <i class="icon-next">HTTP状态码总结</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/局部参数/" style="font-size: 15px;">局部参数</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/IT/" style="font-size: 15px;">IT</a> <a href="/tags/工作/" style="font-size: 15px;">工作</a> <a href="/tags/情感/" style="font-size: 15px;">情感</a> <a href="/tags/管理/" style="font-size: 15px;">管理</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/心灵鸡汤/" style="font-size: 15px;">心灵鸡汤</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/zookeeper/" style="font-size: 15px;">zookeeper</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/storm/" style="font-size: 15px;">storm</a> <a href="/tags/转帖/" style="font-size: 15px;">转帖</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/eDisMax查询解析器/" style="font-size: 15px;">eDisMax查询解析器</a> <a href="/tags/标准查询解析器/" style="font-size: 15px;">标准查询解析器</a> <a href="/tags/DisMax查询解析器/" style="font-size: 15px;">DisMax查询解析器</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/两阶段提交/" style="font-size: 15px;">两阶段提交</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http服务/" style="font-size: 15px;">http服务</a> <a href="/tags/http连接/" style="font-size: 15px;">http连接</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/异常处理/" style="font-size: 15px;">异常处理</a> <a href="/tags/层面分析/" style="font-size: 15px;">层面分析</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/集群/" style="font-size: 15px;">集群</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/实时计算/" style="font-size: 15px;">实时计算</a> <a href="/tags/kafka/" style="font-size: 15px;">kafka</a> <a href="/tags/http状态码/" style="font-size: 15px;">http状态码</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring-cloud</a> <a href="/tags/spring-cloud-config/" style="font-size: 15px;">spring-cloud-config</a> <a href="/tags/error/" style="font-size: 15px;">error</a> <a href="/tags/micro-service/" style="font-size: 15px;">micro-service</a> <a href="/tags/Trident/" style="font-size: 15px;">Trident</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/spring-cloud/spring-cloud-config-encrypt-keystore-path-error/">spring-cloud-config 非对称加密 keystore 文件加载异常</a></li><li class="post-list-item"><a class="post-list-link" href="/code_quality/sonarqube-jenkins-pipeline/">代码质量管理：SonarQube + Jenkins Pipeline配置</a></li><li class="post-list-item"><a class="post-list-link" href="/java/gc-overhead-limit-exceeded/">java.lang.OutOfMemoryError:GC overhead limit exceeded</a></li><li class="post-list-item"><a class="post-list-link" href="/bug/get-chinese-length/">中文字节长度引起的数据丢失</a></li><li class="post-list-item"><a class="post-list-link" href="/hadoop/rm-ha/">ResourceManager HA 配置</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2019</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="Hosted by Coding Pages" href="https://pages.coding.me" target="_blank">
+                        <img src="https://coding.net/static/f7272a0b7cd340571725c6734c6bdd6f.png">
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+<script>
+    // baidu analytics
+    (function () {
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
