@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://www.howardliu.cn/http/the-introduction-of-the-http-service/</loc>
+    <lastmod>2019-10-22</lastmod>
+  </url>  <url>
+    <loc>http://www.howardliu.cn/http/http-connection/</loc>
+    <lastmod>2019-10-22</lastmod>
+  </url>  <url>
+    <loc>http://www.howardliu.cn/http/http-response-header-vary/</loc>
+    <lastmod>2019-10-22</lastmod>
+  </url>  <url>
     <loc>http://www.howardliu.cn/op/catch-ModuleException-when-startup-weblogic/</loc>
     <lastmod>2019-10-15</lastmod>
   </url>  <url>
@@ -52,10 +61,10 @@
     <loc>http://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/storm/trident-state/</loc>
+    <loc>http://www.howardliu.cn/storm/trident-tutorial/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/storm/trident-tutorial/</loc>
+    <loc>http://www.howardliu.cn/storm/trident-state/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/the-eight-queens-puzzle/</loc>
@@ -109,9 +118,6 @@
     <loc>http://www.howardliu.cn/hadoop/yarn-architecture/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/http/http-connection/</loc>
-    <lastmod>2019-09-11</lastmod>
-  </url>  <url>
     <loc>http://www.howardliu.cn/hadoop/hdfs-ha-using-qjm/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
@@ -119,9 +125,6 @@
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/hbase-environment-standalone-model/</loc>
-    <lastmod>2019-09-11</lastmod>
-  </url>  <url>
-    <loc>http://www.howardliu.cn/http/the-introduction-of-the-http-service/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/talk-about-CyclicBarrier-again/</loc>

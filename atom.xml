@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.howardliu.cn/"/>
-  <updated>2019-09-11T14:08:23.884Z</updated>
+  <updated>2019-10-22T13:29:46.616Z</updated>
   <id>http://www.howardliu.cn/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>HTTP的响应头Vary</title>
+    <link href="http://www.howardliu.cn/http/http-response-header-vary/"/>
+    <id>http://www.howardliu.cn/http/http-response-header-vary/</id>
+    <published>2019-10-22T12:15:52.000Z</published>
+    <updated>2019-10-22T13:29:46.616Z</updated>
+    
+    <content type="html"><![CDATA[<p>写在前面：Vary 是一个HTTP响应头部信息，它决定了对于未来的一个请求头，应该用一个缓存的回复(response)还是向源服务器请求一个新的回复。它被服务器用来表明在 content negotiation algorithm（内容协商算法）中选择一个资源代表的时候应该使用哪些头部信息（headers）。</p><a id="more"></a><h2 id="描述问题"><a href="#描述问题" class="headerlink" title="描述问题"></a>描述问题</h2><p>今天碰到一个问题，需要根据不同的UA跳转不同的页面，实现手机访问网站跳转到Wap页面，PC端访问跳转到PC端的页面。根据之前的了解，在Nginx做了UA区分，实现了根据UA跳转页面。</p><p>结果，解决一个问题，同时引入一个更大问题。</p><p>CND中缓存的文档出现了错位，因为请求地址是相同的，结果有时候存储的是PC页面，有时候存储的是WAP页面。</p><h2 id="分析问题"><a href="#分析问题" class="headerlink" title="分析问题"></a>分析问题</h2><p>CDN缓存了错误的数据，是因为相同地址、不同UA，Nginx返回的内容是不一样的。</p><p>在CDN缓存过期时，UA是手机，Nginx就会返回Wap页面，缓存的就是Wap页面。</p><p>在CDN缓存过期时，UA是PC，Nginx就会返回PC页面，缓存的就是PC页面。</p><h2 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h2><p>针对这种架构，有两种解决方法，一种是，在PC页面中增加UA校验，如果是手机，就跳转页面，代码如下：</p><pre><code class="js">var originHref = window.location.href;var afterSchema = originHref.indexOf(&quot;://&quot;) + 3;var domainEnd = originHref.indexOf(&quot;/&quot;, afterSchema);var domain = originHref.substring(afterSchema, domainEnd);if (domain !== &#39;m.howardliu.cn&#39;) {    if (navigator) {        var ua = navigator.userAgent.toLowerCase();        if (/mobile|android|iphone|ipad|phone/i.test(ua)) {            window.location.href = originHref.substring(0, afterSchema) + &#39;m.howardliu.cn&#39; + originHref.substring(domainEnd);        }    }}</code></pre><p>这种方式可以解决问题，但是不够优雅，因为需要浏览器先加载PC的页面，然后再进行检查，也就是会加载两个页面。如果网速比较慢时，就会在PC站驻留比较长的时间，然后才跳转到wap站，用户体验差。</p><p>那就得只能在CDN进行处理，CDN服务商提供的解决方案是，在响应头中增加<code>vary: Accept-Encoding, User-Agent</code>，具体配置是在nginx中配置：</p><pre><code class="conf">add_header Vary &quot;Accept-Encoding, User-Agent&quot;;</code></pre><p>果然解决了问题。</p><p>学非探其花，要深拔其根。http响应头中的<code>Vary</code>是什么作用呢？为什么配置了它之后，CDN就能够区分不同的响应信息了？</p><p><a href="https://tools.ietf.org/html/rfc7231" target="_blank" rel="noopener">RFC 7231</a>中的<a href="https://tools.ietf.org/html/rfc7231#section-7.1.4" target="_blank" rel="noopener">7.1.4.  Vary</a>给出了解释：</p><blockquote><p>The “Vary” header field in a response describes what parts of a request message, aside from the method, Host header field, and request target, might influence the origin server’s process for selecting and representing this response. The value consists of either a single asterisk (“*”) or a list of header field names (case-insensitive).</p><p>Vary = “*” / 1#field-name</p><p>A Vary field value of “” signals that anything about the request might play a role in selecting the response representation, possibly including elements outside the message syntax (e.g., the client’s network address). A recipient will not be able to determine whether this response is appropriate for a later request without forwarding the request to the origin server. A proxy MUST NOT generate a Vary field with a “” value.</p><p>A Vary field value consisting of a comma-separated list of names indicates that the named request header fields, known as the selecting header fields, might have a role in selecting the representation. The potential selecting header fields are not limited to those defined by this specification.</p><p>For example, a response that contains</p><p>Vary: accept-encoding, accept-language</p><p>indicates that the origin server might have used the request’s Accept-Encoding and Accept-Language fields (or lack thereof) as determining factors while choosing the content for this response.</p><p>An origin server might send Vary with a list of fields for two purposes:</p><ol><li>To inform cache recipients that they MUST NOT use this response to satisfy a later request unless the later request has the same values for the listed fields as the original request (Section 4.1 of [RFC7234]). In other words, Vary expands the cache key required to match a new request to the stored cache entry.</li><li>To inform user agent recipients that this response is subject to content negotiation (Section 5.3) and that a different representation might be sent in a subsequent request if additional parameters are provided in the listed header fields (proactive negotiation).</li></ol><p>An origin server SHOULD send a Vary header field when its algorithm for selecting a representation varies based on aspects of the request message other than the method and request target, unless the variance cannot be crossed or the origin server has been deliberately configured to prevent cache transparency. For example, there is no need to send the Authorization field name in Vary because reuse across users is constrained by the field definition (Section 4.2 of [RFC7235]). Likewise, an origin server might use Cache-Control directives (Section 5.2 of [RFC7234]) to supplant Vary if it considers the variance less significant than the performance cost of Vary’s impact on caching.</p></blockquote><p>简单来说，<code>Vary</code>是http的一种约定，当客户端与服务端之间，针对相同的URL请求，服务端存在不同内容的响应，且响应内容是根据请求头的不同，返回不同时，就需要<code>Vary</code>指定需要区分的请求头了。</p><p>比如，上面提到的需要根据UA来区分，那响应信息里面就需要包括：<code>Vary: User-Agent</code>。如果需要根据<code>Accept-Encoding</code>和<code>Accept-Language</code>进行区分，响应头就需要包含<code>Vary: Accept-Encoding, Accept-Language</code>。这样做，其实是为了客户端能够很好的对结果缓存。</p><p>总结一下：</p><ol><li><code>Vary</code>是服务端添加在响应头的信息</li><li><code>Vary</code>的内容来源于请求头</li><li>实现完整协议的客户端（包括浏览器和缓存服务器）缓存数据时，会将<code>Vary</code>一起缓存。</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      Vary 是一个HTTP响应头部信息，它决定了对于未来的一个请求头，应该用一个缓存的回复(response)还是向源服务器请求一个新的回复。它被服务器用来表明在 content negotiation algorithm（内容协商算法）中选择一个资源代表的时候应该使用哪些头部信息（headers）。
+    
+    </summary>
+    
+    
+      <category term="http" scheme="http://www.howardliu.cn/categories/http/"/>
+    
+    
+      <category term="概念" scheme="http://www.howardliu.cn/tags/%E6%A6%82%E5%BF%B5/"/>
+    
+      <category term="网络" scheme="http://www.howardliu.cn/tags/%E7%BD%91%E7%BB%9C/"/>
+    
+      <category term="http" scheme="http://www.howardliu.cn/tags/http/"/>
+    
+  </entry>
   
   <entry>
     <title>spring-cloud-config 非对称加密 keystore 文件加载异常</title>
@@ -157,9 +184,9 @@
     
       <category term="hadoop" scheme="http://www.howardliu.cn/tags/hadoop/"/>
     
-      <category term="ha" scheme="http://www.howardliu.cn/tags/ha/"/>
-    
       <category term="rm" scheme="http://www.howardliu.cn/tags/rm/"/>
+    
+      <category term="ha" scheme="http://www.howardliu.cn/tags/ha/"/>
     
   </entry>
   
@@ -221,9 +248,9 @@
     
       <category term="hadoop" scheme="http://www.howardliu.cn/tags/hadoop/"/>
     
-      <category term="hdfs" scheme="http://www.howardliu.cn/tags/hdfs/"/>
-    
       <category term="ha" scheme="http://www.howardliu.cn/tags/ha/"/>
+    
+      <category term="hdfs" scheme="http://www.howardliu.cn/tags/hdfs/"/>
     
       <category term="QJM" scheme="http://www.howardliu.cn/tags/QJM/"/>
     
@@ -408,7 +435,7 @@
     <link href="http://www.howardliu.cn/http/http-connection/"/>
     <id>http://www.howardliu.cn/http/http-connection/</id>
     <published>2017-03-01T06:45:12.000Z</published>
-    <updated>2019-09-11T14:08:23.878Z</updated>
+    <updated>2019-10-22T13:30:43.112Z</updated>
     
     <content type="html"><![CDATA[<p>一直听别人说HTTP长连接，只知道长连接比短连接更节省资源、更快捷，但是并不真的知道原因。知其然不知其所以然，对于技术来说，这种状态是比较危险的。所以，还是要挖一下原理，即使挖的比较浅，也要迈出这一步。</p><p>HTTP是应用层协议，传输层使用的是TCP协议，网络层使用的是IP协议。</p><p>IP协议主要解决网络路由和寻址问题，TCP协议主要解决如何在IP层之上可靠的传递数据包，使在网络上的另一端收到发送端发出的所有包，并且顺序与发出顺序一致，HTTP协议主要基于TCP协议完成数据传递。</p><a id="more"></a><p><img src="/images/http/network-layer.jpg" alt="OSI参考模型与TCP/IP模型"></p><p>首先说下TCP连接与断开。</p><p>TCP的生命周期被戏称为三次握手和四次挥手，每次握手（挥手）都需要通信双方交互数据，所以TCP连接传输数据是比较耗费资源的，也就是通常所说的成本较高。</p><p><img src="/images/http/tcp-connect-disconnect.png" alt="TCP的三次握手和四次挥手"></p><p>然后，HTTP协议是无状态的、面向连接的，即协议本身不具备记忆能力，两次不同的HTTP请求之间没有任何联系。</p><p>在HTTP/1.1之前，一个网页加载资源的时候，每需要加载一个资源，就需要进行一次HTTP请求，建立一次连接，请求结束就断开连接，而每次连接（TCP连接）都需要耗费资源（时间资源、网络资源等）。</p><p>所以后来在HTTP/1.1中引入持久连接（persistent connection），即TCP连接默认不关闭，可以被多个请求复用，不用声明<code>Connection: keep-alive</code>，也就是常说的长连接。</p><p>这里所说的长连接，其实本身是TCP长连接。比如发起一次HTTP请求时，客户端与服务端创建TCP连接，在得到响应结果后，不进行TCP的四次挥手断开连接，而是会保持一段时间的TCP连接。此时，如果又有一次HTTP请求相同的服务端，就会继续使用这一个TCP连接。这样，节省了TCP连接的消耗。</p><p>当然，为了资源的有效利用，在一段时间（超时时间，请求头中<code>Keep-alive: timeout=10</code>进行设置）没有活动时，客户端或服务端会主动断开TCP连接。建议的做法是，在客户端最后一次请求时，请求头中发送<code>Connection: close</code>，明确要求关闭TCP连接。</p><hr><p>补充下TCP三次握手、四次挥手的知识。</p><p>三次握手建立连接：</p><ol><li>第一次握手：客户端发送SYN包(seq=x)到服务器，并进入SYN_SEND状态，等待服务器确认；</li><li>第二次握手：服务器收到SYN包，必须确认客户的SYN（ACK=x+1），同时自己也发送一个SYN包（seq=y），即SYN+ACK包，此时服务器进入SYN_RECV状态；</li><li>第三次握手：客户端收到服务器的SYN＋ACK包，向服务器发送确认包ACK(ACK=y+1)，此包发送完毕，客户端和服务器进入ESTABLISHED状态，完成三次握手。</li></ol><p>握手过程中传送的包里不包含数据，三次握手完毕后，客户端与服务器才正式开始传送数据。理想状态下，TCP连接一旦建立，在通信双方中的任何一方主动关闭连接之前，TCP 连接都将被一直保持下去。</p><p>四次挥手断开连接</p><ol><li>第一次挥手：主动关闭方发送一个FIN，用来关闭主动方到被动关闭方的数据传送，也就是主动关闭方告诉被动关闭方：我已经不会再给你发数据了（当然，在FIN包之前发送出去的数据，如果没有收到对应的ACK确认报文，主动关闭方依然会重发这些数据），但此时主动关闭方还可以接受数据。</li><li>第二次挥手：被动关闭方收到FIN包后，发送一个ACK给对方，确认序号为收到序号+1（与SYN相同，一个FIN占用一个序号）。</li><li>第三次挥手：被动关闭方发送一个FIN，用来关闭被动关闭方到主动关闭方的数据传送，也就是告诉主动关闭方，我的数据也发送完了，不会再给你发数据了。</li><li>第四次挥手：主动关闭方收到FIN后，发送一个ACK给被动关闭方，确认序号为收到序号+1，至此，完成四次挥手。</li></ol><blockquote><p>注意：中断连接端可以是Client端，也可以是Server端。</p></blockquote><p>详细的状态说明</p><ul><li>SYN_SEND：客户端尝试链接服务端，通过open方法。也就是TCP三次握手中的第1步之后,注意是客户端状态</li><li>SYN_RECEIVED： 服务接受创建请求的SYN后，也就是TCP三次握手中的第2步，发送ACK数据包之前。注意是服务端状态,一般15个左右正常，如果很大，怀疑遭受SYN_FLOOD攻击</li><li>ESTABLISHED：客户端接受到服务端的ACK包后的状态，服务端在发出ACK在一定时间后即为ESTABLISHED</li><li>FIN_WAIT1：主动关闭的一方，在发出FIN请求之后，也就是在TCP四次挥手的第1步</li><li>CLOSE_WAIT：被动关闭的一方，在接受到客户端的FIN后，也就是在TCP四次挥手的第2步</li><li>FIN_WAIT2：主动关闭的一方，在接受到被动关闭一方的ACK后，也就是TCP四次挥手的第2步。可以设定被动关闭方返回FIN后的超时时间，有效回收链接，避免syn-flood.</li><li>LASK_ACK：被动关闭的一方，在发送ACK后一段时间后(确保客户端已收到)，再发起一个FIN请求。也就是TCP四次挥手的第3步</li><li>TIME_WAIT：主动关闭的一方，在收到被动关闭的FIN包后，发送ACK。也就是TCP四次挥手的第4步</li></ul>]]></content>
     
@@ -419,18 +446,14 @@
     </summary>
     
     
-      <category term="network" scheme="http://www.howardliu.cn/categories/network/"/>
-    
-      <category term="conception" scheme="http://www.howardliu.cn/categories/network/conception/"/>
-    
-      <category term="http" scheme="http://www.howardliu.cn/categories/network/conception/http/"/>
+      <category term="http" scheme="http://www.howardliu.cn/categories/http/"/>
     
     
       <category term="概念" scheme="http://www.howardliu.cn/tags/%E6%A6%82%E5%BF%B5/"/>
     
       <category term="网络" scheme="http://www.howardliu.cn/tags/%E7%BD%91%E7%BB%9C/"/>
     
-      <category term="http连接" scheme="http://www.howardliu.cn/tags/http%E8%BF%9E%E6%8E%A5/"/>
+      <category term="http" scheme="http://www.howardliu.cn/tags/http/"/>
     
   </entry>
   
@@ -590,39 +613,6 @@
       <category term="数据一致性" scheme="http://www.howardliu.cn/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/"/>
     
       <category term="事务" scheme="http://www.howardliu.cn/tags/%E4%BA%8B%E5%8A%A1/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>初始化Ubuntu工作环境</title>
-    <link href="http://www.howardliu.cn/os/init-my-ubuntu/"/>
-    <id>http://www.howardliu.cn/os/init-my-ubuntu/</id>
-    <published>2016-05-19T07:39:47.000Z</published>
-    <updated>2019-09-11T14:08:23.881Z</updated>
-    
-    <content type="html"><![CDATA[<p>去年6月份开始使用Ubuntu 14.04 LTS，当时是在公司电脑上装的，因为是第一次搭建工作环境，很多东西不是很随心意。终于等到16.04 LTS版发布，就重装系统，公司的那个老爷本也不用了。<br>ubuntu desktop是一个很简单的桌面系统，比较适合菜鸟级的使用，学习曲线比较平缓。本文主要是记录一下这次搭建工作环境的经过，留作备份，下一次再需要重装的时候可以有个依据。<br><img src="/images/ubuntu-cloud.svg" alt="ubuntu-cloud"></p><a id="more"></a><h1 id="1-系统语言"><a href="#1-系统语言" class="headerlink" title="1 系统语言"></a>1 系统语言</h1><p>作为英语的半吊子，没办法直接使用英文环境，所以系统安装的是简体中文环境，但是系统创建的home路径中的文件夹都是中文的：桌面、文档、下载。。。作为一个懒人，不想在终端输命令的时候还要切换输入法，所以把这几个路径全部改为英文。</p><pre><code class="bash">$ export LANG=en_US$ xdg-user-dirs-gtk-update</code></pre><p>会弹出一个对话框，问是否修改home下的文件夹名字，直接点击”Update Names”，问题解决，然后把系统语言改回简体中文。</p><pre><code class="bash">$ export LANG=zh_CN.UTF-8$ xdg-user-dirs-gtk-update</code></pre><p>这次又弹出的对话框是询问是否把文件夹名字改为简体中文的，直接点否就行。为了以后不再询问，选中不要再次询问，以后就不会弹出了。</p><h1 id="2-软件源"><a href="#2-软件源" class="headerlink" title="2 软件源"></a>2 软件源</h1><p>大家都知道，国内的网络环境不是很好，ubuntu的镜像服务器在地球另一端，所以装完系统通常需要修改软件源，国内比较可靠的是阿里云的镜像，为阿里赞一个。需要使用root权限修改/etc/apt/sources.list文件：<code>sudo vi /etc/apt/sources.list</code>，我这里是需要把”cn.archive.ubuntu.com”和”security.ubuntu.com”改为”mirrors.aliyun.com”，根据自己的情况修改。这样ubuntu的系统更新、安全更新、软件更新都是走阿里云的镜像了，速度还是很快的。<br>下面是我的软件源文件(精简过的，原文件很多注释)：</p><pre><code>deb http://mirrors.aliyun.com/ubuntu/ xenial main restricteddeb http://mirrors.aliyun.com/ubuntu/ xenial-updates main restricteddeb http://mirrors.aliyun.com/ubuntu/ xenial universedeb http://mirrors.aliyun.com/ubuntu/ xenial-updates universedeb http://mirrors.aliyun.com/ubuntu/ xenial multiversedeb http://mirrors.aliyun.com/ubuntu/ xenial-updates multiversedeb http://mirrors.aliyun.com/ubuntu/ xenial-backports main restricted universe multiversedeb http://mirrors.aliyun.com/ubuntu/ xenial-security main restricteddeb http://mirrors.aliyun.com/ubuntu/ xenial-security universedeb http://mirrors.aliyun.com/ubuntu/ xenial-security multiverse</code></pre><h1 id="3-快捷初始化"><a href="#3-快捷初始化" class="headerlink" title="3 快捷初始化"></a>3 快捷初始化</h1><p>ubuntu使用可能会用到一些解码器之类的组件、插件、字体，一个个找实在麻烦，好在有一个ubuntu-restricted-extras，可以直接帮忙安装这一堆繁琐的东西。命令行输入：<code>sudo apt install ubuntu-restricted-extras</code>，然后等待安装完成即可。</p><h1 id="4-常用软件"><a href="#4-常用软件" class="headerlink" title="4 常用软件"></a>4 常用软件</h1><p>基础环境简单配置完成，接下来就开始安装常用的软件。</p><h2 id="4-1-vim"><a href="#4-1-vim" class="headerlink" title="4.1 vim"></a>4.1 vim</h2><p>因为开发使用的是IDE，vi工具只是用来编辑一些简单的文件，所以没装太多插件。作为一个vi的菜鸟，只会一些简单的快捷键，所以还是装上vim吧：</p><pre><code class="bash">$ sudo apt install vim</code></pre><h2 id="4-2-Chromium-amp-Chrome"><a href="#4-2-Chromium-amp-Chrome" class="headerlink" title="4.2 Chromium &amp; Chrome"></a>4.2 Chromium &amp; Chrome</h2><p>ubuntu自带的浏览器是Firefox，一款非常优秀的浏览器，Chrome中也有部分是firefox的代码，奈何已经熟悉Chrome，还是装上Chrome浏览器。这里的Chromium相当于Chrome的先行军，开源项目，全球优秀的开发人员进行维护，增加功能，然后Google再把这些新功能加到Chrome中，ubuntu的软件库中自带Chromium，想装Chrome还得翻墙出去下，为了快(tou)捷(lan)，直接装Chromium：</p><pre><code class="bash">$ sudo apt-get install chromium-browser unity-chromium-extension chromium-codecs-ffmpeg-extra</code></pre><p>Chromium和Firefox一样，有很多扩展扩展程序（依赖浏览器）和应用（可以不启动浏览器独立运行）：</p><ul><li>The QR Code Extension: 把地址栏地址转为二维码</li><li>有道云笔记网页剪报: 用过有道云笔记的比较熟悉，抓取网页内容，保存到有道云笔记中</li><li>cVim: 一个摆脱鼠标的扩展程序，键盘流的福音，好像还有很多类似的扩展，大同小异</li><li>JSON Formatter: 可以把json响应内容格式化</li><li>JSON Editor: 应用，用于编辑json数据</li><li>Postman: 应用，http的客户端</li></ul><h2 id="4-3-JDK"><a href="#4-3-JDK" class="headerlink" title="4.3 JDK"></a>4.3 JDK</h2><p>作为Java开发，最需要安装的就是jdk了，ubuntu库中只有Open JDK，但是工作环境中还是使用Oracle JDK，其实可以在Oracle官网下载tar.gz包，解压，然后配置环境变量，但是安装ant、maven的时候还是会再次引入open jdk，烦不胜烦，直接使用webupd8的源，省去乱七八糟的烦恼。</p><pre><code class="bash">$ sudo add-apt-repository ppa:webupd8team/java$ sudo apt-get update$ sudo apt-get install oracle-java6-installer oracle-java7-installer oracle-java8-installer</code></pre><p>这里把jdk 6\7\8几个版本都装上了，虽然自己的项目中使用JDK 8，但是有时候需要把一个公共组件提供给其他组，就需要jdk 6来开发编译打包，这个时候需要切换下默认jdk的版本:</p><pre><code class="bash">$ sudo apt-get install oracle-java6-set-default # 切换为jdk6$ sudo apt-get install oracle-java7-set-default # 切换为jdk7$ sudo apt-get install oracle-java8-set-default # 切换为jdk8</code></pre><p>修改jdk的环境变量，为了各用户统一，直接在系统环境变量中增加配置：</p><pre><code class="bash">cd /etc/profile.dsudo touch set_classpath.shsudo chmod +x set_classpath.sh</code></pre><p>set_classpath.sh文件的内容如下：</p><pre><code class="bash">#!/bin/bashexport JRE_HOME=$JAVA_HOME/jreexport CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar</code></pre><p>可以通过<code>source set_classpath.sh</code>使环境变量立即生效，也可以等下次重启之后生效。</p><h2 id="4-4-Ant"><a href="#4-4-Ant" class="headerlink" title="4.4 Ant"></a>4.4 Ant</h2><p>工作中基本不用Ant了，一般maven就够用了。先装上，用不用再说：<code>sudo apt-get install ant</code>，安装完之后配置环境变量：</p><pre><code class="bash">$ cd /etc/profile.d$ sudo touch ant_env.sh$ sudo chmod +x ant_env.sh</code></pre><p>ant_env.sh内容如下：</p><pre><code class="bash">#!/bin/bashexport ANT_HOME=/usr/share/antexport PATH=$PATH:$ANT_HOME/bin</code></pre><h2 id="4-5-Maven"><a href="#4-5-Maven" class="headerlink" title="4.5 Maven"></a>4.5 Maven</h2><p>构建工具最常用maven了，基本不需要关心jar包之间的依赖，而且在IDE中，maven的插件也比较完善了。</p><pre><code class="bash">$ sudo apt-get install maven# 安装完成后通过mvn -n查看maven版本$ mvn -vApache Maven 3.3.3Maven home: /usr/share/mavenJava version: 1.8.0_66, vendor: Oracle CorporationJava home: /usr/lib/jvm/java-8-oracle/jreDefault locale: zh_CN, platform encoding: UTF-8OS name: &quot;linux&quot;, version: &quot;4.2.0-22-generic&quot;, arch: &quot;amd64&quot;, family: &quot;unix&quot;</code></pre><h2 id="4-6-SVN"><a href="#4-6-SVN" class="headerlink" title="4.6 SVN"></a>4.6 SVN</h2><p>公司喜欢用svn，不过也马上要换成Git了，还是把svn安装记录下，万一以后需要呢。</p><pre><code class="bash">$ sudo apt-get install subversion$ sudo apt-get install libsvn-java # 如果要用Eclipse SVN插件还得装下libsvn-java# 使用ln建立链接，不然插件还是会报错：$ sudo mkdir -P /usr/java/packages/lib/amd64/$ sudo ln -s /usr/lib/x86_64-linux-gnu/jni/libsvnjavahl-1.so.0.0.0 /usr/java/packages/lib/amd64/libsvnjavahl-1$ sudo ln -s /usr/lib/x86_64-linux-gnu/jni/libsvnjavahl-1.so.0.0.0 /usr/java/packages/lib/amd64/libsvnjavahl-1.so</code></pre><p>在Linux中可用的svn的GUI工具只有一个rapidsvn，已经很久没有更新过了，不过也还凑合用，复杂操作可以使用命令，</p><pre><code class="bash">$ sudo apt-get install rapidsvn</code></pre><h2 id="4-7-Git"><a href="#4-7-Git" class="headerlink" title="4.7 Git"></a>4.7 Git</h2><p>直接安装</p><pre><code class="bash">sudo apt-get install liberror-perl git-man git git-doc</code></pre><p>git的GUI工具就不装了，毕竟git的命令很简单，而且IDE中的插件效果也挺不错的。</p><h2 id="4-8-其他工具"><a href="#4-8-其他工具" class="headerlink" title="4.8 其他工具"></a>4.8 其他工具</h2><ul><li>unison: 一个同步工具，可以比较文件夹之间是否有修改，可以很直观的操作同步数据，相当于有GUI的sync，<code>sudo apt-get install unison unison-gtk</code></li><li>ssh: 这个不多说，<code>sudo apt-get install openssh-client openssh-server openssh-sftp-server</code></li><li>openvpn: 在家办公的时候，需要通过VPN连接公司内网，<code>sudo apt-get install network-manager-openvpn</code></li><li>FileZilla: 连接服务器的文件管理器，<code>sudo apt-get install filezilla</code></li><li>Meld: 文件\文件夹对比工具，相当于带GUI的diff，<code>sudo apt-get install meld</code></li><li>mysql: 不多说，<code>sudo apt-get install mysql-client mysql-workbench</code></li><li>nethogs: 各应用实时网速检查，需要sudo权限，<code>sudo apt-get install nethogs</code></li><li>indicator-multiload: 综合负载指示器，可实时显示CPU使用率、内存占用、网速、负载、磁盘IO、交换空间等，<code>sudo apt-get install indicator-multiload</code></li><li>GIMP: 图像编辑，<code>sudo apt-get install gimp gimp-data-extras</code></li><li>GParted: 分区管理器，需要root权限，<code>sudo apt-get install gparted</code></li></ul><h1 id="5-基本配置"><a href="#5-基本配置" class="headerlink" title="5 基本配置"></a>5 基本配置</h1><h2 id="5-1-ubuntu终端"><a href="#5-1-ubuntu终端" class="headerlink" title="5.1 ubuntu终端"></a>5.1 ubuntu终端</h2><p>ubuntu终端会显示当前位置的全路径，当目录比较深的时候，占用空间太大，所以直接进行优化：</p><pre><code class="bash">export PS1=&#39;\[\e]0;\u@\h: \w\a\]\[\033[01;32m\]\u\[\033[01;33m\]@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\]$ &#39;</code></pre><h2 id="5-2-本地打开文件数限制解除"><a href="#5-2-本地打开文件数限制解除" class="headerlink" title="5.2 本地打开文件数限制解除"></a>5.2 本地打开文件数限制解除</h2><pre><code class="bash">echo &quot;fs.file-max = 819200&quot; | sudo tee /etc/sysctl.d/60-fs-file-max.confecho &quot;fs.inotify.max_user_watches = 524288&quot; | sudo tee /etc/sysctl.d/60-fs-max-user-watches.conf</code></pre><h1 id="6-结束"><a href="#6-结束" class="headerlink" title="6 结束"></a>6 结束</h1><p>到这里，这个ubuntu环境就基本配置完成了。<br>话说自从把系统换成ubuntu了，好像很久没有玩游戏了。舍友的系统是windows，前一段时间，想玩了，就玩他的，后来媳妇抱怨说我总是跟他们混在一起，也就不怎么玩了，最近好像就想不起来玩。算是把游戏戒了。<br>然后使用linux，为了图省事，经常会用到终端，几条简单命令就成，慢慢向键盘党靠拢，虽然不说能够提高效率，至少不会因为找鼠标打断思路。</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;去年6月份开始使用Ubuntu 14.04 LTS，当时是在公司电脑上装的，因为是第一次搭建工作环境，很多东西不是很随心意。终于等到16.04 LTS版发布，就重装系统，公司的那个老爷本也不用了。&lt;br&gt;ubuntu desktop是一个很简单的桌面系统，比较适合菜鸟级的使用，学习曲线比较平缓。本文主要是记录一下这次搭建工作环境的经过，留作备份，下一次再需要重装的时候可以有个依据。&lt;br&gt;&lt;img src=&quot;/images/ubuntu-cloud.svg&quot; alt=&quot;ubuntu-cloud&quot;&gt;&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="os" scheme="http://www.howardliu.cn/categories/os/"/>
-    
-      <category term="linux" scheme="http://www.howardliu.cn/categories/os/linux/"/>
-    
-      <category term="ubuntu" scheme="http://www.howardliu.cn/categories/os/linux/ubuntu/"/>
-    
-    
-      <category term="os" scheme="http://www.howardliu.cn/tags/os/"/>
-    
-      <category term="ubuntu" scheme="http://www.howardliu.cn/tags/ubuntu/"/>
-    
-      <category term="linux" scheme="http://www.howardliu.cn/tags/linux/"/>
-    
-      <category term="工作环境" scheme="http://www.howardliu.cn/tags/%E5%B7%A5%E4%BD%9C%E7%8E%AF%E5%A2%83/"/>
     
   </entry>
   
