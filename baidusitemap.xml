@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://www.howardliu.cn/op/blue-green-deployments-a-b-testing-and-canary-releases/</loc>
+    <lastmod>2019-10-26</lastmod>
+  </url>  <url>
+    <loc>http://www.howardliu.cn/op/logon-windows-automatic-uncheck-password/</loc>
+    <lastmod>2019-10-26</lastmod>
+  </url>  <url>
+    <loc>http://www.howardliu.cn/spring-cloud/spring-cloud-config-encrypt-keystore-path-error/</loc>
+    <lastmod>2019-10-26</lastmod>
+  </url>  <url>
+    <loc>http://www.howardliu.cn/op/ubuntu-ufw-settings/</loc>
+    <lastmod>2019-10-22</lastmod>
+  </url>  <url>
     <loc>http://www.howardliu.cn/http/the-introduction-of-the-http-service/</loc>
     <lastmod>2019-10-22</lastmod>
   </url>  <url>
@@ -11,12 +23,6 @@
     <lastmod>2019-10-22</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/op/catch-ModuleException-when-startup-weblogic/</loc>
-    <lastmod>2019-10-15</lastmod>
-  </url>  <url>
-    <loc>http://www.howardliu.cn/op/ubuntu-ufw-settings/</loc>
-    <lastmod>2019-10-15</lastmod>
-  </url>  <url>
-    <loc>http://www.howardliu.cn/op/logon-windows-automatic-uncheck-password/</loc>
     <lastmod>2019-10-15</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/op/rabbitmq-operation/</loc>
@@ -52,19 +58,16 @@
     <loc>http://www.howardliu.cn/storm/storm-integration-with-kafka/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/spring-cloud/spring-cloud-config-encrypt-keystore-path-error/</loc>
-    <lastmod>2019-09-11</lastmod>
-  </url>  <url>
     <loc>http://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/storm/trident-tutorial/</loc>
+    <loc>http://www.howardliu.cn/storm/trident-state/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/storm/trident-state/</loc>
+    <loc>http://www.howardliu.cn/storm/trident-tutorial/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/the-eight-queens-puzzle/</loc>
