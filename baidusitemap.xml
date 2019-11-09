@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://www.howardliu.cn/raving/the-cost-to-change-phone/</loc>
+    <lastmod>2019-11-09</lastmod>
+  </url>  <url>
     <loc>http://www.howardliu.cn/op/blue-green-deployments-a-b-testing-and-canary-releases/</loc>
     <lastmod>2019-10-26</lastmod>
   </url>  <url>
@@ -64,19 +67,19 @@
     <loc>http://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/storm/trident-state/</loc>
+    <loc>http://www.howardliu.cn/storm/trident-tutorial/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/storm/trident-tutorial/</loc>
+    <loc>http://www.howardliu.cn/storm/trident-state/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/the-eight-queens-puzzle/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/hadoop-environment/</loc>
+    <loc>http://www.howardliu.cn/how-to-use-comment-in-java/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/how-to-use-comment-in-java/</loc>
+    <loc>http://www.howardliu.cn/hadoop-environment/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/the-multiplication-of-matrices-use-mapreduce/</loc>
@@ -91,10 +94,10 @@
     <loc>http://www.howardliu.cn/os/WindowsUpdate_800B0100-failed-to-updates/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/os/all-about-linux-swap-space/</loc>
+    <loc>http://www.howardliu.cn/os/init-my-ubuntu/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/os/init-my-ubuntu/</loc>
+    <loc>http://www.howardliu.cn/os/all-about-linux-swap-space/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/translation-distributed-locks-with-redis/</loc>
