@@ -2,9 +2,142 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
+    
+    <lastmod>2019-11-09T06:35:22.684Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/zookeeper-s-function/</loc>
+    
+    <lastmod>2019-11-09T06:34:36.315Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/zookeeper-environment/</loc>
+    
+    <lastmod>2019-11-09T06:33:59.045Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/the-multiplication-of-matrices-use-mapreduce/</loc>
+    
+    <lastmod>2019-11-09T06:32:51.630Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/the-introduction-of-http-status-codes/</loc>
+    
+    <lastmod>2019-11-09T06:32:05.913Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/talk-about-CyclicBarrier-again/</loc>
+    
+    <lastmod>2019-11-09T06:31:17.858Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/talk-about-CountDownLatch-again/</loc>
+    
+    <lastmod>2019-11-09T06:31:14.213Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/the-solution-about-job-queue/</loc>
+    
+    <lastmod>2019-11-09T06:30:09.187Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/setup-passwordless-ssh/</loc>
+    
+    <lastmod>2019-11-09T06:29:48.213Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
+    
+    <lastmod>2019-11-09T06:29:34.413Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/reprint-10-reasons-to-replace-your-jsps-with-freemarker-templates/</loc>
+    
+    <lastmod>2019-11-09T06:29:29.763Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/main-thread-waiting-for-the-end-of-subthread/</loc>
+    
+    <lastmod>2019-11-09T06:29:24.613Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/how-to-use-comment-in-java/</loc>
+    
+    <lastmod>2019-11-09T06:29:17.715Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/hbase-environment-standalone-model/</loc>
+    
+    <lastmod>2019-11-09T06:29:11.231Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
+    
+    <lastmod>2019-11-09T06:29:06.114Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/hadoop-environment/</loc>
+    
+    <lastmod>2019-11-09T06:28:51.351Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/constant-interface-anti-pattern/</loc>
+    
+    <lastmod>2019-11-09T06:27:55.631Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
+    
+    <lastmod>2019-11-09T06:25:12.117Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/storm/storm-integration-with-kafka/</loc>
+    
+    <lastmod>2019-11-09T06:24:28.605Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.howardliu.cn/hadoop-environment-cluster-setup/</loc>
     
-    <lastmod>2019-11-09T06:17:31.708Z</lastmod>
+    <lastmod>2019-11-09T06:22:02.133Z</lastmod>
     
   </url>
   
@@ -149,13 +282,6 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.885Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
     
     <lastmod>2019-09-11T14:08:23.885Z</lastmod>
@@ -163,28 +289,14 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/talk-about-CountDownLatch-again/</loc>
+    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services/</loc>
     
-    <lastmod>2019-09-11T14:08:23.884Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/storm/storm-integration-with-kafka/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.884Z</lastmod>
+    <lastmod>2019-09-11T14:08:23.885Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.883Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
+    <loc>http://www.howardliu.cn/storm/trident-tutorial/</loc>
     
     <lastmod>2019-09-11T14:08:23.883Z</lastmod>
     
@@ -198,35 +310,7 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/storm/trident-tutorial/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.883Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://www.howardliu.cn/the-eight-queens-puzzle/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.882Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/hadoop-environment/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.882Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/how-to-use-comment-in-java/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.882Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/the-multiplication-of-matrices-use-mapreduce/</loc>
     
     <lastmod>2019-09-11T14:08:23.882Z</lastmod>
     
@@ -236,13 +320,6 @@
     <loc>http://www.howardliu.cn/translation-faceting/</loc>
     
     <lastmod>2019-09-11T14:08:23.882Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/main-thread-waiting-for-the-end-of-subthread/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.881Z</lastmod>
     
   </url>
   
@@ -269,13 +346,6 @@
   
   <url>
     <loc>http://www.howardliu.cn/translation-distributed-locks-with-redis/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.880Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/zookeeper-s-function/</loc>
     
     <lastmod>2019-09-11T14:08:23.880Z</lastmod>
     
@@ -324,28 +394,7 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/hbase-environment-standalone-model/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.877Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/talk-about-CyclicBarrier-again/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.876Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://www.howardliu.cn/translation-the-standard-query-parser/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.876Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/thinking/the-solution-about-job-queue/</loc>
     
     <lastmod>2019-09-11T14:08:23.876Z</lastmod>
     
@@ -376,13 +425,6 @@
     <loc>http://www.howardliu.cn/zookeeper/zookeeper-error-packet-lenX-is-out-of-range/</loc>
     
     <lastmod>2019-09-11T14:08:23.875Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/constant-interface-anti-pattern/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.874Z</lastmod>
     
   </url>
   
@@ -439,48 +481,6 @@
     <loc>http://www.howardliu.cn/use-authority-in-mysql/</loc>
     
     <lastmod>2019-09-11T14:08:23.871Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/zookeeper-environment/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.871Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.871Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/reprint-10-reasons-to-replace-your-jsps-with-freemarker-templates/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.870Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.870Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/the-introduction-of-http-status-codes/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.870Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/setup-passwordless-ssh/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.869Z</lastmod>
     
   </url>
   
