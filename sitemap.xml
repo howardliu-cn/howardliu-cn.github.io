@@ -2,6 +2,104 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.howardliu.cn/hadoop-environment-cluster-setup/</loc>
+    
+    <lastmod>2019-11-09T06:17:31.708Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/get-chinese-length/</loc>
+    
+    <lastmod>2019-11-09T06:16:50.884Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/sonarqube-jenkins-pipeline/</loc>
+    
+    <lastmod>2019-11-09T06:15:44.279Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/ubuntu-ufw-settings/</loc>
+    
+    <lastmod>2019-11-09T06:14:07.149Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/rabbitmq-operation/</loc>
+    
+    <lastmod>2019-11-09T06:13:58.549Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
+    
+    <lastmod>2019-11-09T06:13:48.703Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/logon-windows-automatic-uncheck-password/</loc>
+    
+    <lastmod>2019-11-09T06:13:38.946Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
+    
+    <lastmod>2019-11-09T06:13:28.633Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/install-weblogic-plugin-in-eclipse/</loc>
+    
+    <lastmod>2019-11-09T06:13:19.040Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
+    
+    <lastmod>2019-11-09T06:13:08.151Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/deploy-ear-from-eos-to-weblogic/</loc>
+    
+    <lastmod>2019-11-09T06:12:59.101Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/catch-ModuleException-when-startup-weblogic/</loc>
+    
+    <lastmod>2019-11-09T06:12:36.598Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/build-nginx-from-sources/</loc>
+    
+    <lastmod>2019-11-09T06:12:13.164Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/blue-green-deployments-a-b-testing-and-canary-releases/</loc>
+    
+    <lastmod>2019-11-09T06:12:06.664Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.howardliu.cn/raving/the-cost-to-change-phone/</loc>
     
     <lastmod>2019-11-09T05:13:23.145Z</lastmod>
@@ -9,30 +107,9 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/op/blue-green-deployments-a-b-testing-and-canary-releases/</loc>
-    
-    <lastmod>2019-10-26T09:14:47.602Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/op/logon-windows-automatic-uncheck-password/</loc>
-    
-    <lastmod>2019-10-26T09:08:20.294Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://www.howardliu.cn/spring-cloud/spring-cloud-config-encrypt-keystore-path-error/</loc>
     
     <lastmod>2019-10-26T08:57:15.872Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/op/ubuntu-ufw-settings/</loc>
-    
-    <lastmod>2019-10-22T13:55:17.447Z</lastmod>
     
   </url>
   
@@ -58,55 +135,6 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/op/catch-ModuleException-when-startup-weblogic/</loc>
-    
-    <lastmod>2019-10-15T11:53:45.067Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/op/rabbitmq-operation/</loc>
-    
-    <lastmod>2019-10-15T11:46:03.164Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/op/oom-permgen-space-in-weblogic/</loc>
-    
-    <lastmod>2019-10-15T11:45:44.267Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/op/install-weblogic-plugin-in-eclipse/</loc>
-    
-    <lastmod>2019-10-15T11:45:36.201Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/op/install-weblogic-dev-on-windows/</loc>
-    
-    <lastmod>2019-10-15T11:45:33.235Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/op/deploy-ear-from-eos-to-weblogic/</loc>
-    
-    <lastmod>2019-10-15T11:45:29.776Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/op/install-weblogic-plugin-in-eos-platform/</loc>
-    
-    <lastmod>2019-10-15T11:45:25.644Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://www.howardliu.cn/middleware/the-different-between-some-distributed-message-queue/</loc>
     
     <lastmod>2019-10-12T06:51:00.524Z</lastmod>
@@ -121,14 +149,14 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
+    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services/</loc>
     
     <lastmod>2019-09-11T14:08:23.885Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services/</loc>
+    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
     
     <lastmod>2019-09-11T14:08:23.885Z</lastmod>
     
@@ -163,14 +191,14 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/storm/trident-tutorial/</loc>
+    <loc>http://www.howardliu.cn/storm/trident-state/</loc>
     
     <lastmod>2019-09-11T14:08:23.883Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/storm/trident-state/</loc>
+    <loc>http://www.howardliu.cn/storm/trident-tutorial/</loc>
     
     <lastmod>2019-09-11T14:08:23.883Z</lastmod>
     
@@ -184,14 +212,14 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/how-to-use-comment-in-java/</loc>
+    <loc>http://www.howardliu.cn/hadoop-environment/</loc>
     
     <lastmod>2019-09-11T14:08:23.882Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/hadoop-environment/</loc>
+    <loc>http://www.howardliu.cn/how-to-use-comment-in-java/</loc>
     
     <lastmod>2019-09-11T14:08:23.882Z</lastmod>
     
@@ -226,14 +254,14 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/os/init-my-ubuntu/</loc>
+    <loc>http://www.howardliu.cn/os/all-about-linux-swap-space/</loc>
     
     <lastmod>2019-09-11T14:08:23.881Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/os/all-about-linux-swap-space/</loc>
+    <loc>http://www.howardliu.cn/os/init-my-ubuntu/</loc>
     
     <lastmod>2019-09-11T14:08:23.881Z</lastmod>
     
@@ -254,21 +282,7 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/code_quality/sonarqube-jenkins-pipeline/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.880Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://www.howardliu.cn/why-it-is-difficult-to-get-high-salaries-for-iters/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.879Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/hadoop/hadoop-environment-cluster-setup/</loc>
     
     <lastmod>2019-09-11T14:08:23.879Z</lastmod>
     
@@ -367,13 +381,6 @@
   
   <url>
     <loc>http://www.howardliu.cn/constant-interface-anti-pattern/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.874Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/bug/get-chinese-length/</loc>
     
     <lastmod>2019-09-11T14:08:23.874Z</lastmod>
     

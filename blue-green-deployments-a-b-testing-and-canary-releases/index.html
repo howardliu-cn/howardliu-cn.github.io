@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>蓝绿部署、金丝雀发布（灰度发布）、AB测试||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="随着微服务架构的普及，线上服务越来越多，随之而来的就是部署越来越频繁；随着互联网行业的兴旺，产品迭代的频率也是越来越快，服务上线速度逐步提升。有上线、有部署，就有风险。有风险，就对业务有影响，然后就有了一系列减少这种风险的部署方案：蓝绿部署、金丝雀发布（灰度发布），也有适应产品迭代频率的AB测试。">
+<meta name="keywords" content="系统运维,部署,DevOps,微服务,蓝绿部署,AB测试,金丝雀发布,灰度发布">
+<meta property="og:type" content="article">
+<meta property="og:title" content="蓝绿部署、金丝雀发布（灰度发布）、AB测试">
+<meta property="og:url" content="http://www.howardliu.cn/blue-green-deployments-a-b-testing-and-canary-releases/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="随着微服务架构的普及，线上服务越来越多，随之而来的就是部署越来越频繁；随着互联网行业的兴旺，产品迭代的频率也是越来越快，服务上线速度逐步提升。有上线、有部署，就有风险。有风险，就对业务有影响，然后就有了一系列减少这种风险的部署方案：蓝绿部署、金丝雀发布（灰度发布），也有适应产品迭代频率的AB测试。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.howardliu.cn/images/op/blue_green_deployments.png">
+<meta property="og:image" content="http://www.howardliu.cn/images/op/canarydeployment.png">
+<meta property="og:image" content="http://www.howardliu.cn/images/op/abtesting.png">
+<meta property="og:updated_time" content="2019-11-09T06:12:06.664Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="蓝绿部署、金丝雀发布（灰度发布）、AB测试">
+<meta name="twitter:description" content="随着微服务架构的普及，线上服务越来越多，随之而来的就是部署越来越频繁；随着互联网行业的兴旺，产品迭代的频率也是越来越快，服务上线速度逐步提升。有上线、有部署，就有风险。有风险，就对业务有影响，然后就有了一系列减少这种风险的部署方案：蓝绿部署、金丝雀发布（灰度发布），也有适应产品迭代频率的AB测试。">
+<meta name="twitter:image" content="http://www.howardliu.cn/images/op/blue_green_deployments.png">
+
+<meta name="keywords" content="系统运维,部署,DevOps,微服务,蓝绿部署,AB测试,金丝雀发布,灰度发布">
+
+
+<meta name="description" content="随着微服务架构的普及，线上服务越来越多，随之而来的就是部署越来越频繁；随着互联网行业的兴旺，产品迭代的频率也是越来越快，服务上线速度逐步提升。有上线、有部署，就有风险。有风险，就对业务有影响，然后就有了一系列减少这种风险的部署方案：蓝绿部署、金丝雀发布（灰度发布），也有适应产品迭代频率的AB测试。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/blue-green-deployments-a-b-testing-and-canary-releases/">蓝绿部署、金丝雀发布（灰度发布）、AB测试</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2019-10-26</time>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <div id="toc" class="toc"></div>
+            <p>随着微服务架构的普及，线上服务越来越多，随之而来的就是部署越来越频繁；随着互联网行业的兴旺，产品迭代的频率也是越来越快，服务上线速度逐步提升。有上线、有部署，就有风险。有风险，就对业务有影响，然后就有了一系列减少这种风险的部署方案：蓝绿部署、金丝雀发布（灰度发布），也有适应产品迭代频率的AB测试。</p>
+<p>本文主要是简单解释下这几个概念，帮助自己理解，如果有错误，请大佬们斧正。</p>
+<a id="more"></a>
+
+<h1 id="蓝绿部署"><a href="#蓝绿部署" class="headerlink" title="蓝绿部署"></a>蓝绿部署</h1><p>蓝绿色部署是一种通过运行两个相同的称为 BLUE 和 GREEN 的生产环境来减少停机时间和降低风险的技术。</p>
+<p>蓝绿部署，以颜色命名，简单的理解就是，线上有两套集群环境，在架构图中，一套标记成蓝色，称为蓝色集群BLUE；一套标记为绿色，称为绿色集群GREEN。通过将流量引入两个集群，完成系统升级切换。</p>
+<p><img src="http://www.howardliu.cn/images/op/blue_green_deployments.png" alt="blue green deployments"></p>
+<p>步骤一：部署绿色集群，这个时候是初始状态，蓝色集群承担全部责任，接收全部流量，等待被替换。绿色集群刚刚部署，还没有投入使用，流量为0，等待验证和上线。</p>
+<p>步骤二：蓝色集群流量不变，向绿色集群引入流量。这个过程可以分成几个阶段完成。第一个阶段，引入少量非实时流量，仅用于数据测试；第二个阶段，引入全部实时流量，用于做系统验证。</p>
+<p>步骤三：切断向蓝色集群引入流量，将全部流量引入绿色集群。这个时候，绿色集群已经承担全部责任，接收全部流量。这个过程也可以分阶段操作。第一个阶段，平衡蓝色和绿色集群流量，也就是蓝色和绿色集群一同承担职责；第二个阶段，切断蓝色集群流量，流量全部写入绿色集群。是否采用分阶段操作，完全看升级的功能是否是破坏性的，是否可兼容。</p>
+<p>步骤四：监控系统运行，这个过程是必要的。因为没有人能够保证测试时100%的覆盖的，所以新集群可能会出现这样那样、或大或小的问题，如果评估需要回滚，就需要将全部流量切换到蓝色集群。也完成了版本回滚。</p>
+<h1 id="金丝雀发布（灰度发布）"><a href="#金丝雀发布（灰度发布）" class="headerlink" title="金丝雀发布（灰度发布）"></a>金丝雀发布（灰度发布）</h1><p>金丝雀发布，与蓝绿部署不同的是，它不是非黑即白的部署方式，所以又称为灰度发布。它能够缓慢的将修改推广到一小部分用户，验证没有问题后，再推广到全部用户，以降低生产环境引入新功能带来的风险。</p>
+<p><img src="http://www.howardliu.cn/images/op/canarydeployment.png" alt="canary releases"></p>
+<p>步骤一：将流量从待部署节点移出，更新该节点服务到待发布状态，将该节点称为金丝雀节点；</p>
+<p>步骤二：根据不同策略，将流量引入金丝雀节点。策略可以根据情况指定，比如随机样本策略（随机引入）、狗粮策略（就是内部用户或员工先尝鲜）、分区策略（不同区域用户使用不同版本）、用户特征策略（这种比较复杂，需要根据用户个人资料和特征进行分流，类似于千人千面）；</p>
+<p>步骤三：金丝雀节点验证通过后，选取更多的节点称为金丝雀节点，重复步骤一和步骤二，直到所有节点全部更新</p>
+<h1 id="AB测试"><a href="#AB测试" class="headerlink" title="AB测试"></a>AB测试</h1><p>AB测试和上面两种发布方式不是一个范围的概念，它是为了进行效果验证的手段，其他两种是为了实现线上平稳发布的手段，这里把他们放在一起说，是因为这三个概念很容易弄混。</p>
+<p>AB测试是线上同时运行多个不同版本的服务，这些服务更多的是用户侧的体验不同，比如页面布局、按钮颜色，交互方式等，通常底层业务逻辑还是一样的，也就是通常说的换汤不换药。</p>
+<p><img src="http://www.howardliu.cn/images/op/abtesting.png" alt="A/B Testing"></p>
+<p>这个没有具体的步骤（也可以采用金丝雀部署的步骤，只不过不是全量更新），根据策略（这个策略可以是金丝雀分布中的策略一致），将一部分流量引入A版本，另外一部分流量引入B版本，也可能出现CDEF版本。然后相关人员通过分析不同版本的实际效果，选出最优解。最优解可能是一个版本获胜，取代另一个版本，也可能是催生出更多的版本，服务于用户，还有可能是多个版本在不同区域同时提供服务。</p>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>这里总结一下：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>特点</th>
+<th>优势</th>
+<th>劣势</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>蓝绿部署</td>
+<td>同时存在两个集群，两个集群中只有一个集群真正提供服务，另外一个集群测试、验证或待命</td>
+<td>服务文档，版本回退简单，适用于各种场景的升级，大版本不兼容升级的或迭代兼容升级</td>
+<td>浪费硬件资源，需要同时有两个集群，如果集群比较大，比如有1000个节点，这种方式几乎不可用</td>
+</tr>
+<tr>
+<td>金丝雀部署</td>
+<td>逐点部署，逐步替换线上服务</td>
+<td>小步快跑，快速迭代</td>
+<td>只能适用于兼容迭代的方式，如果是大版本不兼容的场景，就没办法使用这种方式了</td>
+</tr>
+</tbody></table>
+<p>AB测试和上面两个不是一个范畴，不做比较。但是需要说明的一点，AB测试可以采用上面两种部署方式的手法。</p>
+<p>参考：<br><a href="https://docs.cloudfoundry.org/devguide/deploy-apps/blue-green.html" target="_blank" rel="noopener">Using Blue-Green Deployment to Reduce Downtime and Risk</a><br><a href="https://martinfowler.com/bliki/BlueGreenDeployment.html" target="_blank" rel="noopener">Blue Green Deployment</a><br><a href="https://blog.christianposta.com/deploy/blue-green-deployments-a-b-testing-and-canary-releases/" target="_blank" rel="noopener">Blue-green Deployments, A/B Testing, and Canary Releases</a><br><a href="https://martinfowler.com/bliki/CanaryRelease.html" target="_blank" rel="noopener">Canary Release</a></p>
+<hr>
+<p>个人主页: <a href="http://www.howardliu.cn">http://www.howardliu.cn</a><br>个人博文: <a href="http://www.howardliu.cn/devops/blue-green-deployments-a-b-testing-and-canary-releases/">蓝绿部署、金丝雀发布（灰度发布）、AB测试</a><br>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN博文: <a href="https://blog.csdn.net/liuxinghao/article/details/102758824" target="_blank" rel="noopener">蓝绿部署、金丝雀发布（灰度发布）、AB测试</a></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/系统运维/">系统运维</a>
+            
+            <a href="/tags/部署/">部署</a>
+            
+            <a href="/tags/DevOps/">DevOps</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/raving/the-cost-to-change-phone/">
+                <i class="icon-previous">瞎说八道之更换手机的成本</i>
+            </a>
+            
+            
+            <a class="next" href="/http/http-response-header-vary/">
+                <i class="icon-next">HTTP的响应头Vary</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/局部参数/" style="font-size: 15px;">局部参数</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/IT/" style="font-size: 15px;">IT</a> <a href="/tags/工作/" style="font-size: 15px;">工作</a> <a href="/tags/情感/" style="font-size: 15px;">情感</a> <a href="/tags/管理/" style="font-size: 15px;">管理</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/心灵鸡汤/" style="font-size: 15px;">心灵鸡汤</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/zookeeper/" style="font-size: 15px;">zookeeper</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/storm/" style="font-size: 15px;">storm</a> <a href="/tags/转帖/" style="font-size: 15px;">转帖</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/DisMax查询解析器/" style="font-size: 15px;">DisMax查询解析器</a> <a href="/tags/eDisMax查询解析器/" style="font-size: 15px;">eDisMax查询解析器</a> <a href="/tags/标准查询解析器/" style="font-size: 15px;">标准查询解析器</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/两阶段提交/" style="font-size: 15px;">两阶段提交</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/ear/" style="font-size: 15px;">ear</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/瞎说八道/" style="font-size: 15px;">瞎说八道</a> <a href="/tags/瞎想/" style="font-size: 15px;">瞎想</a> <a href="/tags/成本/" style="font-size: 15px;">成本</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/异常处理/" style="font-size: 15px;">异常处理</a> <a href="/tags/层面分析/" style="font-size: 15px;">层面分析</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/集群/" style="font-size: 15px;">集群</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/build-nginx-from-sources/">源码安装NGINX</a></li><li class="post-list-item"><a class="post-list-link" href="/raving/the-cost-to-change-phone/">瞎说八道之更换手机的成本</a></li><li class="post-list-item"><a class="post-list-link" href="/blue-green-deployments-a-b-testing-and-canary-releases/">蓝绿部署、金丝雀发布（灰度发布）、AB测试</a></li><li class="post-list-item"><a class="post-list-link" href="/http/http-response-header-vary/">HTTP的响应头Vary</a></li><li class="post-list-item"><a class="post-list-link" href="/spring-cloud/spring-cloud-config-encrypt-keystore-path-error/">spring-cloud-config 非对称加密 keystore 文件加载异常</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2019</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="Hosted by Coding Pages" href="https://pages.coding.me" target="_blank">
+                        <img src="https://coding.net/static/f7272a0b7cd340571725c6734c6bdd6f.png">
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+<script>
+    // baidu analytics
+    (function () {
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
