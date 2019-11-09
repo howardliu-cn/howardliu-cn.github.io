@@ -2,9 +2,93 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.howardliu.cn/the-joys-and-the-woes-of-the-craft/</loc>
+    
+    <lastmod>2019-11-09T07:16:13.258Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/translation-common-query-parameters/</loc>
+    
+    <lastmod>2019-11-09T07:15:29.543Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/translation-faceting/</loc>
+    
+    <lastmod>2019-11-09T07:15:13.058Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/translation-local-parameters-in-queries/</loc>
+    
+    <lastmod>2019-11-09T07:14:57.245Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/translation-the-dismax-query-parser/</loc>
+    
+    <lastmod>2019-11-09T07:14:35.842Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/translation-the-extended-dismax-query-parser/</loc>
+    
+    <lastmod>2019-11-09T07:14:22.178Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/translation-the-standard-query-parser/</loc>
+    
+    <lastmod>2019-11-09T07:14:05.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/use-authority-in-mysql/</loc>
+    
+    <lastmod>2019-11-09T07:13:15.642Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/thinking/when-to-leave-your-programming-job/</loc>
+    
+    <lastmod>2019-11-09T07:12:35.141Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/why-it-is-difficult-to-get-high-salaries-for-iters/</loc>
+    
+    <lastmod>2019-11-09T07:04:16.566Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/the-cost-to-change-phone/</loc>
+    
+    <lastmod>2019-11-09T06:51:09.844Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.howardliu.cn/blue-green-deployments-a-b-testing-and-canary-releases/</loc>
     
-    <lastmod>2019-11-09T06:41:28.164Z</lastmod>
+    <lastmod>2019-11-09T06:44:36.182Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/get-chinese-length/</loc>
+    
+    <lastmod>2019-11-09T06:43:05.009Z</lastmod>
     
   </url>
   
@@ -156,13 +240,6 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/get-chinese-length/</loc>
-    
-    <lastmod>2019-11-09T06:16:50.884Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://www.howardliu.cn/sonarqube-jenkins-pipeline/</loc>
     
     <lastmod>2019-11-09T06:15:44.279Z</lastmod>
@@ -233,13 +310,6 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/raving/the-cost-to-change-phone/</loc>
-    
-    <lastmod>2019-11-09T05:13:23.145Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://www.howardliu.cn/spring-cloud/spring-cloud-config-encrypt-keystore-path-error/</loc>
     
     <lastmod>2019-10-26T08:57:15.872Z</lastmod>
@@ -282,14 +352,14 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services/</loc>
+    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
     
     <lastmod>2019-09-11T14:08:23.885Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
+    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services/</loc>
     
     <lastmod>2019-09-11T14:08:23.885Z</lastmod>
     
@@ -317,21 +387,7 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/translation-faceting/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.882Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://www.howardliu.cn/os/WindowsUpdate_800B0100-failed-to-updates/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.881Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/os/init-my-ubuntu/</loc>
     
     <lastmod>2019-09-11T14:08:23.881Z</lastmod>
     
@@ -345,16 +401,16 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/translation-distributed-locks-with-redis/</loc>
+    <loc>http://www.howardliu.cn/os/init-my-ubuntu/</loc>
     
-    <lastmod>2019-09-11T14:08:23.880Z</lastmod>
+    <lastmod>2019-09-11T14:08:23.881Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/why-it-is-difficult-to-get-high-salaries-for-iters/</loc>
+    <loc>http://www.howardliu.cn/translation-distributed-locks-with-redis/</loc>
     
-    <lastmod>2019-09-11T14:08:23.879Z</lastmod>
+    <lastmod>2019-09-11T14:08:23.880Z</lastmod>
     
   </url>
   
@@ -394,27 +450,6 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/translation-the-standard-query-parser/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.876Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/the-joys-and-the-woes-of-the-craft/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.875Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/translation-the-extended-dismax-query-parser/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.875Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://www.howardliu.cn/translation-perform-two-phase-commits-in-mongodb/</loc>
     
     <lastmod>2019-09-11T14:08:23.875Z</lastmod>
@@ -443,44 +478,9 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/translation-local-parameters-in-queries/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.873Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/when-to-leave-your-programming-job/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.873Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://www.howardliu.cn/java/jvm-tuning-basic/</loc>
     
     <lastmod>2019-09-11T14:08:23.873Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/translation-common-query-parameters/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.872Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/translation-the-dismax-query-parser/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.872Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/use-authority-in-mysql/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.871Z</lastmod>
     
   </url>
   
