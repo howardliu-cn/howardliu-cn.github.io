@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://www.howardliu.cn/when-to-leave-your-programming-job/</loc>
+    <lastmod>2019-11-09</lastmod>
+  </url>  <url>
     <loc>http://www.howardliu.cn/the-joys-and-the-woes-of-the-craft/</loc>
     <lastmod>2019-11-09</lastmod>
   </url>  <url>
@@ -23,9 +26,6 @@
     <lastmod>2019-11-09</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/use-authority-in-mysql/</loc>
-    <lastmod>2019-11-09</lastmod>
-  </url>  <url>
-    <loc>http://www.howardliu.cn/thinking/when-to-leave-your-programming-job/</loc>
     <lastmod>2019-11-09</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/why-it-is-difficult-to-get-high-salaries-for-iters/</loc>
@@ -154,10 +154,10 @@
     <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/storm/trident-tutorial/</loc>
+    <loc>http://www.howardliu.cn/storm/trident-state/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/storm/trident-state/</loc>
+    <loc>http://www.howardliu.cn/storm/trident-tutorial/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/the-eight-queens-puzzle/</loc>
