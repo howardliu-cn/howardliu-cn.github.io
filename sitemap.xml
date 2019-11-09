@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.howardliu.cn/the-paradigm-of-microservice/</loc>
+    
+    <lastmod>2019-11-09T11:49:38.707Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.howardliu.cn/when-to-leave-your-programming-job/</loc>
     
     <lastmod>2019-11-09T07:17:31.540Z</lastmod>
@@ -366,14 +373,14 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/storm/trident-state/</loc>
+    <loc>http://www.howardliu.cn/storm/trident-tutorial/</loc>
     
     <lastmod>2019-09-11T14:08:23.883Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/storm/trident-tutorial/</loc>
+    <loc>http://www.howardliu.cn/storm/trident-state/</loc>
     
     <lastmod>2019-09-11T14:08:23.883Z</lastmod>
     
