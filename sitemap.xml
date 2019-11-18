@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.howardliu.cn/deploy-ear-from-eos-to-weblogic/</loc>
+    
+    <lastmod>2019-11-18T15:04:18.201Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
     
     <lastmod>2019-11-18T15:02:24.412Z</lastmod>
@@ -317,13 +324,6 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/deploy-ear-from-eos-to-weblogic/</loc>
-    
-    <lastmod>2019-11-09T06:12:59.101Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://www.howardliu.cn/catch-ModuleException-when-startup-weblogic/</loc>
     
     <lastmod>2019-11-09T06:12:36.598Z</lastmod>
@@ -373,14 +373,14 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services/</loc>
+    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
     
     <lastmod>2019-09-11T14:08:23.885Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
+    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services/</loc>
     
     <lastmod>2019-09-11T14:08:23.885Z</lastmod>
     
@@ -436,14 +436,14 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
+    <loc>http://www.howardliu.cn/hadoop/rm-ha/</loc>
     
     <lastmod>2019-09-11T14:08:23.879Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/hadoop/rm-ha/</loc>
+    <loc>http://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     
     <lastmod>2019-09-11T14:08:23.879Z</lastmod>
     
