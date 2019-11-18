@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.howardliu.cn/thinking/the-solution-about-job-queue/</loc>
+    
+    <lastmod>2019-11-18T14:34:26.734Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.howardliu.cn/the-paradigm-of-microservice/</loc>
     
     <lastmod>2019-11-09T12:10:55.962Z</lastmod>
@@ -152,13 +159,6 @@
     <loc>http://www.howardliu.cn/talk-about-CountDownLatch-again/</loc>
     
     <lastmod>2019-11-09T06:31:14.213Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/the-solution-about-job-queue/</loc>
-    
-    <lastmod>2019-11-09T06:30:09.187Z</lastmod>
     
   </url>
   
@@ -394,6 +394,13 @@
   </url>
   
   <url>
+    <loc>http://www.howardliu.cn/os/WindowsUpdate_800B0100-failed-to-updates/</loc>
+    
+    <lastmod>2019-09-11T14:08:23.881Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.howardliu.cn/os/all-about-linux-swap-space/</loc>
     
     <lastmod>2019-09-11T14:08:23.881Z</lastmod>
@@ -402,13 +409,6 @@
   
   <url>
     <loc>http://www.howardliu.cn/os/init-my-ubuntu/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.881Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/os/WindowsUpdate_800B0100-failed-to-updates/</loc>
     
     <lastmod>2019-09-11T14:08:23.881Z</lastmod>
     

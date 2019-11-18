@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://www.howardliu.cn//thinking/the-solution-about-job-queue/</loc>
+    <lastmod>2019-11-18</lastmod>
+  </url>  <url>
     <loc>http://www.howardliu.cn/the-paradigm-of-microservice/</loc>
     <lastmod>2019-11-09</lastmod>
   </url>  <url>
@@ -65,9 +68,6 @@
     <lastmod>2019-11-09</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/talk-about-CountDownLatch-again/</loc>
-    <lastmod>2019-11-09</lastmod>
-  </url>  <url>
-    <loc>http://www.howardliu.cn/the-solution-about-job-queue/</loc>
     <lastmod>2019-11-09</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/setup-passwordless-ssh/</loc>
@@ -166,13 +166,13 @@
     <loc>http://www.howardliu.cn/the-eight-queens-puzzle/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
+    <loc>http://www.howardliu.cn/os/WindowsUpdate_800B0100-failed-to-updates/</loc>
+    <lastmod>2019-09-11</lastmod>
+  </url>  <url>
     <loc>http://www.howardliu.cn/os/all-about-linux-swap-space/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/os/init-my-ubuntu/</loc>
-    <lastmod>2019-09-11</lastmod>
-  </url>  <url>
-    <loc>http://www.howardliu.cn/os/WindowsUpdate_800B0100-failed-to-updates/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/translation-distributed-locks-with-redis/</loc>
