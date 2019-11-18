@@ -64,9 +64,9 @@
     
       <category term="DevOps" scheme="http://www.howardliu.cn/tags/DevOps/"/>
     
-      <category term="部署" scheme="http://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
-    
       <category term="Nginx" scheme="http://www.howardliu.cn/tags/Nginx/"/>
+    
+      <category term="部署" scheme="http://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
     
   </entry>
   
@@ -360,9 +360,9 @@
     
       <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
-      <category term="ha" scheme="http://www.howardliu.cn/tags/ha/"/>
-    
       <category term="hdfs" scheme="http://www.howardliu.cn/tags/hdfs/"/>
+    
+      <category term="ha" scheme="http://www.howardliu.cn/tags/ha/"/>
     
       <category term="QJM" scheme="http://www.howardliu.cn/tags/QJM/"/>
     

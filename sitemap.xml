@@ -2,9 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.howardliu.cn/logon-windows-automatic-uncheck-password/</loc>
+    
+    <lastmod>2019-11-18T15:38:24.408Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/ubuntu-ufw-settings/</loc>
+    
+    <lastmod>2019-11-18T15:33:34.870Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.howardliu.cn/disable-bps-in-eos-project/</loc>
     
-    <lastmod>2019-11-18T15:24:54.292Z</lastmod>
+    <lastmod>2019-11-18T15:29:47.792Z</lastmod>
     
   </url>
   
@@ -324,20 +338,6 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/ubuntu-ufw-settings/</loc>
-    
-    <lastmod>2019-11-09T06:14:07.149Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/logon-windows-automatic-uncheck-password/</loc>
-    
-    <lastmod>2019-11-09T06:13:38.946Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://www.howardliu.cn/spring-cloud/spring-cloud-config-encrypt-keystore-path-error/</loc>
     
     <lastmod>2019-10-26T08:57:15.872Z</lastmod>
@@ -443,13 +443,6 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/hadoop/rm-ha/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.879Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     
     <lastmod>2019-09-11T14:08:23.879Z</lastmod>
@@ -457,14 +450,21 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/hadoop/hdfs-ha-using-qjm/</loc>
+    <loc>http://www.howardliu.cn/hadoop/rm-ha/</loc>
+    
+    <lastmod>2019-09-11T14:08:23.879Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/hadoop/yarn-architecture/</loc>
     
     <lastmod>2019-09-11T14:08:23.878Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/hadoop/yarn-architecture/</loc>
+    <loc>http://www.howardliu.cn/hadoop/hdfs-ha-using-qjm/</loc>
     
     <lastmod>2019-09-11T14:08:23.878Z</lastmod>
     
