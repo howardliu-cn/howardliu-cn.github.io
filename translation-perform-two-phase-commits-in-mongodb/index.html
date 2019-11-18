@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>在 MongoDB 中执行两阶段提交||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="本篇文档提供了一个通过使用两阶段提交将数据写入多个文档的方法来处理多文档更新或“多文档事务”。此外，你可以扩展实现类似数据回滚的功能。">
+<meta name="keywords" content="mongodb,翻译,两阶段提交,2PC,translation,two phase commit">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在 MongoDB 中执行两阶段提交">
+<meta property="og:url" content="http://www.howardliu.cn/translation-perform-two-phase-commits-in-mongodb/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="本篇文档提供了一个通过使用两阶段提交将数据写入多个文档的方法来处理多文档更新或“多文档事务”。此外，你可以扩展实现类似数据回滚的功能。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-11-18T14:54:45.271Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在 MongoDB 中执行两阶段提交">
+<meta name="twitter:description" content="本篇文档提供了一个通过使用两阶段提交将数据写入多个文档的方法来处理多文档更新或“多文档事务”。此外，你可以扩展实现类似数据回滚的功能。">
+
+<meta name="keywords" content="mongodb,翻译,两阶段提交,2PC,translation,two phase commit">
+
+
+<meta name="description" content="本篇文档提供了一个通过使用两阶段提交将数据写入多个文档的方法来处理多文档更新或“多文档事务”。此外，你可以扩展实现类似数据回滚的功能。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/translation-perform-two-phase-commits-in-mongodb/">在 MongoDB 中执行两阶段提交</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2015-12-04</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/translation-perform-two-phase-commits-in-mongodb/" class="leancloud_visitors" data-flag-title="在 MongoDB 中执行两阶段提交">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <div id="toc" class="toc"></div>
+            <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>本篇文档提供了一个通过使用两阶段提交将数据写入多个文档的方法来处理多文档更新或“多文档事务”。此外，你可以扩展实现类似数据回滚的功能。</p>
+<a id="more"></a>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>在MongoDB中，操作单个文档（<a href="https://docs.mongodb.org/manual/reference/glossary/#term-document" target="_blank" rel="noopener">document</a>）是原子性的；但是，涉及到多个文档的操作，也就是常说的“多文档事务”，是非原子性的。由于document可以设计的非常复杂，包含多个“内嵌的”文档，因此单个文档的原子性为很多实际场景提供了必要的支持。<br>尽管单文档原子操作很强大，但在很多场景下依然需要多文档事务。当执行一个由几个顺序操作组成的事务时，可能会出现某些问题，例如：</p>
+<ul>
+<li>原子性：如果某个操作失败了，在同一个事务中前面的操作回滚到最初的状态（即，要么全做，要么全部做）。</li>
+<li>一致性：如果发生了严重故障将事务中断（比如：网络、硬件故障），数据库必须能够恢复到一致的状态。</li>
+</ul>
+<p>在需要多文档事务的场景中，你可以实现两阶段提交来完成场景需求。两阶段提交可以保证数据的一致性，如果发生错误，可以恢复到事务开始之前的状态。在事务执行过程中，无论发生什么情况都可以还原到数据和状态的准备阶段。</p>
+<blockquote>
+<p>注:<br>因为在MongoDB中只有单文档操作是原子性的，两阶段提交只能提供类似事务的语义。在两阶段提交或回滚过程中，应用程序可以返回的任意步骤点的中间数据。</p>
+</blockquote>
+<h1 id="模式"><a href="#模式" class="headerlink" title="模式"></a>模式</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>考虑这样一个场景，你想从账户A转账给账户B。在关系型数据库系统中，你可以在一个多语句事务中先减少账户A的资金然后增加账户B的资金。在MongoDB中，你可以模拟实现一个两阶段提交的得到同样的结果。<br>本节中的示例使用下面两个集合：</p>
+<ol>
+<li>集合accounts保存账户信息。</li>
+<li>集合transactions保存转账事务信息。</li>
+</ol>
+<h2 id="初始化源账户和目标账户"><a href="#初始化源账户和目标账户" class="headerlink" title="初始化源账户和目标账户"></a>初始化源账户和目标账户</h2><p>将账户A和账户B的信息写入到集合accounts。</p>
+<pre><code>db.accounts.insert(
+   [
+     { _id: &quot;A&quot;, balance: 1000, pendingTransactions: [] },
+     { _id: &quot;B&quot;, balance: 1000, pendingTransactions: [] }
+   ]
+)</code></pre><p>上面的语句返回一个包含了本次操作的状态信息的<a href="https://docs.mongodb.org/manual/reference/method/BulkWriteResult/#BulkWriteResult" target="_blank" rel="noopener">BulkWriteResult()</a> 对象。如果成功写入，<a href="https://docs.mongodb.org/manual/reference/method/BulkWriteResult/#BulkWriteResult" target="_blank" rel="noopener">BulkWriteResult()</a>对象中的<a href="https://docs.mongodb.org/manual/reference/method/BulkWriteResult/#BulkWriteResult.nInserted" target="_blank" rel="noopener">nInserted</a>的值为2。</p>
+<h2 id="初始化转帐数据"><a href="#初始化转帐数据" class="headerlink" title="初始化转帐数据"></a>初始化转帐数据</h2><p>将每笔转账信息写入到transactions表，转账数据包含以下字段：</p>
+<ul>
+<li>source和destination字段，指向accounts集合中的_id</li>
+<li>value字段，表示转账金额，影响源账户和目标账户的余额</li>
+<li>state字段，表示转账操作当前状态，state字段可选值范围为initial, pending, applied, done, canceling和 canceled</li>
+<li>lastModified字段，表示最后更新时间</li>
+</ul>
+<p>将账户A向账户B转账100的操作信息初始化到transactions集合，事务状态（state字段）为”initial”， lastModified字段值设为当前时间：</p>
+<pre><code>db.transactions.insert(
+    { _id: 1, source: &quot;A&quot;, destination: &quot;B&quot;, value: 100, state: &quot;initial&quot;, lastModified: new Date() }
+)</code></pre><p>上面的语句返回一个包含了本次操作的状态信息的<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult" target="_blank" rel="noopener">WriteResult()</a> 对象。如果成功写入，<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult" target="_blank" rel="noopener">WriteResult()</a>对象中的<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nInserted" target="_blank" rel="noopener">nInserted</a>的值为2。</p>
+<h2 id="使用两阶段提交进行转账"><a href="#使用两阶段提交进行转账" class="headerlink" title="使用两阶段提交进行转账"></a>使用两阶段提交进行转账</h2><h3 id="1-检索交易开始"><a href="#1-检索交易开始" class="headerlink" title="1. 检索交易开始"></a>1. 检索交易开始</h3><p>在transactions集合中查询一条state字段值为initial的数据。当前transactions集合中只有一条数据，也就是在初始化转账数据中添加的数据。如果集合中有另外的数据，查询将会返回所有state字段为initial的数据，除非你附加一些别的查询条件。</p>
+<pre><code>var t = db.transactions.findOne( { state: &quot;initial&quot; } )</code></pre><p>在<a href="https://docs.mongodb.org/manual/reference/program/mongo/#bin.mongo" target="_blank" rel="noopener">mongo shell</a>中定义变量t来保存返回的内容。上边的语句会得到如下输出（lastModified字段应该是你插入数据的时间）：</p>
+<pre><code>{ &quot;_id&quot; : 1, &quot;source&quot; : &quot;A&quot;, &quot;destination&quot; : &quot;B&quot;, &quot;value&quot; : 100, &quot;state&quot; : &quot;initial&quot;, &quot;lastModified&quot; : ISODate(&quot;2014-07-11T20:39:26.345Z&quot;) }</code></pre><h3 id="2-将transaction数据的state字段设为pending"><a href="#2-将transaction数据的state字段设为pending" class="headerlink" title="2. 将transaction数据的state字段设为pending"></a>2. 将transaction数据的state字段设为pending</h3><p>将transaction数据的state字段从initial改为pending，并用<a href="https://docs.mongodb.org/manual/reference/operator/update/currentDate/#up._S_currentDate" target="_blank" rel="noopener">$currentDate</a>操作将lastModified字段设为当前时间。</p>
+<pre><code>db.transactions.update(
+    { _id: t._id, state: &quot;initial&quot; },
+    {
+      $set: { state: &quot;pending&quot; },
+      $currentDate: { lastModified: true }
+    }
+)</code></pre><p>这个操作返回一个<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult" target="_blank" rel="noopener">WriteResult()</a>对象，包含本次更新操作的状态信息，如果更新成功，<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nMatched" target="_blank" rel="noopener">nMatched</a>和<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nModified" target="_blank" rel="noopener">nModified</a>值为1。<br>在修改块中，<code>state: &quot;initial&quot;</code>条件确保没有其它线程更新过本条数据。如果<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nMatched" target="_blank" rel="noopener">nMatched</a>和<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nModified" target="_blank" rel="noopener">nModified</a>值为0，回到第一步重新获取一条数据然后执行。</p>
+<h3 id="3-账户间转账"><a href="#3-账户间转账" class="headerlink" title="3. 账户间转账"></a>3. 账户间转账</h3><p>如果账户不包含该事务<code>t</code>的信息，用<a href="https://docs.mongodb.org/manual/reference/method/db.collection.update/#db.collection.update" target="_blank" rel="noopener">update()</a>方法更新帐户信息。在更新条件中，带有<code>pendingTransactions: { $ne: t._id }</code>是为了避免重复同一次转账。<br>同时更新balance字段和pendingTransactions字段来实现转账。<br>在事务中操作account集合，同事修改balance字段和pendingTransactions字段。<br>更新源账户信息，为balance字段减去transaction数据的value值，并将transaction的_id写入到pendingTransactions字段的数组中。</p>
+<pre><code>db.accounts.update(
+   { _id: t.source, pendingTransactions: { $ne: t._id } },
+   { $inc: { balance: -t.value }, $push: { pendingTransactions: t._id } }
+)</code></pre><p>操作成功后，方法会返回<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult" target="_blank" rel="noopener">WriteResult()</a>对象，<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nMatched" target="_blank" rel="noopener">nMatched</a>和<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nModified" target="_blank" rel="noopener">nModified</a>值为1。<br>更新目标账户信息，为balance字段加上transaction数据的value值，并将transaction的_id写入到pendingTransactions字段的数组中。</p>
+<pre><code>db.accounts.update(
+   { _id: t.destination, pendingTransactions: { $ne: t._id } },
+   { $inc: { balance: t.value }, $push: { pendingTransactions: t._id } }
+)</code></pre><p>操作成功后，方法会返回<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult" target="_blank" rel="noopener">WriteResult()</a>对象，<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nMatched" target="_blank" rel="noopener">nMatched</a>和<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nModified" target="_blank" rel="noopener">nModified</a>值为1。</p>
+<h3 id="4-将transaction数据的state设为applied"><a href="#4-将transaction数据的state设为applied" class="headerlink" title="4. 将transaction数据的state设为applied"></a>4. 将transaction数据的state设为applied</h3><p>用下面的<a href="https://docs.mongodb.org/manual/reference/method/db.collection.update/#db.collection.update" target="_blank" rel="noopener">update()</a>操作将transaction数据的state值设为applied，并更新lastModified字段值为当前时间：</p>
+<pre><code>db.transactions.update(
+   { _id: t._id, state: &quot;pending&quot; },
+   {
+     $set: { state: &quot;applied&quot; },
+     $currentDate: { lastModified: true }
+   }
+)</code></pre><p>操作成功后，方法会返回<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult" target="_blank" rel="noopener">WriteResult()</a>对象，<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nMatched" target="_blank" rel="noopener">nMatched</a>和<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nModified" target="_blank" rel="noopener">nModified</a>值为1。</p>
+<h3 id="5-修改两个账户的事务待定列表"><a href="#5-修改两个账户的事务待定列表" class="headerlink" title="5. 修改两个账户的事务待定列表"></a>5. 修改两个账户的事务待定列表</h3><p>将transaction数据的_id值从两个账户的pendingTransactions字段中移除。<br>修改源账户。</p>
+<pre><code>db.accounts.update(
+   { _id: t.source, pendingTransactions: t._id },
+   { $pull: { pendingTransactions: t._id } }
+)</code></pre><p>操作成功后，方法会返回<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult" target="_blank" rel="noopener">WriteResult()</a>对象，<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nMatched" target="_blank" rel="noopener">nMatched</a>和<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nModified" target="_blank" rel="noopener">nModified</a>值为1。<br>修改目标账户。</p>
+<pre><code>db.accounts.update(
+   { _id: t.destination, pendingTransactions: t._id },
+   { $pull: { pendingTransactions: t._id } }
+)</code></pre><p>操作成功后，方法会返回<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult" target="_blank" rel="noopener">WriteResult()</a>对象，<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nMatched" target="_blank" rel="noopener">nMatched</a>和<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nModified" target="_blank" rel="noopener">nModified</a>值为1。</p>
+<h3 id="6-更新transaction数据的state为done"><a href="#6-更新transaction数据的state为done" class="headerlink" title="6. 更新transaction数据的state为done."></a>6. 更新transaction数据的state为done.</h3><p>将transaction数据的state设为done，更新lastModified为当前时间，这也标志着本次事务的结束：</p>
+<pre><code>db.transactions.update(
+   { _id: t._id, state: &quot;applied&quot; },
+   {
+     $set: { state: &quot;done&quot; },
+     $currentDate: { lastModified: true }
+   }
+)</code></pre><p>操作成功后，方法会返回<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult" target="_blank" rel="noopener">WriteResult()</a>对象，<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nMatched" target="_blank" rel="noopener">nMatched</a>和<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nModified" target="_blank" rel="noopener">nModified</a>值为1。</p>
+<h1 id="从失败场景恢复"><a href="#从失败场景恢复" class="headerlink" title="从失败场景恢复"></a>从失败场景恢复</h1><p>其实事务最重要的部分不是上面示例中比较顺利的场景，而是当事务未成功完成时有没有可能从各种各样失败情况中恢复。本节会概括各种可能出现的失败场景，并教你一些步骤，如何从这些事件中恢复。</p>
+<h2 id="恢复操作"><a href="#恢复操作" class="headerlink" title="恢复操作"></a>恢复操作</h2><p>两阶段提交模式运行应用程勋运行一系列的操作来恢复事务到一致状态。在应用启动时或一个定时任务来运行恢复操作，可以用来捕捉未完成的事务。<br>在一致性问题上对于时间的需求取决于应用间隔多长时间来恢复每个事务。<br>接下来的恢复过程根据lastModified字段做为指标来决定pending状态的事务是否需要进行恢复；再具体点，如果pending或applied 状态的事务已经有30分钟没有更新过，恢复程序会认为这些事务需要进行恢复。你可以用不同的条件来决定事务是否需要恢复。</p>
+<h3 id="pending状态的事务"><a href="#pending状态的事务" class="headerlink" title="pending状态的事务"></a>pending状态的事务</h3><p>要恢复发生在上文举例的“<a href="#2-_将transaction数据的state字段设为pending">将transaction数据的state字段设为pending</a>” 步骤之后，但发生在“<a href="#4-_将transaction数据的state设为applied">将transaction数据的state设为applied</a>”步骤之前的错误，先从transactions集合中获取一条pending状态的数据：</p>
+<pre><code>var dateThreshold = new Date();
+dateThreshold.setMinutes(dateThreshold.getMinutes() - 30);
+var t = db.transactions.findOne( { state: &quot;pending&quot;, lastModified: { $lt: dateThreshold } } );</code></pre><p>然后从上文的 “<a href="#3-_账户间转账">账户间转账</a>”步骤开始继续执行。</p>
+<h3 id="applied状态的事务"><a href="#applied状态的事务" class="headerlink" title="applied状态的事务"></a>applied状态的事务</h3><p>To recover from failures that occur after step “Update transaction state to applied.” but before “Update transaction state to done.” step, retrieve from the transactions collection an applied transaction for recovery:<br>要恢复发生在上文举例的“<a href="#4-_将transaction数据的state设为applied">将transaction数据的state设为applied</a>”步骤之后，但发生在“<a href="#6-_更新transaction数据的state为done.">更新transaction数据的state为done</a>”步骤之前的错误，先从transactions集合中获取一条applied状态的数据：</p>
+<pre><code>var dateThreshold = new Date();
+dateThreshold.setMinutes(dateThreshold.getMinutes() - 30);
+var t = db.transactions.findOne( { state: &quot;applied&quot;, lastModified: { $lt: dateThreshold } } );</code></pre><p>然后从上文的“<a href="#5-_修改两个账户的事务待定列表">修改两个账户的事务待定列表</a>”步骤开始继续执行。</p>
+<h2 id="回滚操作"><a href="#回滚操作" class="headerlink" title="回滚操作"></a>回滚操作</h2><p>在一些情况下，你可能需要“回滚”或取消事务；举例来说，比如应用程序需要去“取消”事务，或者事务中的某个账户不存在，或者在事务运行阶段账户不存在了。</p>
+<h3 id="applied状态的事务-1"><a href="#applied状态的事务-1" class="headerlink" title="applied状态的事务"></a>applied状态的事务</h3><p>在“<a href="#4-_将transaction数据的state设为applied">将transaction数据的state设为applied</a>”步骤之后，你最好不要回滚事务了。而应该完成这个事务，然后启动一个补偿事务，将上个事务的源账户和目标账户调换一下，再做一次转账。</p>
+<h3 id="pending状态的事务-1"><a href="#pending状态的事务-1" class="headerlink" title="pending状态的事务"></a>pending状态的事务</h3><p>在“<a href="#2-_将transaction数据的state字段设为pending">将transaction数据的state字段设为pending</a>”步骤之后，在“<a href="#4-_将transaction数据的state设为applied">将transaction数据的state设为applied</a>”步骤之前，你可以根据下面的流程来回滚事务：</p>
+<h4 id="1-将transaction数据state设为canceling"><a href="#1-将transaction数据state设为canceling" class="headerlink" title="1. 将transaction数据state设为canceling"></a>1. 将transaction数据state设为canceling</h4><p>将transaction的state从pending设为canceling。</p>
+<pre><code>db.transactions.update(
+   { _id: t._id, state: &quot;pending&quot; },
+   {
+     $set: { state: &quot;canceling&quot; },
+     $currentDate: { lastModified: true }
+   }
+)</code></pre><p>操作成功后，方法会返回<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult" target="_blank" rel="noopener">WriteResult()</a>对象，<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nMatched" target="_blank" rel="noopener">nMatched</a>和<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nModified" target="_blank" rel="noopener">nModified</a>值为1。</p>
+<h4 id="2-撤消两个账户的事务"><a href="#2-撤消两个账户的事务" class="headerlink" title="2. 撤消两个账户的事务"></a>2. 撤消两个账户的事务</h4><p>在两个账户上撤销事务，如果事务已经是applied状态，执行反向操作。在update条件的中加上pendingTransactions:t._id来筛选状态是applied的数据。<br>更新目标账户信息，在<code>balance</code>字段上减去<code>transaction</code>数据的<code>value</code>值，并从<code>pendingTransactions</code>数组中移除transaction数据的<code>_id</code>。</p>
+<pre><code>db.accounts.update(
+   { _id: t.destination, pendingTransactions: t._id },
+   {
+     $inc: { balance: -t.value },
+     $pull: { pendingTransactions: t._id }
+   }
+)</code></pre><p>操作成功后，方法会返回<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult" target="_blank" rel="noopener">WriteResult()</a>对象，<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nMatched" target="_blank" rel="noopener">nMatched</a>和<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nModified" target="_blank" rel="noopener">nModified</a>值为1。如果转账事务没有发生在该账户上，那么上面的更新操作匹配不到数据，<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nMatched" target="_blank" rel="noopener">nMatched</a>和<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nModified" target="_blank" rel="noopener">nModified</a>值会是0。<br>更新源账户信息，在<code>balance</code>字段上加上<code>transaction</code>数据的<code>value</code>值，并从<code>pendingTransactions</code>数组中移除transaction数据的<code>_id</code>。</p>
+<pre><code>db.accounts.update(
+   { _id: t.source, pendingTransactions: t._id },
+   {
+     $inc: { balance: t.value},
+     $pull: { pendingTransactions: t._id }
+   }
+)</code></pre><p>操作成功后，方法会返回<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult" target="_blank" rel="noopener">WriteResult()</a>对象，<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nMatched" target="_blank" rel="noopener">nMatched</a>和<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nModified" target="_blank" rel="noopener">nModified</a>值为1。如果转账事务没有发生在该账户上，那么上面的更新操作匹配不到数据，<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nMatched" target="_blank" rel="noopener">nMatched</a>和<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nModified" target="_blank" rel="noopener">nModified</a>值会是0。</p>
+<h4 id="3-将transaction数据state设为canceled"><a href="#3-将transaction数据state设为canceled" class="headerlink" title="3. 将transaction数据state设为canceled"></a>3. 将transaction数据state设为canceled</h4><p>将transaction数据的state从canceling设为cancelled来完成回滚。</p>
+<pre><code>db.transactions.update(
+   { _id: t._id, state: &quot;canceling&quot; },
+   {
+     $set: { state: &quot;cancelled&quot; },
+     $currentDate: { lastModified: true }
+   }
+)</code></pre><p>操作成功后，方法会返回<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult" target="_blank" rel="noopener">WriteResult()</a>对象，<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nMatched" target="_blank" rel="noopener">nMatched</a>和<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nModified" target="_blank" rel="noopener">nModified</a>值为1。</p>
+<h1 id="多应用"><a href="#多应用" class="headerlink" title="多应用"></a>多应用</h1><p>从某种程度上说，事务的存在是为了便于多个应用并发创建和运行某些操作，而不会引发数据不一致和冲突。在我们的程序中，更新或获取transaction集合的数据时，更新条件中都会包含state字段条件，这能防止多应用冲突的请求transaction数据。<br>例如，App1和App2同时获取了某条相同的state为initial的transaction数据。在App2开工前，App1执行了完整的事务，当App2试图执行步骤“<a href="#2-_将transaction数据的state字段设为pending">将transaction数据的state字段设为pending</a>”时，由于更新条件中包含有<code>state: &quot;initial&quot;</code>语句，更新操作匹配不到数据，<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nMatched" target="_blank" rel="noopener">nMatched</a>和<a href="https://docs.mongodb.org/manual/reference/method/WriteResult/#WriteResult.nModified" target="_blank" rel="noopener">nModified</a>的值会是0。这会让App2返回到第一步去获取另一条transaction数据重新开始事务流程。<br>当多个应用运行时，最关键的是在任意时刻只能有唯一一个应用能操作一条给定的transaction数据。同样的，除了在更新条件中包含预期的事务状态之外，你还可以为transaction数据创建一个标记来鉴别正在操作该transaction数据的应用。用<a href="https://docs.mongodb.org/manual/reference/method/db.collection.findAndModify/#db.collection.findAndModify" target="_blank" rel="noopener">findAndModify()</a>方法来修改并返回transaction数据：</p>
+<pre><code>t = db.transactions.findAndModify(
+       {
+         query: { state: &quot;initial&quot;, application: { $exists: false } },
+         update:
+           {
+             $set: { state: &quot;pending&quot;, application: &quot;App1&quot; },
+             $currentDate: { lastModified: true }
+           },
+         new: true
+       }
+    )</code></pre><p>修改事务操作，可以确保只有匹配上application字段标识的应用才能操作相应的transaction数据。<br>如果App1在事务执行过程中失败了，你可以用<a href="从失败场景恢复">恢复程序</a>进行恢复，但是在恢复之前，应用程序必须确定它们“拥有”相应的transaction数据。例如要找到并继续执行一个pending状态的事务，使用类似下面的查询：</p>
+<pre><code>var dateThreshold = new Date();
+dateThreshold.setMinutes(dateThreshold.getMinutes() - 30);
+db.transactions.find(
+   {
+     application: &quot;App1&quot;,
+     state: &quot;pending&quot;,
+     lastModified: { $lt: dateThreshold }
+   }
+)</code></pre><h1 id="在生产环境下使用两阶段提交"><a href="#在生产环境下使用两阶段提交" class="headerlink" title="在生产环境下使用两阶段提交"></a>在生产环境下使用两阶段提交</h1><p>本文中的事务例子有意的设计简单写。比如，假设总能够对账户做回滚操作，并且账户余额是负数。<br>生产环境中的情况可能会更复杂一些。例如，真实场景下账户需要的信息还包括当前余额、待转出、待转入。<br>对于所有的事务来说，在你部署的时候需要保证使用合适等级的<a href="https://docs.mongodb.org/manual/core/write-concern/" target="_blank" rel="noopener">write concern</a>。</p>
+<p>原文链接：<a href="https://docs.mongodb.org/manual/tutorial/perform-two-phase-commits/" target="_blank" rel="noopener">Perform Two Phase Commits</a><br>翻译：<a href="http://www.howardliu.cn">沉潜飞动</a><br>译文链接：<a href="http://www.howardliu.cn/translation-perform-tow-phase-commits-in-mongodb">在 MongoDB 中执行两阶段提交</a></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/mongodb/">mongodb</a>
+            
+            <a href="/tags/2PC/">2PC</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/translation-local-parameters-in-queries/">
+                <i class="icon-previous">solr-搜索-查询中的局部参数</i>
+            </a>
+            
+            
+            <a class="next" href="/translation-distributed-locks-with-redis/">
+                <i class="icon-next">使用 Redis 实现分布式锁</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/ear/" style="font-size: 15px;">ear</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/http状态码/" style="font-size: 15px;">http状态码</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/瞎说八道/" style="font-size: 15px;">瞎说八道</a> <a href="/tags/瞎想/" style="font-size: 15px;">瞎想</a> <a href="/tags/成本/" style="font-size: 15px;">成本</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/局部参数/" style="font-size: 15px;">局部参数</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/DisMax查询解析器/" style="font-size: 15px;">DisMax查询解析器</a> <a href="/tags/层面分析/" style="font-size: 15px;">层面分析</a> <a href="/tags/eDisMax查询解析器/" style="font-size: 15px;">eDisMax查询解析器</a> <a href="/tags/标准查询解析器/" style="font-size: 15px;">标准查询解析器</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring-cloud</a> <a href="/tags/spring-cloud-config/" style="font-size: 15px;">spring-cloud-config</a> <a href="/tags/error/" style="font-size: 15px;">error</a> <a href="/tags/micro-service/" style="font-size: 15px;">micro-service</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/the-paradigm-of-microservice/">微服务编程范式</a></li><li class="post-list-item"><a class="post-list-link" href="/build-nginx-from-sources/">源码安装NGINX</a></li><li class="post-list-item"><a class="post-list-link" href="/the-cost-to-change-phone/">瞎说八道之更换手机的成本</a></li><li class="post-list-item"><a class="post-list-link" href="/blue-green-deployments-a-b-testing-and-canary-releases/">蓝绿部署、金丝雀发布（灰度发布）、AB测试</a></li><li class="post-list-item"><a class="post-list-link" href="/http/http-response-header-vary/">HTTP的响应头Vary</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2019</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="Hosted by Coding Pages" href="https://pages.coding.me" target="_blank">
+                        <img src="https://coding.net/static/f7272a0b7cd340571725c6734c6bdd6f.png">
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+<script>
+    // baidu analytics
+    (function () {
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

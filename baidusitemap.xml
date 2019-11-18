@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://www.howardliu.cn/translation-perform-tow-phase-commits-in-mongodb/</loc>
+    <loc>http://www.howardliu.cn/translation-perform-two-phase-commits-in-mongodb/</loc>
     <lastmod>2019-11-18</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/translation-local-parameters-in-queries/</loc>
@@ -154,10 +154,10 @@
     <loc>http://www.howardliu.cn/middleware/the-different-between-some-distributed-message-queue/</loc>
     <lastmod>2019-10-12</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
+    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services/</loc>
+    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/storm/trident-state/</loc>
@@ -181,10 +181,10 @@
     <loc>http://www.howardliu.cn/translation-distributed-locks-with-redis/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
+    <loc>http://www.howardliu.cn/hadoop/rm-ha/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/hadoop/rm-ha/</loc>
+    <loc>http://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/hadoop/hdfs-ha-using-qjm/</loc>
@@ -199,10 +199,10 @@
     <loc>http://www.howardliu.cn/zookeeper/zookeeper-error-packet-lenX-is-out-of-range/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/java/gc-overhead-limit-exceeded/</loc>
+    <loc>http://www.howardliu.cn/java/jdk-tools-and-utilities/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/java/jdk-tools-and-utilities/</loc>
+    <loc>http://www.howardliu.cn/java/gc-overhead-limit-exceeded/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/java/jvm-tuning-basic/</loc>
