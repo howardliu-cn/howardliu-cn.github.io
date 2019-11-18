@@ -2,6 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
+    
+    <lastmod>2019-11-18T15:02:24.412Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/constant-interface-anti-pattern/</loc>
+    
+    <lastmod>2019-11-18T15:00:01.165Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/translation-the-standard-query-parser/</loc>
+    
+    <lastmod>2019-11-18T14:59:08.485Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/java/gc-overhead-limit-exceeded/</loc>
+    
+    <lastmod>2019-11-18T14:59:03.852Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.howardliu.cn/translation-perform-two-phase-commits-in-mongodb/</loc>
     
     <lastmod>2019-11-18T14:54:45.271Z</lastmod>
@@ -82,13 +110,6 @@
     <loc>http://www.howardliu.cn/translation-the-extended-dismax-query-parser/</loc>
     
     <lastmod>2019-11-09T07:14:22.178Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/translation-the-standard-query-parser/</loc>
-    
-    <lastmod>2019-11-09T07:14:05.133Z</lastmod>
     
   </url>
   
@@ -240,13 +261,6 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/constant-interface-anti-pattern/</loc>
-    
-    <lastmod>2019-11-09T06:27:55.631Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
     
     <lastmod>2019-11-09T06:25:12.117Z</lastmod>
@@ -271,13 +285,6 @@
     <loc>http://www.howardliu.cn/ubuntu-ufw-settings/</loc>
     
     <lastmod>2019-11-09T06:14:07.149Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
-    
-    <lastmod>2019-11-09T06:13:48.703Z</lastmod>
     
   </url>
   
@@ -429,14 +436,14 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/hadoop/rm-ha/</loc>
+    <loc>http://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     
     <lastmod>2019-09-11T14:08:23.879Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
+    <loc>http://www.howardliu.cn/hadoop/rm-ha/</loc>
     
     <lastmod>2019-09-11T14:08:23.879Z</lastmod>
     
@@ -472,13 +479,6 @@
   
   <url>
     <loc>http://www.howardliu.cn/java/jdk-tools-and-utilities/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.874Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/java/gc-overhead-limit-exceeded/</loc>
     
     <lastmod>2019-09-11T14:08:23.874Z</lastmod>
     

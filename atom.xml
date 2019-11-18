@@ -64,9 +64,9 @@
     
       <category term="DevOps" scheme="http://www.howardliu.cn/tags/DevOps/"/>
     
-      <category term="Nginx" scheme="http://www.howardliu.cn/tags/Nginx/"/>
-    
       <category term="部署" scheme="http://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
+    
+      <category term="Nginx" scheme="http://www.howardliu.cn/tags/Nginx/"/>
     
   </entry>
   
@@ -120,9 +120,9 @@
     
       <category term="DevOps" scheme="http://www.howardliu.cn/tags/DevOps/"/>
     
-      <category term="部署" scheme="http://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
-    
       <category term="系统运维" scheme="http://www.howardliu.cn/tags/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/"/>
+    
+      <category term="部署" scheme="http://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
     
   </entry>
   
@@ -222,7 +222,7 @@
     <link href="http://www.howardliu.cn/java/gc-overhead-limit-exceeded/"/>
     <id>http://www.howardliu.cn/java/gc-overhead-limit-exceeded/</id>
     <published>2017-09-09T08:24:59.000Z</published>
-    <updated>2019-09-11T14:08:23.874Z</updated>
+    <updated>2019-11-18T14:59:03.852Z</updated>
     
     <content type="html"><![CDATA[<p><code>java.lang.OutOfMemoryError</code>这个错误是比较经典的错误了，经过JDK不断的迭代，服务器硬件的不断升级。。。总之，社会在发展，时代在进步。很多错误已经消失在时代的浪潮中。我也是很久没有见过这个错误了，以至于都以为在Java的世界中不会再碰到这个错误。结果，就在最疏忽的时候碰到了TA，真是，心中一万只神兽奔袭而过，狠狠的践踏了我这颗上了年纪的心脏啊。</p><p>吐槽完毕，言归正传。</p><p>Java刚刚出现的年代，有一个相比于其他语言的优势就是，内存回收机制。不需要明确的调用释放内存的API，java就自动完成，这个过程就是Garbage Collection，简称GC。这对以懒著称的程序猿们来说，绝对是重大利好。但是，凡事有利必有弊，可以肯定的是，Java语言是人创造的，GC也是人编写的代码，绝对不是机器自动完成的。也就是说，GC的过程是另外一群程序猿根据可能出现的情况，预设了GC条件，把符合回收条件的内存空间释放出来。一旦被占用的内存空间不符合释放的条件，GC没办法清理，那就会适时出现<code>java.lang.OutOfMemoryError</code>。这个错误就是提醒我们这群程序猿，写GC程序的程序猿不知道这种情况怎么处理，为了安全也不便处理，谁使用Java就自己看着解决吧。</p><p>说起来，<code>java.lang.OutOfMemoryError</code>有几种分类的，这次碰到的是<code>java.lang.OutOfMemoryError: GC overhead limit exceeded</code>，下面就来说说这种类型的内存溢出。</p><a id="more"></a><p>简单来说，<code>java.lang.OutOfMemoryError: GC overhead limit exceeded</code>发生的原因是，当前已经没有可用内存，经过多次GC之后仍然没能有效释放内存。</p><h1 id="1-原因"><a href="#1-原因" class="headerlink" title="1. 原因"></a>1. 原因</h1><p>众所周知，JVM的GC过程会因为STW，只不过停顿短到不容易感知。当引起停顿时间的98%都是在进行GC，但是结果只能得到小于2%的堆内存恢复时，就会抛出<code>java.lang.OutOfMemoryError: GC overhead limit exceeded</code>这个错误。<a href="https://plumbr.eu" target="_blank" rel="noopener">Plumbr</a>给出一个示意图：</p><p><img src="http://www.howardliu.cn/images/java/OOM-gc-overhead-limit-exceeded-1.png" alt="java.lang.OutOfMemoryError: GC overhead limit exceeded"></p><p>这个错误其实就是空闲内存与GC之间平衡的一个限制，当经过几次GC之后，只有少于2%的内存被释放，也就是很少的空闲内存，可能会再次被快速填充，这样就会触发再一次的GC。这就是一个恶性循环了，CPU大部分的时间在做GC操作，没有时间做具体的业务操作，可能几毫秒的任务需要几分钟都无法完成，整个应用程序就形同虚设了。</p><h1 id="2-示例"><a href="#2-示例" class="headerlink" title="2. 示例"></a>2. 示例</h1><p>从<a href="https://plumbr.eu" target="_blank" rel="noopener">Plumbr</a>上找的一个例子，这里直接给出。</p><pre><code class="java">class Wrapper {  public static void main(String args[]) throws Exception {    Map map = System.getProperties();    Random r = new Random();    while (true) {      map.put(r.nextInt(), &quot;value&quot;);    }  }}</code></pre><p>然后设定堆内存是100m，比如<code>java -Xmx100m -XX:+UseParallelGC Wrapper</code>。不同的系统环境可能需要设置不同的堆内存大小，否则会产生不同的OOM错误。其实也算是好理解，因为<code>java.lang.OutOfMemoryError: GC overhead limit exceeded</code>需要有两个条件：98%的时间和2%的内存。如果这两个条件有一个没有达到，结果Map对象扩容，那就可能出现<code>java.lang.OutOfMemoryError: Java heap space</code>这个错误。</p><h1 id="3-解决方法"><a href="#3-解决方法" class="headerlink" title="3. 解决方法"></a>3. 解决方法</h1><h2 id="3-1-JVM参数"><a href="#3-1-JVM参数" class="headerlink" title="3.1 JVM参数"></a>3.1 JVM参数</h2><p>JVM给出一个参数避免这个错误：<code>-XX:-UseGCOverheadLimit</code>。</p><p>但是，这个参数并不是解决了内存不足的问题，只是将错误发生时间延后，并且替换成<code>java.lang.OutOfMemoryError: Java heap space</code>。</p><h2 id="3-2-堆内存"><a href="#3-2-堆内存" class="headerlink" title="3.2 堆内存"></a>3.2 堆内存</h2><p>还有一个偷懒的方法是：增大堆内存。既然堆内存少了，那就增加堆内存即可。</p><p>但是，这个方法也不是万能的。因为程序里可能有内存泄露。这个时候即使再增大堆内存，也会有用完的时候。</p><p>所以前两个方法都只是治标不治本而已。</p><h2 id="3-3-终极方法"><a href="#3-3-终极方法" class="headerlink" title="3.3 终极方法"></a>3.3 终极方法</h2><p>其实还是有一个终极方法的，而且是治标治本的方法，就是找到占用内存大的地方，把代码优化了，就不会出现这个问题了。</p><p>怎么找到需要优化的代码呢？就是通过heap dump生产jvm快照，通过分析快照找到占用内存大的对象，从而找到代码位置。</p><p>通过设置<code>-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=heapdump</code>参数来生产快照，然后通过VisualVM或者<a href="http://www.eclipse.org/mat/" target="_blank" rel="noopener">MAT</a>等工具分析快照内容进行定位。通过这个参数是将发生OOM时的堆内存所有信息写入快照文件，也就是说，如果此时堆内存中有敏感信息的话，那就可能造成信息泄漏了。</p><hr><p>个人主页: <a href="http://www.howardliu.cn">http://www.howardliu.cn</a></p><p>个人博文: <a href="http://www.howardliu.cn/java/gc-overhead-limit-exceeded">java.lang.OutOfMemoryError:GC overhead limit exceeded</a></p><p>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a></p><p>CSDN博文: <a href="http://blog.csdn.net/liuxinghao/article/details/77934725" target="_blank" rel="noopener">java.lang.OutOfMemoryError:GC overhead limit exceeded</a></p>]]></content>
     
