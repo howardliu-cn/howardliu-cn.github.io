@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://www.howardliu.cn/disable-bps-in-eos-project/</loc>
+    <lastmod>2019-11-18</lastmod>
+  </url>  <url>
+    <loc>http://www.howardliu.cn/catch-ModuleException-when-startup-weblogic/</loc>
+    <lastmod>2019-11-18</lastmod>
+  </url>  <url>
+    <loc>http://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
+    <lastmod>2019-11-18</lastmod>
+  </url>  <url>
+    <loc>http://www.howardliu.cn/install-weblogic-plugin-in-eclipse/</loc>
+    <lastmod>2019-11-18</lastmod>
+  </url>  <url>
+    <loc>http://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
+    <lastmod>2019-11-18</lastmod>
+  </url>  <url>
     <loc>http://www.howardliu.cn/deploy-ear-from-eos-to-weblogic/</loc>
     <lastmod>2019-11-18</lastmod>
   </url>  <url>
@@ -128,18 +143,6 @@
     <lastmod>2019-11-09</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/logon-windows-automatic-uncheck-password/</loc>
-    <lastmod>2019-11-09</lastmod>
-  </url>  <url>
-    <loc>http://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
-    <lastmod>2019-11-09</lastmod>
-  </url>  <url>
-    <loc>http://www.howardliu.cn/install-weblogic-plugin-in-eclipse/</loc>
-    <lastmod>2019-11-09</lastmod>
-  </url>  <url>
-    <loc>http://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
-    <lastmod>2019-11-09</lastmod>
-  </url>  <url>
-    <loc>http://www.howardliu.cn/catch-ModuleException-when-startup-weblogic/</loc>
     <lastmod>2019-11-09</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/spring-cloud/spring-cloud-config-encrypt-keystore-path-error/</loc>

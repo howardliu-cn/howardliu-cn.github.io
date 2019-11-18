@@ -2,6 +2,41 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.howardliu.cn/disable-bps-in-eos-project/</loc>
+    
+    <lastmod>2019-11-18T15:24:54.292Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/catch-ModuleException-when-startup-weblogic/</loc>
+    
+    <lastmod>2019-11-18T15:14:57.473Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
+    
+    <lastmod>2019-11-18T15:10:11.366Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/install-weblogic-plugin-in-eclipse/</loc>
+    
+    <lastmod>2019-11-18T15:08:21.067Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
+    
+    <lastmod>2019-11-18T15:06:44.934Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.howardliu.cn/deploy-ear-from-eos-to-weblogic/</loc>
     
     <lastmod>2019-11-18T15:04:18.201Z</lastmod>
@@ -299,34 +334,6 @@
     <loc>http://www.howardliu.cn/logon-windows-automatic-uncheck-password/</loc>
     
     <lastmod>2019-11-09T06:13:38.946Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
-    
-    <lastmod>2019-11-09T06:13:28.633Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/install-weblogic-plugin-in-eclipse/</loc>
-    
-    <lastmod>2019-11-09T06:13:19.040Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
-    
-    <lastmod>2019-11-09T06:13:08.151Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/catch-ModuleException-when-startup-weblogic/</loc>
-    
-    <lastmod>2019-11-09T06:12:36.598Z</lastmod>
     
   </url>
   
