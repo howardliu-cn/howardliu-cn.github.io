@@ -242,6 +242,9 @@ div.post-meta {
     padding: 0 0 5px 20px; }
   div.post-meta .post-time {
     display: inline; }
+  div.post-meta .post-visitors-count {
+    display: inline;
+    float: right; }
 
 .post-footer {
   height: 40px;
@@ -427,3 +430,54 @@ nav.shrink .navbar-toggle {
 
 .post .post-descr h2, .article-entry h2 {
   border-bottom: 1px solid; }
+
+/*==================================================
+ * Comment
+ * ===============================================*/
+#vcomment .vwrap .vheader .vinput,
+#vcomment .vwrap .vedit > .vctrl > span,
+#vcomment .vwrap .vedit > .vpreview > p {
+  color: #ddd; }
+
+#vcomment .vwrap input::-webkit-input-placeholder,
+#vcomment .vwrap textarea::-webkit-input-placeholder {
+  /* WebKit browsers */
+  color: #bdbdbd; }
+
+#vcomment .vwrap input:-moz-placeholder,
+#vcomment .vwrap textarea:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: #bdbdbd; }
+
+#vcomment .vwrap input::-moz-placeholder,
+#vcomment .vwrap textarea::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: #bdbdbd; }
+
+#vcomment .vwrap input:-ms-input-placeholder,
+#vcomment .vwrap textarea:-ms-input-placeholder {
+  /* Internet Explorer 10+ */
+  color: #bdbdbd; }
+
+#vcomment .vlist .vcard > .vh > .vcontent > p {
+  color: #ddd; }
+
+#vcomment .vlist input::-webkit-input-placeholder,
+#vcomment .vlist textarea::-webkit-input-placeholder {
+  /* WebKit browsers */
+  color: #bdbdbd; }
+
+#vcomment .vlist input:-moz-placeholder,
+#vcomment .vlist textarea:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: #bdbdbd; }
+
+#vcomment .vlist input::-moz-placeholder,
+#vcomment .vlist textarea::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: #bdbdbd; }
+
+#vcomment .vlist input:-ms-input-placeholder,
+#vcomment .vlist textarea:-ms-input-placeholder {
+  /* Internet Explorer 10+ */
+  color: #bdbdbd; }

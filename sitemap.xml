@@ -4,7 +4,7 @@
   <url>
     <loc>http://www.howardliu.cn/the-paradigm-of-microservice/</loc>
     
-    <lastmod>2019-11-09T11:57:26.415Z</lastmod>
+    <lastmod>2019-11-09T12:10:55.962Z</lastmod>
     
   </url>
   
@@ -373,14 +373,14 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/storm/trident-tutorial/</loc>
+    <loc>http://www.howardliu.cn/storm/trident-state/</loc>
     
     <lastmod>2019-09-11T14:08:23.883Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/storm/trident-state/</loc>
+    <loc>http://www.howardliu.cn/storm/trident-tutorial/</loc>
     
     <lastmod>2019-09-11T14:08:23.883Z</lastmod>
     
@@ -422,13 +422,6 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/hadoop/rm-ha/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.879Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     
     <lastmod>2019-09-11T14:08:23.879Z</lastmod>
@@ -436,14 +429,21 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/hadoop/yarn-architecture/</loc>
+    <loc>http://www.howardliu.cn/hadoop/rm-ha/</loc>
+    
+    <lastmod>2019-09-11T14:08:23.879Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/hadoop/hdfs-ha-using-qjm/</loc>
     
     <lastmod>2019-09-11T14:08:23.878Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/hadoop/hdfs-ha-using-qjm/</loc>
+    <loc>http://www.howardliu.cn/hadoop/yarn-architecture/</loc>
     
     <lastmod>2019-09-11T14:08:23.878Z</lastmod>
     
