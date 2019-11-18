@@ -2,9 +2,37 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.howardliu.cn/translation-perform-tow-phase-commits-in-mongodb/</loc>
+    
+    <lastmod>2019-11-18T14:53:49.834Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/translation-local-parameters-in-queries/</loc>
+    
+    <lastmod>2019-11-18T14:50:04.049Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/rabbitmq-operation/</loc>
+    
+    <lastmod>2019-11-18T14:45:08.108Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.howardliu.cn/sonarqube-jenkins-pipeline/</loc>
+    
+    <lastmod>2019-11-18T14:41:35.792Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.howardliu.cn/thinking/the-solution-about-job-queue/</loc>
     
-    <lastmod>2019-11-18T14:34:26.734Z</lastmod>
+    <lastmod>2019-11-18T14:35:40.113Z</lastmod>
     
   </url>
   
@@ -40,13 +68,6 @@
     <loc>http://www.howardliu.cn/translation-faceting/</loc>
     
     <lastmod>2019-11-09T07:15:13.058Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/translation-local-parameters-in-queries/</loc>
-    
-    <lastmod>2019-11-09T07:14:57.245Z</lastmod>
     
   </url>
   
@@ -247,23 +268,9 @@
   </url>
   
   <url>
-    <loc>http://www.howardliu.cn/sonarqube-jenkins-pipeline/</loc>
-    
-    <lastmod>2019-11-09T06:15:44.279Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://www.howardliu.cn/ubuntu-ufw-settings/</loc>
     
     <lastmod>2019-11-09T06:14:07.149Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/rabbitmq-operation/</loc>
-    
-    <lastmod>2019-11-09T06:13:58.549Z</lastmod>
     
   </url>
   
@@ -453,13 +460,6 @@
     <loc>http://www.howardliu.cn/the-origin-of-matrix-multiplication/</loc>
     
     <lastmod>2019-09-11T14:08:23.877Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.howardliu.cn/translation-perform-two-phase-commits-in-mongodb/</loc>
-    
-    <lastmod>2019-09-11T14:08:23.875Z</lastmod>
     
   </url>
   

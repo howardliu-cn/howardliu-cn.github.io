@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://www.howardliu.cn/translation-perform-tow-phase-commits-in-mongodb/</loc>
+    <lastmod>2019-11-18</lastmod>
+  </url>  <url>
+    <loc>http://www.howardliu.cn/translation-local-parameters-in-queries/</loc>
+    <lastmod>2019-11-18</lastmod>
+  </url>  <url>
+    <loc>http://www.howardliu.cn/rabbitmq-operation/</loc>
+    <lastmod>2019-11-18</lastmod>
+  </url>  <url>
+    <loc>http://www.howardliu.cn/sonarqube-jenkins-pipeline/</loc>
+    <lastmod>2019-11-18</lastmod>
+  </url>  <url>
     <loc>http://www.howardliu.cn//thinking/the-solution-about-job-queue/</loc>
     <lastmod>2019-11-18</lastmod>
   </url>  <url>
@@ -17,9 +29,6 @@
     <lastmod>2019-11-09</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/translation-faceting/</loc>
-    <lastmod>2019-11-09</lastmod>
-  </url>  <url>
-    <loc>http://www.howardliu.cn/translation-local-parameters-in-queries/</loc>
     <lastmod>2019-11-09</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/translation-the-dismax-query-parser/</loc>
@@ -106,13 +115,7 @@
     <loc>http://www.howardliu.cn/hadoop-environment-cluster-setup/</loc>
     <lastmod>2019-11-09</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/sonarqube-jenkins-pipeline/</loc>
-    <lastmod>2019-11-09</lastmod>
-  </url>  <url>
     <loc>http://www.howardliu.cn/ubuntu-ufw-settings/</loc>
-    <lastmod>2019-11-09</lastmod>
-  </url>  <url>
-    <loc>http://www.howardliu.cn/rabbitmq-operation/</loc>
     <lastmod>2019-11-09</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
@@ -191,9 +194,6 @@
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/the-origin-of-matrix-multiplication/</loc>
-    <lastmod>2019-09-11</lastmod>
-  </url>  <url>
-    <loc>http://www.howardliu.cn/translation-perform-two-phase-commits-in-mongodb/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/zookeeper/zookeeper-error-packet-lenX-is-out-of-range/</loc>
