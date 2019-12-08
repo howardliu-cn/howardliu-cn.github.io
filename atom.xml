@@ -64,9 +64,9 @@
     
       <category term="DevOps" scheme="http://www.howardliu.cn/tags/DevOps/"/>
     
-      <category term="Nginx" scheme="http://www.howardliu.cn/tags/Nginx/"/>
-    
       <category term="部署" scheme="http://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
+    
+      <category term="Nginx" scheme="http://www.howardliu.cn/tags/Nginx/"/>
     
   </entry>
   
@@ -120,9 +120,9 @@
     
       <category term="DevOps" scheme="http://www.howardliu.cn/tags/DevOps/"/>
     
-      <category term="部署" scheme="http://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
-    
       <category term="系统运维" scheme="http://www.howardliu.cn/tags/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/"/>
+    
+      <category term="部署" scheme="http://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
     
   </entry>
   
@@ -290,11 +290,11 @@
       <category term="rm" scheme="http://www.howardliu.cn/categories/hadoop/rm/"/>
     
     
-      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
-    
       <category term="大数据" scheme="http://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="hadoop" scheme="http://www.howardliu.cn/tags/hadoop/"/>
+    
+      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
       <category term="ha" scheme="http://www.howardliu.cn/tags/ha/"/>
     
@@ -323,13 +323,13 @@
       <category term="yarn" scheme="http://www.howardliu.cn/categories/hadoop/yarn/"/>
     
     
-      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
-    
       <category term="大数据" scheme="http://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="hadoop" scheme="http://www.howardliu.cn/tags/hadoop/"/>
     
       <category term="yarn" scheme="http://www.howardliu.cn/tags/yarn/"/>
+    
+      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
   </entry>
   
@@ -354,11 +354,11 @@
       <category term="hdfs" scheme="http://www.howardliu.cn/categories/hadoop/hdfs/"/>
     
     
-      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
-    
       <category term="大数据" scheme="http://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="hadoop" scheme="http://www.howardliu.cn/tags/hadoop/"/>
+    
+      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
       <category term="hdfs" scheme="http://www.howardliu.cn/tags/hdfs/"/>
     
@@ -389,11 +389,11 @@
       <category term="hdfs" scheme="http://www.howardliu.cn/categories/hadoop/hdfs/"/>
     
     
-      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
-    
       <category term="大数据" scheme="http://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="hadoop" scheme="http://www.howardliu.cn/tags/hadoop/"/>
+    
+      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
       <category term="hdfs" scheme="http://www.howardliu.cn/tags/hdfs/"/>
     
@@ -447,9 +447,9 @@
     
       <category term="大数据" scheme="http://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
-      <category term="实时计算" scheme="http://www.howardliu.cn/tags/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/"/>
-    
       <category term="storm" scheme="http://www.howardliu.cn/tags/storm/"/>
+    
+      <category term="实时计算" scheme="http://www.howardliu.cn/tags/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/"/>
     
       <category term="Trident" scheme="http://www.howardliu.cn/tags/Trident/"/>
     
@@ -505,9 +505,9 @@
     
       <category term="大数据" scheme="http://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
-      <category term="实时计算" scheme="http://www.howardliu.cn/tags/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/"/>
-    
       <category term="storm" scheme="http://www.howardliu.cn/tags/storm/"/>
+    
+      <category term="实时计算" scheme="http://www.howardliu.cn/tags/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/"/>
     
       <category term="Trident" scheme="http://www.howardliu.cn/tags/Trident/"/>
     
@@ -594,9 +594,9 @@
       <category term="error" scheme="http://www.howardliu.cn/categories/open-source/big-data/zookeeper/error/"/>
     
     
-      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
-    
       <category term="大数据" scheme="http://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
       <category term="zookeeper" scheme="http://www.howardliu.cn/tags/zookeeper/"/>
     
