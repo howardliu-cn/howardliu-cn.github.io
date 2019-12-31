@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.howardliu.cn/"/>
-  <updated>2019-11-09T12:10:55.962Z</updated>
+  <updated>2019-12-23T01:57:42.891Z</updated>
   <id>http://www.howardliu.cn/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>什么是微服务？</title>
+    <link href="http://www.howardliu.cn/what-is-microservice/"/>
+    <id>http://www.howardliu.cn/what-is-microservice/</id>
+    <published>2019-12-22T13:31:35.000Z</published>
+    <updated>2019-12-23T01:57:42.891Z</updated>
+    
+    <content type="html"><![CDATA[<p>我所理解的微服务，就六个字：“高内聚，低耦合”。</p><p>没错，就是这个在软件开发过程中被反复提到的六个字，各类设计模式、架构设计、从入门到放弃等各种书中总会提到，从初级到高级到骨灰级程序员、架构师挂在嘴边的也是这六个字。只不过，在微服务概念之前，这六个字被用在类、模块、组件上，微服务则是将它放在服务上。</p><a id="more"></a><blockquote><p>注：上面是精简版，下面是完整版，看官自便。</p></blockquote><h1 id="什么是微服务"><a href="#什么是微服务" class="headerlink" title="什么是微服务"></a>什么是微服务</h1><p>微服务，2014年被大神马丁·福勒提出（所以2014年被称为微服务元年），在<a href="https://martinfowler.com/articles/microservices.html" target="_blank" rel="noopener">他的博客</a>中提出他对微服务的理解。这个时候，微服务还高高在上，大家不知道如何落地实现。一直到2016年，随着各种技术和工具的落地，很多互联网公司才初步实现微服务，至此，微服务才真正造福（还是祸乱？）于开发界。</p><p>那到底什么是微服务？这里引用马丁·福勒原文：</p><blockquote><p>In short, the microservice architectural style is an approach to developing a single application as a suite of small services, each running in its own process and communicating with lightweight mechanisms, often an HTTP resource API. These services are built around business capabilities and independently deployable by fully automated deployment machinery. There is a bare minimum of centralized management of these services, which may be written in different programming languages and use different data storage technologies.</p></blockquote><p>概括大意就是：</p><p>微服务是一种架构风格：</p><ol><li>一组小服务</li><li>每个服务运行在独立进程中</li><li>服务之间使用轻量级通信</li><li>服务可独立部署</li><li>是基于业务能力实现</li><li>无集中式管理</li></ol><p>基本上，符合上面这几条建议的架构风格，就是微服务。不过业界现在也没有统一定义，所以，如果发现以后微服务定义和上面的有偏差，一定是微服务的兼容性、包容性使然。</p><h2 id="小"><a href="#小" class="headerlink" title="小"></a>小</h2><p>说到“小”，有很多种观点，有的以代码行数界定，有的以重构时间界定，我个人认为这两种方式都不好。</p><p>首先，以代码行数界定。大家都是业内人士，都清楚行数有时候和编程习惯、开发能力有直接关系。比如，IP地址校验，正则表达式的写法和自己判断编写规则判断，代码行数就完全不一样。再者，代码行数是定2万行还是10万行，还是多少？假设定2万行，那2万+10行是不是就不符合微服务定义。再者，动态语言和静态语言，因为其编译器、运行环境、支撑类库的不同，代码行数也不尽相同。所以，用代码行数评判，是完全不可行的。</p><p>第二，用重构时间来界定。重构是一个考验对业务和架构理解的行为，功夫不到，重构时间会无限延长。但如果是一个业务老手，优势资深开发专家，那可能用几天就能够将系统重构。所以，用这种看经验、看水平的方式区分服务的微还是不微，也不可行。</p><p>我认为，这里说的小，可以类比“单一职责原则”。服务小而专，服务之间耦合低，可以实现业务的高度自治。简单说，就是能够让普通开发人员理解，业务上不掺杂不相干的业务，保持业务原子性。能够做到这样，就是小。</p><h2 id="独立进程"><a href="#独立进程" class="headerlink" title="独立进程"></a>独立进程</h2><h2 id="轻量级通信"><a href="#轻量级通信" class="headerlink" title="轻量级通信"></a>轻量级通信</h2><h2 id="独立部署"><a href="#独立部署" class="headerlink" title="独立部署"></a>独立部署</h2><h2 id="基于业务"><a href="#基于业务" class="headerlink" title="基于业务"></a>基于业务</h2><h2 id="无集中式管理"><a href="#无集中式管理" class="headerlink" title="无集中式管理"></a>无集中式管理</h2>]]></content>
+    
+    <summary type="html">
+    
+      什么是微服务？我所理解的微服务，就六个字：“高内聚，低耦合”。没错，就是这个在软件开发过程中被反复提到的六个字，各类设计模式、架构设计、从入门到放弃等各种书中总会提到，从初级到高级到骨灰级程序员、架构师挂在嘴边的也是这六个字。只不过，在微服务概念之前，这六个字被用在类、模块、组件上，微服务则是将它放在服务上。
+    
+    </summary>
+    
+    
+      <category term="microservice" scheme="http://www.howardliu.cn/categories/microservice/"/>
+    
+    
+      <category term="微服务" scheme="http://www.howardliu.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/"/>
+    
+      <category term="架构" scheme="http://www.howardliu.cn/tags/%E6%9E%B6%E6%9E%84/"/>
+    
+  </entry>
   
   <entry>
     <title>微服务编程范式</title>
@@ -64,9 +89,9 @@
     
       <category term="DevOps" scheme="http://www.howardliu.cn/tags/DevOps/"/>
     
-      <category term="部署" scheme="http://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
-    
       <category term="Nginx" scheme="http://www.howardliu.cn/tags/Nginx/"/>
+    
+      <category term="部署" scheme="http://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
     
   </entry>
   
@@ -290,11 +315,11 @@
       <category term="rm" scheme="http://www.howardliu.cn/categories/hadoop/rm/"/>
     
     
+      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
+    
       <category term="大数据" scheme="http://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="hadoop" scheme="http://www.howardliu.cn/tags/hadoop/"/>
-    
-      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
       <category term="ha" scheme="http://www.howardliu.cn/tags/ha/"/>
     
@@ -323,13 +348,13 @@
       <category term="yarn" scheme="http://www.howardliu.cn/categories/hadoop/yarn/"/>
     
     
+      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
+    
       <category term="大数据" scheme="http://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="hadoop" scheme="http://www.howardliu.cn/tags/hadoop/"/>
     
       <category term="yarn" scheme="http://www.howardliu.cn/tags/yarn/"/>
-    
-      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
   </entry>
   
@@ -354,11 +379,11 @@
       <category term="hdfs" scheme="http://www.howardliu.cn/categories/hadoop/hdfs/"/>
     
     
+      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
+    
       <category term="大数据" scheme="http://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="hadoop" scheme="http://www.howardliu.cn/tags/hadoop/"/>
-    
-      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
       <category term="hdfs" scheme="http://www.howardliu.cn/tags/hdfs/"/>
     
@@ -389,11 +414,11 @@
       <category term="hdfs" scheme="http://www.howardliu.cn/categories/hadoop/hdfs/"/>
     
     
+      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
+    
       <category term="大数据" scheme="http://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="hadoop" scheme="http://www.howardliu.cn/tags/hadoop/"/>
-    
-      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
       <category term="hdfs" scheme="http://www.howardliu.cn/tags/hdfs/"/>
     
@@ -566,41 +591,6 @@
       <category term="网络" scheme="http://www.howardliu.cn/tags/%E7%BD%91%E7%BB%9C/"/>
     
       <category term="http" scheme="http://www.howardliu.cn/tags/http/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Zookeeper客户端错误：Packet len8854970 is out of range!</title>
-    <link href="http://www.howardliu.cn/zookeeper/zookeeper-error-packet-lenX-is-out-of-range/"/>
-    <id>http://www.howardliu.cn/zookeeper/zookeeper-error-packet-lenX-is-out-of-range/</id>
-    <published>2017-02-20T09:06:45.000Z</published>
-    <updated>2019-09-11T14:08:23.875Z</updated>
-    
-    <content type="html"><![CDATA[<p>这是一个生产环境使用zookeeper异常的情况，错误是<code>java.io.IOException: Packet len8854970 is out of range!</code>。然后就换了一个namespace，就没有在出错，以为是偶然发生，所以没有重视。但是年后居然又出现问题，才意识到严重性。分析之后发现，每隔一段时间，某一个znode节点下超过客户端所设置的大小，客户端连接会失败，zkCli.sh操作该节点也会失败。如果对于简单依赖zookeeper的系统，这种错误可以容忍（但是必须解决）；如果是强依赖zookeeper的系统，这种错误可以说是灾难。</p><a id="more"></a><h1 id="1-发现问题"><a href="#1-发现问题" class="headerlink" title="1 发现问题"></a>1 发现问题</h1><p>问题的发现比较曲折，首先是发现服务器磁盘写满了（吐槽下运维居然没有对磁盘添加监控），致使项目中的报警功能失效。然后就把无用日志删除，习（tou）惯（lan）的把异常的应用重启了下。幸好有个比较好的习惯就是，项目启动成功后，都会打看日志跟踪下，确定无误才会关掉终端。结果就被错误日志刷屏了：</p><pre><code class="java">ERROR 2017-02-20 10:45:44,729 [Curator-Framework-0] o.a.c.f.i.CuratorFrameworkImpl.logError() (CuratorFrameworkImpl.java:557) - Background retry gave uporg.apache.curator.CuratorConnectionLossException: KeeperErrorCode = ConnectionLoss        at org.apache.curator.framework.imps.CuratorFrameworkImpl.performBackgroundOperation(CuratorFrameworkImpl.java:838) [curator-framework-2.10.0.jar:na]        at org.apache.curator.framework.imps.CuratorFrameworkImpl.backgroundOperationsLoop(CuratorFrameworkImpl.java:809) [curator-framework-2.10.0.jar:na]        at org.apache.curator.framework.imps.CuratorFrameworkImpl.access$300(CuratorFrameworkImpl.java:64) [curator-framework-2.10.0.jar:na]        at org.apache.curator.framework.imps.CuratorFrameworkImpl$4.call(CuratorFrameworkImpl.java:267) [curator-framework-2.10.0.jar:na]        at java.util.concurrent.FutureTask.run(FutureTask.java:266) [na:1.8.0_111]        at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:180) [na:1.8.0_111]        at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:293) [na:1.8.0_111]        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142) [na:1.8.0_111]        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617) [na:1.8.0_111]        at java.lang.Thread.run(Thread.java:745) [na:1.8.0_111]</code></pre><p>因为zookeeper的客户端使用的是<a href="http://curator.apache.org/" target="_blank" rel="noopener">Apache Curator</a>，与zookeeper的连接断开会重新创建连接，所以会出现大量的连接失败异常。</p><h1 id="2-分析问题"><a href="#2-分析问题" class="headerlink" title="2 分析问题"></a>2 分析问题</h1><p>在这个项目中，对于zookeepr的使用有下面几种场景：</p><ol><li>服务状态数据：将服务状态写入znode节点</li><li>服务注册：将服务地址写入znode节点</li><li>服务发现：获取znode节点中的可用服务地址</li><li>监听节点：监听某个znode节点或该节点的字节点状态</li></ol><p>这几种情况都需要与zookeeper的znode节点创建连接，然后执行操作。根据错误提示，<code>java.io.IOException: Packet len8854970 is out of range!</code>，out of range就是超过了某个限制，只能查看代码了。</p><pre><code class="java">protected final ByteBuffer lenBuffer = ByteBuffer.allocateDirect(4);protected ByteBuffer incomingBuffer = lenBuffer;protected void readLength() throws IOException {    int len = incomingBuffer.getInt();    if (len &lt; 0 || len &gt;= ClientCnxn.packetLen) {        throw new IOException(&quot;Packet len&quot; + len + &quot; is out of range!&quot;);    }    incomingBuffer = ByteBuffer.allocate(len);}public static final int packetLen = Integer.getInteger(&quot;jute.maxbuffer&quot;, 4096 * 1024);</code></pre><p>从代码就能够很容易的看出，这个错误是因为<code>len</code>小于0或大于<code>packetLen</code>，根据代码逻辑，<code>len</code>不小于0，那就是大于<code>packetLen</code>。而<code>packetLen</code>的值是<code>jute.maxbuffer</code>系统变量定义或默认的4096 * 1024（4M）。</p><p>继续深扒代码，因为代码比较长，这里就不写了。大体逻辑就是，创建与zookeeper连接之后，要对某个节点进行读写操作，为了提高吞吐量，先判断下该节点数据量大小是否超过设置的<code>jute.maxbuffer</code>，如果是，就抛出异常。在zookeeper客户端中，这一部分异常的处理比较粗糙，因为注释上也写着“this is ugly, you have a better way speak up”。</p><h1 id="3-解决问题"><a href="#3-解决问题" class="headerlink" title="3 解决问题"></a>3 解决问题</h1><p>根据上面的纠错，答案就很明显了。只有两种方案：</p><ul><li>把待操作节点的大小减下来，小于默认的4M</li><li>把默认的<code>jute.maxbuffer</code>大小提高</li></ul><p>对于第一种方式，需要根据自身具体情况具体操作。这里没有什么有效建议。</p><p>对于第二种方式，就比较简单了。只要在创建Zookeeper对象之前，设置<code>System.setProperty(&quot;jute.maxbuffer&quot;, 4096 * 1024 * 10 + &quot;&quot;);</code>，这里的大小根据自己的系统设置，我这里只是一个测试值（如果设置太大，这个节点真的比较大的话，会影响吞吐）。</p><blockquote><p>因为我这里使用的是<a href="http://curator.apache.org/" target="_blank" rel="noopener">Apache Curator</a>，不需要自己创建Zookeeper对象，所以需要在创建CuratorFramework对象之前添加这个变量。</p></blockquote><p>解决问题要彻底，不能留下祸患。（此处应该伴随阴笑和冷风。。。）</p><p>java客户端的问题解决了，但是通过zkCli.sh连接时，还是会出现这个问题。报错如下：</p><pre><code>2017-02-20 12:08:03,999 [myid:] - WARN  [main-SendThread(localhost:2181):ClientCnxn$SendThread@1102] - Session 0x1591b713cefd2b3 for server localhost/127.0.0.1:2181, unexpected error, closing socket connection and attempting reconnectjava.io.IOException: Packet len8854970 is out of range!    at org.apache.zookeeper.ClientCnxnSocket.readLength(ClientCnxnSocket.java:112)    at org.apache.zookeeper.ClientCnxnSocketNIO.doIO(ClientCnxnSocketNIO.java:79)    at org.apache.zookeeper.ClientCnxnSocketNIO.doTransport(ClientCnxnSocketNIO.java:366)    at org.apache.zookeeper.ClientCnxn$SendThread.run(ClientCnxn.java:1081)WATCHER::WatchedEvent state:Disconnected type:None path:nullException in thread &quot;main&quot; org.apache.zookeeper.KeeperException$ConnectionLossException: KeeperErrorCode = ConnectionLoss for /it-monitor/com/wfj/monitor/sales-overview-info    at org.apache.zookeeper.KeeperException.create(KeeperException.java:99)    at org.apache.zookeeper.KeeperException.create(KeeperException.java:51)    at org.apache.zookeeper.ZooKeeper.getChildren(ZooKeeper.java:1472)    at org.apache.zookeeper.ZooKeeper.getChildren(ZooKeeper.java:1500)    at org.apache.zookeeper.ZKUtil.listSubTreeBFS(ZKUtil.java:114)    at org.apache.zookeeper.ZKUtil.deleteRecursive(ZKUtil.java:49)    at org.apache.zookeeper.ZooKeeperMain.processZKCmd(ZooKeeperMain.java:703)    at org.apache.zookeeper.ZooKeeperMain.processCmd(ZooKeeperMain.java:588)    at org.apache.zookeeper.ZooKeeperMain.executeLine(ZooKeeperMain.java:360)    at org.apache.zookeeper.ZooKeeperMain.run(ZooKeeperMain.java:323)    at org.apache.zookeeper.ZooKeeperMain.main(ZooKeeperMain.java:282)</code></pre><p>找到zkCli.sh，最下面的java命令中添加对<code>jute.maxbuffer</code>的定义（使用D参数）：</p><pre><code class="sh">&quot;$JAVA&quot; &quot;-Dzookeeper.log.dir=${ZOO_LOG_DIR}&quot; &quot;-Dzookeeper.root.logger=${ZOO_LOG4J_PROP}&quot; \     &quot;-Djute.maxbuffer=41943040&quot; \     -cp &quot;$CLASSPATH&quot; $CLIENT_JVMFLAGS $JVMFLAGS \     org.apache.zookeeper.ZooKeeperMain &quot;$@&quot;</code></pre><p>当然，为了运维方便，可以把<code>jute.maxbuffer</code>的值设置成变量，通过修改配置来设置值。避免因为修改sh脚本出现其他问题。</p>]]></content>
-    
-    <summary type="html">
-    
-      这是一个生产环境使用zookeeper异常的情况，错误是java.io.IOException:Packet len8854970 is out of range!。因为是偶然发生，所以没有重视。但是年后又发现问题，才意识到问题的严重性。
-    
-    </summary>
-    
-    
-      <category term="open-source" scheme="http://www.howardliu.cn/categories/open-source/"/>
-    
-      <category term="big-data" scheme="http://www.howardliu.cn/categories/open-source/big-data/"/>
-    
-      <category term="zookeeper" scheme="http://www.howardliu.cn/categories/open-source/big-data/zookeeper/"/>
-    
-      <category term="error" scheme="http://www.howardliu.cn/categories/open-source/big-data/zookeeper/error/"/>
-    
-    
-      <category term="大数据" scheme="http://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
-    
-      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
-    
-      <category term="zookeeper" scheme="http://www.howardliu.cn/tags/zookeeper/"/>
-    
-      <category term="异常处理" scheme="http://www.howardliu.cn/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/"/>
     
   </entry>
   
