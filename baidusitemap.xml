@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://www.howardliu.cn/the-paradigm-of-microservice/</loc>
-    <lastmod>2020-01-01</lastmod>
+    <loc>http://www.howardliu.cn/the-base-of-microservice/</loc>
+    <lastmod>2020-01-05</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/what-is-microservice/</loc>
+    <lastmod>2020-01-04</lastmod>
+  </url>  <url>
+    <loc>http://www.howardliu.cn/middleware/the-different-between-some-distributed-message-queue/</loc>
+    <lastmod>2020-01-02</lastmod>
+  </url>  <url>
+    <loc>http://www.howardliu.cn/the-paradigm-of-microservice/</loc>
     <lastmod>2020-01-01</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/logon-windows-automatic-uncheck-password/</loc>
@@ -160,13 +166,10 @@
     <loc>http://www.howardliu.cn/http/http-response-header-vary/</loc>
     <lastmod>2019-10-22</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/middleware/the-different-between-some-distributed-message-queue/</loc>
-    <lastmod>2019-10-12</lastmod>
-  </url>  <url>
-    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services/</loc>
+    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
+    <loc>http://www.howardliu.cn/micro-services/data-consistency-in-micro-services/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/storm/trident-state/</loc>
@@ -178,10 +181,10 @@
     <loc>http://www.howardliu.cn/the-eight-queens-puzzle/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/os/all-about-linux-swap-space/</loc>
+    <loc>http://www.howardliu.cn/os/WindowsUpdate_800B0100-failed-to-updates/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
-    <loc>http://www.howardliu.cn/os/WindowsUpdate_800B0100-failed-to-updates/</loc>
+    <loc>http://www.howardliu.cn/os/all-about-linux-swap-space/</loc>
     <lastmod>2019-09-11</lastmod>
   </url>  <url>
     <loc>http://www.howardliu.cn/os/init-my-ubuntu/</loc>
