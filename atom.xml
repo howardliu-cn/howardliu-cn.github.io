@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.howardliu.cn/"/>
-  <updated>2020-01-06T15:59:46.369Z</updated>
+  <updated>2020-01-25T11:18:31.575Z</updated>
   <id>http://www.howardliu.cn/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Java中的单例模式（完整篇）</title>
+    <link href="http://www.howardliu.cn/singleton-pattern/"/>
+    <id>http://www.howardliu.cn/singleton-pattern/</id>
+    <published>2020-01-24T07:44:18.000Z</published>
+    <updated>2020-01-25T11:18:31.575Z</updated>
+    
+    <content type="html"><![CDATA[<p>个人认为单例模式是设计模式中最简单也是最常用的一种，是对有限资源合理利用的一种方式。这个模式看似简单，但是其中蕴含了关于并发、类加载、序列化等一系列深层次的知识，如果理解不够深，就有可能在高并发时遇到难以预期的异常，或者会造成资源浪费。</p><p>所以本文会从将目前Java领域最常用的几种单例模式列出来，供大家参考。</p><a id="more"></a><h1 id="WHAT"><a href="#WHAT" class="headerlink" title="WHAT"></a>WHAT</h1><p>维基百科给出了解释、实现的思路以及应该注意的地方:</p><blockquote><p>单例模式，也叫单子模式，是一种常用的软件设计模式，属于创建型模式的一种。在应用这个模式时，单例对象的类必须保证只有一个实例存在。</p><p>实现单例模式的思路是：一个类能返回对象一个引用(永远是同一个)和一个获得该实例的方法（必须是静态方法，通常使用getInstance这个名称）；当我们调用这个方法时，如果类持有的引用不为空就返回这个引用，如果类保持的引用为空就创建该类的实例并将实例的引用赋予该类保持的引用；同时我们还将该类的构造函数定义为私有方法，这样其他处的代码就无法通过调用该类的构造函数来实例化该类的对象，只有通过该类提供的静态方法来得到该类的唯一实例。</p><p>单例模式在多线程的应用场合下必须小心使用。如果当唯一实例尚未创建时，有两个线程同时调用创建方法，那么它们同时没有检测到唯一实例的存在，从而同时各自创建了一个实例，这样就有两个实例被构造出来，从而违反了单例模式中实例唯一的原则。 解决这个问题的办法是为指示类是否已经实例化的变量提供一个互斥锁(虽然这样会降低效率)。</p></blockquote><p>类图是：</p><p><img src="https://www.howardliu.cn/images/java/Singleton_UML_class_diagram.png" alt="singleton pattern"></p><h1 id="WHY"><a href="#WHY" class="headerlink" title="WHY"></a>WHY</h1><p>正如定义所说，单例模式就是整个内存模型中，只有一个实例。实例少了，内存占用就少。同时，只有一个实例，也就只需要构建一个对象，计算就少。对于构造过程中需要大量计算或者占用大量资源的对象，只创建一次，就减少了资源占用和内存占用。</p><h1 id="HOW"><a href="#HOW" class="headerlink" title="HOW"></a>HOW</h1><h2 id="饿汉式"><a href="#饿汉式" class="headerlink" title="饿汉式"></a>饿汉式</h2><p>饿汉式是最简单的一种实现，在类装载过程中，完成实例化，避免多线程问题。</p><h3 id="实现一：静态实例参数与静态代码块"><a href="#实现一：静态实例参数与静态代码块" class="headerlink" title="实现一：静态实例参数与静态代码块"></a>实现一：静态实例参数与静态代码块</h3><pre><code class="java">public class EagerSingleton {    private static final EagerSingleton INSTANCE = new EagerSingleton();    private EagerSingleton() {    }    public static EagerSingleton getInstance() {        return INSTANCE;    }}</code></pre><p>根据java的特性，饿汉式还可以变种写法，有的地方称为静态代码块方式：</p><pre><code class="java">public class EagerSingleton {    private static EagerSingleton INSTANCE = null;    static {        INSTANCE = new EagerSingleton();    }    private EagerSingleton() {    }    public static EagerSingleton getInstance() {        return INSTANCE;    }}</code></pre><p>这两种方式只是在写法上的区别，优缺点没有区别，只是借助Java语言特性的不同写法，所以归为一类。</p><p>饿汉式有两个明显的缺点：</p><ol><li>类装载过程即完成实例化，如果整个应用生命周期内，实例没有使用，也就是浪费资源了。</li><li>因为没有办法向构造函数传递不同的参数，如果需要通过个性化参数定制实例时，这种方式就不支持了。</li></ol><h3 id="实现二：静态内部类"><a href="#实现二：静态内部类" class="headerlink" title="实现二：静态内部类"></a>实现二：静态内部类</h3><p>针对饿汉式第一个缺点，我们可以借助静态内部类的方式，将对象实例化的时间延后。</p><pre><code class="java">public class EagerSingleton {    private EagerSingleton() {    }    private static class EagerSingletonInstance {        private static final EagerSingleton INSTANCE = new EagerSingleton();    }    public static EagerSingleton getInstance() {        return EagerSingletonInstance.INSTANCE;    }}</code></pre><p>但是，依然不能很好的解决第二个缺点，如果需要根据不同的参数实现不同的实例，可以采用下面说的懒汉式实现。</p><h2 id="懒汉式"><a href="#懒汉式" class="headerlink" title="懒汉式"></a>懒汉式</h2><p>懒汉式比饿汉式的一个优点，就是能够在使用的时候再进行实例化。但是，馅饼总是要伴随着陷阱，懒汉式写法有更多的坑，一不小心就摔着了。</p><h3 id="错误一：单线程实现"><a href="#错误一：单线程实现" class="headerlink" title="错误一：单线程实现"></a>错误一：单线程实现</h3><pre><code class="java">public class LazySingleton {    private static LazySingleton INSTANCE = null;    private LazySingleton() {    }    public static LazySingleton getInstance() {        if (INSTANCE == null) {            INSTANCE = new LazySingleton();        }        return INSTANCE;    }}</code></pre><p>之所以定义为单线程实现，是因为<code>INSTANCE == null</code>这个判断，一个线程通过这个判断，开始进行对象实例化，但是还没有实例化完成，另一个线程又来了，这个时候，对象还没有实例化，就也会开始进行实例化，造成不必要的浪费。</p><h3 id="错误二：同步方法"><a href="#错误二：同步方法" class="headerlink" title="错误二：同步方法"></a>错误二：同步方法</h3><pre><code class="java">public class LazySingleton {    private static LazySingleton INSTANCE = null;    private LazySingleton() {    }    public static synchronized LazySingleton getInstance() {        if (INSTANCE == null) {            INSTANCE = new LazySingleton();        }        return INSTANCE;    }}</code></pre><p>这种方式解决了多线程的问题，但是也引入了新的性能问题：太慢。<code>synchronized</code>把整个方法包起来，也就是每个线程进入的时候，都需要等待其他线程结束调用，才能拿到实例，在性能敏感的场景，是比较致命的。</p><h3 id="错误三：同步代码块之单次检查"><a href="#错误三：同步代码块之单次检查" class="headerlink" title="错误三：同步代码块之单次检查"></a>错误三：同步代码块之单次检查</h3><pre><code class="java">public class LazySingleton {    private static LazySingleton INSTANCE = null;    private LazySingleton() {    }    public static LazySingleton getInstance() {        if (INSTANCE == null) {            synchronized (LazySingleton.class) {                INSTANCE = new LazySingleton();            }        }        return INSTANCE;    }}</code></pre><p>这种写法看似将同步代码缩小，但也缩小了多线程保障，也犯了第一种写法的错误，属于没有对多线程有基本了解写出的低级错误代码。</p><h3 id="错误四：同步代码块之双重检查"><a href="#错误四：同步代码块之双重检查" class="headerlink" title="错误四：同步代码块之双重检查"></a>错误四：同步代码块之双重检查</h3><pre><code class="java">public class LazySingleton {    private static LazySingleton INSTANCE = null;    private LazySingleton() {    }    public static LazySingleton getInstance() {        if (INSTANCE == null) {            synchronized (LazySingleton.class) {                if (INSTANCE == null) {                    INSTANCE = new LazySingleton();                }            }        }        return INSTANCE;    }}</code></pre><p>这种写法在一定程度上属于正确的写法，双重判断可以很好的实现线程安全和延迟加载。如果到这里就结束，那就是谬以千里的毫厘之差。</p><p>双重检查和同步代码块都没有问题，问题出在<code>INSTANCE = new LazySingleton()</code>这句话。在JVM中，为了充分利用CPU计算能力，会进行重排序优化，<code>INSTANCE = new LazySingleton()</code>做了三件事：</p><ol><li>为 INSTANCE 初始化栈空间</li><li>为 LazySingleton 分配内存空间，实例化对象</li><li>INSTANCE 指向 LazySingleton 实例分配的内存空间</li></ol><p>因为重排序优化的存在，真正执行的过程中，可能会出现1-2-3的顺序，也可能出现1-3-2的顺序。如果是1-3-2，INSTANCE 指向了 LazySingleton 实例分配的内存空间后，就不是null，另外一个线程进入判断null时，就会直接返回 INSTANCE，但是这个时候 LazySingleton 实例化还没有完成，就可能出现意想不到的异常。</p><h3 id="正确：双重检查-阻止重排序"><a href="#正确：双重检查-阻止重排序" class="headerlink" title="正确：双重检查+阻止重排序"></a>正确：双重检查+阻止重排序</h3><pre><code class="java">public class LazySingleton {    private static volatile LazySingleton INSTANCE = null;    private LazySingleton() {    }    public static LazySingleton getInstance() {        if (INSTANCE == null) {            synchronized (LazySingleton.class) {                if (INSTANCE == null) {                    INSTANCE = new LazySingleton();                }            }        }        return INSTANCE;    }}</code></pre><p>这种写法比上面那种，就差在<code>volatile</code>这个关键字。</p><h2 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h2><p>懒汉式和饿汉式都能够适用于多线程并发场景，但是通过反序列化或反射可以实例化对象，这样依然不能满足单例模式的要求，所以可以借助枚举实现，枚举可以完美避免多线程并发问题，而且可以防止反序列化和反射创建新对象。第一次看到这样定义单例模式，是在《Effective Java》中，多读经典书还是挺好的。</p><pre><code class="java">public enum EnumSingleton {    INSTANCE;    public void method1() {        // do something    }    public Object method2() {        // do something and return something else        return new Object();    }}</code></pre><p>在开发实践中，枚举可以满足绝大部分场景，而且写法简单，定义单例的逻辑只需要三行代码，简洁而不简单，三行代码可以保证线程安全。同时枚举的反序列化只是通过name查找对象，不会产生新的对象；根据JVM规范，通过反射创建枚举对象时，会抛出<code>IllegalArgumentException</code>异常。这样，相当于通过语法糖防止反序列化和反射破坏单例。</p><h1 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h1><ol><li><strong>无状态工具类</strong>：这种工具类不需要记录状态，只保证正确的应用就行，可以通过单例模式来定义。</li><li><strong>数据共享</strong>：即多个不相关的两个线程或者进程之间实现通信。因为是一个实例，如果它的属性或者变量值被修改，所有引用都是同时修改的，当然需要 volatile 来定义变量。比如网站的计数器。</li><li><strong>日志应用</strong>：通常应用会向日志文件写日志信息，为了实时向文件写，通常会使用单例模式，保证有一个实例持有文件，然后进行操作。</li><li><strong>数据库连接池</strong>：数据库连接是一种数据库资源，使用数据库连接池，主要是节省打开或者关闭数据库连接所引起的效率损耗，这种效率上的损耗还是非常昂贵的，通过单例模式来维护，就可以大大降低这种损耗。</li><li><strong>Web应用的配置对象</strong>：读取文件需要消耗时间，如果读取大文件，消耗的时间和资源更久，所以通过单例模式可以大大降低消耗。</li></ol><hr><p>个人主页: <a href="http://www.howardliu.cn">http://www.howardliu.cn</a><br>个人博文: <a href="http://www.howardliu.cn/singleton-pattern">Java中的单例模式（完整篇）</a><br>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN博文: <a href="https://blog.csdn.net/liuxinghao/article/details/103794938" target="_blank" rel="noopener">Java中的单例模式（完整篇）</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;个人认为单例模式是设计模式中最简单也是最常用的一种，是对有限资源合理利用的一种方式。这个模式看似简单，但是其中蕴含了关于并发、类加载、序列化等一系列深层次的知识，如果理解不够深，就有可能在高并发时遇到难以预期的异常，或者会造成资源浪费。&lt;/p&gt;
+&lt;p&gt;所以本文会从将目前Java领域最常用的几种单例模式列出来，供大家参考。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="java" scheme="http://www.howardliu.cn/categories/java/"/>
+    
+      <category term="design pattern" scheme="http://www.howardliu.cn/categories/java/design-pattern/"/>
+    
+    
+      <category term="设计模式" scheme="http://www.howardliu.cn/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
   
   <entry>
     <title>微服务的基建工作</title>
@@ -112,11 +138,11 @@
       <category term="devops" scheme="http://www.howardliu.cn/categories/devops/"/>
     
     
+      <category term="部署" scheme="http://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
+    
       <category term="DevOps" scheme="http://www.howardliu.cn/tags/DevOps/"/>
     
       <category term="Nginx" scheme="http://www.howardliu.cn/tags/Nginx/"/>
-    
-      <category term="部署" scheme="http://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
     
   </entry>
   
@@ -170,9 +196,9 @@
     
       <category term="系统运维" scheme="http://www.howardliu.cn/tags/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/"/>
     
-      <category term="DevOps" scheme="http://www.howardliu.cn/tags/DevOps/"/>
-    
       <category term="部署" scheme="http://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
+    
+      <category term="DevOps" scheme="http://www.howardliu.cn/tags/DevOps/"/>
     
   </entry>
   
@@ -340,11 +366,11 @@
       <category term="rm" scheme="http://www.howardliu.cn/categories/hadoop/rm/"/>
     
     
+      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
+    
       <category term="大数据" scheme="http://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="hadoop" scheme="http://www.howardliu.cn/tags/hadoop/"/>
-    
-      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
       <category term="ha" scheme="http://www.howardliu.cn/tags/ha/"/>
     
@@ -373,13 +399,13 @@
       <category term="yarn" scheme="http://www.howardliu.cn/categories/hadoop/yarn/"/>
     
     
+      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
+    
       <category term="大数据" scheme="http://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="hadoop" scheme="http://www.howardliu.cn/tags/hadoop/"/>
     
       <category term="yarn" scheme="http://www.howardliu.cn/tags/yarn/"/>
-    
-      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
   </entry>
   
@@ -404,11 +430,11 @@
       <category term="hdfs" scheme="http://www.howardliu.cn/categories/hadoop/hdfs/"/>
     
     
+      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
+    
       <category term="大数据" scheme="http://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="hadoop" scheme="http://www.howardliu.cn/tags/hadoop/"/>
-    
-      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
       <category term="hdfs" scheme="http://www.howardliu.cn/tags/hdfs/"/>
     
@@ -439,11 +465,11 @@
       <category term="hdfs" scheme="http://www.howardliu.cn/categories/hadoop/hdfs/"/>
     
     
+      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
+    
       <category term="大数据" scheme="http://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="hadoop" scheme="http://www.howardliu.cn/tags/hadoop/"/>
-    
-      <category term="开源" scheme="http://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
       <category term="hdfs" scheme="http://www.howardliu.cn/tags/hdfs/"/>
     
@@ -560,35 +586,6 @@
       <category term="实时计算" scheme="http://www.howardliu.cn/tags/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/"/>
     
       <category term="Trident" scheme="http://www.howardliu.cn/tags/Trident/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>常用消息队列对比</title>
-    <link href="http://www.howardliu.cn/middleware/the-different-between-some-distributed-message-queue/"/>
-    <id>http://www.howardliu.cn/middleware/the-different-between-some-distributed-message-queue/</id>
-    <published>2017-03-08T08:03:32.000Z</published>
-    <updated>2020-01-02T10:16:59.594Z</updated>
-    
-    <content type="html"><![CDATA[<p>作为中间件，消息队列是分布式应用间交换信息的重要组件。消息队列可驻留在内存或磁盘上, 队列可以存储消息直到它们被应用程序读走。通过消息队列，应用程序可以在不知道彼此位置的情况下独立处理消息，或者在处理消息前不需要等待接收此消息。所以消息队列可以解决应用解耦、异步消息、流量削锋等问题，是实现高性能、高可用、可伸缩和最终一致性架构中不可以或缺的一环。下面对消息队列就直接使用MQ表示。</p><p><img src="/images/middleware/message-queue.png" alt="消息队列"></p><a id="more"></a><p>现在比较常见的MQ产品主要是ActiveMQ、RabbitMQ、ZeroMQ、Kafka、MetaMQ、RocketMQ，当然还有很多其他的产品。因为个人水平有限，就简单的比较下这几种MQ的优缺点，作为自己选型的参考。</p><h1 id="1-ZeroMQ"><a href="#1-ZeroMQ" class="headerlink" title="1 ZeroMQ"></a>1 ZeroMQ</h1><p><a href="http://zeromq.org/" target="_blank" rel="noopener"><img src="https://www.howardliu.cn/images/middleware/zeromq_logo.gif" alt="http://zeromq.org/"></a></p><blockquote><p>ZeroMQ (also known as ØMQ, 0MQ, or zmq) looks like an embeddable networking library but acts like a concurrency framework. It gives you sockets that carry atomic messages across various transports like in-process, inter-process, TCP, and multicast. You can connect sockets N-to-N with patterns like fan-out, pub-sub, task distribution, and request-reply. It’s fast enough to be the fabric for clustered products. Its asynchronous I/O model gives you scalable multicore applications, built as asynchronous message-processing tasks. It has a score of language APIs and runs on most operating systems. ZeroMQ is from iMatix and is LGPLv3 open source.</p></blockquote><p>ZeroMQ号称是“史上最快的消息队列”，基于c语言开发的，可以在任何平台通过任何代码连接，通过inproc、IPC、TCP、TIPC、多播传送消息，支持发布-订阅、推-拉、共享队列等模式，高速异步I/O引擎。</p><p>根据官方的说法，ZeroMQ是一个简单好用的传输层，像框架一样的可嵌入的socket类库，使Socket编程更加简单、简洁、性能更高，是专门为高吞吐量/低延迟的场景开发的。ZeroMQ与其他MQ有着本质的区别，它根本不是消息队列服务器，更类似与一个底层网络通讯库，对原有Socket API进行封装，在使用的使用引入对应的jar包即可，可谓是相当灵活。</p><p>同时，因为它的简单灵活，如果我们想作为消息队列使用的话，需要开发大量代码。而且，ZeroMQ不支持消息持久化，其定位并不是安全可靠的消息传输，所以还需要自己编码保证可靠性。简而言之一句话，ZeroMQ很强大，但是想用好需要自己实现。</p><h1 id="2-RabbitMQ"><a href="#2-RabbitMQ" class="headerlink" title="2 RabbitMQ"></a>2 RabbitMQ</h1><p><a href="http://www.rabbitmq.com/" target="_blank" rel="noopener"><img src="https://www.howardliu.cn/images/middleware/rabbitmq_logo_strap.png" alt="http://www.rabbitmq.com/"></a></p><blockquote><p>官方定义：</p></blockquote><ul><li>Robust messaging for applications</li><li>Easy to use</li><li>Runs on all major operating systems</li><li>Supports a huge number of developer platforms</li><li>Open source and commercially supported</li></ul><p>RabbitMQ是基于Erlang语言编写的开源消息队列，通过Erlang的Actor模型实现了数据的稳定可靠传输。本身是实现AMQP的消息队列，因此官方推荐，如果仅仅是使用RabbitMQ的话，建议使用AMQP 0-9-1的协议。不过，因为其可扩展性，可以通过插件的形式使用STOMP、XMPP、AMQP 1.0，还可以通过插件使用HTTP这种非消息的传输协议。所以，RabbitMQ可以说是适应性非常强的一个消息队列中间件了。</p><p>当然，不仅是协议支持的多，还因为它实现了代理(Broker)架构，意味着消息在发送到客户端之前可以在中央节点上排队。此特性使得RabbitMQ易于使用和部署，适宜于很多场景如路由、负载均衡或消息持久化等，用消息队列只需几行代码即可搞定。但是，这使得它的可扩展性差，速度较慢，因为中央节点增加了延迟，消息封装后也比较大，如需配置RabbitMQ则需要在目标机器上安装Erlang环境。</p><p>总的来说，RabbitMQ在数据一致性、稳定性和可靠性方面比较优秀，而且直接或间接的支持多种协议，对多种语言支持良好。但是其性能和吞吐量差强人意，由于Erlang语言本身的限制，二次开发成本较高。</p><h1 id="3-ActiveMQ"><a href="#3-ActiveMQ" class="headerlink" title="3 ActiveMQ"></a>3 ActiveMQ</h1><p><a href="http://activemq.apache.org/" target="_blank" rel="noopener"><img src="https://www.howardliu.cn/images/middleware/activemq_logo_white_vertical.png" alt="http://activemq.apache.org/"></a></p><blockquote><p>Apache ActiveMQ ™ is the most popular and powerful open source messaging and Integration Patterns server.<br>Apache ActiveMQ is fast, supports many Cross Language Clients and Protocols, comes with easy to use Enterprise Integration Patterns and many advanced features while fully supporting JMS 1.1 and J2EE 1.4. Apache ActiveMQ is released under the Apache 2.0 License.</p></blockquote><p>ActiveMQ介于ZeroMQ和RabbitMQ之间。类似于ZeroMQ，它可以部署于代理模式和P2P模式。类似于RabbitMQ，它易于实现高级场景，而且只需付出低消耗。被誉为消息中间件的“瑞士军刀”。</p><p>支持OpenWire、Stomp、AMQP v1.0、MQTT v3.1、REST、Ajax、Webservice等多种协议；完全支持JMS1.1和J2EE 1.4规范（事务、持久化、XA消息）；支持持久化到数据库。但是ActiveMQ不够轻巧，而且对于队列较多的情况支持不好，据说还有丢消息的情况。</p><p>目前已经有了其下一代消息产品Apollo。</p><h1 id="4-Apollo"><a href="#4-Apollo" class="headerlink" title="4 Apollo"></a>4 Apollo</h1><p><a href="https://activemq.apache.org/apollo/" target="_blank" rel="noopener"><img src="https://activemq.apache.org/apollo/images/project-logo.png" alt="https://activemq.apache.org/apollo/"></a></p><blockquote><p>ActiveMQ Apollo is a faster, more reliable, easier to maintain messaging broker built from the foundations of the original ActiveMQ. It accomplishes this using a radically different threading and message dispatching architecture. Like ActiveMQ, Apollo is a multi-protocol broker and supports STOMP, AMQP, MQTT, Openwire, SSL, and WebSockets.</p></blockquote><p>Apache称Apollo为最快、最强健的STOMP服务器。支持STOMP、AMQP、MQTT、OpenWire协议，支持Topic、Queue、持久订阅等消费形式，支持对消息的多种处理，支持安全性处理，支持REST管理API。。。功能列表很长，最大的弊病就是目前市场接收度不够，所以使用的并不广泛。</p><h1 id="5-Kafka"><a href="#5-Kafka" class="headerlink" title="5 Kafka"></a>5 Kafka</h1><p><a href="http://kafka.apache.org/" target="_blank" rel="noopener"><img src="https://www.howardliu.cn/images/middleware/kafka_logo.png" alt="http://kafka.apache.org/"></a></p><blockquote><p>Kafka™ is used for building real-time data pipelines and streaming apps. It is horizontally scalable, fault-tolerant, wicked fast, and runs in production in thousands of companies.</p></blockquote><p>Kafka是LinkedIn于2010年12月开发并开源的一个分布式流平台，现在是Apache的顶级项目，是一个高性能跨语言分布式Publish/Subscribe消息队列系统，以Pull的形式消费消息。具有以下特性：快速持久化，可以在O(1)的系统开销下进行消息持久化；高吞吐，在一台普通的服务器上既可以达到10W/s的吞吐速率；完全的分布式系统，Broker、Producer、Consumer都原生自动支持分布式，自动实现复杂均衡。因为设计之初是作为日志流平台和运营消息管道平台，所以实现了消息顺序和海量堆积。</p><p>Kafka自身服务与消息的生产和消费都依赖与Zookeeper，使用Scala语言开发。因为其消息的消费使用客户端Pull方式，消息可以被多个客户端消费，理论上消息会重复，但是不会丢失（除非消息过期）。因此比较常用的场景是作为日志传输的消息平台。</p><h1 id="6-RocketMQ"><a href="#6-RocketMQ" class="headerlink" title="6 RocketMQ"></a>6 RocketMQ</h1><p><a href="https://rocketmq.incubator.apache.org/" target="_blank" rel="noopener"><img src="https://www.howardliu.cn/images/middleware/rocketmq_logo.png" alt="https://rocketmq.incubator.apache.org/"></a></p><blockquote><p>Apache RocketMQ™ is an open source distributed messaging and streaming data platform.</p></blockquote><p>RocketMQ是阿里开源的消息中间件，目前在Apache孵化，使用纯Java开发，具有高吞吐量、高可用性、适合大规模分布式系统应用的特点。RocketMQ思路起源于Kafka，但并不是简单的复制，它对消息的可靠传输及事务性做了优化，目前在阿里集团被广泛应用于交易、充值、流计算、消息推送、日志流式处理、binglog分发等场景，支撑了阿里多次双十一活动。</p><p>因为是阿里内部从实践到产品的产物，因此里面很多接口、api并不是很普遍适用。其可靠性毋庸置疑，而且与Kafka一脉相承（甚至更优），性能强劲，支持海量堆积。不过据说，没有在mq核心上实现JMS，但是也无伤大雅。</p><h1 id="7-写在最后"><a href="#7-写在最后" class="headerlink" title="7 写在最后"></a>7 写在最后</h1><p>其实对于这些消息队列的产品，每一种都在某一领域占有一席，虽然ActiveMQ目前在社区已经不是很活跃，但是其下一代产品Apollo已经问世。ZeroMQ小而美，RabbitMQ大而稳，Kakfa和RocketMQ快而强劲。RocketMQ虽然目前还很多不完善，但是一旦在Apache孵化成为顶级项目，全球程序猿开始贡献，前途也是不可限量的。</p><hr><p>个人主页: <a href="http://www.howardliu.cn">http://www.howardliu.cn</a></p><p>个人博文: <a href="http://www.howardliu.cn/middleware/the-different-between-some-distributed-message-queue/">常用消息队列对比</a></p><p>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a></p><p>CSDN博文: <a href="http://blog.csdn.net/liuxinghao/article/details/60875715" target="_blank" rel="noopener">常用消息队列对比</a></p>]]></content>
-    
-    <summary type="html">
-    
-      作为中间件，消息队列是分布式应用间交换信息的重要组件。消息队列可驻留在内存或磁盘上, 队列可以存储消息直到它们被应用程序读走。通过消息队列，应用程序可以在不知道彼此位置的情况下独立处理消息，或者在处理消息前不需要等待接收此消息。所以消息队列可以解决应用解耦、异步消息、流量削锋等问题，是实现高性能、高可用、可伸缩和最终一致性架构中不可以或缺的一环。下面对消息队列就直接使用MQ表示。
-    
-    </summary>
-    
-    
-      <category term="middleware" scheme="http://www.howardliu.cn/categories/middleware/"/>
-    
-      <category term="mq" scheme="http://www.howardliu.cn/categories/middleware/mq/"/>
-    
-    
-      <category term="中间件" scheme="http://www.howardliu.cn/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/"/>
-    
-      <category term="消息队列" scheme="http://www.howardliu.cn/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
-    
-      <category term="选型" scheme="http://www.howardliu.cn/tags/%E9%80%89%E5%9E%8B/"/>
     
   </entry>
   
