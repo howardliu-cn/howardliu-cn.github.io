@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>微服务之服务注册和发现的可行性方案||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="在[微服务的基建工作](https://www.howardliu.cn/the-base-of-microservice/)中提到过，在云原生、微服务时代，如果还是手动修改服务地址，是几乎不可完成的工作，需要一种机制完成自动上报和获取服务地址的支撑组件，可以保障服务的快速上线和下线，这就是服务注册/发现组件。">
+<meta name="keywords" content="微服务,服务注册,服务发现,microservice,service registry,service discovery,服务注册可行性方案,服务发现可行性方案,微服务可行性方案">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微服务之服务注册和发现的可行性方案">
+<meta property="og:url" content="https://www.howardliu.cn/service-registry-and-discovery/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="在[微服务的基建工作](https://www.howardliu.cn/the-base-of-microservice/)中提到过，在云原生、微服务时代，如果还是手动修改服务地址，是几乎不可完成的工作，需要一种机制完成自动上报和获取服务地址的支撑组件，可以保障服务的快速上线和下线，这就是服务注册/发现组件。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.howardliu.cn/images/service_discovery_client_mode.png">
+<meta property="og:image" content="https://www.howardliu.cn/images/service_discovery_server_mode.png">
+<meta property="og:image" content="https://www.howardliu.cn/images/service_registry_self_registration_pattern.png">
+<meta property="og:image" content="https://www.howardliu.cn/images/service_registry_side_registration_pattern.png">
+<meta property="og:updated_time" content="2020-01-28T08:57:09.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="微服务之服务注册和发现的可行性方案">
+<meta name="twitter:description" content="在[微服务的基建工作](https://www.howardliu.cn/the-base-of-microservice/)中提到过，在云原生、微服务时代，如果还是手动修改服务地址，是几乎不可完成的工作，需要一种机制完成自动上报和获取服务地址的支撑组件，可以保障服务的快速上线和下线，这就是服务注册/发现组件。">
+<meta name="twitter:image" content="https://www.howardliu.cn/images/service_discovery_client_mode.png">
+
+<meta name="keywords" content="微服务,服务注册,服务发现,microservice,service registry,service discovery,服务注册可行性方案,服务发现可行性方案,微服务可行性方案">
+
+
+<meta name="description" content="在[微服务的基建工作](https://www.howardliu.cn/the-base-of-microservice/)中提到过，在云原生、微服务时代，如果还是手动修改服务地址，是几乎不可完成的工作，需要一种机制完成自动上报和获取服务地址的支撑组件，可以保障服务的快速上线和下线，这就是服务注册">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/service-registry-and-discovery/">微服务之服务注册和发现的可行性方案</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2020-01-28</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/service-registry-and-discovery/" class="leancloud_visitors" data-flag-title="微服务之服务注册和发现的可行性方案">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#服务注册表"><span class="toc-text">服务注册表</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#服务发现"><span class="toc-text">服务发现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#客户端发现模式"><span class="toc-text">客户端发现模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#服务端发现模式"><span class="toc-text">服务端发现模式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#服务注册"><span class="toc-text">服务注册</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#自注册模式"><span class="toc-text">自注册模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第三方注册模式"><span class="toc-text">第三方注册模式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#未完待续"><span class="toc-text">未完待续</span></a></li></ol>
+    </div>
+ -->
+            <p>在 <a href="https://www.howardliu.cn/the-base-of-microservice/">微服务的基建工作</a> 中提到过，在云原生、微服务时代，如果还是手动修改服务地址，是几乎不可完成的工作，需要一种机制完成自动上报和获取服务地址的支撑组件，可以保障服务的快速上线和下线，这就是服务注册/发现组件。</p>
+<a id="more"></a>
+
+<blockquote>
+<p>为了表述方便，从系统规模定义几个阶段：</p>
+<ul>
+<li>巨型应用架构时期：很多应用都是一个巨型服务，一个应用包含所有功能，部署在小型机和大型机上，或者直接部署在物理服务器上。</li>
+<li>单体架构时期：应用体量缩小，服务增多，而且出现虚拟化技术，物理服务器被连接成虚拟化平台，应用部署在虚拟机中。</li>
+<li>SOA架构时期：应用通用功能逐渐沉淀，业务应用借助沉淀的通用组件逐渐解耦，微服务的很多组件也是从这个时期开始成型。</li>
+<li>微服务架构时期：这个时期承接模块化时期，甚至有一种说法是微服务只是SOA的一种特殊形式。系统进一步解耦，根据业务角色不同，应用以业务为分界，缩小为业务单元。</li>
+<li>函数架构时期：应用进一步分割为函数，实现serverless架构，不需要具体的服务器概念，只需要执行函数的服务即可。目前来看，这个时期是比较理想的时期，因为不同人相互协作定义的函数，可能重复或者冲突，不利于架构的演进。</li>
+</ul>
+</blockquote>
+<p>随着大家对在微服务或者函数架构中趟坑，很多人开始提出回归单体应用架构，这应该也是架构螺旋进步的一种方式。</p>
+<p>在微服务中，还有一种角色是根据调用关系定义的：</p>
+<ul>
+<li>客户端服务（简称客户端）：调用其他服务的实例</li>
+<li>服务端服务（简称服务端）：被其他服务实例调用的实例</li>
+</ul>
+<blockquote>
+<p>微服务中客户端和服务端只对一个调用定义的，客户端在其他调用关系中，角色可能会转变为服务端。</p>
+</blockquote>
+<h1 id="服务注册表"><a href="#服务注册表" class="headerlink" title="服务注册表"></a>服务注册表</h1><p>说到服务发现时，必须要说一个重要组件：<strong>服务注册表</strong>，它是服务发现的核心，是一个包含了所有服务实例的网络位置和监控状态的数据库，通过服务注册组件将信息写入服务注册表，通过服务发现组件获取有效的服务实例的网络位置信息。目前常用的服务注册表有：Eureka、etcd、Consul、Zookeeper，Kibernetes等镜像调度服务没有明确的服务注册表组件，是通过内置的服务注册功能实现。对于比如F5和Nginx这种代理器，其中的upstream配置也属于服务注册表。</p>
+<h1 id="服务发现"><a href="#服务发现" class="headerlink" title="服务发现"></a>服务发现</h1><p>在微服务架构中，服务之间通过轻量级协议互相调用，一般是HTTP请求，为了完成一次请求，服务需要知道目标服务实例的网络位置（IP和端口）。</p>
+<p>在巨型应用架构时期，配置一个符合要求的服务器环境需要花费大量的时间，也就意味着服务地址发生变动的概率和频率都非常低，而且很多应用部署在一台小型机或者大型机上。到了单体架构时期，应用体量大数量少，发生地址变动所需要修改的地方就比较少，所以对于服务发现也就没有那么强的需求。换句话说，在单体架构之前，服务实例的相对位置固定，变动频率低，可以通过硬编码到代码中。</p>
+<p>但是到了云时代，服务器环境配置变得简单，数量逐渐增多，扩展和迁移逐渐频繁。而且，随着虚拟化和容器的应用，服务器地址都是根据规则动态分配，由于服务升级、扩展、失败回滚等情况增多，服务的网络位置甚至不可预知。这个时候必须使用服务发现机制保证客户端服务能够自动获取服务端服务的地址。</p>
+<p>通常，服务发现有两种模式：客户端发现模式、服务端发现模式。</p>
+<h2 id="客户端发现模式"><a href="#客户端发现模式" class="headerlink" title="客户端发现模式"></a>客户端发现模式</h2><p>客户端发现模式<strong>通过客户端组件根据负载均衡算法决定相应服务实例的网络位置</strong>，也就是说，客户端组件保存有服务端所有实例的服务注册表，调用发生时，根据负载均衡算法，从服务注册表中选择一个网络位置，向服务端发起请求，完成调用。由于网络的不可靠性，有的客户端组件还会实现访问失败重试、访问超时时间设定等功能。</p>
+<p>这种模式的架构如图：</p>
+<p><img src="https://www.howardliu.cn/images/service_discovery_client_mode.png" alt="客户端发现模式"></p>
+<p>具体的过程为：</p>
+<ol>
+<li>服务实例向服务注册器上报网络位置，即注册</li>
+<li>客户端服务发现组件定时拉取服务注册器中服务实例的网络位置信息及健康状态，保存在服务注册表中</li>
+<li>客户端服务调用服务端服务时，通过客户端服务发现组件，根据负载均衡算法，选取可用一个服务实例，发起调用</li>
+</ol>
+<p>在Spring Cloud（或者说是Netflix开源组件）中，组件Eureka Server组件相当于服务注册器，Eureka Client组件实现了服务注册表，Ribbon实现了负载均衡算法和重试策略。</p>
+<p>客户端发现模式优缺点兼备。优点是对已有服务友好，除了客户端组件外，其他部分无需改动。而且，客户端存有所有服务实例信息，可以有针对性的定义负载均衡算法。缺点是客户端与服务注册器绑定，需要针对每种语言实现不同的客户端组件。</p>
+<h2 id="服务端发现模式"><a href="#服务端发现模式" class="headerlink" title="服务端发现模式"></a>服务端发现模式</h2><p>服务端发现模式是<strong>有一个单独的服务发现组件，这个实例持有服务注册表，同时也起到负载均衡器的作用</strong>，客户端调用服务端时，直接调用服务发现实例，通过服务实例代理到后端服务实例中，所以服务端发现模式也被称为<strong>代理模式</strong>。</p>
+<p>这种模式的架构如图：</p>
+<p><img src="https://www.howardliu.cn/images/service_discovery_server_mode.png" alt="服务端发现模式"></p>
+<p>具体的过程为：</p>
+<ol>
+<li>服务实例向服务注册器上报网络位置，即注册</li>
+<li>服务发现实例定时通过某种机制获取服务注册器中服务实例的网络位置信息及健康状态，保存在服务注册表中</li>
+<li>客户端服务调用服务端服务时，直接调用服务发现实例，服务发现实例根据内部实现，查询服务注册表，将请求代理到后端服务实例</li>
+</ol>
+<p>服务端发现模式中的服务发现组件有两种实现方式：</p>
+<ul>
+<li>第一种，集中式代理，服务发现组件是单独的服务实例，这个实例是高可用高吞吐的系统组件，代理后端服务实例，代表性的是F5和Nginx。</li>
+<li>第二种，主机进程代理，服务发现组件由系统环境提供，集成在主机上或者集成在操作系统中，代表性的是Istio ServiceMesh。</li>
+</ul>
+<p>两种实现方式的优点是语言无关，客户端不需要关心任何服务发现的细节，只需要将原有的调用实例的请求修改为向服务发现实例发送请求。集中式代理的缺点是，存在单点问题，需要单独部署一个高可用、高吞吐的系统服务，由原来的一次调用增加为两次调用，有性能开销。主机进程代理的缺点是运维复杂，需要能力强的运维团队做支持。</p>
+<h1 id="服务注册"><a href="#服务注册" class="headerlink" title="服务注册"></a>服务注册</h1><p>服务注册是将服务实例的网络信息和健康状态写入服务注册表中，有两种方式：自注册模式、第三方注册模式。</p>
+<h2 id="自注册模式"><a href="#自注册模式" class="headerlink" title="自注册模式"></a>自注册模式</h2><p>这种模式是服务实例主动向服务注册表上报网络位置和健康状态，有的实现中，服务实例还会通过心跳保障注册信息不会过期。</p>
+<p><img src="https://www.howardliu.cn/images/service_registry_self_registration_pattern.png" alt="自注册模式"></p>
+<p>Eureka就是采用的这种方式，服务实例通过Eureka Client组件主动上报自己的网络位置信息和健康状态。</p>
+<p>这种模式实现相对简单，但是把服务实例和服务注册表耦合，优缺点明显。</p>
+<h2 id="第三方注册模式"><a href="#第三方注册模式" class="headerlink" title="第三方注册模式"></a>第三方注册模式</h2><p>第三方注册模式是服务实例不需要直接向服务注册表注册信息，而是借助被称为注册器的组件进行注册。服务注册器是通过扫描部署环境或者订阅事件的方式，跟踪服务实例的变更。当监测到服务实例有变化，会向服务注册表上报变化信息。</p>
+<p><img src="https://www.howardliu.cn/images/service_registry_side_registration_pattern.png" alt="第三方注册模式"></p>
+<p>这种方式可以将服务实例与服务注册表解耦，同时也引入另外的问题。即注册器需要内置在部署环境中，增加了运维复杂性。或者注册器需要部署一个集中式的管理组件，成为系统约束点。</p>
+<h1 id="未完待续"><a href="#未完待续" class="headerlink" title="未完待续"></a>未完待续</h1><p>在微服务中，服务实例的运行环境会动态变化，实例网络位置也是如此，因此，客户端为了访问服务必须要使用服务发现机制。</p>
+<p>服务发现有客户端发现模式和服务端发现模式，服务注册有自注册模式和第三方注册模式。服务发现和服务注册通过服务注册表链接在一起。</p>
+<p>后面有时间，会再补充目前比较常用的服务发现、服务注册的相关组件。</p>
+<hr>
+<p>个人主页: <a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文: <a href="https://www.howardliu.cn/service-registry-and-discovery/">微服务之服务注册和发现的可行性方案</a><br>CSDN主页: <a href="https://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">https://blog.csdn.net/liuxinghao</a><br>CSDN博文: <a href="https://blog.csdn.net/liuxinghao/article/details/103794938" target="_blank" rel="noopener">微服务之服务注册和发现的可行性方案</a></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/微服务/">微服务</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/singleton-pattern/">
+                <i class="icon-next">Java中的单例模式（完整篇）</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/http状态码/" style="font-size: 15px;">http状态码</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/瞎说八道/" style="font-size: 15px;">瞎说八道</a> <a href="/tags/瞎想/" style="font-size: 15px;">瞎想</a> <a href="/tags/成本/" style="font-size: 15px;">成本</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/层面分析/" style="font-size: 15px;">层面分析</a> <a href="/tags/局部参数/" style="font-size: 15px;">局部参数</a> <a href="/tags/DisMax查询解析器/" style="font-size: 15px;">DisMax查询解析器</a> <a href="/tags/eDisMax查询解析器/" style="font-size: 15px;">eDisMax查询解析器</a> <a href="/tags/标准查询解析器/" style="font-size: 15px;">标准查询解析器</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring-cloud</a> <a href="/tags/spring-cloud-config/" style="font-size: 15px;">spring-cloud-config</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/service-registry-and-discovery/">微服务之服务注册和发现的可行性方案</a></li><li class="post-list-item"><a class="post-list-link" href="/singleton-pattern/">Java中的单例模式（完整篇）</a></li><li class="post-list-item"><a class="post-list-link" href="/the-base-of-microservice/">微服务的基建工作</a></li><li class="post-list-item"><a class="post-list-link" href="/what-is-microservice/">什么是微服务？</a></li><li class="post-list-item"><a class="post-list-link" href="/the-paradigm-of-microservice/">微服务编程范式</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2020</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+<script>
+    // baidu analytics
+    (function () {
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
