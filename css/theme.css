@@ -1,3 +1,4 @@
+@charset "UTF-8";
 @font-face {
   font-family: 'icomoon';
   src: url("icomoon/icomoon.eot");
@@ -396,6 +397,42 @@ nav.shrink .navbar-toggle {
 
 .content {
   padding-bottom: 150px; }
+
+.post .post-descr .toc-content, .article-entry .toc-content {
+  background: #ffffff;
+  /*目录背景*/
+  border: 1px solid #f15b6c;
+  /*目录边框*/
+  border-radius: 10px;
+  /*目录圆角*/
+  padding: 1em;
+  max-width: 50%;
+  position: fixed;
+  /*固定目录位置，不随页面滚动而滚动*/
+  margin: -10em 1em 50em 90em;
+  /*目录在页面的绝对位置*/
+  left: 2em;
+  z-index: 2;
+  /*目录在页面的放置次序（是否置顶）*/ }
+  .post .post-descr .toc-content .toc-title, .article-entry .toc-content .toc-title {
+    font-size: 120%;
+    /*Menu的字号*/
+    padding-bottom: 0.8em;
+    font-weight: bold; }
+
+.post .post-descr #toc, .article-entry #toc {
+  line-height: 1.1em;
+  font-size: 0.8em;
+  float: right; }
+  .post .post-descr #toc .toc, .article-entry #toc .toc {
+    padding: 0 li;
+      padding-list-style-type: none; }
+  .post .post-descr #toc .toc-child, .article-entry #toc .toc-child {
+    padding-left: 1.5em; }
+  .post .post-descr #toc ol, .article-entry #toc ol {
+    margin: 0; }
+  .post .post-descr #toc li, .article-entry #toc li {
+    list-style-type: none; }
 
 .post .post-descr pre, .article-entry pre {
   position: relative;
