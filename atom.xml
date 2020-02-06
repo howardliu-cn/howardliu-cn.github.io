@@ -162,9 +162,9 @@
     
       <category term="DevOps" scheme="https://www.howardliu.cn/tags/DevOps/"/>
     
-      <category term="Nginx" scheme="https://www.howardliu.cn/tags/Nginx/"/>
-    
       <category term="部署" scheme="https://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
+    
+      <category term="Nginx" scheme="https://www.howardliu.cn/tags/Nginx/"/>
     
   </entry>
   
@@ -218,9 +218,9 @@
     
       <category term="DevOps" scheme="https://www.howardliu.cn/tags/DevOps/"/>
     
-      <category term="部署" scheme="https://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
-    
       <category term="系统运维" scheme="https://www.howardliu.cn/tags/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/"/>
+    
+      <category term="部署" scheme="https://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
     
   </entry>
   
