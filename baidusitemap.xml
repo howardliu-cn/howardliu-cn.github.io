@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.howardliu.cn/how-to-use-comment-in-java/</loc>
+    <lastmod>2020-02-07</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/java/gc-overhead-limit-exceeded/</loc>
+    <lastmod>2020-02-07</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/java/jvm-tuning-basic/</loc>
+    <lastmod>2020-02-07</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/storm/trident-tutorial/</loc>
+    <lastmod>2020-02-07</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
+    <lastmod>2020-02-07</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
+    <lastmod>2020-02-07</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
+    <lastmod>2020-02-07</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/storm/storm-integration-with-kafka/</loc>
+    <lastmod>2020-02-07</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
+    <lastmod>2020-02-07</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/the-three-ways-principles-underpinning-devops/</loc>
+    <lastmod>2020-02-04</lastmod>
+  </url>  <url>
     <loc>https://www.howardliu.cn/service-registry-and-discovery/</loc>
     <lastmod>2020-01-28</lastmod>
   </url>  <url>
@@ -17,24 +47,6 @@
     <lastmod>2020-01-27</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/when-to-leave-your-programming-job/</loc>
-    <lastmod>2020-01-27</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/storm/trident-tutorial/</loc>
-    <lastmod>2020-01-27</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
-    <lastmod>2020-01-27</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
-    <lastmod>2020-01-27</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/storm/storm-integration-with-kafka/</loc>
-    <lastmod>2020-01-27</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
-    <lastmod>2020-01-27</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
     <lastmod>2020-01-27</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/spring-cloud/spring-cloud-config-encrypt-keystore-path-error/</loc>
@@ -76,13 +88,7 @@
     <loc>https://www.howardliu.cn/singleton-pattern/</loc>
     <lastmod>2020-01-27</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/java/jvm-tuning-basic/</loc>
-    <lastmod>2020-01-27</lastmod>
-  </url>  <url>
     <loc>https://www.howardliu.cn/java/jdk-tools-and-utilities/</loc>
-    <lastmod>2020-01-27</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/java/gc-overhead-limit-exceeded/</loc>
     <lastmod>2020-01-27</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/constant-interface-anti-pattern/</loc>
@@ -191,9 +197,6 @@
     <lastmod>2020-01-27</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/main-thread-waiting-for-the-end-of-subthread/</loc>
-    <lastmod>2020-01-27</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/how-to-use-comment-in-java/</loc>
     <lastmod>2020-01-27</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/the-introduction-of-http-status-codes/</loc>

@@ -2,6 +2,76 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/how-to-use-comment-in-java/</loc>
+    
+    <lastmod>2020-02-07T06:25:51.173Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/java/gc-overhead-limit-exceeded/</loc>
+    
+    <lastmod>2020-02-07T06:22:57.139Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/java/jvm-tuning-basic/</loc>
+    
+    <lastmod>2020-02-07T06:22:28.957Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/storm/trident-tutorial/</loc>
+    
+    <lastmod>2020-02-07T06:19:14.497Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
+    
+    <lastmod>2020-02-07T06:18:31.268Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
+    
+    <lastmod>2020-02-07T06:16:08.796Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
+    
+    <lastmod>2020-02-07T06:14:24.427Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/storm/storm-integration-with-kafka/</loc>
+    
+    <lastmod>2020-02-07T06:11:10.593Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
+    
+    <lastmod>2020-02-07T03:13:37.749Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/the-three-ways-principles-underpinning-devops/</loc>
+    
+    <lastmod>2020-02-04T02:29:33.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/service-registry-and-discovery/</loc>
     
     <lastmod>2020-01-28T08:57:09.000Z</lastmod>
@@ -40,48 +110,6 @@
     <loc>https://www.howardliu.cn/when-to-leave-your-programming-job/</loc>
     
     <lastmod>2020-01-27T10:06:04.388Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/storm/trident-tutorial/</loc>
-    
-    <lastmod>2020-01-27T10:06:00.456Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
-    
-    <lastmod>2020-01-27T10:05:48.152Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
-    
-    <lastmod>2020-01-27T10:05:34.761Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/storm/storm-integration-with-kafka/</loc>
-    
-    <lastmod>2020-01-27T10:05:26.072Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
-    
-    <lastmod>2020-01-27T10:04:59.528Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
-    
-    <lastmod>2020-01-27T10:04:52.179Z</lastmod>
     
   </url>
   
@@ -177,23 +205,9 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/java/jvm-tuning-basic/</loc>
-    
-    <lastmod>2020-01-27T10:03:09.426Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.howardliu.cn/java/jdk-tools-and-utilities/</loc>
     
     <lastmod>2020-01-27T10:02:59.690Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/java/gc-overhead-limit-exceeded/</loc>
-    
-    <lastmod>2020-01-27T10:02:51.180Z</lastmod>
     
   </url>
   
@@ -453,13 +467,6 @@
     <loc>https://www.howardliu.cn/main-thread-waiting-for-the-end-of-subthread/</loc>
     
     <lastmod>2020-01-27T09:50:06.209Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/how-to-use-comment-in-java/</loc>
-    
-    <lastmod>2020-01-27T09:49:37.059Z</lastmod>
     
   </url>
   
