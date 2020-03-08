@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.howardliu.cn/from-monolith-to-microservice/</loc>
+    <lastmod>2020-03-08</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/the-joys-and-the-woes-of-the-craft/</loc>
+    <lastmod>2020-03-01</lastmod>
+  </url>  <url>
     <loc>https://www.howardliu.cn/the-cost-to-change-phone/</loc>
     <lastmod>2020-02-23</lastmod>
   </url>  <url>
@@ -176,9 +182,6 @@
     <lastmod>2020-01-27</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn//thinking/the-solution-about-job-queue/</loc>
-    <lastmod>2020-01-27</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/the-joys-and-the-woes-of-the-craft/</loc>
     <lastmod>2020-01-27</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/os/WindowsUpdate_800B0100-failed-to-updates/</loc>

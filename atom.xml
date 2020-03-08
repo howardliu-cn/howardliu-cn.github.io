@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.howardliu.cn/"/>
-  <updated>2020-02-23T08:07:46.000Z</updated>
+  <updated>2020-03-08T06:54:20.000Z</updated>
   <id>https://www.howardliu.cn/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>从单体架构到微服务架构</title>
+    <link href="https://www.howardliu.cn/from-monolith-to-microservice/"/>
+    <id>https://www.howardliu.cn/from-monolith-to-microservice/</id>
+    <published>2020-03-08T06:54:20.000Z</published>
+    <updated>2020-03-08T06:54:20.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>微服务的优势众多，在现在如果有谁没有听过微服务架构，可以从<a href="https://www.howardliu.cn/what-is-microservice/">这里</a>了解一下。本文主要聊一聊是否值得花时间将单体架构重构为微服务架构？</p><a id="more"></a><p>微服务架构是一种架构风格，专注于软件研发效能，主要包括单位时间内实现更多功能，或者软件从想法到上线的整个持续交付的过程。在当前的互联网环境中，业务变化迅速，也促使了微服务架构的普及。这种架构迫使团队迅速反应，快速实施，在方案没有过期之前已经上线运行，经受市场考察和考验。</p><p>目前国内大多数公司正在运行的系统都是单体架构系统，不可否认，这些系统在公司发展过程中，发挥了不可替代的作用，保障了公司正常运行，创造了很多价值。但是，随着系统的日渐膨胀，集成的功能越来越多，开发效率变得越来越低，一个功能从想法到实现，需要花费越来越长的时间。更严重的是，由于代码模块纠结在一起，很多已经老化的架构或者废弃的功能，已经成为新功能的阻碍。</p><p>众所周知，单体架构随着功能增多，不可避免的是研发效能的降低：研发周期变长、研发资源占用增多。从而引发的情况是：新员工培训时间增多、员工加班时间变长、员工要求涨薪或者跳槽。到了这种情况就说明，单体架构已经不能够满足企业发展需要，这个时候，需要升级架构来提升研发效能，比如微服务架构。</p><p>想要说明微服务架构的好处，可以来一个比喻。我们建了一个空间站，为此，我们需要将人、货物和设备运输到空间站中，这个时候，运载火箭是表较好的选择，尽管运载火箭造价也比较高，但是几个月发射一次，也能够满足需求。随着空间站的扩大，火箭发射的间隔变短，运输成本高的离谱，而且越来越没法满足空间站运转需求。这个时候，可以尝试另外一种方式，比如，太空电梯。当然太空电梯的造价成本高于一次飞行的费用，但是只要建成，以后的成本就降低了很多。</p><p>这个比喻也是说明了微服务带来的美好期望，同时也说明一个问题，实施微服务架构会带来巨大的投资。所以，我们在建造太空电梯之前需要想好，我们真的需要这种投入，否则是能是一种浪费。</p><h1 id="to-be-or-not-to-be"><a href="#to-be-or-not-to-be" class="headerlink" title="to be or not to be"></a>to be or not to be</h1><p>决定从单体架构升级为微服务架构时，先问问自己下面几个问题：</p><ul><li>产品或系统是否经过市场考验</li><li>是否需要超过一个团队来保证产品发布</li><li>系统是否对可靠性、可伸缩性有较高要求</li></ul><h1 id="微服务架构"><a href="#微服务架构" class="headerlink" title="微服务架构"></a>微服务架构</h1><p>什么是微服务架构呢？Sam Newman认为是：“一组围绕业务领域建模的、小而自治的、彼此协同工作的服务。”</p><p>微服务架构中的服务，是根据业务能力抽取的业务模块，独立开发和部署，但是需要彼此配合完成整个业务功能。服务不是单纯的数据存储组件，那是数据库。也不是单纯的逻辑函单元，那是函数。只有同时包括数据+逻辑，才是真正意义上的服务。</p><h1 id="服务边界"><a href="#服务边界" class="headerlink" title="服务边界"></a>服务边界</h1><p>服务拆解过程中，DDD（领域驱动设计）可以作为微服务架构的指导方针。因为微服务是围绕业务功能定义服务，根据服务定义团队，这与DDD将业务域拆解为业务子域、定义限定上下文的方法论如出一辙，于是DDD作为微服务的指导方针，快速定义各个服务组件，完成从单体架构到微服务架构的迁移。</p><p>Alberto Brandolini提出识别服务上下文的方式叫做“Event Storming”。第一步是识别业务域中发生的事件，也就是说，我们的关注点是行为，不是数据结构。这样做的好处是，系统中不同服务之间是松散耦合关系，而且单个服务能够自治。</p><p>定义好了服务边间，还需要定义事务边界。过去，我们的服务在一个进程中，后面挂着一个数据库，事务可以选择强一致性事务，也就是ACID。当服务增多，彼此配合，这个时候可以使用最终一致性事务，也就是BASE。不同于ACID，BASE更加灵活，只要数据在最终能够保持一致就可以了。这个最终的时间范围，根据不同的业务场景不同，可能是分钟、小时、天，甚至是周或者月。</p><h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><p>微服务架构愿景美好，属于重型武器，优点众多，缺点也很明显。服务增多，运维难度增大，错误调试难度增大。所以需要自动化构建、配置、测试和部署，需要日志收集、指标监控、调用链监控等工具，也就是需要DevOps实践。<a href="https://www.howardliu.cn/the-three-ways-principles-underpinning-devops/">实现DevOps的三步工作法</a>中说明了实现DevOps文化的三个步骤。</p><p>除了上面提到的基础，还需要在早期确定服务之间如何集成和彼此调用方式，还需要确定数据体系，包括事务一致性和数据可靠性方法。随着服务增多，还需要配置管理、服务发现等众多组件。具体需要的基础组件可以参考<a href="https://www.howardliu.cn/the-base-of-microservice/">微服务的基建工作</a>。</p><p>这些基础的服务和设计，最好在早起定义，否则，后期需要花费更多的资源才能够完善架构。如果前期缺失，后期也没有补足，造成的后果就是微服务架构迁移失败，最后的系统也只是披着微服务外衣的单体架构。</p><h1 id="进化还是革命？"><a href="#进化还是革命？" class="headerlink" title="进化还是革命？"></a>进化还是革命？</h1><p>定义好服务边界之后，还有一个问题需要解决：是逐步进化更新系统、还是破釜沉舟重构整个系统。</p><p>第二种方式很诱人，比较符合大多数程序猿的思维，系统不行，推倒重来，名为重构。但是在大多数情况下，这种方式不能被允许，因为市场变化迅速、竞争激烈，大多数公司不会停止业务，去等待重构一个能够运行、只是有些缺点的系统。所以，逐步提取更新系统才是王道，大多数公司也能接受。这种方式又被称为绞杀模式。</p><h1 id="Transformation"><a href="#Transformation" class="headerlink" title="Transformation"></a>Transformation</h1><p>该如何逐步过渡到微服务架构？下面一步步进行展示：</p><p><img src="https://www.howardliu.cn/images/microservice/from_monolith_to_microservice_0.png" alt="单体架构"></p><p>第一步，将用户视图层与服务层部分逻辑进行分离。业务逻辑委托给服务层，支持页面展示的查询定向到数据库。这个阶段，我们不修改数据库本身。</p><p><img src="https://www.howardliu.cn/images/microservice/from_monolith_to_microservice_1.png" alt="部分拆分视图和业务逻辑"></p><p>第二步，用户视图层与数据库完全分离，依赖于服务层操作数据库。</p><p><img src="https://www.howardliu.cn/images/microservice/from_monolith_to_microservice_2.png" alt="完全拆分视图和业务逻辑"></p><p>第三步，将用户视图层与服务层拆分为不同服务，并在服务层创建一个API层，用户视图层与服务层之间通信。</p><p><img src="https://www.howardliu.cn/images/microservice/from_monolith_to_microservice_3.png" alt="物理拆分视图和业务逻辑"></p><p>第四步，拆分数据库，将不同业务数据拆分到不同的数据库中，同时对应业务服务层拆分到不同的服务。用户视图层通过API网关与不同业务服务层的API组件通信。这个时候需要注意，如果团队没有微服务开发经验，可以首先抽取简单业务域服务，因为业务简单，实现简单，可以练手，积累经验。</p><p><img src="https://www.howardliu.cn/images/microservice/from_monolith_to_microservice_4.png" alt="业务服务层拆分、垂直拆分数据库"></p><p>最后一步，拆分用户视图层。</p><p><img src="https://www.howardliu.cn/images/microservice/from_monolith_to_microservice_5.png" alt="拆分用户视图层"></p><p>绞杀模式的优势就在于，我们可以随着业务变化随时调整方案，不会造成整个业务进化过程的停摆。</p><h1 id="成功标准"><a href="#成功标准" class="headerlink" title="成功标准"></a>成功标准</h1><p>当我们完成了整个升级过程，就需要检查一下我们是否达到了预期的结果。引入微服务的目的首先是改善开发流程，我们可以通过简单的指标来衡量：</p><ul><li>开发周期：从概念到上线持续的时间</li><li>开发效能：单位时间内团队或个人完成的功能或用户故事</li><li>系统可伸缩性</li><li>平均维修时间：查找和排除故障所需时间</li></ul><p>通过对比老架构和新架构的这些特性值，可以评估升级过程取得的效果。当然，升级过程中也要有这些指标的监控。</p><h1 id="最重要的事"><a href="#最重要的事" class="headerlink" title="最重要的事"></a>最重要的事</h1><p>作为攻城狮，我们为能够解决或改善周围世界而自豪，着迷于提供解决方案。同时，我们也要意识到，我们付出的每一份努力，都要有回报。如果不能带来任何回报的重构升级，都是浪费时间。</p><hr><p>个人主页: <a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文: <a href="https://www.howardliu.cn/from-monolith-to-microservices">从单体架构到微服务架构</a><br>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN博文: <a href="https://blog.csdn.net/liuxinghao/article/details/103794938" target="_blank" rel="noopener">从单体架构到微服务架构</a></p>]]></content>
+    
+    <summary type="html">
+    
+      微服务架构是一种架构风格，专注于软件研发效能，主要包括单位时间内实现更多功能，或者软件从想法到上线的整个持续交付的过程。在当前的互联网环境中，业务变化迅速，也促使了微服务架构的普及。这种架构迫使团队迅速反应，快速实施，在方案没有过期之前已经上线运行，经受市场考察和考验。目前国内大多数公司正在运行的系统都是单体架构系统，不可否认，这些系统在公司发展过程中，发挥了不可替代的作用，保障了公司正常运行，创造了很多价值。但是，随着系统的日渐膨胀，集成的功能越来越多，开发效率变得越来越低，一个功能从想法到实现，需要花费越来越长的时间。更严重的是，由于代码模块纠结在一起，很多已经老化的架构或者废弃的功能，已经成为新功能的阻碍。
+    
+    </summary>
+    
+    
+      <category term="microservice" scheme="https://www.howardliu.cn/categories/microservice/"/>
+    
+    
+      <category term="微服务" scheme="https://www.howardliu.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/"/>
+    
+      <category term="单体架构" scheme="https://www.howardliu.cn/tags/%E5%8D%95%E4%BD%93%E6%9E%B6%E6%9E%84/"/>
+    
+      <category term="重构" scheme="https://www.howardliu.cn/tags/%E9%87%8D%E6%9E%84/"/>
+    
+  </entry>
   
   <entry>
     <title>别让非理性思维毁了你的人生</title>
@@ -216,9 +243,9 @@
     
       <category term="DevOps" scheme="https://www.howardliu.cn/tags/DevOps/"/>
     
-      <category term="Nginx" scheme="https://www.howardliu.cn/tags/Nginx/"/>
-    
       <category term="部署" scheme="https://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
+    
+      <category term="Nginx" scheme="https://www.howardliu.cn/tags/Nginx/"/>
     
   </entry>
   
@@ -270,9 +297,9 @@
     
       <category term="DevOps" scheme="https://www.howardliu.cn/tags/DevOps/"/>
     
-      <category term="部署" scheme="https://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
-    
       <category term="系统运维" scheme="https://www.howardliu.cn/tags/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/"/>
+    
+      <category term="部署" scheme="https://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
     
   </entry>
   
@@ -546,31 +573,6 @@
       <category term="开源" scheme="https://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
       <category term="hdfs" scheme="https://www.howardliu.cn/tags/hdfs/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>JVM参数优化（基础篇）</title>
-    <link href="https://www.howardliu.cn/java/jvm-tuning-basic/"/>
-    <id>https://www.howardliu.cn/java/jvm-tuning-basic/</id>
-    <published>2017-06-27T08:17:23.000Z</published>
-    <updated>2020-02-07T06:22:28.957Z</updated>
-    
-    <content type="html"><![CDATA[<p>这几天压测预生产环境，发现TPS各种不稳。因为是重构的系统，据说原来的系统在高并发的时候一点问题没有，结果重构的系统被几十个并发压一下就各种不稳定。虽然测试的同事没有说啥，但自己感觉被啪啪的打脸。。。</p><p>于是各种排查，最先想到的就是JVM参数，于是优化一番，希望能够出一个好的结果。尽管后来证明不稳定的原因是安装LoadRunner的压测服务器不稳定，不关我的系统的事，不过也是记录一下，一是做个备份，二是可以给别人做个参考。</p><a id="more"></a><h1 id="写在前面的话"><a href="#写在前面的话" class="headerlink" title="写在前面的话"></a>写在前面的话</h1><p>因为Hotspot JDK提供的参数默认值，在小版本之间不断变化，参数之间也会互相影响。而且，服务器配置不同，都可能影响最后的效果。所以千万不要迷信网上的某篇文章（包括这篇）里面的参数配置，一切的配置都需要自己亲身测试一番才能用。针对于JVM参数默认值不断变化，可以使用<code>-XX:+PrintFlagsFinal</code>打印当前环境JVM参数默认值，比如：<code>java -XX:PrintFlagsFinal -version</code>，也可以用<code>java [生产环境参数] -XX:+PrintFlagsFinal –version | grep [待查证的参数]</code>查看具体的参数数据。</p><p><a href="https://www.howardliu.cn/files/java/global-flags.txt">这里</a>是一个8G服务器的参数，JDK版本信息如下：</p><pre><code class="text">java version &quot;1.8.0_73&quot;Java(TM) SE Runtime Environment (build 1.8.0_73-b02)Java HotSpot(TM) 64-Bit Server VM (build 25.73-b02, mixed mode)</code></pre><h1 id="堆设置"><a href="#堆设置" class="headerlink" title="堆设置"></a>堆设置</h1><p>堆内存设置应该算是一个Java程序猿的基本素养，最少也得修改过Xms、Xmx、Xmn这三个参数了。但是一个2G堆大小的JVM，可能总共占用多少内存的？</p><blockquote><p>堆内存 ＋ 线程数 ＊ 线程栈 ＋ 永久代 ＋ 二进制代码 ＋ 堆外内存</p><p>2G + 1000 * 1M + 256M + 48/240M + (～2G) = 5.5G (3.5G)</p><ul><li>堆内存： 存储Java对象，默认为物理内存的1/64</li><li>线程栈： 存储局部变量（原子类型，引用）及其他，默认为1M</li><li>永久代： 存储类定义及常量池，注意JDK7/8的区别</li><li>二进制代码：JDK7与8，打开多层编译时的默认值不一样，从48到240M</li><li>堆外内存： 被Netty，堆外缓存等使用，默认最大值约为堆内存大小</li></ul></blockquote><p>也就是说，堆内存设置为2G，那一个有1000个线程的JVM可能需要占5.5G，在考虑系统占用、IO占用等等各种情况，一台8G的服务器，也就启动一个服务了。当然，如果线程数少、并发不高、压力不大，还是可以启动多个，而且也可以把堆内存降低。</p><ol><li>-Xms2g 与 -Xmx2g：堆内存大小，第一个是最小堆内存，第二个是最大堆内存，比较合适的数值是2-4g，再大就得考虑GC时间</li><li>-Xmn1g 或 （-XX:NewSize=1g 和 -XX:MaxNewSize=1g） 或 -XX:NewRatio=1：设置新生代大小，JDK默认新生代占堆内存大小的1/3，也就是<code>-XX:NewRatio=2</code>。这里是设置的1g，也就是<code>-XX:NewRatio=1</code>。可以根据自己的需要设置。</li><li>-XX:MetaspaceSize=128m 和 -XX:MaxMetaspaceSize=512m，JDK8的永生代几乎可用完机器的所有内存，为了保护服务器不会因为内存占用过大无法连接，需要设置一个128M的初始值，512M的最大值保护一下。</li><li>-XX:SurvivorRatio：新生代中每个存活区的大小，默认为8，即1/10的新生代， 1/(SurvivorRatio+2)，有人喜欢设小点省点给新生代，但要避免太小使得存活区放不下临时对象而要晋升到老生代，还是从GC Log里看实际情况了。</li><li>-Xss256k：在堆之外，线程占用栈内存，默认每条线程为1M。存放方法调用出参入参的栈、局部变量、标量替换后的局部变量等，有人喜欢设小点节约内存开更多线程。但反正内存够也就不必要设小，有人喜欢再设大点，特别是有JSON解析之类的递归调用时不能设太小。</li><li>-XX:MaxDirectMemorySize：堆外内存/直接内存的大小，默认为堆内存减去一个Survivor区的大小。</li><li>-XX:ReservedCodeCacheSize：JIT编译后二进制代码的存放区，满了之后就不再编译。默认开多层编译240M，可以在JMX里看看CodeCache的大小。</li></ol><h1 id="GC设置"><a href="#GC设置" class="headerlink" title="GC设置"></a>GC设置</h1><p>目前比较主流的GC是CMS和G1，有大神建议以8G为界。（据说JDK 9默认的是G1）。因为应用设置的内存都比较小，所以选择CMS收集器。下面的参数也是针对CMS收集器的，等之后如果有需要，再补充G1收集器的参数。</p><h2 id="CMS设置"><a href="#CMS设置" class="headerlink" title="CMS设置"></a>CMS设置</h2><ol><li>-XX:+UseConcMarkSweepGC：启用CMS垃圾收集器</li><li>-XX:CMSInitiatingOccupancyFraction=80 与 -XX:+UseCMSInitiatingOccupancyOnly：两个参数需要配合使用，否则第一个参数的75只是一个参考值，JVM会重新计算GC的时间。</li><li>-XX:MaxTenuringThreshold=15：对象在Survivor区熬过多少次Young GC后晋升到年老代，默认是15。Young GC是最大的应用停顿来源，而新生代里GC后存活对象的多少又直接影响停顿的时间，所以如果清楚Young GC的执行频率和应用里大部分临时对象的最长生命周期，可以把它设的更短一点，让其实不是临时对象的新生代长期对象赶紧晋升到年老代。</li><li>-XX:-DisableExplicitGC：允许使用System.gc()主动调用GC。这里需要说明下，有的JVM优化建议是设置-XX:-DisableExplicitGC，关闭手动调用System.gc()。这是应为System.gc()是触发Full GC，频繁的Full GC会严重影响性能。但是很多NIO框架，比如Netty，会使用堆外内存，如果没有Full GC的话，堆外内存就无法回收。如果不主动调用System.gc()，就需要等到JVM自己触发Full GC，这个时候，就可能引起长时间的停顿（STW），而且机器负载也会升高。所以不能够完全禁止System.gc()，又得缩短Full GC的时间，那就使用<code>-XX:+ExplicitGCInvokesConcurrent</code>或<code>-XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses</code>选项，使用CMS收集器来触发Full GC。这两个选项需要配合<code>-XX:+UseConcMarkSweepGC</code>使用。</li><li>-XX:+ExplicitGCInvokesConcurrent：使用System.gc()时触发CMS GC，而不是Full GC。默认是不开启的，只有使用-XX:+UseConcMarkSweepGC选项的时候才能开启这个选项。</li><li>-XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses：使用System.gc()时，永久代也被包括进CMS范围内。只有使用-XX:+UseConcMarkSweepGC选项的时候才能开启这个选项。</li><li>-XX:+ParallelRefProcEnabled：默认为false，并行的处理Reference对象，如WeakReference，除非在GC log里出现Reference处理时间较长的日志，否则效果不会很明显。</li><li>-XX:+ScavengeBeforeFullGC：在Full GC执行前先执行一次Young GC。</li><li>-XX:+UseGCOverheadLimit： 限制GC的运行时间。如果GC耗时过长，就抛OOM。</li><li>-XX:+UseParallelGC：设置并行垃圾收集器</li><li>-XX:+UseParallelOldGC：设置老年代使用并行垃圾收集器</li><li>-XX:-UseSerialGC：关闭串行垃圾收集器</li><li>-XX:+CMSParallelInitialMarkEnabled 和 -XX:+CMSParallelRemarkEnabled：降低标记停顿</li><li>-XX:+CMSScavengeBeforeRemark：默认为关闭，在CMS remark前，先执行一次minor GC将新生代清掉，这样从老生代的对象引用到的新生代对象的个数就少了，停止全世界的CMS remark阶段就短一些。如果看到GC日志里remark阶段的时间超长，可以打开此项看看有没有效果，否则还是不要打开了，白白多了次YGC。</li><li>-XX:CMSWaitDuration=10000：设置垃圾收集的最大时间间隔，默认是2000。</li><li>-XX:+CMSClassUnloadingEnabled：在CMS中清理永久代中的过期的Class而不等到Full GC，JDK7默认关闭而JDK8打开。看自己情况，比如有没有运行动态语言脚本如Groovy产生大量的临时类。它会增加CMS remark的暂停时间，所以如果新类加载并不频繁，这个参数还是不开的好。</li></ol><h2 id="GC日志"><a href="#GC日志" class="headerlink" title="GC日志"></a>GC日志</h2><p>GC过程可以通过GC日志来提供优化依据。</p><ol><li>-XX:+PrintGCDetails：启用gc日志打印功能</li><li>-Xloggc:/path/to/gc.log：指定gc日志位置</li><li>-XX:+PrintHeapAtGC：打印GC前后的详细堆栈信息</li><li>-XX:+PrintGCDateStamps：打印可读的日期而不是时间戳</li><li>-XX:+PrintGCApplicationStoppedTime：打印所有引起JVM停顿时间，如果真的发现了一些不知什么的停顿，再临时加上<code>-XX:+PrintSafepointStatistics -XX: PrintSafepointStatisticsCount=1</code>找原因。</li><li>-XX:+PrintGCApplicationConcurrentTime：打印JVM在两次停顿之间正常运行时间，与<code>-XX:+PrintGCApplicationStoppedTime</code>一起使用效果更佳。</li><li>-XX:+PrintTenuringDistribution：查看每次minor GC后新的存活周期的阈值</li><li>-XX:+UseGCLogFileRotation 与 -XX:NumberOfGCLogFiles=10 与 -XX:GCLogFileSize=10M：GC日志在重启之后会清空，但是如果一个应用长时间不重启，那GC日志会增加，所以添加这3个参数，是GC日志滚动写入文件，但是如果重启，可能名字会出现混乱。</li><li>-XX:PrintFLSStatistics=1：打印每次GC前后内存碎片的统计信息</li></ol><h1 id="其他参数设置"><a href="#其他参数设置" class="headerlink" title="其他参数设置"></a>其他参数设置</h1><ol><li>-ea：启用断言，这个没有什么好说的，可以选择启用，或这选择不启用，没有什么大的差异。完全根据自己的系统进行处理。</li><li>-XX:+UseThreadPriorities：启用线程优先级，主要是因为我们可以给予周期性任务更低的优先级，以避免干扰客户端工作。在我当前的环境中，是默认启用的。</li><li>-XX:ThreadPriorityPolicy=42：允许降低线程优先级</li><li>-XX:+HeapDumpOnOutOfMemoryError：发生内存溢出是进行heap-dump</li><li>-XX:HeapDumpPath=/path/to/java_pid&lt;pid&gt;.hprof：这个参数与<code>-XX:+HeapDumpOnOutOfMemoryError</code>共同作用，设置heap-dump时内容输出文件。</li><li>-XX:ErrorFile=/path/to/hs_err_pid&lt;pid&gt;.log：指定致命错误日志位置。一般在JVM发生致命错误时会输出类似hs_err_pid&lt;pid&gt;.log的文件，默认是在工作目录中（如果没有权限，会尝试在/tmp中创建），不过还是自己指定位置更好一些，便于收集和查找，避免丢失。</li><li>-XX:StringTableSize=1000003：指定字符串常量池大小，默认值是60013。对Java稍微有点常识的应该知道，字符串是常量，创建之后就不可修改了，这些常量所在的地方叫做字符串常量池。如果自己系统中有很多字符串的操作，且这些字符串值比较固定，在允许的情况下，可以适当调大一些池子大小。</li><li>-XX:+AlwaysPreTouch：在启动时把所有参数定义的内存全部捋一遍。使用这个参数可能会使启动变慢，但是在后面内存使用过程中会更快。可以保证内存页面连续分配，新生代晋升时不会因为申请内存页面使GC停顿加长。通常只有在内存大于32G的时候才会有感觉。</li><li>-XX:-UseBiasedLocking：禁用偏向锁（在存在大量锁对象的创建且高度并发的环境下(即非多线程高并发应用)禁用偏向锁能够带来一定的性能优化）</li><li>-XX:AutoBoxCacheMax=20000：增加数字对象自动装箱的范围，JDK默认-128～127的int和long，超出范围就会即时创建对象，所以，增加范围可以提高性能，但是也是需要测试。</li><li>-XX:-OmitStackTraceInFastThrow：不忽略重复异常的栈，这是JDK的优化，大量重复的JDK异常不再打印其StackTrace。但是如果系统是长时间不重启的系统，在同一个地方跑了N多次异常，结果就被JDK忽略了，那岂不是查看日志的时候就看不到具体的StackTrace，那还怎么调试，所以还是关了的好。</li><li>-XX:+PerfDisableSharedMem：启用标准内存使用。JVM控制分为标准或共享内存，区别在于一个是在JVM内存中，一个是生成/tmp/hsperfdata_{userid}/{pid}文件，存储统计数据，通过mmap映射到内存中，别的进程可以通过文件访问内容。通过这个参数，可以禁止JVM写在文件中写统计数据，代价就是jps、jstat这些命令用不了了，只能通过jmx获取数据。但是在问题排查是，jps、jstat这些小工具是很好用的，比jmx这种很重的东西好用很多，所以需要自己取舍。<a href="http://www.evanjones.ca/jvm-mmap-pause.html" target="_blank" rel="noopener">这里</a>有个GC停顿的例子。</li><li>-Djava.net.preferIPv4Stack=true：这个参数是属于网络问题的一个参数，可以根据需要设置。在某些开启ipv6的机器中，通过<code>InetAddress.getLocalHost().getHostName()</code>可以获取完整的机器名，但是在ipv4的机器中，可能通过这个方法获取的机器名不完整，可以通过这个参数来获取完整机器名。</li></ol><h1 id="大神给出的例子"><a href="#大神给出的例子" class="headerlink" title="大神给出的例子"></a>大神给出的例子</h1><p>下面贴上大神给出的例子，可以参考使用，不过还是建议在自己的环境中有针对的验证之后再使用，毕竟大神的环境和自己的环境还是不同。</p><h2 id="性能相关"><a href="#性能相关" class="headerlink" title="性能相关"></a>性能相关</h2><p>-XX:-UseBiasedLocking -XX:-UseCounterDecay -XX:AutoBoxCacheMax=20000<br>-XX:+PerfDisableSharedMem(可选) -XX:+AlwaysPreTouch -Djava.security.egd=file:/dev/./urandom</p><h2 id="内存大小相关-JDK7"><a href="#内存大小相关-JDK7" class="headerlink" title="内存大小相关(JDK7)"></a>内存大小相关(JDK7)</h2><p>-Xms4096m -Xmx4096m -Xmn2048m -XX:MaxDirectMemorySize=4096m<br>-XX:PermSize=128m -XX:MaxPermSize=512m -XX:ReservedCodeCacheSize=240M</p><blockquote><p>如果使用jdk8，就把-XX:PermSize=128m -XX:MaxPermSize=512m换成-XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=512m，正如前面所说的，这两套参数是为了保证安全的，建议还是加上。</p></blockquote><h2 id="CMS-GC相关"><a href="#CMS-GC相关" class="headerlink" title="CMS GC相关"></a>CMS GC相关</h2><p>-XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=75<br>-XX:+UseCMSInitiatingOccupancyOnly -XX:MaxTenuringThreshold=6<br>-XX:+ExplicitGCInvokesConcurrent -XX:+ParallelRefProcEnabled</p><h2 id="GC日志相关"><a href="#GC日志相关" class="headerlink" title="GC日志相关"></a>GC日志相关</h2><p>-Xloggc:/dev/shm/app-gc.log -XX:+PrintGCApplicationStoppedTime<br>-XX:+PrintGCDateStamps -XX:+PrintGCDetails</p><h2 id="异常日志相关"><a href="#异常日志相关" class="headerlink" title="异常日志相关"></a>异常日志相关</h2><p>-XX:-OmitStackTraceInFastThrow -XX:ErrorFile=${LOGDIR}/hs_err_%p.log<br>-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${LOGDIR}/</p><h2 id="JMX相关"><a href="#JMX相关" class="headerlink" title="JMX相关"></a>JMX相关</h2><p>-Dcom.sun.management.jmxremote.port=${JMX_PORT} -Dcom.sun.management.jmxremote<br>-Djava.rmi.server.hostname=127.0.0.1 -Dcom.sun.management.jmxremote.authenticate=false<br>-Dcom.sun.management.jmxremote.ssl=false</p><p>参考文章：</p><ol><li><a href="http://calvin1978.blogcn.com/articles/javatuning.html" target="_blank" rel="noopener">Java性能优化指南1.8版，及唯品会的实战</a></li><li><a href="http://blog.csdn.net/yangzl2008/article/details/43202969" target="_blank" rel="noopener">Java中的逃逸分析和TLAB以及Java对象分配</a></li><li><a href="http://www.evanjones.ca/jvm-mmap-pause.html" target="_blank" rel="noopener">The Four Month Bug: JVM statistics cause garbage collection pauses</a></li></ol><hr><p>个人主页: <a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文: <a href="https://www.howardliu.cn/java/jvm-tuning-basic/">JVM参数优化（基础篇）</a><br>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN博文: <a href="http://blog.csdn.net/liuxinghao/article/details/73963399" target="_blank" rel="noopener">JVM参数优化（基础篇）</a></p>]]></content>
-    
-    <summary type="html">
-    
-      文中内容主要是自己关于JVM参数优化的一些总结，参考了网上很多大神的文章，有参数有说明，这里是为了记录下，也是为了可以给别人做个垫脚石。刚入坑不久，很多地方还不是很透彻，之后会继续研究。
-    
-    </summary>
-    
-    
-      <category term="jvm" scheme="https://www.howardliu.cn/categories/jvm/"/>
-    
-    
-      <category term="java" scheme="https://www.howardliu.cn/tags/java/"/>
-    
-      <category term="jvm" scheme="https://www.howardliu.cn/tags/jvm/"/>
     
   </entry>
   
