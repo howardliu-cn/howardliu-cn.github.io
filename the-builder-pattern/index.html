@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>设计模式：建造者模式||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="建造者模式，又名生成器模式，是一种对象构建模式。它可以将复杂对象的建造过程抽象出来（抽象类别），使这个抽象过程的不同实现方法可以构造出不同表现（属性）的对象。">
+<meta name="keywords" content="java,design patterns,设计模式,builder pattern,建造者模式,生成器模式,effective java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式：建造者模式">
+<meta property="og:url" content="https://www.howardliu.cn/the-builder-pattern/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="建造者模式，又名生成器模式，是一种对象构建模式。它可以将复杂对象的建造过程抽象出来（抽象类别），使这个抽象过程的不同实现方法可以构造出不同表现（属性）的对象。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.howardliu.cn/images/design-patterns/star-4903819_1920.jpg">
+<meta property="og:updated_time" content="2020-03-22T10:11:21.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="设计模式：建造者模式">
+<meta name="twitter:description" content="建造者模式，又名生成器模式，是一种对象构建模式。它可以将复杂对象的建造过程抽象出来（抽象类别），使这个抽象过程的不同实现方法可以构造出不同表现（属性）的对象。">
+<meta name="twitter:image" content="https://www.howardliu.cn/images/design-patterns/star-4903819_1920.jpg">
+
+<meta name="keywords" content="java,design patterns,设计模式,builder pattern,建造者模式,生成器模式,effective java">
+
+
+<meta name="description" content="建造者模式，又名生成器模式，是一种对象构建模式。它可以将复杂对象的建造过程抽象出来（抽象类别），使这个抽象过程的不同实现方法可以构造出不同表现（属性）的对象。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/the-builder-pattern/">设计模式：建造者模式</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2020-03-22</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/the-builder-pattern/" class="leancloud_visitors" data-flag-title="设计模式：建造者模式">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#先上例子"><span class="toc-text">先上例子</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#入门：无参构造器"><span class="toc-text">入门：无参构造器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#初级：重叠构造器"><span class="toc-text">初级：重叠构造器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#中级：建造者模式"><span class="toc-text">中级：建造者模式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#再来一个例子"><span class="toc-text">再来一个例子</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#最后来个总结"><span class="toc-text">最后来个总结</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="https://www.howardliu.cn/images/design-patterns/star-4903819_1920.jpg" alt="Design Patterns"></p>
+<p>之前说过了<a href="https://www.howardliu.cn/singleton-pattern/">单例模式</a>，这周突然想说说建造者模式，另外一个比较常用的创建型设计模式。</p>
+<p>维基百科解释是：建造者模式，又名生成器模式，是一种对象构建模式。它可以将复杂对象的建造过程抽象出来（抽象类别），使这个抽象过程的不同实现方法可以构造出不同表现（属性）的对象。</p>
+<a id="more"></a>
+
+<p>每种设计模式的出现，都是为了解决一些编程不够优雅的问题，建造者模式也是这样。</p>
+<p>本文借用并改造下《Effective Java》中给出一个例子：每种食品包装上都会有一个营养成分表，每份的含量、每罐的含量、每份卡路里、脂肪、碳水化合物、钠等，还可能会有其他N种可选数据，大多数产品的某几个成分都有值，如何定义营养成分这个类，可以作为区分初级程序员和中级程序员的一个标准。</p>
+<h1 id="先上例子"><a href="#先上例子" class="headerlink" title="先上例子"></a>先上例子</h1><h2 id="入门：无参构造器"><a href="#入门：无参构造器" class="headerlink" title="入门：无参构造器"></a>入门：无参构造器</h2><p>把无参构造器放在入门一级，是因为这种方式虽然灵活，但是少了一些约束，而且这种方式弊病最大。</p>
+<pre><code class="java">public class Nutrition {
+    private int servingSize = -1;// required
+    private int servings = -1;// required
+    private int calories;// optional
+    private int fat;// optional
+    private int sodium;// optional
+    private int carbohydrate;// optional
+
+    public Nutrition() {
+    }
+
+    // getter and setter
+}</code></pre>
+<p>营养成分列表实例构造过程中，需要多次调用set方法，也就是将构造实例的过程拆分成多步。而且，因为是无参构造器，没有办法限制和校验参数的合法性及有效性。这个时候就引出了下面一种方式。</p>
+<h2 id="初级：重叠构造器"><a href="#初级：重叠构造器" class="headerlink" title="初级：重叠构造器"></a>初级：重叠构造器</h2><p>这种方式也是比较常用的一种方式，既然无参构造器不能满足校验，那就定义参数：第一个构造器只有必传参数，第二个构造器在第一个基础上加一个可选参数，第三个加两个，以此类推，直到最后一个包含所有参数。</p>
+<pre><code class="java">public class Nutrition {
+    private int servingSize;// required
+    private int servings;// required
+    private int calories;// optional
+    private int fat;// optional
+    private int sodium;// optional
+    private int carbohydrate;// optional
+
+    public Nutrition(final int servingSize, final int servings) {
+        this.servingSize = servingSize;
+        this.servings = servings;
+    }
+
+    public Nutrition(final int servingSize, final int servings, final int calories) {
+        this.servingSize = servingSize;
+        this.servings = servings;
+        this.calories = calories;
+    }
+
+    public Nutrition(final int servingSize, final int servings, final int calories, final int fat) {
+        this.servingSize = servingSize;
+        this.servings = servings;
+        this.calories = calories;
+        this.fat = fat;
+    }
+
+    public Nutrition(final int servingSize, final int servings, final int calories, final int fat, final int sodium) {
+        this.servingSize = servingSize;
+        this.servings = servings;
+        this.calories = calories;
+        this.fat = fat;
+        this.sodium = sodium;
+    }
+
+    public Nutrition(final int servingSize, final int servings, final int calories, final int fat, final int sodium, final int carbohydrate) {
+        this.servingSize = servingSize;
+        this.servings = servings;
+        this.calories = calories;
+        this.fat = fat;
+        this.sodium = sodium;
+        this.carbohydrate = carbohydrate;
+    }
+
+    public static void main(String[] args) {
+        new Nutrition(100, 50, 0, 35, 25, 10);
+    }
+
+    // getter
+}</code></pre>
+<p>这个时候如果定义一个所有参数的对象，就是<code>new Nutrition(100, 50, 0, 35, 0, 10)</code>，看着还行，只是<code>calories</code>和<code>sodium</code>值为0的时候，也需要在构造函数中明确定义是0，看着也能接受，但是如果参数比价多了，假设10个参数，可选参数中只有最后一个值不是0，写起来是不是就恶心了。</p>
+<p>还有一个缺点，那就是如果同类型参数比较多，除非每次创建实例的时候仔细对比方法签名，否则很容易传错参数，这种错误编辑器检查不出来，只有在运行时才能发现各种诡异错误。</p>
+<p>这种方式解决了第一种方式的缺点，但是也引入了新的问题，所以需要一种更好的替代方案。</p>
+<h2 id="中级：建造者模式"><a href="#中级：建造者模式" class="headerlink" title="中级：建造者模式"></a>中级：建造者模式</h2><p>直接上代码</p>
+<pre><code class="java">public class Nutrition {
+    private int servingSize;// required
+    private int servings;// required
+    private int calories;// optional
+    private int fat;// optional
+    private int sodium;// optional
+    private int carbohydrate;// optional
+
+    public static class Builder {
+        private final int servingSize;// required
+        private final int servings;// required
+        private int calories;// optional
+        private int fat;// optional
+        private int sodium;// optional
+        private int carbohydrate;// optional
+
+        public Builder(final int servingSize, final int servings) {
+            this.servingSize = servingSize;
+            this.servings = servings;
+        }
+
+        public Builder setCalories(final int calories) {
+            this.calories = calories;
+            return this;
+        }
+
+        public Builder setFat(final int fat) {
+            this.fat = fat;
+            return this;
+        }
+
+        public Builder setSodium(final int sodium) {
+            this.sodium = sodium;
+            return this;
+        }
+
+        public Builder setCarbohydrate(final int carbohydrate) {
+            this.carbohydrate = carbohydrate;
+            return this;
+        }
+    }
+
+    private Nutrition(Builder builder) {
+        servingSize = builder.servingSize;
+        servings = builder.servings;
+        calories = builder.calories;
+        fat = builder.fat;
+        sodium = builder.sodium;
+        carbohydrate = builder.carbohydrate;
+    }
+
+    // getter
+}</code></pre>
+<p>这样解决了前两种方法的缺点，但是也有别的缺点，代码变多了，但是也是利大于弊。而且，代码太多的这个问题可以借助<code>lombok</code>来解决，通过注解<code>@Builder</code>，可以在编译过程自动生成对象的Builder类，相当省事。</p>
+<h1 id="再来一个例子"><a href="#再来一个例子" class="headerlink" title="再来一个例子"></a>再来一个例子</h1><p>如果你认为建造者模式只能完成上面这个任务，那就太小看它了。既然叫做建造者模式，那建造的范围和方式可就不能仅仅是上面那一种。</p>
+<p>引申一下，把上面的setter方法替换成某种具体的操作，而不是仅仅赋值。</p>
+<p>比如，需要画个小人，需要头、身体、左手、右手、左脚、右脚，但是需要画出高矮胖瘦各种不同的小人，（例子来源自《大话设计模式》）。</p>
+<p>通过建造者模式也可以实现这个需求，代码如下：</p>
+<pre><code class="java">public abstract class PersonBuilder {
+    public abstract void buildHead();
+
+    public abstract void buildBody();
+
+    public abstract void buildLeftHand();
+
+    public abstract void buildRightHand();
+
+    public abstract void buildLeftLeg();
+
+    public abstract void buildRightLeg();
+}
+
+public class FatPersonBuilder extends PersonBuilder {
+    @Override
+    public void buildHead() {
+        System.out.println(&quot;胖子的头&quot;);
+    }
+
+    @Override
+    public void buildBody() {
+        System.out.println(&quot;胖子的身体&quot;);
+    }
+
+    @Override
+    public void buildLeftHand() {
+        System.out.println(&quot;胖子的左手&quot;);
+    }
+
+    @Override
+    public void buildRightHand() {
+        System.out.println(&quot;胖子的右手&quot;);
+    }
+
+    @Override
+    public void buildLeftLeg() {
+        System.out.println(&quot;胖子的左腿&quot;);
+    }
+
+    @Override
+    public void buildRightLeg() {
+        System.out.println(&quot;胖子的右腿&quot;);
+    }
+}</code></pre>
+<p>但是，如果有个方法忘记调用了，比如画右手的方法忘记调用了，那就成杨过大侠了。这个时候就需要在建造者类之上加一个Director类，俗称监工。</p>
+<pre><code class="java">public class PersonDirector {
+    private final PersonBuilder pb;
+
+    public PersonDirector(final PersonBuilder pb) {
+        this.pb = pb;
+    }
+
+    public void createPerson() {
+        this.pb.buildHead();
+        this.pb.buildBody();
+        this.pb.buildLeftHand();
+        this.pb.buildRightHand();
+        this.pb.buildLeftLeg();
+        this.pb.buildRightLeg();
+    }
+}</code></pre>
+<h1 id="最后来个总结"><a href="#最后来个总结" class="headerlink" title="最后来个总结"></a>最后来个总结</h1><p>建造者模式是比较实用且常用的一种设计模式，更主要的是，特别简单。那哪些情况下需要用到建造者模式呢？一般是两个：</p>
+<ul>
+<li>当创建复杂对象的算法应该独立于该对象的组成部分以及它们的装配方式时</li>
+<li>当构造过程必须允许被构造的对象有不同的表示时</li>
+</ul>
+<p>碰到上面两种情况，不要犹豫，果断使用建造者模式就行。</p>
+<hr>
+<p>个人主页: <a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文: <a href="https://www.howardliu.cn/the-builder-pattern/">设计模式：建造者模式</a><br>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN博文: <a href="https://blog.csdn.net/liuxinghao/article/details/103794938" target="_blank" rel="noopener">设计模式：建造者模式</a></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/设计模式/">设计模式</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/from-monolith-to-microservice/">
+                <i class="icon-next">从单体架构到微服务架构</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/http状态码/" style="font-size: 15px;">http状态码</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/闲聊/" style="font-size: 15px;">闲聊</a> <a href="/tags/非理性/" style="font-size: 15px;">非理性</a> <a href="/tags/认知偏差/" style="font-size: 15px;">认知偏差</a> <a href="/tags/自控术/" style="font-size: 15px;">自控术</a> <a href="/tags/成本/" style="font-size: 15px;">成本</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/局部参数/" style="font-size: 15px;">局部参数</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring-cloud</a> <a href="/tags/spring-cloud-config/" style="font-size: 15px;">spring-cloud-config</a> <a href="/tags/error/" style="font-size: 15px;">error</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/the-builder-pattern/">设计模式：建造者模式</a></li><li class="post-list-item"><a class="post-list-link" href="/from-monolith-to-microservice/">从单体架构到微服务架构</a></li><li class="post-list-item"><a class="post-list-link" href="/dont-let-irrational-thinking-ruin-your-lift/">别让非理性思维毁了你的人生</a></li><li class="post-list-item"><a class="post-list-link" href="/the-three-ways-principles-underpinning-devops/">实现DevOps的三步工作法</a></li><li class="post-list-item"><a class="post-list-link" href="/service-registry-and-discovery/">微服务中服务注册和发现的可行性方案</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2020</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+<script>
+    // baidu analytics
+    (function () {
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
