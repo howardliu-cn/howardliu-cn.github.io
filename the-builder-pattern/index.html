@@ -17,6 +17,7 @@
 <meta property="og:description" content="建造者模式，又名生成器模式，是一种对象构建模式。它可以将复杂对象的建造过程抽象出来（抽象类别），使这个抽象过程的不同实现方法可以构造出不同表现（属性）的对象。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.howardliu.cn/images/design-patterns/star-4903819_1920.jpg">
+<meta property="og:image" content="https://www.howardliu.cn/images/design-patterns/builder-pattern.jpg">
 <meta property="og:updated_time" content="2020-03-22T10:11:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="设计模式：建造者模式">
@@ -104,38 +105,17 @@
             <!-- 
     <div id="toc" class="toc-content">
       <strong class="toc-title">目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#先上一个简单的例子"><span class="toc-text">先上一个简单的例子</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#无参构造器"><span class="toc-text">无参构造器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#重叠构造器"><span class="toc-text">重叠构造器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#建造者模式"><span class="toc-text">建造者模式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#再来一个例子"><span class="toc-text">再来一个例子</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#最后来个总结"><span class="toc-text">最后来个总结</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#先上一个例子"><span class="toc-text">先上一个例子</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#重叠构造器"><span class="toc-text">重叠构造器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#set方式赋值"><span class="toc-text">set方式赋值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#建造者模式"><span class="toc-text">建造者模式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#再来一个例子"><span class="toc-text">再来一个例子</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#最后来个总结"><span class="toc-text">最后来个总结</span></a></li></ol>
     </div>
  -->
             <p><img src="https://www.howardliu.cn/images/design-patterns/star-4903819_1920.jpg" alt="Design Patterns"></p>
 <p>之前说过了<a href="https://www.howardliu.cn/singleton-pattern/">单例模式</a>，这周想说说建造者模式，它是另外一个比较常用的创建型设计模式。</p>
-<p>维基百科解释是：建造者模式，又名生成器模式，是一种对象构建模式。它可以将复杂对象的建造过程抽象出来（抽象类别），使这个抽象过程的不同实现方法可以构造出不同表现（属性）的对象。</p>
+<p>每种设计模式的出现，都是为了解决一些编程不够优雅的问题，建造者模式也是这样。</p>
+<p>维基百科解释是：建造者模式，Builder Pattern，又名生成器模式，是一种对象构建模式。它可以将复杂对象的建造过程抽象出来（抽象类别），使这个抽象过程的不同实现方法可以构造出不同表现（属性）的对象。</p>
 <a id="more"></a>
 
-<p>每种设计模式的出现，都是为了解决一些编程不够优雅的问题，建造者模式也是这样。</p>
-<h1 id="先上一个简单的例子"><a href="#先上一个简单的例子" class="headerlink" title="先上一个简单的例子"></a>先上一个简单的例子</h1><p>借用并改造下《Effective Java》中给出一个例子：每种食品包装上都会有一个营养成分表，每份的含量、每罐的含量、每份卡路里、脂肪、碳水化合物、钠等，还可能会有其他N种可选数据，大多数产品的某几个成分都有值，该如何定义营养成分这个类呢？</p>
-<h2 id="无参构造器"><a href="#无参构造器" class="headerlink" title="无参构造器"></a>无参构造器</h2><p>这种方式就是标准的JavaBean方式：</p>
-<pre><code class="java">public class Nutrition {
-    private int servingSize = -1;// required
-    private int servings = -1;// required
-    private int calories;// optional
-    private int fat;// optional
-    private int sodium;// optional
-    private int carbohydrate;// optional
-
-    public Nutrition() {
-    }
-
-    // getter and setter
-}</code></pre>
-<p>营养成分列表实例构造过程中，需要多次调用set方法，也就是将构造实例的过程拆分成多步。这种方式有一个明显的缺点，没有办法校验必要的参数和关联参数的有效性，比如servingSize是必要参数，如果没有set值，只有在使用的时候才能校验。再比如calories和fat有关联性，两个属性必须同时有值或同时为0，就需要额外在定义校验方法。</p>
-<p>这两点限制都只能在客户端进行校验：</p>
-<ul>
-<li>隐式校验，在<code>Nutrition</code>类中定义校验方法，由客户端调用校验方法</li>
-<li>显示校验，由客户端校验对象属性的合法性。</li>
-</ul>
-<p>无论哪种校验方法，都需要客户端参与才行，如果客户端忘记了，那数据有效性就没有办法保证了。</p>
-<h2 id="重叠构造器"><a href="#重叠构造器" class="headerlink" title="重叠构造器"></a>重叠构造器</h2><p>这种方式也是比较常用的一种方式，既然无参构造器不能满足需求，那就定义多个有参构造器：第一个构造器只有必传参数，第二个构造器在第一个基础上加一个可选参数，第三个加两个，以此类推，直到最后一个包含所有参数。</p>
+<h1 id="先上一个例子"><a href="#先上一个例子" class="headerlink" title="先上一个例子"></a>先上一个例子</h1><p>借用并改造下《Effective Java》中给出的例子：每种食品包装上都会有一个营养成分表，每份的含量、每罐的含量、每份卡路里、脂肪、碳水化合物、钠等，还可能会有其他N种可选数据，大多数产品的某几个成分都有值，该如何定义营养成分这个类呢？</p>
+<h2 id="重叠构造器"><a href="#重叠构造器" class="headerlink" title="重叠构造器"></a>重叠构造器</h2><p>因为有多个参数，有必填、有选填，最先想到的就是定义多个有参构造器：第一个构造器只有必传参数，第二个构造器在第一个基础上加一个可选参数，第三个加两个，以此类推，直到最后一个包含所有参数，这种写法称为重叠构造器，有点像叠罗汉。还有一种常见写法是只写一个构造函数，包含所有参数。</p>
 <p>代码如下：</p>
 <pre><code class="java">public class Nutrition {
     private int servingSize;// required
@@ -173,10 +153,37 @@
     // getter
 }</code></pre>
 <p>这种写法还可以有效解决参数校验，只要在构造器中加入参数校验就可以了。</p>
-<p>如果想要初始化实例，只需要new一下就行：<code>new Nutrition(100, 50, 0, 35, 0, 10)</code>。只是<code>calories</code>和<code>sodium</code>值为0的时候，也需要在构造函数中明确定义是0，参数不多的情况下，也能接受。但是如果参数比较多，假设20个参数，可选参数中只有最后一个值不是0，写起来是不是就恶心了。</p>
-<p>还有一个隐藏缺点，那就是如果同类型参数比较多，比如上面这个例子，都是<code>int</code>类型，除非每次创建实例的时候仔细对比方法签名，否则很容易传错参数，这种错误编辑器检查不出来，只有在运行时才能发现各种诡异错误。</p>
-<p>这种方式解决了第一种方式的缺点，但是也引入了新的问题，所以需要一种更好的替代方案。</p>
-<h2 id="建造者模式"><a href="#建造者模式" class="headerlink" title="建造者模式"></a>建造者模式</h2><p>直接上代码</p>
+<p>如果想要初始化实例，只需要<code>new</code>一下就行：<code>new Nutrition(100, 50, 0, 35, 0, 10)</code>。这种写法，不够优雅的地方是，当<code>calories</code>和<code>sodium</code>值为0的时候，也需要在构造函数中明确定义是0，示例中才6个参数，也能勉强接受。但是如果参数达到20个呢？可选参数中只有一个值不是0或空，写起来很好玩了，满屏全是0和null的混合体。</p>
+<p>还有一个隐藏缺点，那就是如果同类型参数比较多，比如上面这个例子，都是<code>int</code>类型，除非每次创建实例的时候仔细对比方法签名，否则很容易传错参数，而且这种错误编辑器检查不出来，只有在运行时会出现各种诡异错误，排错的时候不知道要薅掉多少根头发了。</p>
+<p>想要解决上面两个问题，不难想到，可以通过set方法一个个赋值就行了。</p>
+<h2 id="set方式赋值"><a href="#set方式赋值" class="headerlink" title="set方式赋值"></a>set方式赋值</h2><p>既然构造函数中放太多参数不够优雅，还有缺点，那就换种写法，构造函数只保留必要字段，其他参数的赋值都用setter方法就行了。</p>
+<p>代码如下：</p>
+<pre><code class="java">public class Nutrition {
+    private final int servingSize;// required
+    private final int servings;// required
+    private int calories;// optional
+    private int fat;// optional
+    private int sodium;// optional
+    private int carbohydrate;// optional
+
+    public Nutrition(int servingSize, int servings) {
+        this.servingSize = servingSize;
+        this.servings = servings;
+    }
+
+    // getter and setter
+}</code></pre>
+<p>这样就可以解决构造函数参数太多、容易传错参数的问题，只在需要的时候<code>set</code>指定参数就行了。</p>
+<p>如果没有特殊需求，到这里可以解决大部分问题了。</p>
+<p>但是需求总是多变的，总会有类似“五彩斑斓的黑”这种奇葩要求：</p>
+<ol>
+<li>如果必填参数比较多，或者大部分参数是必填参数。这个时候这种方式又会出现重叠构造器那些缺点。</li>
+<li>如果把所有参数都用set方法赋值，那又没有办法进行必填项的校验。</li>
+<li>如果非必填参数之间有关联关系，比如上面例子中，脂肪<code>fat</code>和碳水化合物<code>carbohydrate</code>有值的话，卡路里<code>calories</code>一定不会为0。但是使用现在这种设计思路，属性之间的依赖关系或者约束条件的校验逻辑就没有地方定义了。</li>
+<li>如果想要把<code>Nutrition</code>定义成不可变对象的话，就不能使用<code>set</code>方法修改属性值。</li>
+</ol>
+<p>这个时候就该祭出今天的主角了。</p>
+<h2 id="建造者模式"><a href="#建造者模式" class="headerlink" title="建造者模式"></a>建造者模式</h2><p>先上代码</p>
 <pre><code class="java">public class Nutrition {
     private int servingSize;// required
     private int servings;// required
@@ -219,6 +226,7 @@
         }
 
         public Nutrition build() {
+            // 这里定义依赖关系或者约束条件的校验逻辑
             return new Nutrition(this);
         }
     }
@@ -236,44 +244,61 @@
 }</code></pre>
 <p>想要创建对象，只要调用<code>new Nutrition.Builder(100, 50).setFat(35).setCarbohydrate(10).build()</code>就可以了。这种方式兼具前两种方式的优点：</p>
 <ul>
-<li>能够毫无歧义且明确set指定属性的值；</li>
-<li>在<code>build</code>方法或<code>Nutrition</code>构造函数中定义校验方法，将校验放在对象中；</li>
+<li>能够毫无歧义且明确<code>set</code>指定属性的值；</li>
+<li>在<code>build</code>方法或<code>Nutrition</code>构造函数中定义校验方法，可以在创建对象过程中完成校验。</li>
 </ul>
-<p>建造者模式的缺点就是代码变多了，这个缺点可以借助<code>lombok</code>来解决，通过注解<code>@Builder</code>，可以在编译过程自动生成对象的Builder类，相当省事。</p>
-<h1 id="再来一个例子"><a href="#再来一个例子" class="headerlink" title="再来一个例子"></a>再来一个例子</h1><p>上面的例子已经覆盖大多数情况了，下面再来一种情况。例子来源自《大话设计模式》：现在需要画个小人，需要头、身体、左手、右手、左脚、右脚，但是需要画出高矮胖瘦各种不同的小人，。</p>
-<p>通过建造者模式也可以实现这个需求，代码如下：</p>
-<pre><code class="java">public class PersonBuilder {
-    @Override
-    public void buildHead() {
-        System.out.println(&quot;头&quot;);
+<p>建造者模式的缺点就是代码变多了（好像所有的设计模式都有这个问题），这个缺点可以借助<code>lombok</code>来解决，通过注解<code>@Builder</code>，可以在编译过程自动生成对象的<code>Builder</code>类，相当省事。</p>
+<h1 id="再来一个例子"><a href="#再来一个例子" class="headerlink" title="再来一个例子"></a>再来一个例子</h1><p>接下来分析下《大话设计模式》中的一个例子，这个例子从代码结构上，和建造者模式有很大的出入，但是作者却把它归为建造者模式。下面我们就来看看究竟：现在需要画个小人，一个小人需要头、身体、左手、右手、左脚、右脚。</p>
+<p>代码如下：</p>
+<pre><code class="java">public class Person {
+    private String head;
+    private String body;
+    private String leftHand;
+    private String rightHand;
+    private String leftLeg;
+    private String rightLeg;
+
+    // getter/setter
+}
+
+public class PersonBuilder {
+    private Person person = new Person();
+
+    public PersonBuilder buildHead() {
+        person.setHead(&quot;头&quot;);
+        return this;
     }
 
-    @Override
-    public void buildBody() {
-        System.out.println(&quot;身体&quot;);
+    public PersonBuilder buildBody() {
+        person.setBody(&quot;身体&quot;);
+        return this;
     }
 
-    @Override
-    public void buildLeftHand() {
-        System.out.println(&quot;左手&quot;);
+    public PersonBuilder buildLeftHand() {
+        person.setLeftHand(&quot;左手&quot;);
+        return this;
     }
 
-    @Override
-    public void buildRightHand() {
-        System.out.println(&quot;右手&quot;);
+    public PersonBuilder buildRightHand() {
+        person.setRightHand(&quot;右手&quot;);
+        return this;
     }
 
-    @Override
-    public void buildLeftLeg() {
-        System.out.println(&quot;左腿&quot;);
+    public PersonBuilder buildLeftLeg() {
+        person.setLeftLeg(&quot;左腿&quot;);
+        return this;
     }
 
-    @Override
-    public void buildRightLeg() {
-        System.out.println(&quot;右腿&quot;);
+    public PersonBuilder buildRightLeg() {
+        person.setRightLeg(&quot;右腿&quot;);
+        return this;
+    }
+
+    public Person getResult() {
+        return this.person;
     }
 }</code></pre>
-<p>但是，如果有个方法忘记调用了，比如画右手的方法忘记调用了，那就成杨过大侠了。这个时候就需要在建造者类之上加一个<code>Director</code>类，俗称监工。</p>
+<p>但是，如果有个方法忘记调用了，比如画右手的方法忘记调用了，那就成杨过大侠了。这个时候就需要在<code>PersonBuilder</code>之上加一个<code>Director</code>类，俗称监工。</p>
 <pre><code class="java">public class PersonDirector {
     private final PersonBuilder pb;
 
@@ -281,20 +306,30 @@
         this.pb = pb;
     }
 
-    public void createPerson() {
-        this.pb.buildHead();
-        this.pb.buildBody();
-        this.pb.buildLeftHand();
-        this.pb.buildRightHand();
-        this.pb.buildLeftLeg();
-        this.pb.buildRightLeg();
+    public Person createPerson() {
+        this.pb
+            .buildHead()
+            .buildBody()
+            .buildLeftHand()
+            .buildRightHand()
+            .buildLeftLeg()
+            .buildRightLeg();
+        return this.pb.getResult();
     }
 }</code></pre>
 <p>这个时候，对于客户端来说，只需要关注<code>Director</code>类就行了，就相当于在客户端调用构造器之间，增加一个监工，一个对接人，保证客户端能够正确使用<code>Builder</code>类。</p>
 <p>细心的朋友可能会发现，我这里的<code>Director</code>类的构造函数增加了一个<code>Builder</code>参数，这是为了更好的扩展，比如，这个时候需要增加一个胖子<code>Builder</code>类，那就只需要定义一个<code>FatPersonBuilder</code>，继承<code>PersonBuilder</code>，然后只需要将新增加的类传入<code>Director</code>的构造函数即可。</p>
 <p>这也是建造者模式的另一个优点：可以定义不同的<code>Builder</code>类实现不同的构建属性，比如上面的普通人和胖子两个<code>Builder</code>类。</p>
-<h1 id="最后来个总结"><a href="#最后来个总结" class="headerlink" title="最后来个总结"></a>最后来个总结</h1><p>上面给出了建造者模式两种使用方法，第二种方法中的<code>Director</code>类相当于在客户端之间增加一个监工，第一种方法是把监工的工作放在客户端完成，两种方法只是在表现形式上的存在差异。</p>
-<p>下面来总结下建造者模式的优点：</p>
+<h1 id="最后来个总结"><a href="#最后来个总结" class="headerlink" title="最后来个总结"></a>最后来个总结</h1><p>有的朋友会说，这两个例子结构差别很大，怎么能是同一个模式？</p>
+<p>那我们来看看官方给出的建造者模式的类图：</p>
+<p><img src="https://www.howardliu.cn/images/design-patterns/builder-pattern.jpg" alt="Builder Patter"></p>
+<p>这样结构就比较清晰了，两个例子都包含<code>Product</code>类和<code>Builder</code>类(或子类)，区别是，第一个例子对象的完整性操作交给了客户端，第二个例子由<code>Director</code>类保障对象的完整。</p>
+<p>我们来看看建造者的本质：构建<strong>状态完整</strong>、<strong>结构复杂</strong>的对象。</p>
+<ul>
+<li>结构复杂：如果只有几个属性，通过构造函数就能实现，只有属性多了，结构复杂，建造者模式才能体现价值，建议属性值超过6个时使用建造者模式。</li>
+<li>状态完整：状态是否完整可以通过客户端或<code>Director</code>来管理，不会出现因为忘记调用<code>set</code>或其他方法，是对象少定义一个属性。</li>
+</ul>
+<p>从某种意义上说，建造者模式是为了弥补构造函数的不足出现的，主要优点是下面3项：</p>
 <ol>
 <li>将一个复杂对象的创建过程封装起来，向客户端隐藏产品内部表现</li>
 <li>允许对象通过多个步骤来创建，并可以改变过程</li>
@@ -306,6 +341,11 @@
 <li>当构造过程必须允许被构造的对象有不同的表示时</li>
 </ul>
 <p>碰到上面两种情况，不要犹豫，果断使用建造者模式就行。</p>
+<p>因为疫情的影响，今年的招聘和应聘变得与往年大不一样，原本金三银四的时间可能会延长到5、6月份，这样大家可以有更多的时间准备。但是也有一个不利于应聘者的情况是，随着大家准备的时间延长，基本功是否扎实就会使面试者的表现拉开距离，设计模式就是基本功中的一种。所以准备在最近开启“面向面试之设计模式”的系列，希望能够夯实自己基础的同时，帮助到更多的人。</p>
+<ul>
+<li><a href="https://www.howardliu.cn/singleton-pattern/">单例模式</a></li>
+<li><a href="https://www.howardliu.cn/the-builder-pattern/">建造者模式</a></li>
+</ul>
 <hr>
 <p>个人主页: <a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文: <a href="https://www.howardliu.cn/the-builder-pattern/">设计模式：建造者模式</a><br>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN博文: <a href="https://blog.csdn.net/liuxinghao/article/details/105038711" target="_blank" rel="noopener">设计模式：建造者模式</a></p>
 
@@ -358,7 +398,7 @@
 <div class="sidebar">
     <div class="well">
         <h2>标签云</h2>
-        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/http状态码/" style="font-size: 15px;">http状态码</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/闲聊/" style="font-size: 15px;">闲聊</a> <a href="/tags/成本/" style="font-size: 15px;">成本</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/非理性/" style="font-size: 15px;">非理性</a> <a href="/tags/认知偏差/" style="font-size: 15px;">认知偏差</a> <a href="/tags/自控术/" style="font-size: 15px;">自控术</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/局部参数/" style="font-size: 15px;">局部参数</a> <a href="/tags/层面分析/" style="font-size: 15px;">层面分析</a> <a href="/tags/标准查询解析器/" style="font-size: 15px;">标准查询解析器</a> <a href="/tags/DisMax查询解析器/" style="font-size: 15px;">DisMax查询解析器</a> <a href="/tags/eDisMax查询解析器/" style="font-size: 15px;">eDisMax查询解析器</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a>
+        <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/http状态码/" style="font-size: 15px;">http状态码</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/闲聊/" style="font-size: 15px;">闲聊</a> <a href="/tags/非理性/" style="font-size: 15px;">非理性</a> <a href="/tags/认知偏差/" style="font-size: 15px;">认知偏差</a> <a href="/tags/自控术/" style="font-size: 15px;">自控术</a> <a href="/tags/spring-cloud/" style="font-size: 15px;">spring-cloud</a> <a href="/tags/spring-cloud-config/" style="font-size: 15px;">spring-cloud-config</a> <a href="/tags/error/" style="font-size: 15px;">error</a> <a href="/tags/micro-service/" style="font-size: 15px;">micro-service</a> <a href="/tags/storm/" style="font-size: 15px;">storm</a> <a href="/tags/转帖/" style="font-size: 15px;">转帖</a>
     </div>
 </div>
 
