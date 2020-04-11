@@ -237,9 +237,9 @@
       <category term="microservice" scheme="https://www.howardliu.cn/categories/microservice/"/>
     
     
-      <category term="微服务" scheme="https://www.howardliu.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/"/>
-    
       <category term="方法论" scheme="https://www.howardliu.cn/tags/%E6%96%B9%E6%B3%95%E8%AE%BA/"/>
+    
+      <category term="微服务" scheme="https://www.howardliu.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/"/>
     
       <category term="范式" scheme="https://www.howardliu.cn/tags/%E8%8C%83%E5%BC%8F/"/>
     
@@ -264,9 +264,9 @@
       <category term="devops" scheme="https://www.howardliu.cn/categories/devops/"/>
     
     
-      <category term="部署" scheme="https://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
-    
       <category term="DevOps" scheme="https://www.howardliu.cn/tags/DevOps/"/>
+    
+      <category term="部署" scheme="https://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
     
       <category term="Nginx" scheme="https://www.howardliu.cn/tags/Nginx/"/>
     
@@ -318,11 +318,11 @@
       <category term="devops" scheme="https://www.howardliu.cn/categories/devops/"/>
     
     
-      <category term="系统运维" scheme="https://www.howardliu.cn/tags/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/"/>
+      <category term="DevOps" scheme="https://www.howardliu.cn/tags/DevOps/"/>
     
       <category term="部署" scheme="https://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
     
-      <category term="DevOps" scheme="https://www.howardliu.cn/tags/DevOps/"/>
+      <category term="系统运维" scheme="https://www.howardliu.cn/tags/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/"/>
     
   </entry>
   
