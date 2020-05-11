@@ -442,15 +442,15 @@
       <category term="rm" scheme="https://www.howardliu.cn/categories/hadoop/rm/"/>
     
     
-      <category term="开源" scheme="https://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
-    
       <category term="大数据" scheme="https://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="hadoop" scheme="https://www.howardliu.cn/tags/hadoop/"/>
     
-      <category term="ha" scheme="https://www.howardliu.cn/tags/ha/"/>
+      <category term="开源" scheme="https://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
       <category term="rm" scheme="https://www.howardliu.cn/tags/rm/"/>
+    
+      <category term="ha" scheme="https://www.howardliu.cn/tags/ha/"/>
     
   </entry>
   
@@ -475,13 +475,13 @@
       <category term="yarn" scheme="https://www.howardliu.cn/categories/hadoop/yarn/"/>
     
     
-      <category term="开源" scheme="https://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
-    
       <category term="大数据" scheme="https://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="hadoop" scheme="https://www.howardliu.cn/tags/hadoop/"/>
     
       <category term="yarn" scheme="https://www.howardliu.cn/tags/yarn/"/>
+    
+      <category term="开源" scheme="https://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
   </entry>
   
@@ -506,15 +506,15 @@
       <category term="hdfs" scheme="https://www.howardliu.cn/categories/hadoop/hdfs/"/>
     
     
-      <category term="开源" scheme="https://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
-    
       <category term="大数据" scheme="https://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="hadoop" scheme="https://www.howardliu.cn/tags/hadoop/"/>
     
-      <category term="hdfs" scheme="https://www.howardliu.cn/tags/hdfs/"/>
+      <category term="开源" scheme="https://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
       <category term="ha" scheme="https://www.howardliu.cn/tags/ha/"/>
+    
+      <category term="hdfs" scheme="https://www.howardliu.cn/tags/hdfs/"/>
     
       <category term="QJM" scheme="https://www.howardliu.cn/tags/QJM/"/>
     
@@ -541,11 +541,11 @@
       <category term="hdfs" scheme="https://www.howardliu.cn/categories/hadoop/hdfs/"/>
     
     
-      <category term="开源" scheme="https://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
-    
       <category term="大数据" scheme="https://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="hadoop" scheme="https://www.howardliu.cn/tags/hadoop/"/>
+    
+      <category term="开源" scheme="https://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
       <category term="hdfs" scheme="https://www.howardliu.cn/tags/hdfs/"/>
     
