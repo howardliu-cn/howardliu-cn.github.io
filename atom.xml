@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.howardliu.cn/"/>
-  <updated>2020-03-08T06:54:20.000Z</updated>
+  <updated>2020-07-20T13:11:13.000Z</updated>
   <id>https://www.howardliu.cn/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>IPv4 与 int 之间互相转换</title>
+    <link href="https://www.howardliu.cn/convert-ipv4-to-int/"/>
+    <id>https://www.howardliu.cn/convert-ipv4-to-int/</id>
+    <published>2020-07-20T13:11:13.000Z</published>
+    <updated>2020-07-20T13:11:13.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>目前数据存储设备越来越便宜，已经不存在为了节省空间而引入复杂计算的场景，但是有时候，将 IPv4 这种长字符串数据转换为数字，更加便于比较和查询。</p><a id="more"></a><h2 id="1-直接转换"><a href="#1-直接转换" class="headerlink" title="1. 直接转换"></a>1. 直接转换</h2><p>直接能够想到的方式是把网段之间的“.”去掉，组成一个长数字就行。但是在“255.255.255.255”地址时，去掉“.”的数字是255255255255，大于int能够表示的最大数字，所以，真正使用的时候，只能使用长整型Long型。但是这种方式有两个严重的问题：</p><ol><li>单向转换：只适合那种需要从 IPv4 到数字单向转换的场景，如果想要转回来，就不容易了，比如：“192.168.10.10”和“192.168.101.0”转换成数字都是1921681010，想要从数字转换会IP地址，就会有歧义，除非搭配某些约定规则才能实现</li><li>转换之后存在歧义：也是第一条中说的，两个IP地址转换得到同一个数字，如果在需要IP比较的场景，就容易出现问题了。</li></ol><h2 id="2-移位转换"><a href="#2-移位转换" class="headerlink" title="2. 移位转换"></a>2. 移位转换</h2><p>既然直接去掉“.”有歧义的问题，那就将4段数字分开存储，IPv4的某段数字取值范围是0~255，也就是2^8个数字，恰巧int类型占32个字节，那通过简单的移位和或运算，就能得到最后的结果，而且支持从int到IPv4的转换。</p><p>比如：192.168.30.68，计算结果就是：</p><pre><code class="java">192 &lt;&lt; 24 | 168 &lt;&lt; 16 | 30 &lt;&lt; 8 | 68 = 0b11000000101010000001111001000100 = -1062724028</code></pre><p>逆向转换就是：</p><pre><code class="java">((-1062724028 &gt;&gt; 24) &amp; 0xFF) + &quot;.&quot; + ((-1062724028 &gt;&gt; 16) &amp; 0xFF) + &quot;.&quot; + ((-1062724028 &gt;&gt; 8) &amp; 0xFF) + &quot;.&quot; + (-1062724028 &amp; 0xFF) = &quot;192.168.30.68&quot;</code></pre><p>所以第二种方式除了计算麻烦一些，可以完美解决第一种方式的两个问题。</p><hr><p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/convert-ipv4-to-int">IPv4 与 int 之间互相转换</a><br>CSDN 主页：<a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN 博文：<a href="https://blog.csdn.net/liuxinghao/article/details/107475967" target="_blank" rel="noopener">IPv4 与 int 之间互相转换</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;目前数据存储设备越来越便宜，已经不存在为了节省空间而引入复杂计算的场景，但是有时候，将 IPv4 这种长字符串数据转换为数字，更加便于比较和查询。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="java" scheme="https://www.howardliu.cn/categories/java/"/>
+    
+    
+      <category term="java" scheme="https://www.howardliu.cn/tags/java/"/>
+    
+      <category term="ipv4" scheme="https://www.howardliu.cn/tags/ipv4/"/>
+    
+      <category term="int" scheme="https://www.howardliu.cn/tags/int/"/>
+    
+  </entry>
   
   <entry>
     <title>从单体架构到微服务架构</title>
@@ -216,11 +243,11 @@
       <category term="devops" scheme="https://www.howardliu.cn/categories/devops/"/>
     
     
+      <category term="部署" scheme="https://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
+    
       <category term="DevOps" scheme="https://www.howardliu.cn/tags/DevOps/"/>
     
       <category term="Nginx" scheme="https://www.howardliu.cn/tags/Nginx/"/>
-    
-      <category term="部署" scheme="https://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
     
   </entry>
   
@@ -270,11 +297,11 @@
       <category term="devops" scheme="https://www.howardliu.cn/categories/devops/"/>
     
     
-      <category term="DevOps" scheme="https://www.howardliu.cn/tags/DevOps/"/>
+      <category term="系统运维" scheme="https://www.howardliu.cn/tags/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/"/>
     
       <category term="部署" scheme="https://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
     
-      <category term="系统运维" scheme="https://www.howardliu.cn/tags/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/"/>
+      <category term="DevOps" scheme="https://www.howardliu.cn/tags/DevOps/"/>
     
   </entry>
   
@@ -442,15 +469,15 @@
       <category term="rm" scheme="https://www.howardliu.cn/categories/hadoop/rm/"/>
     
     
-      <category term="开源" scheme="https://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
-    
       <category term="大数据" scheme="https://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="hadoop" scheme="https://www.howardliu.cn/tags/hadoop/"/>
     
-      <category term="rm" scheme="https://www.howardliu.cn/tags/rm/"/>
+      <category term="开源" scheme="https://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
       <category term="ha" scheme="https://www.howardliu.cn/tags/ha/"/>
+    
+      <category term="rm" scheme="https://www.howardliu.cn/tags/rm/"/>
     
   </entry>
   
@@ -475,13 +502,13 @@
       <category term="yarn" scheme="https://www.howardliu.cn/categories/hadoop/yarn/"/>
     
     
-      <category term="开源" scheme="https://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
-    
       <category term="大数据" scheme="https://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="hadoop" scheme="https://www.howardliu.cn/tags/hadoop/"/>
     
       <category term="yarn" scheme="https://www.howardliu.cn/tags/yarn/"/>
+    
+      <category term="开源" scheme="https://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
   </entry>
   
@@ -506,15 +533,15 @@
       <category term="hdfs" scheme="https://www.howardliu.cn/categories/hadoop/hdfs/"/>
     
     
-      <category term="开源" scheme="https://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
-    
       <category term="大数据" scheme="https://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="hadoop" scheme="https://www.howardliu.cn/tags/hadoop/"/>
     
-      <category term="ha" scheme="https://www.howardliu.cn/tags/ha/"/>
+      <category term="开源" scheme="https://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
     
       <category term="hdfs" scheme="https://www.howardliu.cn/tags/hdfs/"/>
+    
+      <category term="ha" scheme="https://www.howardliu.cn/tags/ha/"/>
     
       <category term="QJM" scheme="https://www.howardliu.cn/tags/QJM/"/>
     
@@ -541,38 +568,13 @@
       <category term="hdfs" scheme="https://www.howardliu.cn/categories/hadoop/hdfs/"/>
     
     
-      <category term="开源" scheme="https://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
-    
       <category term="大数据" scheme="https://www.howardliu.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
       <category term="hadoop" scheme="https://www.howardliu.cn/tags/hadoop/"/>
     
+      <category term="开源" scheme="https://www.howardliu.cn/tags/%E5%BC%80%E6%BA%90/"/>
+    
       <category term="hdfs" scheme="https://www.howardliu.cn/tags/hdfs/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>JVM参数优化（基础篇）</title>
-    <link href="https://www.howardliu.cn/java/jvm-tuning-basic/"/>
-    <id>https://www.howardliu.cn/java/jvm-tuning-basic/</id>
-    <published>2017-06-27T08:17:23.000Z</published>
-    <updated>2020-02-07T06:22:28.957Z</updated>
-    
-    <content type="html"><![CDATA[<p>这几天压测预生产环境，发现TPS各种不稳。因为是重构的系统，据说原来的系统在高并发的时候一点问题没有，结果重构的系统被几十个并发压一下就各种不稳定。虽然测试的同事没有说啥，但自己感觉被啪啪的打脸。。。</p><p>于是各种排查，最先想到的就是JVM参数，于是优化一番，希望能够出一个好的结果。尽管后来证明不稳定的原因是安装LoadRunner的压测服务器不稳定，不关我的系统的事，不过也是记录一下，一是做个备份，二是可以给别人做个参考。</p><a id="more"></a><h1 id="写在前面的话"><a href="#写在前面的话" class="headerlink" title="写在前面的话"></a>写在前面的话</h1><p>因为Hotspot JDK提供的参数默认值，在小版本之间不断变化，参数之间也会互相影响。而且，服务器配置不同，都可能影响最后的效果。所以千万不要迷信网上的某篇文章（包括这篇）里面的参数配置，一切的配置都需要自己亲身测试一番才能用。针对于JVM参数默认值不断变化，可以使用<code>-XX:+PrintFlagsFinal</code>打印当前环境JVM参数默认值，比如：<code>java -XX:PrintFlagsFinal -version</code>，也可以用<code>java [生产环境参数] -XX:+PrintFlagsFinal –version | grep [待查证的参数]</code>查看具体的参数数据。</p><p><a href="https://www.howardliu.cn/files/java/global-flags.txt">这里</a>是一个8G服务器的参数，JDK版本信息如下：</p><pre><code class="text">java version &quot;1.8.0_73&quot;Java(TM) SE Runtime Environment (build 1.8.0_73-b02)Java HotSpot(TM) 64-Bit Server VM (build 25.73-b02, mixed mode)</code></pre><h1 id="堆设置"><a href="#堆设置" class="headerlink" title="堆设置"></a>堆设置</h1><p>堆内存设置应该算是一个Java程序猿的基本素养，最少也得修改过Xms、Xmx、Xmn这三个参数了。但是一个2G堆大小的JVM，可能总共占用多少内存的？</p><blockquote><p>堆内存 ＋ 线程数 ＊ 线程栈 ＋ 永久代 ＋ 二进制代码 ＋ 堆外内存</p><p>2G + 1000 * 1M + 256M + 48/240M + (～2G) = 5.5G (3.5G)</p><ul><li>堆内存： 存储Java对象，默认为物理内存的1/64</li><li>线程栈： 存储局部变量（原子类型，引用）及其他，默认为1M</li><li>永久代： 存储类定义及常量池，注意JDK7/8的区别</li><li>二进制代码：JDK7与8，打开多层编译时的默认值不一样，从48到240M</li><li>堆外内存： 被Netty，堆外缓存等使用，默认最大值约为堆内存大小</li></ul></blockquote><p>也就是说，堆内存设置为2G，那一个有1000个线程的JVM可能需要占5.5G，在考虑系统占用、IO占用等等各种情况，一台8G的服务器，也就启动一个服务了。当然，如果线程数少、并发不高、压力不大，还是可以启动多个，而且也可以把堆内存降低。</p><ol><li>-Xms2g 与 -Xmx2g：堆内存大小，第一个是最小堆内存，第二个是最大堆内存，比较合适的数值是2-4g，再大就得考虑GC时间</li><li>-Xmn1g 或 （-XX:NewSize=1g 和 -XX:MaxNewSize=1g） 或 -XX:NewRatio=1：设置新生代大小，JDK默认新生代占堆内存大小的1/3，也就是<code>-XX:NewRatio=2</code>。这里是设置的1g，也就是<code>-XX:NewRatio=1</code>。可以根据自己的需要设置。</li><li>-XX:MetaspaceSize=128m 和 -XX:MaxMetaspaceSize=512m，JDK8的永生代几乎可用完机器的所有内存，为了保护服务器不会因为内存占用过大无法连接，需要设置一个128M的初始值，512M的最大值保护一下。</li><li>-XX:SurvivorRatio：新生代中每个存活区的大小，默认为8，即1/10的新生代， 1/(SurvivorRatio+2)，有人喜欢设小点省点给新生代，但要避免太小使得存活区放不下临时对象而要晋升到老生代，还是从GC Log里看实际情况了。</li><li>-Xss256k：在堆之外，线程占用栈内存，默认每条线程为1M。存放方法调用出参入参的栈、局部变量、标量替换后的局部变量等，有人喜欢设小点节约内存开更多线程。但反正内存够也就不必要设小，有人喜欢再设大点，特别是有JSON解析之类的递归调用时不能设太小。</li><li>-XX:MaxDirectMemorySize：堆外内存/直接内存的大小，默认为堆内存减去一个Survivor区的大小。</li><li>-XX:ReservedCodeCacheSize：JIT编译后二进制代码的存放区，满了之后就不再编译。默认开多层编译240M，可以在JMX里看看CodeCache的大小。</li></ol><h1 id="GC设置"><a href="#GC设置" class="headerlink" title="GC设置"></a>GC设置</h1><p>目前比较主流的GC是CMS和G1，有大神建议以8G为界。（据说JDK 9默认的是G1）。因为应用设置的内存都比较小，所以选择CMS收集器。下面的参数也是针对CMS收集器的，等之后如果有需要，再补充G1收集器的参数。</p><h2 id="CMS设置"><a href="#CMS设置" class="headerlink" title="CMS设置"></a>CMS设置</h2><ol><li>-XX:+UseConcMarkSweepGC：启用CMS垃圾收集器</li><li>-XX:CMSInitiatingOccupancyFraction=80 与 -XX:+UseCMSInitiatingOccupancyOnly：两个参数需要配合使用，否则第一个参数的75只是一个参考值，JVM会重新计算GC的时间。</li><li>-XX:MaxTenuringThreshold=15：对象在Survivor区熬过多少次Young GC后晋升到年老代，默认是15。Young GC是最大的应用停顿来源，而新生代里GC后存活对象的多少又直接影响停顿的时间，所以如果清楚Young GC的执行频率和应用里大部分临时对象的最长生命周期，可以把它设的更短一点，让其实不是临时对象的新生代长期对象赶紧晋升到年老代。</li><li>-XX:-DisableExplicitGC：允许使用System.gc()主动调用GC。这里需要说明下，有的JVM优化建议是设置-XX:-DisableExplicitGC，关闭手动调用System.gc()。这是应为System.gc()是触发Full GC，频繁的Full GC会严重影响性能。但是很多NIO框架，比如Netty，会使用堆外内存，如果没有Full GC的话，堆外内存就无法回收。如果不主动调用System.gc()，就需要等到JVM自己触发Full GC，这个时候，就可能引起长时间的停顿（STW），而且机器负载也会升高。所以不能够完全禁止System.gc()，又得缩短Full GC的时间，那就使用<code>-XX:+ExplicitGCInvokesConcurrent</code>或<code>-XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses</code>选项，使用CMS收集器来触发Full GC。这两个选项需要配合<code>-XX:+UseConcMarkSweepGC</code>使用。</li><li>-XX:+ExplicitGCInvokesConcurrent：使用System.gc()时触发CMS GC，而不是Full GC。默认是不开启的，只有使用-XX:+UseConcMarkSweepGC选项的时候才能开启这个选项。</li><li>-XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses：使用System.gc()时，永久代也被包括进CMS范围内。只有使用-XX:+UseConcMarkSweepGC选项的时候才能开启这个选项。</li><li>-XX:+ParallelRefProcEnabled：默认为false，并行的处理Reference对象，如WeakReference，除非在GC log里出现Reference处理时间较长的日志，否则效果不会很明显。</li><li>-XX:+ScavengeBeforeFullGC：在Full GC执行前先执行一次Young GC。</li><li>-XX:+UseGCOverheadLimit： 限制GC的运行时间。如果GC耗时过长，就抛OOM。</li><li>-XX:+UseParallelGC：设置并行垃圾收集器</li><li>-XX:+UseParallelOldGC：设置老年代使用并行垃圾收集器</li><li>-XX:-UseSerialGC：关闭串行垃圾收集器</li><li>-XX:+CMSParallelInitialMarkEnabled 和 -XX:+CMSParallelRemarkEnabled：降低标记停顿</li><li>-XX:+CMSScavengeBeforeRemark：默认为关闭，在CMS remark前，先执行一次minor GC将新生代清掉，这样从老生代的对象引用到的新生代对象的个数就少了，停止全世界的CMS remark阶段就短一些。如果看到GC日志里remark阶段的时间超长，可以打开此项看看有没有效果，否则还是不要打开了，白白多了次YGC。</li><li>-XX:CMSWaitDuration=10000：设置垃圾收集的最大时间间隔，默认是2000。</li><li>-XX:+CMSClassUnloadingEnabled：在CMS中清理永久代中的过期的Class而不等到Full GC，JDK7默认关闭而JDK8打开。看自己情况，比如有没有运行动态语言脚本如Groovy产生大量的临时类。它会增加CMS remark的暂停时间，所以如果新类加载并不频繁，这个参数还是不开的好。</li></ol><h2 id="GC日志"><a href="#GC日志" class="headerlink" title="GC日志"></a>GC日志</h2><p>GC过程可以通过GC日志来提供优化依据。</p><ol><li>-XX:+PrintGCDetails：启用gc日志打印功能</li><li>-Xloggc:/path/to/gc.log：指定gc日志位置</li><li>-XX:+PrintHeapAtGC：打印GC前后的详细堆栈信息</li><li>-XX:+PrintGCDateStamps：打印可读的日期而不是时间戳</li><li>-XX:+PrintGCApplicationStoppedTime：打印所有引起JVM停顿时间，如果真的发现了一些不知什么的停顿，再临时加上<code>-XX:+PrintSafepointStatistics -XX: PrintSafepointStatisticsCount=1</code>找原因。</li><li>-XX:+PrintGCApplicationConcurrentTime：打印JVM在两次停顿之间正常运行时间，与<code>-XX:+PrintGCApplicationStoppedTime</code>一起使用效果更佳。</li><li>-XX:+PrintTenuringDistribution：查看每次minor GC后新的存活周期的阈值</li><li>-XX:+UseGCLogFileRotation 与 -XX:NumberOfGCLogFiles=10 与 -XX:GCLogFileSize=10M：GC日志在重启之后会清空，但是如果一个应用长时间不重启，那GC日志会增加，所以添加这3个参数，是GC日志滚动写入文件，但是如果重启，可能名字会出现混乱。</li><li>-XX:PrintFLSStatistics=1：打印每次GC前后内存碎片的统计信息</li></ol><h1 id="其他参数设置"><a href="#其他参数设置" class="headerlink" title="其他参数设置"></a>其他参数设置</h1><ol><li>-ea：启用断言，这个没有什么好说的，可以选择启用，或这选择不启用，没有什么大的差异。完全根据自己的系统进行处理。</li><li>-XX:+UseThreadPriorities：启用线程优先级，主要是因为我们可以给予周期性任务更低的优先级，以避免干扰客户端工作。在我当前的环境中，是默认启用的。</li><li>-XX:ThreadPriorityPolicy=42：允许降低线程优先级</li><li>-XX:+HeapDumpOnOutOfMemoryError：发生内存溢出是进行heap-dump</li><li>-XX:HeapDumpPath=/path/to/java_pid&lt;pid&gt;.hprof：这个参数与<code>-XX:+HeapDumpOnOutOfMemoryError</code>共同作用，设置heap-dump时内容输出文件。</li><li>-XX:ErrorFile=/path/to/hs_err_pid&lt;pid&gt;.log：指定致命错误日志位置。一般在JVM发生致命错误时会输出类似hs_err_pid&lt;pid&gt;.log的文件，默认是在工作目录中（如果没有权限，会尝试在/tmp中创建），不过还是自己指定位置更好一些，便于收集和查找，避免丢失。</li><li>-XX:StringTableSize=1000003：指定字符串常量池大小，默认值是60013。对Java稍微有点常识的应该知道，字符串是常量，创建之后就不可修改了，这些常量所在的地方叫做字符串常量池。如果自己系统中有很多字符串的操作，且这些字符串值比较固定，在允许的情况下，可以适当调大一些池子大小。</li><li>-XX:+AlwaysPreTouch：在启动时把所有参数定义的内存全部捋一遍。使用这个参数可能会使启动变慢，但是在后面内存使用过程中会更快。可以保证内存页面连续分配，新生代晋升时不会因为申请内存页面使GC停顿加长。通常只有在内存大于32G的时候才会有感觉。</li><li>-XX:-UseBiasedLocking：禁用偏向锁（在存在大量锁对象的创建且高度并发的环境下(即非多线程高并发应用)禁用偏向锁能够带来一定的性能优化）</li><li>-XX:AutoBoxCacheMax=20000：增加数字对象自动装箱的范围，JDK默认-128～127的int和long，超出范围就会即时创建对象，所以，增加范围可以提高性能，但是也是需要测试。</li><li>-XX:-OmitStackTraceInFastThrow：不忽略重复异常的栈，这是JDK的优化，大量重复的JDK异常不再打印其StackTrace。但是如果系统是长时间不重启的系统，在同一个地方跑了N多次异常，结果就被JDK忽略了，那岂不是查看日志的时候就看不到具体的StackTrace，那还怎么调试，所以还是关了的好。</li><li>-XX:+PerfDisableSharedMem：启用标准内存使用。JVM控制分为标准或共享内存，区别在于一个是在JVM内存中，一个是生成/tmp/hsperfdata_{userid}/{pid}文件，存储统计数据，通过mmap映射到内存中，别的进程可以通过文件访问内容。通过这个参数，可以禁止JVM写在文件中写统计数据，代价就是jps、jstat这些命令用不了了，只能通过jmx获取数据。但是在问题排查是，jps、jstat这些小工具是很好用的，比jmx这种很重的东西好用很多，所以需要自己取舍。<a href="http://www.evanjones.ca/jvm-mmap-pause.html" target="_blank" rel="noopener">这里</a>有个GC停顿的例子。</li><li>-Djava.net.preferIPv4Stack=true：这个参数是属于网络问题的一个参数，可以根据需要设置。在某些开启ipv6的机器中，通过<code>InetAddress.getLocalHost().getHostName()</code>可以获取完整的机器名，但是在ipv4的机器中，可能通过这个方法获取的机器名不完整，可以通过这个参数来获取完整机器名。</li></ol><h1 id="大神给出的例子"><a href="#大神给出的例子" class="headerlink" title="大神给出的例子"></a>大神给出的例子</h1><p>下面贴上大神给出的例子，可以参考使用，不过还是建议在自己的环境中有针对的验证之后再使用，毕竟大神的环境和自己的环境还是不同。</p><h2 id="性能相关"><a href="#性能相关" class="headerlink" title="性能相关"></a>性能相关</h2><p>-XX:-UseBiasedLocking -XX:-UseCounterDecay -XX:AutoBoxCacheMax=20000<br>-XX:+PerfDisableSharedMem(可选) -XX:+AlwaysPreTouch -Djava.security.egd=file:/dev/./urandom</p><h2 id="内存大小相关-JDK7"><a href="#内存大小相关-JDK7" class="headerlink" title="内存大小相关(JDK7)"></a>内存大小相关(JDK7)</h2><p>-Xms4096m -Xmx4096m -Xmn2048m -XX:MaxDirectMemorySize=4096m<br>-XX:PermSize=128m -XX:MaxPermSize=512m -XX:ReservedCodeCacheSize=240M</p><blockquote><p>如果使用jdk8，就把-XX:PermSize=128m -XX:MaxPermSize=512m换成-XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=512m，正如前面所说的，这两套参数是为了保证安全的，建议还是加上。</p></blockquote><h2 id="CMS-GC相关"><a href="#CMS-GC相关" class="headerlink" title="CMS GC相关"></a>CMS GC相关</h2><p>-XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=75<br>-XX:+UseCMSInitiatingOccupancyOnly -XX:MaxTenuringThreshold=6<br>-XX:+ExplicitGCInvokesConcurrent -XX:+ParallelRefProcEnabled</p><h2 id="GC日志相关"><a href="#GC日志相关" class="headerlink" title="GC日志相关"></a>GC日志相关</h2><p>-Xloggc:/dev/shm/app-gc.log -XX:+PrintGCApplicationStoppedTime<br>-XX:+PrintGCDateStamps -XX:+PrintGCDetails</p><h2 id="异常日志相关"><a href="#异常日志相关" class="headerlink" title="异常日志相关"></a>异常日志相关</h2><p>-XX:-OmitStackTraceInFastThrow -XX:ErrorFile=${LOGDIR}/hs_err_%p.log<br>-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${LOGDIR}/</p><h2 id="JMX相关"><a href="#JMX相关" class="headerlink" title="JMX相关"></a>JMX相关</h2><p>-Dcom.sun.management.jmxremote.port=${JMX_PORT} -Dcom.sun.management.jmxremote<br>-Djava.rmi.server.hostname=127.0.0.1 -Dcom.sun.management.jmxremote.authenticate=false<br>-Dcom.sun.management.jmxremote.ssl=false</p><p>参考文章：</p><ol><li><a href="http://calvin1978.blogcn.com/articles/javatuning.html" target="_blank" rel="noopener">Java性能优化指南1.8版，及唯品会的实战</a></li><li><a href="http://blog.csdn.net/yangzl2008/article/details/43202969" target="_blank" rel="noopener">Java中的逃逸分析和TLAB以及Java对象分配</a></li><li><a href="http://www.evanjones.ca/jvm-mmap-pause.html" target="_blank" rel="noopener">The Four Month Bug: JVM statistics cause garbage collection pauses</a></li></ol><hr><p>个人主页: <a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文: <a href="https://www.howardliu.cn/java/jvm-tuning-basic/">JVM参数优化（基础篇）</a><br>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN博文: <a href="http://blog.csdn.net/liuxinghao/article/details/73963399" target="_blank" rel="noopener">JVM参数优化（基础篇）</a></p>]]></content>
-    
-    <summary type="html">
-    
-      文中内容主要是自己关于JVM参数优化的一些总结，参考了网上很多大神的文章，有参数有说明，这里是为了记录下，也是为了可以给别人做个垫脚石。刚入坑不久，很多地方还不是很透彻，之后会继续研究。
-    
-    </summary>
-    
-    
-      <category term="jvm" scheme="https://www.howardliu.cn/categories/jvm/"/>
-    
-    
-      <category term="java" scheme="https://www.howardliu.cn/tags/java/"/>
-    
-      <category term="jvm" scheme="https://www.howardliu.cn/tags/jvm/"/>
     
   </entry>
   
