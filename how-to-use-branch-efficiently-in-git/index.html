@@ -7,15 +7,16 @@
 <meta http-equiv="Cache-Control" content="no-siteapp">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>如何在足够规模团队中高效使用 Git 管理代码？||沉潜飞动|君子藏器于身，待时而动。</title>
-<meta name="description" content="用了 Git 多年，优势和挑战都是深有体会。 话不多说，直接上问题：如何在足够规模团队中高效使用 Git 管理代码？ 继续不多话，直接上答案：分支管理。">
+<title>如何在微服务团队中高效使用 Git 管理代码？||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="TrunkBased：主干在手，天下我有。所有代码都往主干上招呼，发版也只用主干。GitFlow：严谨、规范、难用，主要是记不住该往哪个分支合并了。AoneFlow：前两种都不行，那就借鉴各自的优点，达到阴阳平衡，中庸也。">
 <meta name="keywords" content="Git,GitFlow,TrunkBased,AoneFlow,微服务">
 <meta property="og:type" content="article">
-<meta property="og:title" content="如何在足够规模团队中高效使用 Git 管理代码？">
+<meta property="og:title" content="如何在微服务团队中高效使用 Git 管理代码？">
 <meta property="og:url" content="https://www.howardliu.cn/how-to-use-branch-efficiently-in-git/index.html">
 <meta property="og:site_name" content="沉潜飞动">
-<meta property="og:description" content="用了 Git 多年，优势和挑战都是深有体会。 话不多说，直接上问题：如何在足够规模团队中高效使用 Git 管理代码？ 继续不多话，直接上答案：分支管理。">
+<meta property="og:description" content="TrunkBased：主干在手，天下我有。所有代码都往主干上招呼，发版也只用主干。GitFlow：严谨、规范、难用，主要是记不住该往哪个分支合并了。AoneFlow：前两种都不行，那就借鉴各自的优点，达到阴阳平衡，中庸也。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.howardliu.cn/images/git/sunset-5371719_1920.jpg">
 <meta property="og:image" content="https://www.howardliu.cn/images/git/trunk-based.jpg">
 <meta property="og:image" content="https://www.howardliu.cn/images/git/gitflow.png">
 <meta property="og:image" content="https://www.howardliu.cn/images/git/gitflow-develop.png">
@@ -27,16 +28,14 @@
 <meta property="og:image" content="https://www.howardliu.cn/images/git/aoneflow-master.jpg">
 <meta property="og:updated_time" content="2020-07-24T13:30:11.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="如何在足够规模团队中高效使用 Git 管理代码？">
-<meta name="twitter:description" content="用了 Git 多年，优势和挑战都是深有体会。 话不多说，直接上问题：如何在足够规模团队中高效使用 Git 管理代码？ 继续不多话，直接上答案：分支管理。">
-<meta name="twitter:image" content="https://www.howardliu.cn/images/git/trunk-based.jpg">
+<meta name="twitter:title" content="如何在微服务团队中高效使用 Git 管理代码？">
+<meta name="twitter:description" content="TrunkBased：主干在手，天下我有。所有代码都往主干上招呼，发版也只用主干。GitFlow：严谨、规范、难用，主要是记不住该往哪个分支合并了。AoneFlow：前两种都不行，那就借鉴各自的优点，达到阴阳平衡，中庸也。">
+<meta name="twitter:image" content="https://www.howardliu.cn/images/git/sunset-5371719_1920.jpg">
 
 <meta name="keywords" content="Git,GitFlow,TrunkBased,AoneFlow,微服务">
 
 
-<meta name="description" content="用了 Git 多年，优势和挑战都是深有体会。
-话不多说，直接上问题：如何在足够规模团队中高效使用 Git 管理代码？
-继续不多话，直接上答案：分支管理。">
+<meta name="description" content="TrunkBased：主干在手，天下我有。所有代码都往主干上招呼，发版也只用主干。GitFlow：严谨、规范、难用，主要是记不住该往哪个分支合并了。AoneFlow：前两种都不行，那就借鉴各自的优点，达到阴阳平衡，中庸也。">
 
 <meta name="author" content="Howard Liu,howardliu1988@163.com">
 
@@ -97,14 +96,14 @@
                 <div class="col-md-8">
                     <div class="article">
     <div class="well">
-        <h1><a href="/how-to-use-branch-efficiently-in-git/">如何在足够规模团队中高效使用 Git 管理代码？</a></h1>
+        <h1><a href="/how-to-use-branch-efficiently-in-git/">如何在微服务团队中高效使用 Git 管理代码？</a></h1>
         <div class="post-meta">
             <div class="post-time">
                 <i class="fa fa-calendar"></i><time> 2020-07-22</time>
             </div>
             <div class="post-visitors-count">
                 <i class="fa fa-ge"></i>
-                <span id="/how-to-use-branch-efficiently-in-git/" class="leancloud_visitors" data-flag-title="如何在足够规模团队中高效使用 Git 管理代码？">
+                <span id="/how-to-use-branch-efficiently-in-git/" class="leancloud_visitors" data-flag-title="如何在微服务团队中高效使用 Git 管理代码？">
                     <span class="post-meta-item-text">阅读量 </span>
                     <i class="leancloud-visitors-count">0</i>
                 </span>
@@ -117,8 +116,9 @@
       <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#TrunkBased"><span class="toc-text">TrunkBased</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GitFlow"><span class="toc-text">GitFlow</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AoneFlow"><span class="toc-text">AoneFlow</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#再啰嗦几句废话"><span class="toc-text">再啰嗦几句废话</span></a></li></ol>
     </div>
  -->
-            <p>用了 Git 多年，优势和挑战都是深有体会。</p>
-<p>话不多说，直接上问题：如何在足够规模团队中高效使用 Git 管理代码？</p>
+            <p><img src="https://www.howardliu.cn/images/git/sunset-5371719_1920.jpg" alt></p>
+<p>用了 Git 多年，优势和挑战都是深有体会。</p>
+<p>话不多说，直接上问题：如何在微服务团队中高效使用 Git 管理代码？</p>
 <p>继续不多话，直接上答案：分支管理。</p>
 <a id="more"></a>
 
@@ -140,7 +140,7 @@
 <ul>
 <li>主干分支（<code>master</code>）：最近发布到生产环境代码的分支，这个分支只能从其他分支合并，不能再 Master 分支直接修改。</li>
 <li>主开发分支（<code>develop</code>）：包含所有要发布到下一个 Release 版本的代码。可以在 Develop 直接开发，也可以将 Feature 的特性代码合并到 Develop 中。<br><img src="https://www.howardliu.cn/images/git/gitflow-develop.png" alt="主开发分支"></li>
-<li>特性分支（<code>feature/*</code>）：功能项开发分支，以<code>feature/</code>开头命名分支，当功能项开发完成，将被合并到主开发分支进入下一个 Release，合并完分支后一般会删点这个特性分支。<br><img src="https://www.howardliu.cn/images/git/gitflow-feature.png" alt="特性分支"></li>
+<li>特性分支（<code>feature/*</code>）：功能项开发分支，以<code>feature/</code>开头命名分支，当功能项开发完成，将被合并到主开发分支进入下一个 Release，合并完分支后一般会删掉这个特性分支。<br><img src="https://www.howardliu.cn/images/git/gitflow-feature.png" alt="特性分支"></li>
 <li>发布分支（<code>release/*</code>）：基于主开发分支创建的一个发布分支，以<code>release/</code>开头命名分支，用于测试、bug 修复及上线。完成后，合并到主干分支和主开发分支，同时在主干分支上打个 Tag 记住 Release 版本号，然后可以删除发布分支。<br><img src="https://www.howardliu.cn/images/git/gitflow-release.png" alt="发布分支"></li>
 <li>热修复分支（<code>hotfix/*</code>）：用于解决线上 Release 版本出现的 bug，以<code>hotfix/</code>开头命名分支，修复线上问题，完成后，合并到主干分支和主开发分支，同时在主干分支上打个 tag。<br><img src="https://www.howardliu.cn/images/git/gitflow-hotfix.png" alt="热修复分支"></li>
 </ul>
@@ -163,7 +163,7 @@
 <p>除了基本规则，还有一些实际操作中不成文的技巧。比如上线后的热修复，正常的处理方法应该是，创建一条新的发布分支，对应线上环境（相当于 Hotfix 分支），同时为这个分支创建临时流水线，以保障必要的发布前检查和冒烟测试能够自动执行。</p>
 <h2 id="再啰嗦几句废话"><a href="#再啰嗦几句废话" class="headerlink" title="再啰嗦几句废话"></a>再啰嗦几句废话</h2><p>不管哪种方式，既然存在，都会有一定合理性。所以，不管最终翻了哪个牌子，不是因为这个好看，而是因为这个更适合自己。</p>
 <hr>
-<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/how-to-use-branch-efficiently-in-git/">如何在足够规模团队中高效使用 Git 管理代码？</a><br>CSDN 主页：<a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN 博文：<a href="https://blog.csdn.net/liuxinghao/article/details/107570189" target="_blank" rel="noopener">如何在足够规模团队中高效使用 Git 管理代码？</a></p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/how-to-use-branch-efficiently-in-git/">如何在微服务团队中高效使用 Git 管理代码？</a><br>CSDN 主页：<a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN 博文：<a href="https://blog.csdn.net/liuxinghao/article/details/107570189" target="_blank" rel="noopener">如何在微服务团队中高效使用 Git 管理代码？</a></p>
 
         </div>
         
@@ -216,7 +216,7 @@
 <div class="sidebar">
     <div class="well">
         <h2>标签云</h2>
-        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/http状态码/" style="font-size: 15px;">http状态码</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/闲聊/" style="font-size: 15px;">闲聊</a> <a href="/tags/非理性/" style="font-size: 15px;">非理性</a> <a href="/tags/认知偏差/" style="font-size: 15px;">认知偏差</a> <a href="/tags/自控术/" style="font-size: 15px;">自控术</a> <a href="/tags/成本/" style="font-size: 15px;">成本</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/http状态码/" style="font-size: 15px;">http状态码</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/闲聊/" style="font-size: 15px;">闲聊</a> <a href="/tags/非理性/" style="font-size: 15px;">非理性</a> <a href="/tags/认知偏差/" style="font-size: 15px;">认知偏差</a> <a href="/tags/自控术/" style="font-size: 15px;">自控术</a> <a href="/tags/成本/" style="font-size: 15px;">成本</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a>
     </div>
 </div>
 
@@ -231,7 +231,7 @@
 <div class="sidebar ">
     <div class="well">
         <h2>最新文章</h2>
-        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/how-to-use-branch-efficiently-in-git/">如何在足够规模团队中高效使用 Git 管理代码？</a></li><li class="post-list-item"><a class="post-list-link" href="/convert-ipv4-to-int/">IPv4 与 int 之间互相转换</a></li><li class="post-list-item"><a class="post-list-link" href="/from-monolith-to-microservice/">从单体架构到微服务架构</a></li><li class="post-list-item"><a class="post-list-link" href="/dont-let-irrational-thinking-ruin-your-lift/">别让非理性思维毁了你的人生</a></li><li class="post-list-item"><a class="post-list-link" href="/the-three-ways-principles-underpinning-devops/">实现DevOps的三步工作法</a></li></ul>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/how-to-use-branch-efficiently-in-git/">如何在微服务团队中高效使用 Git 管理代码？</a></li><li class="post-list-item"><a class="post-list-link" href="/convert-ipv4-to-int/">IPv4 与 int 之间互相转换</a></li><li class="post-list-item"><a class="post-list-link" href="/from-monolith-to-microservice/">从单体架构到微服务架构</a></li><li class="post-list-item"><a class="post-list-link" href="/dont-let-irrational-thinking-ruin-your-lift/">别让非理性思维毁了你的人生</a></li><li class="post-list-item"><a class="post-list-link" href="/the-three-ways-principles-underpinning-devops/">实现DevOps的三步工作法</a></li></ul>
     </div>
 </div>
 
