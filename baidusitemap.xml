@@ -31,13 +31,13 @@
     <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
+    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>  <url>
     <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/hadoop-environment/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
@@ -64,13 +64,13 @@
     <loc>https://www.howardliu.cn/sonarqube-jenkins-pipeline/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
     <loc>https://www.howardliu.cn/hadoop-environment-cluster-setup/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
@@ -85,13 +85,13 @@
     <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
     <loc>https://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/storm/trident-state/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/storm/trident-tutorial/</loc>
