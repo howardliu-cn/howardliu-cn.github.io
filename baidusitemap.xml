@@ -19,10 +19,10 @@
     <loc>https://www.howardliu.cn/http/http-connection/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/os/init-my-ubuntu/</loc>
+    <loc>https://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
+    <loc>https://www.howardliu.cn/os/init-my-ubuntu/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/why-it-is-difficult-to-get-high-salaries-for-iters/</loc>
@@ -34,19 +34,19 @@
     <loc>https://www.howardliu.cn/deploy-ear-from-eos-to-weblogic/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
+    <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>  <url>
     <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
     <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/the-introduction-of-http-status-codes/</loc>
@@ -85,34 +85,34 @@
     <loc>https://www.howardliu.cn/os/all-about-linux-swap-space/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
+    <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
+    <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/the-joys-and-the-woes-of-the-craft/</loc>
+    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/storm/trident-tutorial/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
+    <loc>https://www.howardliu.cn/the-joys-and-the-woes-of-the-craft/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/when-to-leave-your-programming-job/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/blue-green-deployments-a-b-testing-and-canary-releases/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/disable-bps-in-eos-project/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/logon-windows-automatic-uncheck-password/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/blue-green-deployments-a-b-testing-and-canary-releases/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/java/gc-overhead-limit-exceeded/</loc>

@@ -44,14 +44,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/os/init-my-ubuntu/</loc>
+    <loc>https://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
     
     <lastmod>2020-07-28T05:48:04.720Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
+    <loc>https://www.howardliu.cn/os/init-my-ubuntu/</loc>
     
     <lastmod>2020-07-28T05:48:04.720Z</lastmod>
     
@@ -79,7 +79,21 @@
   </url>
   
   <url>
+    <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
+    
+    <lastmod>2020-07-28T05:48:04.719Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
+    
+    <lastmod>2020-07-28T05:48:04.719Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
@@ -93,21 +107,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
-    
-    <lastmod>2020-07-28T05:48:04.719Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
-    
-    <lastmod>2020-07-28T05:48:04.719Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
@@ -198,14 +198,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
+    <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
+    <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
@@ -219,7 +219,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/the-joys-and-the-woes-of-the-craft/</loc>
+    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
@@ -233,7 +233,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
+    <loc>https://www.howardliu.cn/the-joys-and-the-woes-of-the-craft/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
@@ -247,13 +247,6 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/blue-green-deployments-a-b-testing-and-canary-releases/</loc>
-    
-    <lastmod>2020-07-28T05:33:36.666Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.howardliu.cn/disable-bps-in-eos-project/</loc>
     
     <lastmod>2020-07-28T05:33:36.666Z</lastmod>
@@ -262,6 +255,13 @@
   
   <url>
     <loc>https://www.howardliu.cn/logon-windows-automatic-uncheck-password/</loc>
+    
+    <lastmod>2020-07-28T05:33:36.666Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/blue-green-deployments-a-b-testing-and-canary-releases/</loc>
     
     <lastmod>2020-07-28T05:33:36.666Z</lastmod>
     
