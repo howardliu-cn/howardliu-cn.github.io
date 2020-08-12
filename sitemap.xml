@@ -149,14 +149,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/zookeeper-s-function/</loc>
+    <loc>https://www.howardliu.cn/zookeeper-environment/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/zookeeper-environment/</loc>
+    <loc>https://www.howardliu.cn/zookeeper-s-function/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
@@ -191,14 +191,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
+    <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
+    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
@@ -226,13 +226,6 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
-    
-    <lastmod>2020-07-28T05:33:36.667Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
@@ -240,7 +233,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/the-joys-and-the-woes-of-the-craft/</loc>
+    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
@@ -254,6 +247,13 @@
   </url>
   
   <url>
+    <loc>https://www.howardliu.cn/the-joys-and-the-woes-of-the-craft/</loc>
+    
+    <lastmod>2020-07-28T05:33:36.667Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/when-to-leave-your-programming-job/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
@@ -261,14 +261,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/disable-bps-in-eos-project/</loc>
+    <loc>https://www.howardliu.cn/blue-green-deployments-a-b-testing-and-canary-releases/</loc>
     
     <lastmod>2020-07-28T05:33:36.666Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/blue-green-deployments-a-b-testing-and-canary-releases/</loc>
+    <loc>https://www.howardliu.cn/disable-bps-in-eos-project/</loc>
     
     <lastmod>2020-07-28T05:33:36.666Z</lastmod>
     
