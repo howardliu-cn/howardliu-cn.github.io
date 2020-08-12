@@ -184,7 +184,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
+    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
@@ -198,7 +198,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
+    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
@@ -233,6 +233,13 @@
   </url>
   
   <url>
+    <loc>https://www.howardliu.cn/the-joys-and-the-woes-of-the-craft/</loc>
+    
+    <lastmod>2020-07-28T05:33:36.667Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/storm/trident-state/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
@@ -241,13 +248,6 @@
   
   <url>
     <loc>https://www.howardliu.cn/storm/trident-tutorial/</loc>
-    
-    <lastmod>2020-07-28T05:33:36.667Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/the-joys-and-the-woes-of-the-craft/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
