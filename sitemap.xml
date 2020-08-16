@@ -2,6 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/zookeeper-s-function/</loc>
+    
+    <lastmod>2020-08-16T13:20:55.874Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/constant-interface-anti-pattern/</loc>
+    
+    <lastmod>2020-08-16T08:24:50.882Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/http/http-connection/</loc>
+    
+    <lastmod>2020-08-16T08:08:09.586Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/the-introduction-of-http-status-codes/</loc>
+    
+    <lastmod>2020-08-16T08:07:54.794Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/spring-cloud/spring-cloud-config-encrypt-keystore-path-error/</loc>
     
     <lastmod>2020-08-12T16:12:28.830Z</lastmod>
@@ -45,13 +73,6 @@
   
   <url>
     <loc>https://www.howardliu.cn/hbase-environment-standalone-model/</loc>
-    
-    <lastmod>2020-07-28T05:48:04.720Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/http/http-connection/</loc>
     
     <lastmod>2020-07-28T05:48:04.720Z</lastmod>
     
@@ -114,13 +135,6 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
-    
-    <lastmod>2020-07-28T05:48:04.719Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
@@ -128,7 +142,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/the-introduction-of-http-status-codes/</loc>
+    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
@@ -156,13 +170,6 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/zookeeper-s-function/</loc>
-    
-    <lastmod>2020-07-28T05:48:04.719Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.howardliu.cn/thinking/the-solution-about-job-queue/</loc>
     
     <lastmod>2020-07-28T05:47:12.797Z</lastmod>
@@ -184,6 +191,13 @@
   </url>
   
   <url>
+    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
+    
+    <lastmod>2020-07-28T05:33:36.667Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
@@ -192,13 +206,6 @@
   
   <url>
     <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
-    
-    <lastmod>2020-07-28T05:33:36.667Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
@@ -226,20 +233,6 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
-    
-    <lastmod>2020-07-28T05:33:36.667Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/the-joys-and-the-woes-of-the-craft/</loc>
-    
-    <lastmod>2020-07-28T05:33:36.667Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.howardliu.cn/storm/trident-state/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
@@ -248,6 +241,20 @@
   
   <url>
     <loc>https://www.howardliu.cn/storm/trident-tutorial/</loc>
+    
+    <lastmod>2020-07-28T05:33:36.667Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
+    
+    <lastmod>2020-07-28T05:33:36.667Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/the-joys-and-the-woes-of-the-craft/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
@@ -432,13 +439,6 @@
     <loc>https://www.howardliu.cn/java/jdk-tools-and-utilities/</loc>
     
     <lastmod>2020-01-27T10:02:59.690Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/constant-interface-anti-pattern/</loc>
-    
-    <lastmod>2020-01-27T10:02:41.212Z</lastmod>
     
   </url>
   
