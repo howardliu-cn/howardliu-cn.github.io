@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/the-base-of-microservice/</loc>
+    
+    <lastmod>2020-08-25T13:44:51.109Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/the-paradigm-of-microservice/</loc>
+    
+    <lastmod>2020-08-25T13:42:18.168Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/the-introduction-of-http-status-codes/</loc>
+    
+    <lastmod>2020-08-25T07:45:31.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/thinking/the-solution-about-job-queue/</loc>
     
     <lastmod>2020-08-23T12:50:35.334Z</lastmod>
@@ -61,13 +82,6 @@
     <loc>https://www.howardliu.cn/constant-interface-anti-pattern/</loc>
     
     <lastmod>2020-08-16T08:24:50.882Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/the-introduction-of-http-status-codes/</loc>
-    
-    <lastmod>2020-08-16T08:07:54.794Z</lastmod>
     
   </url>
   
@@ -149,7 +163,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
+    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
@@ -163,14 +177,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
-    
-    <lastmod>2020-07-28T05:48:04.719Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
+    <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
@@ -178,6 +185,13 @@
   
   <url>
     <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
+    
+    <lastmod>2020-07-28T05:48:04.719Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
@@ -212,13 +226,6 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
-    
-    <lastmod>2020-07-28T05:33:36.667Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.howardliu.cn/hadoop-environment-cluster-setup/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
@@ -226,7 +233,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
+    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
@@ -240,6 +247,13 @@
   </url>
   
   <url>
+    <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
+    
+    <lastmod>2020-07-28T05:33:36.667Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/os/all-about-linux-swap-space/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
@@ -247,7 +261,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
+    <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
@@ -261,7 +275,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
+    <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
@@ -297,13 +311,6 @@
   
   <url>
     <loc>https://www.howardliu.cn/java/gc-overhead-limit-exceeded/</loc>
-    
-    <lastmod>2020-07-28T05:33:36.666Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/the-base-of-microservice/</loc>
     
     <lastmod>2020-07-28T05:33:36.666Z</lastmod>
     
@@ -439,13 +446,6 @@
     <loc>https://www.howardliu.cn/translation-common-query-parameters/</loc>
     
     <lastmod>2020-01-27T10:03:58.366Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/the-paradigm-of-microservice/</loc>
-    
-    <lastmod>2020-01-27T10:03:28.075Z</lastmod>
     
   </url>
   

@@ -16,10 +16,13 @@
 <meta property="og:site_name" content="沉潜飞动">
 <meta property="og:description" content="目前很多互联网公司都采用微服务架构，微服务的优点和缺点被反复说到，这里不在重复赘述，只结合工作中的一些实践，说说要用微服务要注意的点，厚颜写做编程范式，其实就是一些技巧而已。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-01-27T10:03:28.075Z">
+<meta property="og:image" content="http://static.howardliu.cn/microservice/rome-5195046_1920.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2020-08-25T13:42:18.168Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="微服务编程范式">
 <meta name="twitter:description" content="目前很多互联网公司都采用微服务架构，微服务的优点和缺点被反复说到，这里不在重复赘述，只结合工作中的一些实践，说说要用微服务要注意的点，厚颜写做编程范式，其实就是一些技巧而已。">
+<meta name="twitter:image" content="http://static.howardliu.cn/microservice/rome-5195046_1920.jpg">
 
 <meta name="keywords" content="微服务,方法论,范式,编程范式,架构师">
 
@@ -102,17 +105,41 @@
             <!-- 
     <div id="toc" class="toc-content">
       <strong class="toc-title">目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#原则（道）"><span class="toc-text">原则（道）</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#标准（术）"><span class="toc-text">标准（术）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#DEMO（示例）"><span class="toc-text">DEMO（示例）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码模板（脚手架）"><span class="toc-text">代码模板（脚手架）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#及时清理技术债务"><span class="toc-text">及时清理技术债务</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#原则（道）"><span class="toc-text">原则（道）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#标准（术）"><span class="toc-text">标准（术）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DEMO（示例）"><span class="toc-text">DEMO（示例）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码模板（脚手架）"><span class="toc-text">代码模板（脚手架）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#及时清理技术债务"><span class="toc-text">及时清理技术债务</span></a></li></ol>
     </div>
  -->
-            <p>目前很多互联网公司都采用微服务架构，微服务的优点和缺点被反复说到，这里不在重复赘述，只结合工作中的一些实践，说说要用微服务要注意的点，厚颜写做编程范式，其实就是一些具体实践而已。</p>
+            <p><img src="http://static.howardliu.cn/microservice/rome-5195046_1920.jpg" alt="微服务编程范式"></p>
+<p>目前很多互联网公司都采用微服务架构，微服务的优点和缺点被反复说到，这里不在重复赘述，只结合工作中的一些实践，说说要用微服务要注意的点，厚颜写做编程范式，其实就是一些具体实践而已。</p>
 <a id="more"></a>
 
-<h1 id="原则（道）"><a href="#原则（道）" class="headerlink" title="原则（道）"></a>原则（道）</h1><p>原则是比较抽象的一个概念，简单说是一些指导意见，在不同的组之间可以共享，是为了实现一个共同的目的，必须遵守的一些规则，或者叫做规矩。</p>
+<h2 id="原则（道）"><a href="#原则（道）" class="headerlink" title="原则（道）"></a>原则（道）</h2><p>原则是比较抽象的一个概念，简单说是一些指导意见，在不同的组之间可以共享，是为了实现一个共同的目的，必须遵守的一些规则，或者叫做规矩。</p>
 <p>这些规则（或规矩）对我们开发过程中有一定的约束作用，不容置疑，必须遵守。如果发现有那个团队或者个人没有遵守，一定要及时纠正，否则，原则就没有任何存在的意义。</p>
 <p>现在用的很广的一个原则是Heroku的 <strong><a href="http://www.12factor.net" target="_blank" rel="noopener">12-Factor</a></strong> 原则。具体内容如下：</p>
 <blockquote>
-<p>I. 基准代码<br>一份基准代码，多份部署<br>II. 依赖<br>显式声明依赖关系<br>III. 配置<br>在环境中存储配置<br>IV. 后端服务<br>把后端服务当作附加资源<br>V. 构建，发布，运行<br>严格分离构建和运行<br>VI. 进程<br>以一个或多个无状态进程运行应用<br>VII. 端口绑定<br>通过端口绑定提供服务<br>VIII. 并发<br>通过进程模型进行扩展<br>IX. 易处理<br>快速启动和优雅终止可最大化健壮性<br>X. 开发环境与线上环境等价<br>尽可能的保持开发，预发布，线上环境相同<br>XI. 日志<br>把日志当作事件流<br>XII. 管理进程<br>后台管理任务当作一次性进程运行</p>
+<p>I. 基准代码</p>
+<p>一份基准代码，多份部署</p>
+<p>II. 依赖</p>
+<p>显式声明依赖关系</p>
+<p>III. 配置</p>
+<p>在环境中存储配置</p>
+<p>IV. 后端服务</p>
+<p>把后端服务当作附加资源</p>
+<p>V. 构建，发布，运行</p>
+<p>严格分离构建和运行</p>
+<p>VI. 进程</p>
+<p>以一个或多个无状态进程运行应用</p>
+<p>VII. 端口绑定</p>
+<p>通过端口绑定提供服务</p>
+<p>VIII. 并发</p>
+<p>通过进程模型进行扩展</p>
+<p>IX. 易处理</p>
+<p>快速启动和优雅终止可最大化健壮性</p>
+<p>X. 开发环境与线上环境等价</p>
+<p>尽可能的保持开发，预发布，线上环境相同</p>
+<p>XI. 日志</p>
+<p>把日志当作事件流</p>
+<p>XII. 管理进程</p>
+<p>后台管理任务当作一次性进程运行</p>
 </blockquote>
 <p>在我们团队中有一些原则可以和大家分享：</p>
 <ol>
@@ -120,7 +147,7 @@
 <li>战略目标明确，业务部门愿景清晰。作为开发团队，可能很少关心业务团队的想法，这是很致命的。我们开发的东西，不是业务部门想要的，顾客想要一个吃饭的勺子，你给做了一个铁铲，铁铲做的再好又有什么用。</li>
 <li>服务之间调用必须使用HTTP/RESTful方案，不能引入其他方案。不是说其他方案不好，而是最好协议一致，一致的协议能够减少系统的复杂性和沟通成本。</li>
 </ol>
-<h1 id="标准（术）"><a href="#标准（术）" class="headerlink" title="标准（术）"></a>标准（术）</h1><p>标准的定义会比原则更加具体，有点类似于道和术、战略和战术的关系，不同的技术栈、不同的团队可能会制定不同的标准。</p>
+<h2 id="标准（术）"><a href="#标准（术）" class="headerlink" title="标准（术）"></a>标准（术）</h2><p>标准的定义会比原则更加具体，有点类似于道和术、战略和战术的关系，不同的技术栈、不同的团队可能会制定不同的标准。</p>
 <ol>
 <li>我们团队都是使用的是Java技术栈，所以标准大体上采用的是<a href="http://dd.ma/m5R1zqRj" target="_blank" rel="noopener">《阿里巴巴Java开发手册》</a>，有一部分内容作了修改，这里对孤尽表示感谢。这个手册脱胎于《Effective Java》和《代码简洁之道》，其中加入了孤尽在阿里的一些实践，所以对于Java栈的同学是比较适用的。</li>
 <li>我们使用的是Spring Cloud，服务之间的调用，必须使用Feign Client形式，指定这个标准是为了以后使用K8s时改动最小。</li>
@@ -134,17 +161,18 @@
 </blockquote>
 <p>标准的另外一个作用，就是告诉团队成员怎么做是对的，怎么做是更好的方案，更加直白的表述是，按照标准进行开发，bug更少。</p>
 <p>有了开发标准之后，就需要将标准推广到所有人，但是每个人的理解力和执行力是有偏差的，所以需要一些手段来快速推广。具体的方法有：DEMO（示例）、代码模板（脚手架）。</p>
-<h2 id="DEMO（示例）"><a href="#DEMO（示例）" class="headerlink" title="DEMO（示例）"></a>DEMO（示例）</h2><p>软件开发是一个比较有技术壁垒的行业，一个新人（没有经验或者有经验刚加入新团队的人）想要快速了解老系统所使用的标准，是比较困难的，毕竟每家团队采用的标准都不是百分之百一致。比较简单的做法就是，提供新人DEMO示例，然后告诉他，“就照着这个做”。</p>
+<h3 id="DEMO（示例）"><a href="#DEMO（示例）" class="headerlink" title="DEMO（示例）"></a>DEMO（示例）</h3><p>软件开发是一个比较有技术壁垒的行业，一个新人（没有经验或者有经验刚加入新团队的人）想要快速了解老系统所使用的标准，是比较困难的，毕竟每家团队采用的标准都不是百分之百一致。比较简单的做法就是，提供新人DEMO示例，然后告诉他，“就照着这个做”。</p>
 <blockquote>
 <p>对于有经验的新人，一定是先接受，然后在了解清楚之后，才会提出自己的一些看法，而不是一上来，就搬出自己以前的经验，全盘否定团队指定的标准。</p>
 </blockquote>
-<h2 id="代码模板（脚手架）"><a href="#代码模板（脚手架）" class="headerlink" title="代码模板（脚手架）"></a>代码模板（脚手架）</h2><p>代码模板的作用实现一个服务的集成方案，经过有效可靠的裁剪和定制。在需要新建服务时，就使用这个方案，直接进行业务代码开发即可，所以也被称为脚手架，比如SpringBoot的Starter和AutoConfiguration。</p>
+<h3 id="代码模板（脚手架）"><a href="#代码模板（脚手架）" class="headerlink" title="代码模板（脚手架）"></a>代码模板（脚手架）</h3><p>代码模板的作用实现一个服务的集成方案，经过有效可靠的裁剪和定制。在需要新建服务时，就使用这个方案，直接进行业务代码开发即可，所以也被称为脚手架，比如SpringBoot的Starter和AutoConfiguration。</p>
 <p>前面说过，我们团队使用的是Java技术栈，基于SpringCloud开发，所以我们对SpringCloud进行封装，定义了几根通用的组件，比如定义了一个<code>web-misc</code>组件，引入这个组件，就能够实现，引入实现WebMvc，并且提供了统一的获取Metric信息的接口，统一的异常处理的ExceptionHandler等。</p>
-<h1 id="及时清理技术债务"><a href="#及时清理技术债务" class="headerlink" title="及时清理技术债务"></a>及时清理技术债务</h1><p>虽然我们都是代码洁癖，但是有时候迫于时间压力、业务压力，我们不得不背负一些技术债务。</p>
+<h2 id="及时清理技术债务"><a href="#及时清理技术债务" class="headerlink" title="及时清理技术债务"></a>及时清理技术债务</h2><p>虽然我们都是代码洁癖，但是有时候迫于时间压力、业务压力，我们不得不背负一些技术债务。</p>
 <p>比如我们知道硬编码会破坏系统灵活性，但是明天就要上线，根本没有时间做配置型服务，所以只能硬编码到系统中，这就是技术债务。第二天系统上线，正常运行，如果这个时候把硬编码事情抛之脑后，这个债务就会产生利息，不知道哪天就会变成炸弹。</p>
 <p>对于技术债务，我们团队的做法是做一个技术债务清单，设置超时提醒功能，限期修复。这个清单是公开的，每一项都注明了，是谁，因为什么，于什么时间，产生的技术债务，需要在什么时候修复。如果是临时特性或功能产生的债务，也需要注明特性或功能过期时间，由专人检查债务是否已经没有了。</p>
 <hr>
 <p>个人主页: <a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文: <a href="https://www.howardliu.cn/the-paradigm-of-microservice/">微服务编程范式</a><br>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN博文: <a href="https://blog.csdn.net/liuxinghao/article/details/102990899" target="_blank" rel="noopener">微服务编程范式</a></p>
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
 
         </div>
         
@@ -203,7 +231,7 @@
 <div class="sidebar">
     <div class="well">
         <h2>标签云</h2>
-        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/闲聊/" style="font-size: 15px;">闲聊</a> <a href="/tags/非理性/" style="font-size: 15px;">非理性</a> <a href="/tags/认知偏差/" style="font-size: 15px;">认知偏差</a> <a href="/tags/自控术/" style="font-size: 15px;">自控术</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/成本/" style="font-size: 15px;">成本</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/实战/" style="font-size: 15px;">实战</a> <a href="/tags/局部参数/" style="font-size: 15px;">局部参数</a> <a href="/tags/SpringCloud/" style="font-size: 15px;">SpringCloud</a> <a href="/tags/spring-cloud-config/" style="font-size: 15px;">spring-cloud-config</a> <a href="/tags/error/" style="font-size: 15px;">error</a> <a href="/tags/micro-service/" style="font-size: 15px;">micro-service</a> <a href="/tags/eDisMax查询解析器/" style="font-size: 15px;">eDisMax查询解析器</a> <a href="/tags/层面分析/" style="font-size: 15px;">层面分析</a> <a href="/tags/标准查询解析器/" style="font-size: 15px;">标准查询解析器</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/DisMax查询解析器/" style="font-size: 15px;">DisMax查询解析器</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/闲聊/" style="font-size: 15px;">闲聊</a> <a href="/tags/成本/" style="font-size: 15px;">成本</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/局部参数/" style="font-size: 15px;">局部参数</a> <a href="/tags/层面分析/" style="font-size: 15px;">层面分析</a> <a href="/tags/非理性/" style="font-size: 15px;">非理性</a>
     </div>
 </div>
 

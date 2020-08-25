@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.howardliu.cn/the-base-of-microservice/</loc>
+    <lastmod>2020-08-25</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/the-paradigm-of-microservice/</loc>
+    <lastmod>2020-08-25</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/the-introduction-of-http-status-codes/</loc>
+    <lastmod>2020-08-25</lastmod>
+  </url>  <url>
     <loc>https://www.howardliu.cn//thinking/the-solution-about-job-queue/</loc>
     <lastmod>2020-08-23</lastmod>
   </url>  <url>
@@ -26,9 +35,6 @@
     <lastmod>2020-08-16</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/constant-interface-anti-pattern/</loc>
-    <lastmod>2020-08-16</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/the-introduction-of-http-status-codes/</loc>
     <lastmod>2020-08-16</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/spring-cloud/spring-cloud-config-encrypt-keystore-path-error/</loc>
@@ -64,19 +70,19 @@
     <loc>https://www.howardliu.cn/deploy-ear-from-eos-to-weblogic/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
+    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
+    <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/reprint-10-reasons-to-replace-your-jsps-with-freemarker-templates/</loc>
@@ -91,28 +97,28 @@
     <loc>https://www.howardliu.cn/sonarqube-jenkins-pipeline/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
     <loc>https://www.howardliu.cn/hadoop-environment-cluster-setup/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
+    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
+    <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>  <url>
     <loc>https://www.howardliu.cn/os/all-about-linux-swap-space/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
+    <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
+    <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/storm/trident-state/</loc>
@@ -128,9 +134,6 @@
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/java/gc-overhead-limit-exceeded/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/the-base-of-microservice/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/how-to-use-branch-efficiently-in-git/</loc>
@@ -188,9 +191,6 @@
     <lastmod>2020-01-27</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/translation-common-query-parameters/</loc>
-    <lastmod>2020-01-27</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/the-paradigm-of-microservice/</loc>
     <lastmod>2020-01-27</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/java/jdk-tools-and-utilities/</loc>
