@@ -27,9 +27,7 @@
     
     <summary type="html">
     
-      &lt;p&gt;&lt;img src=&quot;http://static.howardliu.cn/springboot/sea-4841142_1920.jpg&quot; alt=&quot;SpringBoot 实战：如何优雅的处理异常&quot;&gt;&lt;/p&gt;
-&lt;p&gt;前段时间写了一篇&lt;a href=&quot;https://www.howardliu.cn/springboot-action-gracefully-response/&quot;&gt;关于实现统一响应信息的博文&lt;/a&gt;，根据文中实战操作，能够解决正常响应的一致性，但想要实现优雅响应，还需要优雅的处理异常响应，所以有了这篇内容。&lt;/p&gt;
-&lt;p&gt;作为后台服务，能够正确的处理程序抛出的异常，并返回友好的异常信息是非常重要的，毕竟我们大部分代码都是为了 处理异常情况。而且，统一的异常响应，有助于客户端理解服务端响应，并作出正确处理，而且能够提升接口的服务质量。&lt;/p&gt;
+      作为后台服务，能够正确的处理程序抛出的异常，并返回友好的异常信息是非常重要的，毕竟我们大部分代码都是为了 处理异常情况。而且，统一的异常响应，有助于客户端理解服务端响应，并作出正确处理，而且能够提升接口的服务质量。
     
     </summary>
     
