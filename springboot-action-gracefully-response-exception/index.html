@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SpringBoot 实战：如何优雅的处理异常||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="作为后台服务，能够正确的处理程序抛出的异常，并返回友好的异常信息是非常重要的，毕竟我们大部分代码都是为了 处理异常情况。而且，统一的异常响应，有助于客户端理解服务端响应，并作出正确处理，而且能够提升接口的服务质量。">
+<meta name="keywords" content="SpringBoot实战,统一的结果响应,ResponseBodyAdvice,RequestBodyAdvice,StringHttpMessageConverter">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot 实战：如何优雅的处理异常">
+<meta property="og:url" content="https://www.howardliu.cn/springboot-action-gracefully-response-exception/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="作为后台服务，能够正确的处理程序抛出的异常，并返回友好的异常信息是非常重要的，毕竟我们大部分代码都是为了 处理异常情况。而且，统一的异常响应，有助于客户端理解服务端响应，并作出正确处理，而且能够提升接口的服务质量。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://static.howardliu.cn/springboot/sea-4841142_1920.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/springboot/springboot-error.png">
+<meta property="og:image" content="http://static.howardliu.cn/springboot/springboot-error-json.png">
+<meta property="og:image" content="http://static.howardliu.cn/springboot/ErrorResponse1.png">
+<meta property="og:image" content="http://static.howardliu.cn/springboot/ResponseEnum.png">
+<meta property="og:image" content="http://static.howardliu.cn/springboot/1141452688-5ce176fbd4a9b_articlex.png">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2020-09-11T02:55:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringBoot 实战：如何优雅的处理异常">
+<meta name="twitter:description" content="作为后台服务，能够正确的处理程序抛出的异常，并返回友好的异常信息是非常重要的，毕竟我们大部分代码都是为了 处理异常情况。而且，统一的异常响应，有助于客户端理解服务端响应，并作出正确处理，而且能够提升接口的服务质量。">
+<meta name="twitter:image" content="http://static.howardliu.cn/springboot/sea-4841142_1920.jpg">
+
+<meta name="keywords" content="SpringBoot实战,统一的结果响应,ResponseBodyAdvice,RequestBodyAdvice,StringHttpMessageConverter">
+
+
+<meta name="description" content="作为后台服务，能够正确的处理程序抛出的异常，并返回友好的异常信息是非常重要的，毕竟我们大部分代码都是为了 处理异常情况。而且，统一的异常响应，有助于客户端理解服务端响应，并作出正确处理，而且能够提升接口的服务质量。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/springboot-action-gracefully-response-exception/">SpringBoot 实战：如何优雅的处理异常</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2020-09-11</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/springboot-action-gracefully-response-exception/" class="leancloud_visitors" data-flag-title="SpringBoot 实战：如何优雅的处理异常">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#定义异常响应类"><span class="toc-text">定义异常响应类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#定义异常枚举类"><span class="toc-text">定义异常枚举类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#自定义异常类"><span class="toc-text">自定义异常类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#自定义异常信息处理类"><span class="toc-text">自定义异常信息处理类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#写个Demo测试一下"><span class="toc-text">写个Demo测试一下</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="http://static.howardliu.cn/springboot/sea-4841142_1920.jpg" alt="SpringBoot 实战：如何优雅的处理异常"></p>
+<p>前段时间写了一篇<a href="https://www.howardliu.cn/springboot-action-gracefully-response/">关于实现统一响应信息的博文</a>，根据文中实战操作，能够解决正常响应的一致性，但想要实现优雅响应，还需要优雅的处理异常响应，所以有了这篇内容。</p>
+<p>作为后台服务，能够正确的处理程序抛出的异常，并返回友好的异常信息是非常重要的，毕竟我们大部分代码都是为了 处理异常情况。而且，统一的异常响应，有助于客户端理解服务端响应，并作出正确处理，而且能够提升接口的服务质量。</p>
+<a id="more"></a>
+
+<p>SpringBoot提供了异常的响应，可以通过<code>/error</code>请求查看效果：</p>
+<p><img src="http://static.howardliu.cn/springboot/springboot-error.png" alt="SpringBoot错误页面"></p>
+<p>这是从浏览器打开的场景，也就是请求头不包括<code>content-type: applicaton/json</code>，大白板一个，和友好完全不搭边。</p>
+<p><img src="http://static.howardliu.cn/springboot/springboot-error-json.png" alt="SpringBoot错误响应"></p>
+<p>这是请求头包括<code>content-type: applicaton/json</code>时的响应，格式还行，但是我们还需要加工一下，实现自定义的异常码和异常信息。</p>
+<p>本文主要是针对RESTful请求的统一响应，想要实现的功能包括：</p>
+<ol>
+<li>自动封装异常，返回统一响应</li>
+<li>异常信息国际化</li>
+</ol>
+<h2 id="定义异常响应类"><a href="#定义异常响应类" class="headerlink" title="定义异常响应类"></a>定义异常响应类</h2><p>当程序发送错误时，不应该将晦涩的堆栈报告信息返回给API客户端，从某种意义讲，这是一种不礼貌的和不负责任的行为。</p>
+<p>我们在<a href="https://www.howardliu.cn/springboot-action-gracefully-response/">SpringBoot 实战：一招实现结果的优雅响应</a>中，定义了一个响应类，为什么还要再定义一个异常响应类呢？其实是为了语义明确且职责单一。类图如下：</p>
+<p><img src="http://static.howardliu.cn/springboot/ErrorResponse1.png" alt="定义异常响应类"></p>
+<p>具体代码如下：</p>
+<p>基础类<code>BaseResponse</code>：</p>
+<pre><code class="java">@Data
+public abstract class BaseResponse {
+    private Integer code;
+    private String desc;
+    private Date timestamp = new Date();
+    private String path;
+
+    public BaseResponse() {
+    }
+
+    public BaseResponse(final Integer code, final String desc) {
+        this.code = code;
+        this.desc = desc;
+    }
+
+    public BaseResponse(final Integer code, final String desc, final String path) {
+        this.code = code;
+        this.desc = desc;
+        this.path = path;
+    }
+}</code></pre>
+<p>异常类<code>ErrorResponse</code>：</p>
+<pre><code class="java">@EqualsAndHashCode(callSuper = true)
+@Data
+public class ErrorResponse extends BaseResponse {
+    public ErrorResponse(final Integer code, final String desc) {
+        super(code, desc);
+    }
+
+    public ErrorResponse(final Integer code, final String desc, final WebRequest request) {
+        super(code, desc, extractRequestURI(request));
+    }
+
+    public ErrorResponse(final HttpStatus status, final Exception e) {
+        super(status.value(), status.getReasonPhrase() + &quot;: &quot; + e.getMessage());
+    }
+
+    public ErrorResponse(final HttpStatus status, final Exception e, final WebRequest request) {
+        super(status.value(), status.getReasonPhrase() + &quot;: &quot; + e.getMessage(), extractRequestURI(request));
+    }
+
+    private static String extractRequestURI(WebRequest request) {
+        final String requestURI;
+        if (request instanceof ServletWebRequest) {
+            ServletWebRequest servletWebRequest = (ServletWebRequest) request;
+            requestURI = servletWebRequest.getRequest().getRequestURI();
+        } else {
+            requestURI = request.getDescription(false);
+        }
+        return requestURI;
+    }
+}</code></pre>
+<h2 id="定义异常枚举类"><a href="#定义异常枚举类" class="headerlink" title="定义异常枚举类"></a>定义异常枚举类</h2><p>为了能够规范响应码和响应信息，我们可以定义一个枚举类。</p>
+<p><img src="http://static.howardliu.cn/springboot/ResponseEnum.png" alt="定义异常枚举类"></p>
+<p>枚举接口<code>ResponseEnum</code>：</p>
+<pre><code class="java">public interface ResponseEnum {
+    Integer getCode();
+
+    String getMessage();
+
+    default String getLocaleMessage() {
+        return getLocaleMessage(null);
+    }
+
+    String getLocaleMessage(Object[] args);
+}</code></pre>
+<p>枚举类<code>CommonResponseEnum</code>：</p>
+<pre><code class="java">public enum CommonResponseEnum implements ResponseEnum {
+    BAD_REQUEST(HttpStatus.BAD_REQUEST.value(), &quot;Bad Request&quot;),
+    NOT_FOUND(HttpStatus.NOT_FOUND.value(), &quot;Not Found&quot;),
+    METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED.value(), &quot;Method Not Allowed&quot;),
+    NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE.value(), &quot;Not Acceptable&quot;),
+    REQUEST_TIMEOUT(HttpStatus.REQUEST_TIMEOUT.value(), &quot;Request Timeout&quot;),
+    UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), &quot;Unsupported Media Type&quot;),
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), &quot;Server Error&quot;),
+    SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE.value(), &quot;Service Unavailable&quot;),
+    ILLEGAL_ARGUMENT(4000, &quot;Illegal Argument&quot;),
+    DATA_NOT_FOUND(4004, &quot;Data Not Found&quot;),
+    USER_NOT_FOUND(4104, &quot;User Not Found&quot;),
+    MENU_NOT_FOUND(4204, &quot;Menu Not Found&quot;),
+    INTERNAL_ERROR(9999, &quot;Server Error&quot;),
+    ;
+
+    private final Integer code;
+    private final String message;
+    private MessageSource messageSource;
+
+    CommonResponseEnum(final Integer code, final String message) {
+        this.code = code;
+        this.message = message;
+    }
+
+    @Override
+    public Integer getCode() {
+        return code;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
+
+    @Override
+    public String getLocaleMessage(Object[] args) {
+        return messageSource.getMessage(&quot;response.error.&quot; + code, args, message, LocaleContextHolder.getLocale());
+    }
+
+    public void setMessageSource(final MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
+
+    @Component
+    public static class ReportTypeServiceInjector {
+        private final MessageSource messageSource;
+
+        public ReportTypeServiceInjector(final MessageSource messageSource) {
+            this.messageSource = messageSource;
+        }
+
+        @PostConstruct
+        public void postConstruct() {
+            for (final CommonResponseEnum anEnum : CommonResponseEnum.values()) {
+                anEnum.setMessageSource(messageSource);
+            }
+        }
+    }
+}</code></pre>
+<p>需要注意的是，我们在异常枚举类中定义了<code>ReportTypeServiceInjector</code>类，这个类的作用是为枚举类注入<code>MessageSource</code>对象，是为了实现异常信息的国际化。这部分功能Spring已经封装好了，我们只需要在resources目录中定义一组<code>messages.properties</code>文件就可以了，比如：</p>
+<p>message.properties定义默认描述：</p>
+<pre><code class="properties">response.error.4000=[DEFAULT] Illegal Arguments
+response.error.4004=[DEFAULT] Not Found</code></pre>
+<p>messages_zh_CN.properties定义中文描述：</p>
+<pre><code class="properties">response.error.4004=对应数据未找到
+response.error.9999=系统异常，请求参数: {0}</code></pre>
+<p>messages_en_US.properties定义英文描述：</p>
+<pre><code class="properties">response.error.4004=Not Found</code></pre>
+<h2 id="自定义异常类"><a href="#自定义异常类" class="headerlink" title="自定义异常类"></a>自定义异常类</h2><p>Java和Spring中提供了很多可用的异常类，可以满足大部分场景，但是有时候我们希望异常类可以携带更多信息，所以还是需要自定义异常类：</p>
+<ul>
+<li>可以携带我们想要的信息；</li>
+<li>有更加明确语义；</li>
+<li>附带效果，可以知道这是手动抛出的业务异常。</li>
+</ul>
+<p>上代码：</p>
+<pre><code class="java">@Data
+@EqualsAndHashCode(callSuper = true)
+public class CodeBaseException extends RuntimeException {
+    private final ResponseEnum anEnum;
+    private final Object[] args;// 打印参数
+    private final String message;// 异常信息
+    private final Throwable cause;// 异常栈
+
+    public CodeBaseException(final ResponseEnum anEnum) {
+        this(anEnum, null, anEnum.getMessage(), null);
+    }
+
+    public CodeBaseException(final ResponseEnum anEnum, final String message) {
+        this(anEnum, null, message, null);
+    }
+
+    public CodeBaseException(final ResponseEnum anEnum, final Object[] args, final String message) {
+        this(anEnum, args, message, null);
+    }
+
+    public CodeBaseException(final ResponseEnum anEnum, final Object[] args, final String message, final Throwable cause) {
+        this.anEnum = anEnum;
+        this.args = args;
+        this.message = message;
+        this.cause = cause;
+    }
+}</code></pre>
+<h2 id="自定义异常信息处理类"><a href="#自定义异常信息处理类" class="headerlink" title="自定义异常信息处理类"></a>自定义异常信息处理类</h2><p>前期准备工作完成，接下来定义异常信息处理类。</p>
+<p>Spring自带的异常信息处理类往往不能满足我们实际的业务需求，这就需要我们定义符合具体情况的异常信息处理类，在自定义异常信息处理类中，我们可以封装更为详细的异常报告。我们可以扩展Spring提供的ResponseEntityExceptionHandler类定义自己的异常信息处理类，站在巨人的肩膀上，快速封装自己需要的类。</p>
+<p>通过源码可以看到，<code>ResponseEntityExceptionHandler</code>类的核心方法是<code>public final ResponseEntity&lt;Object&gt; handleException(Exception ex, WebRequest request)</code>，所有的异常都在这个方法中根据类型进行处理，我们只需要实现具体的处理方法即可：</p>
+<pre><code class="java">@RestControllerAdvice
+@Slf4j
+public class UnifiedExceptionHandlerV2 extends ResponseEntityExceptionHandler {
+    private static final String ENV_PROD = &quot;prod&quot;;
+    private final MessageSource messageSource;
+    private final Boolean isProd;
+
+    public UnifiedExceptionHandlerV2(@Value(&quot;${spring.profiles.active:dev}&quot;) final String activeProfile, final MessageSource messageSource) {
+        this.messageSource = messageSource;
+        this.isProd = new HashSet&lt;&gt;(Arrays.asList(activeProfile.split(&quot;,&quot;))).contains(ENV_PROD);
+    }
+
+    @Override
+    protected ResponseEntity&lt;Object&gt; handleExceptionInternal(final Exception e, final Object body, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
+        log.info(&quot;请求异常：&quot; + e.getMessage(), e);
+        if (HttpStatus.INTERNAL_SERVER_ERROR.equals(status)) {
+            request.setAttribute(WebUtils.ERROR_EXCEPTION_ATTRIBUTE, e, WebRequest.SCOPE_REQUEST);
+        }
+        return new ResponseEntity&lt;&gt;(new ErrorResponse(status, e), headers, HttpStatus.OK);
+    }
+
+    @Override
+    protected ResponseEntity&lt;Object&gt; handleBindException(final BindException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
+        log.info(&quot;参数绑定异常&quot;, ex);
+        final ErrorResponse response = wrapperBindingResult(status, ex.getBindingResult());
+        return new ResponseEntity&lt;&gt;(response, headers, HttpStatus.OK);
+    }
+
+    @Override
+    protected ResponseEntity&lt;Object&gt; handleMethodArgumentNotValid(final MethodArgumentNotValidException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
+        log.info(&quot;参数校验异常&quot;, ex);
+        final ErrorResponse response = wrapperBindingResult(status, ex.getBindingResult());
+        return new ResponseEntity&lt;&gt;(response, headers, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(value = CodeBaseException.class)
+    @ResponseBody
+    public ErrorResponse handleBusinessException(CodeBaseException e) {
+        log.error(&quot;业务异常：&quot; + e.getMessage(), e);
+        final ResponseEnum anEnum = e.getAnEnum();
+        return new ErrorResponse(anEnum.getCode(), anEnum.getLocaleMessage(e.getArgs()));
+    }
+
+    @ExceptionHandler(value = Exception.class)
+    @ResponseBody
+    public ErrorResponse handleExceptionInternal(Exception e) {
+        log.error(&quot;未捕捉异常：&quot; + e.getMessage(), e);
+        final Integer code = INTERNAL_SERVER_ERROR.getCode();
+        return new ErrorResponse(code, getLocaleMessage(code, e.getMessage()));
+    }
+
+
+    /**
+     * 包装绑定异常结果
+     *
+     * @param status        HTTP状态码
+     * @param bindingResult 参数校验结果
+     * @return 异常对象
+     */
+    private ErrorResponse wrapperBindingResult(HttpStatus status, BindingResult bindingResult) {
+        final List&lt;String&gt; errorDesc = new ArrayList&lt;&gt;();
+        for (ObjectError error : bindingResult.getAllErrors()) {
+            final StringBuilder msg = new StringBuilder();
+            if (error instanceof FieldError) {
+                msg.append(((FieldError) error).getField()).append(&quot;: &quot;);
+            }
+            msg.append(error.getDefaultMessage() == null ? &quot;&quot; : error.getDefaultMessage());
+            errorDesc.add(msg.toString());
+        }
+        final String desc = isProd ? getLocaleMessage(status.value(), status.getReasonPhrase()) : String.join(&quot;, &quot;, errorDesc);
+        return new ErrorResponse(status.value(), desc);
+    }
+
+    private String getLocaleMessage(Integer code, String defaultMsg) {
+        try {
+            return messageSource.getMessage(&quot;&quot; + code, null, defaultMsg, LocaleContextHolder.getLocale());
+        } catch (Throwable t) {
+            log.warn(&quot;本地化异常消息发生异常: {}&quot;, code);
+            return defaultMsg;
+        }
+    }
+}</code></pre>
+<p>如果感觉Spring的<code>ResponseEntityExceptionHandler</code>类不够灵活，也可以完全自定义异常处理类：</p>
+<pre><code class="java">@RestControllerAdvice
+@Slf4j
+public class UnifiedExceptionHandler {
+    private static final String ENV_PROD = &quot;prod&quot;;
+    private final MessageSource messageSource;
+    private final Boolean isProd;
+
+    public UnifiedExceptionHandler(@Value(&quot;${spring.profiles.active:dev}&quot;) final String activeProfile, final MessageSource messageSource) {
+        this.messageSource = messageSource;
+        this.isProd = new HashSet&lt;&gt;(Arrays.asList(activeProfile.split(&quot;,&quot;))).contains(ENV_PROD);
+    }
+
+    @ExceptionHandler({
+            MissingServletRequestParameterException.class,// 缺少servlet请求参数异常处理方法
+            ServletRequestBindingException.class,// servlet请求绑定异常
+            TypeMismatchException.class,// 类型不匹配
+            HttpMessageNotReadableException.class,// 消息无法检索
+            MissingServletRequestPartException.class// 缺少servlet请求部分
+
+    })
+    public ErrorResponse badRequestException(Exception e, WebRequest request) {
+        log.info(e.getMessage(), e);
+        return new ErrorResponse(BAD_REQUEST.getCode(), e.getMessage(), request);
+    }
+
+    @ExceptionHandler({
+            NoHandlerFoundException.class// 没有发现处理程序异常
+    })
+    public ErrorResponse noHandlerFoundException(Exception e, WebRequest request) {
+        log.info(e.getMessage(), e);
+        return new ErrorResponse(NOT_FOUND.getCode(), e.getMessage(), request);
+    }
+
+    @ExceptionHandler({
+            HttpRequestMethodNotSupportedException.class// 不支持的HTTP请求方法异常信息处理方法
+    })
+    public ErrorResponse httpRequestMethodNotSupportedException(Exception e, WebRequest request) {
+        log.info(e.getMessage(), e);
+        return new ErrorResponse(METHOD_NOT_ALLOWED.getCode(), e.getMessage(), request);
+    }
+
+    @ExceptionHandler({
+            HttpMediaTypeNotAcceptableException.class// 不接受的HTTP媒体类型异常处方法
+    })
+    public ErrorResponse httpMediaTypeNotAcceptableException(Exception e, WebRequest request) {
+        log.info(e.getMessage(), e);
+        return new ErrorResponse(NOT_ACCEPTABLE.getCode(), e.getMessage(), request);
+    }
+
+    @ExceptionHandler({
+            HttpMediaTypeNotSupportedException.class// 不支持的HTTP媒体类型异常处理方法
+    })
+    public ErrorResponse httpMediaTypeNotSupportedException(Exception e, WebRequest request) {
+        log.info(e.getMessage(), e);
+        return new ErrorResponse(UNSUPPORTED_MEDIA_TYPE.getCode(), e.getMessage(), request);
+    }
+
+    @ExceptionHandler({
+            AsyncRequestTimeoutException.class// 异步请求超时异常
+    })
+    public ErrorResponse asyncRequestTimeoutException(Exception e, WebRequest request) {
+        log.info(e.getMessage(), e);
+        return new ErrorResponse(SERVICE_UNAVAILABLE.getCode(), e.getMessage(), request);
+    }
+
+    @ExceptionHandler({
+            MissingPathVariableException.class,// 请求路径参数缺失异常处方法
+            HttpMessageNotWritableException.class,// HTTP消息不可写
+            ConversionNotSupportedException.class,// 不支持转换
+    })
+    public ErrorResponse handleServletException(Exception e, WebRequest request) {
+        log.error(e.getMessage(), e);
+        return new ErrorResponse(INTERNAL_SERVER_ERROR.getCode(), e.getMessage(), request);
+    }
+
+    @ExceptionHandler({
+            BindException.class// 参数绑定异常
+    })
+    @ResponseBody
+    public ErrorResponse handleBindException(BindException e, WebRequest request) {
+        log.error(&quot;参数绑定异常&quot;, e);
+        return wrapperBindingResult(e.getBindingResult(), request);
+    }
+
+    /**
+     * 参数校验异常，将校验失败的所有异常组合成一条错误信息
+     */
+    @ExceptionHandler({
+            MethodArgumentNotValidException.class// 方法参数无效
+    })
+    @ResponseBody
+    public ErrorResponse handleValidException(MethodArgumentNotValidException e, WebRequest request) {
+        log.error(&quot;参数校验异常&quot;, e);
+        return wrapperBindingResult(e.getBindingResult(), request);
+    }
+
+    /**
+     * 包装绑定异常结果
+     */
+    private ErrorResponse wrapperBindingResult(BindingResult bindingResult, WebRequest request) {
+        final List&lt;String&gt; errorDesc = new ArrayList&lt;&gt;();
+        for (ObjectError error : bindingResult.getAllErrors()) {
+            final StringBuilder msg = new StringBuilder();
+            if (error instanceof FieldError) {
+                msg.append(((FieldError) error).getField()).append(&quot;: &quot;);
+            }
+            msg.append(error.getDefaultMessage() == null ? &quot;&quot; : error.getDefaultMessage());
+            errorDesc.add(msg.toString());
+        }
+        final String desc = isProd ? getLocaleMessage(BAD_REQUEST.getCode(), &quot;&quot;) : String.join(&quot;, &quot;, errorDesc);
+        return new ErrorResponse(BAD_REQUEST.getCode(), desc, request);
+    }
+
+    /**
+     * 业务异常
+     */
+    @ExceptionHandler(value = CodeBaseException.class)
+    @ResponseBody
+    public ErrorResponse handleBusinessException(CodeBaseException e, WebRequest request) {
+        log.error(&quot;业务异常：&quot; + e.getMessage(), e);
+        final ResponseEnum anEnum = e.getAnEnum();
+        return new ErrorResponse(anEnum.getCode(), anEnum.getLocaleMessage(e.getArgs()), request);
+    }
+
+    /**
+     * 未定义异常
+     */
+    @ExceptionHandler(value = Exception.class)
+    @ResponseBody
+    public ErrorResponse handleExceptionInternal(Exception e, WebRequest request) {
+        log.error(&quot;未捕捉异常：&quot; + e.getMessage(), e);
+        final Integer code = INTERNAL_SERVER_ERROR.getCode();
+        return new ErrorResponse(code, getLocaleMessage(code, e.getMessage()), request);
+    }
+
+    private String getLocaleMessage(Integer code, String defaultMsg) {
+        try {
+            return messageSource.getMessage(&quot;&quot; + code, null, defaultMsg, LocaleContextHolder.getLocale());
+        } catch (Throwable t) {
+            log.warn(&quot;本地化异常消息发生异常: {}&quot;, code);
+            return defaultMsg;
+        }
+    }
+}</code></pre>
+<p>从上面两个类可以看出，比较核心的是这么几个注解：</p>
+<ul>
+<li>@ExceptionHandle：负责处理controller标注的类中抛出的异常的注解</li>
+<li>@RestControllerAdvice：能够将@ExceptionHandler标注的方法集中到一个地方进行处理的注解，这个注解是复合注解，实现了<code>@ControllerAdvice</code>和<code>@ResponseBody</code>的功能。</li>
+</ul>
+<p>借用谭朝红博文中的图片（蓝色箭头表示正常的请求和响应，红色箭头表示发生异常的请求和响应）：</p>
+<p><img src="http://static.howardliu.cn/springboot/1141452688-5ce176fbd4a9b_articlex.png" alt="异常信息处理类"></p>
+<h2 id="写个Demo测试一下"><a href="#写个Demo测试一下" class="headerlink" title="写个Demo测试一下"></a>写个Demo测试一下</h2><p>接下来我们写个demo测试一下是否能够实现异常的优雅响应：</p>
+<pre><code class="java">@RestController
+@RequestMapping(&quot;index&quot;)
+@Slf4j
+public class IndexController {
+    private final IndexService indexService;
+
+    public IndexController(final IndexService indexService) {
+        this.indexService = indexService;
+    }
+
+    @GetMapping(&quot;hello1&quot;)
+    public Response&lt;String&gt; hello1() {
+        Response&lt;String&gt; response = new Response&lt;&gt;();
+        try {
+            response.setCode(200);
+            response.setDesc(&quot;请求成功&quot;);
+            response.setData(indexService.hello());
+        } catch (Exception e) {
+            log.error(&quot;hello1方法请求异常&quot;, e);
+            response.setCode(500);
+            response.setDesc(&quot;请求异常:&quot; + e.getMessage());
+        } finally {
+            log.info(&quot;执行controller的finally结构&quot;);
+        }
+        return response;
+    }
+
+    @GetMapping(&quot;hello2&quot;)
+    public Response&lt;String&gt; hello2(@RequestParam(&quot;ex&quot;) String ex) {
+        switch (ex) {
+            case &quot;ex1&quot;:
+                throw new CodeBaseException(CommonResponseEnum.USER_NOT_FOUND, &quot;用户信息不存在&quot;);
+            case &quot;ex2&quot;:
+                throw new CodeBaseException(CommonResponseEnum.MENU_NOT_FOUND, &quot;菜单信息不存在&quot;);
+            case &quot;ex3&quot;:
+                throw new CodeBaseException(CommonResponseEnum.ILLEGAL_ARGUMENT, &quot;请求参数异常&quot;);
+            case &quot;ex4&quot;:
+                throw new CodeBaseException(CommonResponseEnum.DATA_NOT_FOUND, &quot;数据不存在&quot;);
+        }
+        throw new CodeBaseException(INTERNAL_ERROR, new Object[]{ex}, &quot;请求异常&quot;, new RuntimeException(&quot;运行时异常信息&quot;));
+    }
+}</code></pre>
+<p>启动服务之后，传入不同参数获取不同的异常信息：</p>
+<pre><code class="javascript">// 请求 /index/hello2?ex=ex1
+{
+    &quot;code&quot;: 4104,
+    &quot;desc&quot;: &quot;User Not Found&quot;,
+    &quot;timestamp&quot;: &quot;2020-10-10T05:58:39.433+00:00&quot;,
+    &quot;path&quot;: &quot;/index/hello2&quot;
+}
+
+// 请求 /index/hello2?ex=ex2
+{
+    &quot;code&quot;: 4204,
+    &quot;desc&quot;: &quot;Menu Not Found&quot;,
+    &quot;timestamp&quot;: &quot;2020-10-10T06:00:34.141+00:00&quot;,
+    &quot;path&quot;: &quot;/index/hello2&quot;
+}
+
+// 请求 /index/hello2?ex=ex3
+{
+    &quot;code&quot;: 4000,
+    &quot;desc&quot;: &quot;[DEFAULT] Illegal Arguments&quot;,
+    &quot;timestamp&quot;: &quot;2020-10-10T06:00:44.233+00:00&quot;,
+    &quot;path&quot;: &quot;/index/hello2&quot;
+}
+
+// 请求 /index/hello2?ex=ex4
+{
+    &quot;code&quot;: 4004,
+    &quot;desc&quot;: &quot;对应数据未找到&quot;,
+    &quot;timestamp&quot;: &quot;2020-10-10T06:00:54.178+00:00&quot;,
+    &quot;path&quot;: &quot;/index/hello2&quot;
+}</code></pre>
+<p>附上文中的代码：<a href="https://github.com/howardliu-cn/effective-spring/tree/main/spring-exception-handler" target="_blank" rel="noopener">https://github.com/howardliu-cn/effective-spring/tree/main/spring-exception-handler</a>，收工。</p>
+<hr>
+<p>个人主页: <a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文: <a href="https://www.howardliu.cn/springboot-action-gracefully-response-exception/">SpringBoot 实战：如何优雅的处理异常</a><br>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN博文: <a href="https://blog.csdn.net/liuxinghao/article/details/108996938" target="_blank" rel="noopener">SpringBoot 实战：如何优雅的处理异常</a></p>
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/SpringBoot/">SpringBoot</a>
+            
+            <a href="/tags/实战/">实战</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/i-resigned-from-hx/">
+                <i class="icon-previous">我从 HX 辞职了</i>
+            </a>
+            
+            
+            <a class="next" href="/springboot-action-gracefully-response/">
+                <i class="icon-next">SpringBoot 实战：一招实现结果的优雅响应</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/闲聊/" style="font-size: 15px;">闲聊</a> <a href="/tags/非理性/" style="font-size: 15px;">非理性</a> <a href="/tags/认知偏差/" style="font-size: 15px;">认知偏差</a> <a href="/tags/自控术/" style="font-size: 15px;">自控术</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/成本/" style="font-size: 15px;">成本</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/i-resigned-from-hx/">我从 HX 辞职了</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-gracefully-response-exception/">SpringBoot 实战：如何优雅的处理异常</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-gracefully-response/">SpringBoot 实战：一招实现结果的优雅响应</a></li><li class="post-list-item"><a class="post-list-link" href="/tiny-url-system/">系统设计系列之如何设计一个短链服务</a></li><li class="post-list-item"><a class="post-list-link" href="/how-to-use-branch-efficiently-in-git/">如何在微服务团队中高效使用 Git 管理代码？</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2020</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

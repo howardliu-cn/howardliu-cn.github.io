@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>solr-搜索-层面分析||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="在部分概述在Solr搜索描述，分类是基于索引的搜索结果方面的安排。搜索与索引方面，随着数值计算有多少匹配的文件被发现是每学期。小面很容易让用户探索的搜索结果，缩小正是他们正在寻找的结果。根据Solr搜索概述中的描述，层面分析是基于搜索结果的排列。所有的Searcher都携带有索引term，随着匹配文档，term也被发现。层面分析简化用户对搜索结果的处理，缩小查找结果范围。">
+<meta name="keywords" content="solr,翻译,层面分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="solr-搜索-层面分析">
+<meta property="og:url" content="https://www.howardliu.cn/translation-faceting/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="在部分概述在Solr搜索描述，分类是基于索引的搜索结果方面的安排。搜索与索引方面，随着数值计算有多少匹配的文件被发现是每学期。小面很容易让用户探索的搜索结果，缩小正是他们正在寻找的结果。根据Solr搜索概述中的描述，层面分析是基于搜索结果的排列。所有的Searcher都携带有索引term，随着匹配文档，term也被发现。层面分析简化用户对搜索结果的处理，缩小查找结果范围。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-01-27T10:07:23.035Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="solr-搜索-层面分析">
+<meta name="twitter:description" content="在部分概述在Solr搜索描述，分类是基于索引的搜索结果方面的安排。搜索与索引方面，随着数值计算有多少匹配的文件被发现是每学期。小面很容易让用户探索的搜索结果，缩小正是他们正在寻找的结果。根据Solr搜索概述中的描述，层面分析是基于搜索结果的排列。所有的Searcher都携带有索引term，随着匹配文档，term也被发现。层面分析简化用户对搜索结果的处理，缩小查找结果范围。">
+
+<meta name="keywords" content="solr,翻译,层面分析">
+
+
+<meta name="description" content="在部分概述在Solr搜索描述，分类是基于索引的搜索结果方面的安排。搜索与索引方面，随着数值计算有多少匹配的文件被发现是每学期。小面很容易让用户探索的搜索结果，缩小正是他们正在寻找的结果。根据Solr搜索概述中的描述，层面分析是基于搜索结果的排列。所有的Searcher都携带有索引term，随着匹配文">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/translation-faceting/">solr-搜索-层面分析</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2015-12-17</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/translation-faceting/" class="leancloud_visitors" data-flag-title="solr-搜索-层面分析">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#基本参数"><span class="toc-text">基本参数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#facet"><span class="toc-text">facet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-query"><span class="toc-text">facet.query</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#字面值层面分析参数"><span class="toc-text">字面值层面分析参数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-field"><span class="toc-text">facet.field</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-prefix"><span class="toc-text">facet.prefix</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-contains"><span class="toc-text">facet.contains</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-contains-ignoreCase"><span class="toc-text">facet.contains.ignoreCase</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-sort"><span class="toc-text">facet.sort</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-limit"><span class="toc-text">facet.limit</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-offset"><span class="toc-text">facet.offset</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-mincount"><span class="toc-text">facet.mincount</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-missing"><span class="toc-text">facet.missing</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-metrod"><span class="toc-text">facet.metrod</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-enum-cache-minDf"><span class="toc-text">facet.enum.cache.minDf</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Over-Request参数"><span class="toc-text">Over-Request参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-trreads"><span class="toc-text">facet.trreads</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#范围分析"><span class="toc-text">范围分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-range"><span class="toc-text">facet.range</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-range-start"><span class="toc-text">facet.range.start</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-range-end"><span class="toc-text">facet.range.end</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-range-gap"><span class="toc-text">facet.range.gap</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-range-hardend"><span class="toc-text">facet.range.hardend</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-range-include"><span class="toc-text">facet.range.include</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-range-otrer"><span class="toc-text">facet.range.otrer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-range-metrod"><span class="toc-text">facet.range.metrod</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#范围分析中的facet-mincount"><span class="toc-text">范围分析中的facet.mincount</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#日期分析"><span class="toc-text">日期分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Pivot（决策树）分析"><span class="toc-text">Pivot（决策树）分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-pivot"><span class="toc-text">facet.pivot</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-pivot-mincount"><span class="toc-text">facet.pivot.mincount</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#联合使用pivot与stats"><span class="toc-text">联合使用pivot与stats</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#联合使用层面分析、范围分析和pivot分析"><span class="toc-text">联合使用层面分析、范围分析和pivot分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#附加pivot参数"><span class="toc-text">附加pivot参数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#区间分析"><span class="toc-text">区间分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-interval"><span class="toc-text">facet.interval</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#facet-interval-set"><span class="toc-text">facet.interval.set</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#区间语法"><span class="toc-text">区间语法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#层面分析局部变量"><span class="toc-text">层面分析局部变量</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#对过滤器打标签或排除"><span class="toc-text">对过滤器打标签或排除</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#修改输出值"><span class="toc-text">修改输出值</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#扩展阅读"><span class="toc-text">扩展阅读</span></a></li></ol>
+    </div>
+ -->
+            <p>在部分概述在Solr搜索描述，分类是基于索引的搜索结果方面的安排。搜索与索引方面，随着数值计算有多少匹配的文件被发现是每学期。小面很容易让用户探索的搜索结果，缩小正是他们正在寻找的结果。<br>根据<a href="https://cwiki.apache.org/confluence/display/solr/Overview+of+Searching+in+Solr" target="_blank" rel="noopener">Solr搜索概述</a>中的描述，层面分析是基于搜索结果的排列。所有的Searcher都携带有索引term，随着匹配文档，term也被发现。层面分析简化用户对搜索结果的处理，缩小查找结果范围。</p>
+<a id="more"></a>
+<h1 id="基本参数"><a href="#基本参数" class="headerlink" title="基本参数"></a>基本参数</h1><p>下面的表总结了控制层面分析的一般参数：</p>
+<table><tr><th>参数</th><th>描述</th></tr><tr><td>facet</td><td>设置为true，开启层面分析</td></tr><tr><td>facet.query</td><td>指定使用Lucene查询生成层面计数。</td></tr></table>
+
+<h2 id="facet"><a href="#facet" class="headerlink" title="facet"></a>facet</h2><p>设置为true，可以使查询响应中有层面计数。设置为false或没有值，不进行层面分析。除非设置为true，否则下面的其他参数将不起作用。默认值是空。</p>
+<h2 id="facet-query"><a href="#facet-query" class="headerlink" title="facet.query"></a>facet.query</h2><p>这个参数允许你使用Lucene默认语法指定一个随意的查询来生成层面计数。默认情况下，Solr的层面分析自动区分相同field的不同term，并返回这些term的数量。使用<code>facet.query</code>，你可以重写默认行为或精确选择你希望对哪些term或表达式进行计数。在层面分析的典型实现中，你可以指定<code>facet.query</code>参数的数量。这个参数对以数字范围为基础的层面分析或以前缀为基础的层面分析很有用。<br>你可以设置对<code>facet.query</code>参数进行多次声明，来使不同查询使用隔离的层面约束。<br>在层面分析中不使用默认语法，用查询标记的名称来作为层面分析的前缀。比如，使用假设的MyFunc查询解析器，你可以设置<code>facet.query</code>参数为：</p>
+<pre><code>facet.query={!myfunc}name~fred</code></pre><h1 id="字面值层面分析参数"><a href="#字面值层面分析参数" class="headerlink" title="字面值层面分析参数"></a>字面值层面分析参数</h1><p>在field中基于索引的term，可以使用几个参数来触发层面分析。<br>使用这些参数时，最重要的是”term”在Lucene中是非常特别的概念：它涉及到分析后的索引过程中field/value对的字面值。对于包含stemming（将单词缩减为词根形式）、lowercasing（将单词转换为小写字母）或分词等操作的文本field，可能结果与你期望的不同。如果你希望Solr在完整字符串上进行分析（搜索过程）和层面分析，在schema.xml中使用<code>copyField</code>field，对该field创建两个版本：一个Text，一个String。两个都要设置<code>indexed=&quot;true&quot;</code>。（获得更多关于copyField的内容，请参见<a href="https://cwiki.apache.org/confluence/display/solr/Documents%2C+Fields%2C+and+Schema+Design" target="_blank" rel="noopener">Documents, Fields, and Schema Design</a>。）<br>下表中列出Solr中层面分析可以使用的参数。</p>
+<table><tr><th>参数</th><th>描述</th></tr><tr><td>facet.field</td><td>指定一个field来进行层面分析</td></tr><tr><td>facet.prefix</td><td>限制使用指定前缀的term进行层面分析</td></tr><tr><td>facet.contains</td><td>限制包含指定子串的term进行层面分析</td></tr><tr><td>facet.contains.ignoreCase</td><td>如果使用`facet.contains`，忽略指定子串的大小写</td></tr><tr><td>facet.sort</td><td>控制层面结果排序方式</td></tr><tr><td>facet.limit</td><td>控制返回的层面结果中包含内容的数量</td></tr><tr><td>facet.offset</td><td>指定层面结果开始位置的偏移量</td></tr><tr><td>facet.mincount</td><td>指定层面结果中返回的最小数量</td></tr><tr><td>facet.missing</td><td>控制除了以term为基础约束的层面分析field，Solr是否对所有匹配结果中没有值的field进行计数。</td></tr><tr><td>facet.metrod</td><td>选择Solr进行层面分析时使用的算法或方法</td></tr><tr><td>facet.enum.cache.minDF</td><td>(高级)指定达到term的约定数量时使用filterCache的最小文档频率（匹配项的文件数量）</td></tr><tr><td>facet.overrequest.count</td><td>(高级)文档的数量，替代在分布式搜索每个分片中无法起作用的`facet.limit`</td></tr><tr><td>facet.overrequest.ratio</td><td>(高级)在分布式搜索每个分片中比`facet.limit`更加有效</td></tr><tr><td>facet.trreads</td><td>(高级)控制并行执行的field分析</td></tr></table>
+
+<p>下面对每个参数进行详细描述。</p>
+<h2 id="facet-field"><a href="#facet-field" class="headerlink" title="facet.field"></a>facet.field</h2><p>该参数指定应该进行层面分析的field。遍历field的所有term，按照约定生成层面计数。在查询中，这个参数可以指定多次，对多个field进行层面分析。</p>
+<blockquote>
+<p>如果你没有指定任何一个schema中定义的field，本节中其他参数将不起作用。</p>
+</blockquote>
+<h2 id="facet-prefix"><a href="#facet-prefix" class="headerlink" title="facet.prefix"></a>facet.prefix</h2><p>该参数指定需要被进行层面分析的term需要以给定字符串作为前缀。对查询没有任何限制，只作用于响应的层面分析查询。<br>这个参数可以使用<code>f.&lt;fieldname&gt;.facet.prefix</code>在每个field上指定前缀。</p>
+<h2 id="facet-contains"><a href="#facet-contains" class="headerlink" title="facet.contains"></a>facet.contains</h2><p>该参数指定需要被进行层面分析的term需要包含给定字符串。对查询没有任何限制，只作用于响应的层面分析查询。<br>这个参数可以使用<code>f.&lt;fieldname&gt;.facet.contains</code>在每个field上指定需要包含的内容。</p>
+<h2 id="facet-contains-ignoreCase"><a href="#facet-contains-ignoreCase" class="headerlink" title="facet.contains.ignoreCase"></a>facet.contains.ignoreCase</h2><p>如果使用<code>facet.contains</code>，<code>facet.contains.ignoreCase</code>参数如果设置为true，则忽略大小写。<br>这个参数可以使用<code>f.&lt;fieldname&gt;.facet.contains.ignoreCase</code>在每个field上指定是否忽略大小写。</p>
+<h2 id="facet-sort"><a href="#facet-sort" class="headerlink" title="facet.sort"></a>facet.sort</h2><p>该参数指定层面结果排序方式。</p>
+<table><tr><th>设置</th><th>结果</th></tr><tr><td>count</td><td>根据计数倒序排列</td></tr><tr><td>index</td><td>根据索引中的排序返回（由索引term组成的词典）。在ASCII码的范围，这将按字母顺序排序。</td></tr></table>
+
+<p>如果<code>facet.limit</code>大于0，默认使用<code>count</code>，否则，默认使用<code>index</code>。<br>这个参数可以使用<code>f.&lt;fieldname&gt;.facet.sort</code>在每个field上指定排序方式。</p>
+<h2 id="facet-limit"><a href="#facet-limit" class="headerlink" title="facet.limit"></a>facet.limit</h2><p>该参数指定最大返回数目（基本上是返回的field的数量）。负值表示对返回数量无限制。<br>默认值是100。<br>这个参数可以使用<code>f.&lt;fieldname&gt;.facet.limit</code>在每个field上指定返回数量。</p>
+<h2 id="facet-offset"><a href="#facet-offset" class="headerlink" title="facet.offset"></a>facet.offset</h2><p>该参数表示返回列表的偏移量，可以用来分页。<br>默认值是0。<br>这个参数可以使用<code>f.&lt;fieldname&gt;.facet.offset</code>在每个field上指定偏移量。</p>
+<h2 id="facet-mincount"><a href="#facet-mincount" class="headerlink" title="facet.mincount"></a>facet.mincount</h2><p>该参数指定返回结果中进行层面分析的field的最小数量。如果一个field的计数低于指定值，则该field的面将不返回。<br>默认值是0。<br>tris parameter can be specified on a per-field basis witr tre syntax of f.<fieldname>.facet.mincount.<br>这个参数可以使用<code>f.&lt;fieldname&gt;.facet.mincount</code>在每个field上指定最小数量。</fieldname></p>
+<h2 id="facet-missing"><a href="#facet-missing" class="headerlink" title="facet.missing"></a>facet.missing</h2><p>如果设置为true，这个参数表明，除了以term为基础的层面分析，返回结果中需要计算匹配查询但是没有字面值的数据（就是field值为 null 的记录）。<br>默认值false。<br>这个参数可以使用<code>f.&lt;fieldname&gt;.facet.missing</code>在每个field上指定是否起作用。</p>
+<h2 id="facet-metrod"><a href="#facet-metrod" class="headerlink" title="facet.metrod"></a>facet.metrod</h2><p>该参数选择对某个field进行层面分析时使用的算法或方法。</p>
+<table><tr><th>值</th><th>结果</th></tr><tr><td>enum</td><td>枚举field中的所有term，计算匹配查询文档中的term的交集。适用于field值比较少的情况。每个文档的平均值不重要。比如，多美国的各个州进行层面分析，比如阿拉巴马州州、阿拉斯加州、…、怀俄明州等，将创建50个缓存过滤器，可以被重复使用。filterCache应该足够大以容纳所有的缓存过滤器。</td></tr><tr><td>fc</td><td>遍历所有匹配文档，在每个文档中统计出现的term。适用于field取值比较多,但在每个文档里出现次数比较少的情况。查询每个文档中包含的term/value对，对每个value递增。这个方法对于field的索引值比较高，但是每个文档中比较低的情况表现优秀。对于多值field，使用混合的方式从filterCache中查询匹配文档过滤term。</td></tr><tr><td>fcs</td><td>该参数针对单值的字符串field。使用`facet.metrod=fcs`并控制采用线程局部参数的线程数。该参数在索引指数变化迅速中进行层面分析。</td></tr></table>
+
+<p>默认值是<code>fc</code>（除了类型是<code>BoolFiled</code>的field），因为它使用最少的内存，并且在有很多不同term时更快。<br>这个参数可以使用<code>f.&lt;fieldname&gt;.facet.metrod</code>在每个field上指定使用的方法或算法。</p>
+<h2 id="facet-enum-cache-minDf"><a href="#facet-enum-cache-minDf" class="headerlink" title="facet.enum.cache.minDf"></a>facet.enum.cache.minDf</h2><p>该参数指定达到最小的文档频率（匹配项的文件数量）时，filtercache应该存储term。（minDf表示minimum document frequency，也就是文档内出现某个关键字的最少次数。）只有设置<code>facet.metrod=enum</code>时起作用。<br>设置该参数可以减少filterCache的内存消耗,但会增加总的查询时间(计算交集的时间增加了)。如果你对某个field存在大量term，又希望减少内存使用，可以设置25-50内的值，然后运行一些测试。然后，优化参数设置。<br>默认值为0，filterCache可以对所有term使用。<br>这个参数可以使用<code>f.&lt;fieldname&gt;.facet.enum.cache.minDF</code>对每个field分别指定。</p>
+<h2 id="Over-Request参数"><a href="#Over-Request参数" class="headerlink" title="Over-Request参数"></a>Over-Request参数</h2><p>在某些情况下，在分布式的Solr查询中为了正确返回”top”约束可以通过使用”Over Requesting”来从每个单独的分片提高所需数量限制（比如：facet.limit）。在这些情况下，每个分片默认访问最上面的”10 + (1.5 * facet.limit)”的数据。<br>在某些情况下，基于你的文档分布在哪些分片上，你使用的<code>facet.limit</code>值是多少，增加或减少over-requesting的数量是有利的。可以通过设置<code>facet.overrequest.count</code>（默认10）和<code>facet.overrequest.ratio</code>（默认1.5）的值来实现。</p>
+<h2 id="facet-trreads"><a href="#facet-trreads" class="headerlink" title="facet.trreads"></a>facet.trreads</h2><p>这个参数指定并行加载层面分析的field的线程数量。指定<code>facet.trreads=N</code>，N是使用的最大线程数。不使用该参数或设置为0，将不产生任何额外的线程，只使用主线程来请求。使用负值将创建最多<code>Integer.MAX_VALUE</code>个线程。</p>
+<h1 id="范围分析"><a href="#范围分析" class="headerlink" title="范围分析"></a>范围分析</h1><p>可以对datefield或数字field进行范围分析。这对于分为查询，比如查询价格，非常有用。在Solr3.1中，范围分析由于日期分析（描述如下）。</p>
+<table><tr><th>参数</th><th>描述</th></tr><tr><td>facet.range</td><td>指定进行范围分析的field</td></tr><tr><td>facet.range.start</td><td>指定范围的结束值</td></tr><tr><td>facet.range.end</td><td>指定范围的开始值</td></tr><tr><td>facet.range.gap</td><td>指定步进大小</td></tr><tr><td>facet.range.hardend</td><td>布尔参数，指定处理Solr开始和结尾不均匀分布的情况。ture，最后一个范围只到end值。false，最后一个范围可能超过end值。</td></tr><tr><td>facet.range.include</td><td>指定包含或不包含范围的开始值和结束值。更多信息参加`facet.range.include`一节。</td></tr><tr><td>facet.range.otrer</td><td>指定除了计算每个小范围的计数，也计算整个范围的计数。</td></tr><tr><td>facet.range.metrod</td><td>指定用于层面分析的算法或方法。</td></tr></table>
+
+<h2 id="facet-range"><a href="#facet-range" class="headerlink" title="facet.range"></a>facet.range</h2><p>定义Solr进行范围反洗的字段。比如：</p>
+<pre><code>facet.range=price&amp;facet.range=age
+facet.range=lastModified_dt</code></pre><h2 id="facet-range-start"><a href="#facet-range-start" class="headerlink" title="facet.range.start"></a>facet.range.start</h2><p>指定范围的结束值。可以使用<code>f.&lt;fieldname&gt;.facet.range.start</code>对每个field分别指定。比如：</p>
+<pre><code>f.price.facet.range.start=0.0&amp;f.age.facet.range.start=10
+f.lastModified_dt.facet.range.start=NOW/DAY-30DAYS</code></pre><h2 id="facet-range-end"><a href="#facet-range-end" class="headerlink" title="facet.range.end"></a>facet.range.end</h2><p>指定范围的开始值。可以使用<code>f.&lt;fieldname&gt;.facet.range.end</code>对每个field分别指定。比如：</p>
+<pre><code>f.price.facet.range.end=1000.0&amp;f.age.facet.range.start=99
+f.lastModified_dt.facet.range.end=NOW/DAY+30DAYS</code></pre><h2 id="facet-range-gap"><a href="#facet-range-gap" class="headerlink" title="facet.range.gap"></a>facet.range.gap</h2><p>指定范围步进大小。对于date类型的field，需要使用DateMatrParser表达式（比如，<code>facet.range.gap=%2B1DAY ... &#39;+1DAY&#39;</code>）。可以使用<code>f.&lt;fieldname&gt;.facet.range.gap</code>对每个field分别指定。比如：</p>
+<pre><code>f.price.facet.range.gap=100&amp;f.age.facet.range.gap=10
+f.lastModified_dt.facet.range.gap=+1DAY</code></pre><h2 id="facet-range-hardend"><a href="#facet-range-hardend" class="headerlink" title="facet.range.hardend"></a>facet.range.hardend</h2><p>布尔参数，指定处理Solr开始和结尾不均匀分布的情况。ture，最后一个范围只到end值。false，最后一个范围可能超过end值。<br>默认值是false。<br>可以使用<code>f.&lt;fieldname&gt;.facet.range.hardend</code>对每个field分别指定。</p>
+<h2 id="facet-range-include"><a href="#facet-range-include" class="headerlink" title="facet.range.include"></a>facet.range.include</h2><p>默认情况下，范围计算过程中，包括<code>facet.range.start</code>定义的结束值，不包括<code>facet.range.end</code>定义的结束值。<code>facet.range.otrer</code>定义的”before”不包含，定义的”after”包含。默认值是”lower”，在边间不重复计数。可以使用<code>facet.range.include</code>参数修改行为：</p>
+<table><tr><th>选项</th><th>描述</th></tr><tr><td>lower</td><td>包含结束值</td></tr><tr><td>upper</td><td>包含开始值</td></tr><tr><td>edge</td><td>包含上结束值（结束值包含在第一个范围，结束值包含在第二个范围）</td></tr><tr><td>outer</td><td>即使上结束值已经被包含，"before"和"after"也会重复计算</td></tr><tr><td>all</td><td>包含所有：lower, upper, edge, outer</td></tr></table>
+
+<p>可以使用<code>f.&lt;fieldname&gt;.facet.range.include</code>对每个field分别指定。</p>
+<blockquote>
+<p>要避免重复计数</p>
+</blockquote>
+<h2 id="facet-range-otrer"><a href="#facet-range-otrer" class="headerlink" title="facet.range.otrer"></a>facet.range.otrer</h2><p>计算除了上结束值之间步进统计的数据之外，以其他方式统计数据，可以有一下选项：</p>
+<table><tr><th>选项</th><th>描述</th></tr><tr><td>before</td><td>统计所有低于第一个范围结束值的数据</td></tr><tr><td>after</td><td>统计所有高于最后一个范围开始值的数据</td></tr><tr><td>between</td><td>统计所有范围组中上结束值的数据</td></tr><tr><td>none</td><td>不进行额外统计</td></tr><tr><td>all</td><td>统计before、between、after的数据</td></tr></table>
+
+<p>可以使用<code>f.&lt;fieldname&gt;.facet.range.otrer</code>对每个field分别指定。注意all选项，它可能重复计算已经定义其他选项，但不会覆盖其他选项。</p>
+<h2 id="facet-range-metrod"><a href="#facet-range-metrod" class="headerlink" title="facet.range.metrod"></a>facet.range.metrod</h2><p>这个参数是用来指定Solr进行范围分析时使用的算法或方法。不同方法返回结果相同，但是性能可能不同。</p>
+<table><tr><th>方法</th><th>描述</th></tr><tr><td>filter</td><td>该方法从主查询结果集中获取数量，执行过滤器，生成范围统计。使用了filterCache，所以当有足够大的缓存来存储所有范围时比较有利。</td></tr><tr><td>dv</td><td>该方法将遍历所有匹配的文档，查询所有范围的值。该方法使用docValues或fieldCache。不支持DateRangeField类型的field，或使用[group.facets](https://cwiki.apache.org/confluence/display/solr/Result+Grouping)不起作用。</td></tr></table>
+
+<p>默认值是filter。</p>
+<h2 id="范围分析中的facet-mincount"><a href="#范围分析中的facet-mincount" class="headerlink" title="范围分析中的facet.mincount"></a>范围分析中的facet.mincount</h2><p>范围分析中通用可以使用参数<code>facet.mincount</code>。返回结果中不包含小于定义值的数据。</p>
+<h1 id="日期分析"><a href="#日期分析" class="headerlink" title="日期分析"></a>日期分析</h1><p>日期分析<code>facet.date</code>的参数已经在Solr3.1中标记为过时。鼓励用户使用范围分析，范围分析可以实现相同功能，并且对于也可以对数字进行范围分析。返回格式有些许差别，但是参数格式几乎一样。</p>
+<h1 id="Pivot（决策树）分析"><a href="#Pivot（决策树）分析" class="headerlink" title="Pivot（决策树）分析"></a>Pivot（决策树）分析</h1><p>Pivoting是一个可以进行自动排序、计数、求和、求平均值的统计工具，结果保存在一个表中。结果数据通常在第二个表中展示。Pivot分析可以对多个field进行结果分析，保存在汇总表中。<br>从另一个方面看，查询结果生成一个决策树，比如：“对于A进行层面分析，约束计数是X/N, Y/M, 等。如果你使用X替换A，对于B的约束计数将变成S/P, T/Q,等”。换句话说，它提前告诉你下一个集合是什么。</p>
+<h2 id="facet-pivot"><a href="#facet-pivot" class="headerlink" title="facet.pivot"></a>facet.pivot</h2><p>该参数指定使用pivot的field。多个<code>facet.pivot</code>将在返回结果中创建多个”facet_pivot”节点。每个field的结果列表通过逗号分隔。</p>
+<h2 id="facet-pivot-mincount"><a href="#facet-pivot-mincount" class="headerlink" title="facet.pivot.mincount"></a>facet.pivot.mincount</h2><p>该参数指定层面分析结果中包含结果的最小数量。默认1。<br>以”bin/solr -e techproducts”为例，查询url如下：</p>
+<pre><code>http://localhost:8983/solr/techproducts/select?q=*:*&amp;facet.pivot=cat,popularity,inStock
+   &amp;facet.pivot=popularity,cat&amp;facet=true&amp;facet.field=cat&amp;facet.limit=5
+   &amp;rows=0&amp;wt=json&amp;indent=true&amp;facet.pivot.mincount=2</code></pre><p>结果中的”facet_pivot”是：</p>
+<pre><code>  &quot;facet_counts&quot;:{
+    &quot;facet_queries&quot;:{},
+    &quot;facet_fields&quot;:{
+      &quot;cat&quot;:[
+        &quot;electronics&quot;,14,
+        &quot;currency&quot;,4,
+        &quot;memory&quot;,3,
+        &quot;connector&quot;,2,
+        &quot;graphics card&quot;,2]},
+    &quot;facet_dates&quot;:{},
+    &quot;facet_ranges&quot;:{},
+    &quot;facet_pivot&quot;:{
+      &quot;cat,popularity,inStock&quot;:[{
+          &quot;field&quot;:&quot;cat&quot;,
+          &quot;value&quot;:&quot;electronics&quot;,
+          &quot;count&quot;:14,
+          &quot;pivot&quot;:[{
+              &quot;field&quot;:&quot;popularity&quot;,
+              &quot;value&quot;:6,
+              &quot;count&quot;:5,
+              &quot;pivot&quot;:[{
+                  &quot;field&quot;:&quot;inStock&quot;,
+                  &quot;value&quot;:true,
+                  &quot;count&quot;:5}]},
+...</code></pre><h2 id="联合使用pivot与stats"><a href="#联合使用pivot与stats" class="headerlink" title="联合使用pivot与stats"></a>联合使用pivot与stats</h2><p>除了一些支持通用局部参数的层面分析，还可以使用统计局部参数来使facet.pivot与<a href="https://cwiki.apache.org/confluence/display/solr/tre+Stats+Component" target="_blank" rel="noopener">stats.field</a>配合使用，达到你想要的统计计算。</p>
+<p>在下面的例子中，是对每个facet.pivot结果层次的两个不同的统计结果集：</p>
+<pre><code>stats=true
+stats.field={!tag=piv1,piv2 min=true max=true}price
+stats.field={!tag=piv2 mean=true}popularity
+facet=true
+facet.pivot={!stats=piv1}cat,inStock
+facet.pivot={!stats=piv2}manu,inStock</code></pre><p>结果是：</p>
+<pre><code>&quot;facet_pivot&quot;:{
+  &quot;cat,inStock&quot;:[{
+      &quot;field&quot;:&quot;cat&quot;,
+      &quot;value&quot;:&quot;electronics&quot;,
+      &quot;count&quot;:12,
+      &quot;pivot&quot;:[{
+          &quot;field&quot;:&quot;inStock&quot;,
+          &quot;value&quot;:true,
+          &quot;count&quot;:8,
+          &quot;stats&quot;:{
+            &quot;stats_fields&quot;:{
+              &quot;price&quot;:{
+                &quot;min&quot;:74.98999786376953,
+                &quot;max&quot;:399.0}}}},
+        {
+          &quot;field&quot;:&quot;inStock&quot;,
+          &quot;value&quot;:false,
+          &quot;count&quot;:4,
+          &quot;stats&quot;:{
+            &quot;stats_fields&quot;:{
+              &quot;price&quot;:{
+                &quot;min&quot;:11.5,
+                &quot;max&quot;:649.989990234375}}}}],
+      &quot;stats&quot;:{
+        &quot;stats_fields&quot;:{
+          &quot;price&quot;:{
+            &quot;min&quot;:11.5,
+            &quot;max&quot;:649.989990234375}}}},
+    {
+      &quot;field&quot;:&quot;cat&quot;,
+      &quot;value&quot;:&quot;currency&quot;,
+      &quot;count&quot;:4,
+      &quot;pivot&quot;:[{
+          &quot;field&quot;:&quot;inStock&quot;,
+          &quot;value&quot;:true,
+          &quot;count&quot;:4,
+          &quot;stats&quot;:{
+            &quot;stats_fields&quot;:{
+              &quot;price&quot;:{
+                ...
+  &quot;manu,inStock&quot;:[{
+      &quot;field&quot;:&quot;manu&quot;,
+      &quot;value&quot;:&quot;inc&quot;,
+      &quot;count&quot;:8,
+      &quot;pivot&quot;:[{
+          &quot;field&quot;:&quot;inStock&quot;,
+          &quot;value&quot;:true,
+          &quot;count&quot;:7,
+          &quot;stats&quot;:{
+            &quot;stats_fields&quot;:{
+              &quot;price&quot;:{
+                &quot;min&quot;:74.98999786376953,
+                &quot;max&quot;:2199.0},
+              &quot;popularity&quot;:{
+                &quot;mean&quot;:5.857142857142857}}}},
+        {
+          &quot;field&quot;:&quot;inStock&quot;,
+          &quot;value&quot;:false,
+          &quot;count&quot;:1,
+          &quot;stats&quot;:{
+            &quot;stats_fields&quot;:{
+              &quot;price&quot;:{
+                &quot;min&quot;:479.95001220703125,
+                &quot;max&quot;:479.95001220703125},
+              &quot;popularity&quot;:{
+                &quot;mean&quot;:7.0}}}}],
+      ...</code></pre><h2 id="联合使用层面分析、范围分析和pivot分析"><a href="#联合使用层面分析、范围分析和pivot分析" class="headerlink" title="联合使用层面分析、范围分析和pivot分析"></a>联合使用层面分析、范围分析和pivot分析</h2><p>使用本地查询参数与facet.pivot结合实现层面分析实例。同样，使用范围参数与facet.pivot实现范围分析。<br>在下面的例子中，是结合查询参数与facet.pivot的结果：</p>
+<pre><code>facet=true
+facet.query={!tag=q1}manufacturedate_dt:[2006-01-01T00:00:00Z TO NOW]
+facet.query={!tag=q1}price:[0 TO 100]
+facet.pivot={!query=q1}cat,inStock</code></pre><p>结果：</p>
+<pre><code>&quot;facet_counts&quot;: {
+   &quot;facet_queries&quot;: {
+     &quot;{!tag=q1}manufacturedate_dt:[2006-01-01T00:00:00Z TO NOW]&quot;: 9,
+     &quot;{!tag=q1}price:[0 TO 100]&quot;: 7
+   },
+   &quot;facet_fields&quot;: {},
+   &quot;facet_dates&quot;: {},
+   &quot;facet_ranges&quot;: {},
+   &quot;facet_intervals&quot;: {},
+   &quot;facet_heatmaps&quot;: {},
+   &quot;facet_pivot&quot;: {
+     &quot;cat,inStock&quot;: [
+       {
+         &quot;field&quot;: &quot;cat&quot;,
+         &quot;value&quot;: &quot;electronics&quot;,
+         &quot;count&quot;: 12,
+         &quot;queries&quot;: {
+           &quot;{!tag=q1}manufacturedate_dt:[2006-01-01T00:00:00Z TO NOW]&quot;: 9,
+           &quot;{!tag=q1}price:[0 TO 100]&quot;: 4
+         },
+         &quot;pivot&quot;: [
+           {
+             &quot;field&quot;: &quot;inStock&quot;,
+             &quot;value&quot;: true,
+             &quot;count&quot;: 8,
+             &quot;queries&quot;: {
+               &quot;{!tag=q1}manufacturedate_dt:[2006-01-01T00:00:00Z TO NOW]&quot;: 6,
+               &quot;{!tag=q1}price:[0 TO 100]&quot;: 2
+             }
+           },
+           ...</code></pre><p>在下面的例子中，是结合范围参数与facet.pivot的结果：</p>
+<pre><code>facet=true
+facet.range={!tag=r1}manufacturedate_dt
+facet.range.start=2006-01-01T00:00:00Z
+facet.range.end=NOW/YEAR
+facet.range.gap=+1YEAR
+facet.pivot={!range=r1}cat,inStock</code></pre><p>结果：</p>
+<pre><code>&quot;facet_counts&quot;:{
+  &quot;facet_queries&quot;:{},
+  &quot;facet_fields&quot;:{},
+  &quot;facet_dates&quot;:{},
+  &quot;facet_ranges&quot;:{
+    &quot;manufacturedate_dt&quot;:{
+      &quot;counts&quot;:[
+        &quot;2006-01-01T00:00:00Z&quot;,9,
+        &quot;2007-01-01T00:00:00Z&quot;,0,
+        &quot;2008-01-01T00:00:00Z&quot;,0,
+        &quot;2009-01-01T00:00:00Z&quot;,0,
+        &quot;2010-01-01T00:00:00Z&quot;,0,
+        &quot;2011-01-01T00:00:00Z&quot;,0,
+        &quot;2012-01-01T00:00:00Z&quot;,0,
+        &quot;2013-01-01T00:00:00Z&quot;,0,
+        &quot;2014-01-01T00:00:00Z&quot;,0],
+      &quot;gap&quot;:&quot;+1YEAR&quot;,
+      &quot;start&quot;:&quot;2006-01-01T00:00:00Z&quot;,
+      &quot;end&quot;:&quot;2015-01-01T00:00:00Z&quot;}},
+  &quot;facet_intervals&quot;:{},
+  &quot;facet_heatmaps&quot;:{},
+  &quot;facet_pivot&quot;:{
+    &quot;cat,inStock&quot;:[{
+        &quot;field&quot;:&quot;cat&quot;,
+        &quot;value&quot;:&quot;electronics&quot;,
+        &quot;count&quot;:12,
+        &quot;ranges&quot;:{
+          &quot;manufacturedate_dt&quot;:{
+            &quot;counts&quot;:[
+              &quot;2006-01-01T00:00:00Z&quot;,9,
+              &quot;2007-01-01T00:00:00Z&quot;,0,
+              &quot;2008-01-01T00:00:00Z&quot;,0,
+              &quot;2009-01-01T00:00:00Z&quot;,0,
+              &quot;2010-01-01T00:00:00Z&quot;,0,
+              &quot;2011-01-01T00:00:00Z&quot;,0,
+              &quot;2012-01-01T00:00:00Z&quot;,0,
+              &quot;2013-01-01T00:00:00Z&quot;,0,
+              &quot;2014-01-01T00:00:00Z&quot;,0],
+            &quot;gap&quot;:&quot;+1YEAR&quot;,
+            &quot;start&quot;:&quot;2006-01-01T00:00:00Z&quot;,
+            &quot;end&quot;:&quot;2015-01-01T00:00:00Z&quot;}},
+        &quot;pivot&quot;:[{
+            &quot;field&quot;:&quot;inStock&quot;,
+            &quot;value&quot;:true,
+            &quot;count&quot;:8,
+            &quot;ranges&quot;:{
+              &quot;manufacturedate_dt&quot;:{
+                &quot;counts&quot;:[
+                  &quot;2006-01-01T00:00:00Z&quot;,6,
+                  &quot;2007-01-01T00:00:00Z&quot;,0,
+                  &quot;2008-01-01T00:00:00Z&quot;,0,
+                  &quot;2009-01-01T00:00:00Z&quot;,0,
+                  &quot;2010-01-01T00:00:00Z&quot;,0,
+                  &quot;2011-01-01T00:00:00Z&quot;,0,
+                  &quot;2012-01-01T00:00:00Z&quot;,0,
+                  &quot;2013-01-01T00:00:00Z&quot;,0,
+                  &quot;2014-01-01T00:00:00Z&quot;,0],
+                &quot;gap&quot;:&quot;+1YEAR&quot;,
+                &quot;start&quot;:&quot;2006-01-01T00:00:00Z&quot;,
+                &quot;end&quot;:&quot;2015-01-01T00:00:00Z&quot;}}},
+                ...</code></pre><h2 id="附加pivot参数"><a href="#附加pivot参数" class="headerlink" title="附加pivot参数"></a>附加pivot参数</h2><p>虽然facet.pivot.mincount与facet.mincount参数有些出入，但是许多其他的参数依然可以在pivot分析中使用：</p>
+<ul>
+<li>facet.limit</li>
+<li>facet.offset</li>
+<li>facet.sort</li>
+<li>facet.overrequest.count</li>
+<li>facet.overrequest.ratio</li>
+</ul>
+<h1 id="区间分析"><a href="#区间分析" class="headerlink" title="区间分析"></a>区间分析</h1><p>另外一种支持的层面分析形式是区间分析。听起来与范围分析很类似，也确实在功能性方面与范围分析很像。区间分析允许你设置区间范围和统计在这个范围内计数。<br>虽然与范围分析有类似的功能，但是两个方法实现却不同，而且根据上下文的不同性能也不一样。如果你比较关心性能问题，你需要两个都进行测试。区间分析在相同field上查询不同区间表现良好，如果是有效字段将使用docValues，否则使用fieldCache。</p>
+<table><tr><th>名称</th><th>做什么</th></tr><tr><td>facet.interval</td><td>指定区间分析的field</td></tr><tr><td>facet.interval.set</td><td>指定区间值</td></tr></table>
+
+<h2 id="facet-interval"><a href="#facet-interval" class="headerlink" title="facet.interval"></a>facet.interval</h2><p>该参数表明需要用区间分析的field。可以多次定义多个field。</p>
+<pre><code>facet.interval=price&amp;facet.interval=size</code></pre><h2 id="facet-interval-set"><a href="#facet-interval-set" class="headerlink" title="facet.interval.set"></a>facet.interval.set</h2><p>该参数用来指明field的区间，可以定义多个。该参数是全局参数，意味着所有facet.interval定义的field都会使用该区间，除非使用特定field进行覆盖。使用<code>f.&lt;fieldname&gt;.facet.interval.set</code>设置对指定field有效的区间，比如：</p>
+<pre><code>f.price.facet.interval.set=[0,10]&amp;f.price.facet.interval.set=(10,100]</code></pre><h2 id="区间语法"><a href="#区间语法" class="headerlink" title="区间语法"></a>区间语法</h2><p>区间必须以’(‘或’[‘开头，跟随一个结束值，然后是逗号(‘,’)，然后是开始值，然后以’)’或’]’结尾。<br>比如：</p>
+<ul>
+<li>(1,10) -&gt; 大于1，小于10</li>
+<li>[1,10) -&gt; 大于等于1，小于10</li>
+<li>[1,10] -&gt; 大于等于1，小于等于10</li>
+</ul>
+<p>开始值和结束值值不能为空。如果设置无限的方位，使用特殊字符’<em>‘作为上下或结束值。当使用’</em>‘时，’(‘或’[‘，以及 ‘)’或’]’是没有区别的。[<em>,</em>]将包含所有值。区间范围可以使用字符串，单不需要价引号。所有的文本一直到逗号被视为开始值，然后其后的文本视为结束值。比如：[Buenos Aires,New York]。注意，类字符串的比较将使用字符串区间（区分大小写）。比较器不能改变。<br>逗号、括号和方括号可以使用转义字符’&#39;。在开始或结尾的空格将被忽略。开始值不能大于结束值。允许两个值相同，这样可以获取你想获取某个特定值的数量，比如[A,A]、[B,B]和[C,Z]。<br>区间分析支持别名。可以对facet.interval和facet.interval.set设置别名。比如：</p>
+<pre><code>&amp;facet.interval={!key=popularity}some_field 
+&amp;facet.interval.set={!key=bad}[0,5] 
+&amp;facet.interval.set={!key=good}[5,*]
+&amp;facet=true</code></pre><h1 id="层面分析局部变量"><a href="#层面分析局部变量" class="headerlink" title="层面分析局部变量"></a>层面分析局部变量</h1><p>支持使用<a href="https://cwiki.apache.org/confluence/display/solr/Local+Parameters+in+Queries" target="_blank" rel="noopener">局部变量的语法</a>覆盖全局变量。它还可以提供一种将元数据添加到其他参数值的方法，很类似于XML属性。</p>
+<h2 id="对过滤器打标签或排除"><a href="#对过滤器打标签或排除" class="headerlink" title="对过滤器打标签或排除"></a>对过滤器打标签或排除</h2><p>在层面分析时，可以对指定过滤器打标签，也可以排除某些过滤器。这在进行多选层面分析时很有用。<br>考虑下面这种情况：</p>
+<pre><code>q=mainquery&amp;fq=status:public&amp;fq=doctype:pdf&amp;facet=true&amp;facet.field=doctype</code></pre><p>因为使用了过滤器doctype:pdf，所以facet.field=doctype命令是多余的，并且除了doctype:pdf其他的都将返回0.<br>为了对doctype进行多值查询，GUI可能希望展示其他的docttype的值，就像是没有doctype:pdf约束一样。比如：</p>
+<pre><code>=== Document Type ===
+  [ ] Word (42)
+  [x] PDF  (96)
+  [ ] Excel(11)
+  [ ] HTML (63)</code></pre><p>为了返回doctype的值，可以通过对过滤器打标签，然后在对doctype层面分析时不包括这个过滤器即可。</p>
+<pre><code>q=mainquery&amp;fq=status:public&amp;fq={!tag=dt}doctype:pdf&amp;facet=true&amp;facet.field={!ex=dt}doctype</code></pre><p>所有类型的层面分析都支持排除过滤器。tag或ex都可以使用定义多个值，不同值之间用逗号分隔。</p>
+<h2 id="修改输出值"><a href="#修改输出值" class="headerlink" title="修改输出值"></a>修改输出值</h2><p>使用key可以修改层面分析命令的输出值。比如：</p>
+<pre><code>facet.field={!ex=dt key=mylabel}doctype</code></pre><p>在名为doctype的field上的层面分析结果返回key是mylabel。这在多次对相同field进行层面分析时比较有用。</p>
+<h1 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h1><p><a href="http://wiki.apache.org/solr/SimpleFacetParameters" target="_blank" rel="noopener">SimpleFacetParameters</a><br><a href="https://cwiki.apache.org/confluence/display/solr/Spatial+Search" target="_blank" rel="noopener">Heatmap Faceting (Spatial)</a></p>
+<p>原文链接：<a href="https://cwiki.apache.org/confluence/display/solr/Faceting" target="_blank" rel="noopener">Faceting</a><br>翻译：<a href="https://www.howardliu.cn">沉潜飞动</a><br>译文链接：<a href="https://www.howardliu.cn/translation-faceting">solr-搜索-层面分析</a></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/翻译/">翻译</a>
+            
+            <a href="/tags/solr/">solr</a>
+            
+            <a href="/tags/层面分析/">层面分析</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/the-introduction-of-http-status-codes/">
+                <i class="icon-previous">四张图看懂HTTP状态码</i>
+            </a>
+            
+            
+            <a class="next" href="/translation-local-parameters-in-queries/">
+                <i class="icon-next">solr-搜索-查询中的局部参数</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/闲聊/" style="font-size: 15px;">闲聊</a> <a href="/tags/非理性/" style="font-size: 15px;">非理性</a> <a href="/tags/认知偏差/" style="font-size: 15px;">认知偏差</a> <a href="/tags/自控术/" style="font-size: 15px;">自控术</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/成本/" style="font-size: 15px;">成本</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/i-resigned-from-hx/">我从 HX 辞职了</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-gracefully-response-exception/">SpringBoot 实战：如何优雅的处理异常</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-gracefully-response/">SpringBoot 实战：一招实现结果的优雅响应</a></li><li class="post-list-item"><a class="post-list-link" href="/tiny-url-system/">系统设计系列之如何设计一个短链服务</a></li><li class="post-list-item"><a class="post-list-link" href="/how-to-use-branch-efficiently-in-git/">如何在微服务团队中高效使用 Git 管理代码？</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2020</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

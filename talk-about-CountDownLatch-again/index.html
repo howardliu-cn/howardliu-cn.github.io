@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>再谈CountDownLatch||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="java.util.concurrent.CountDownLatch是JDK 1.5提供的一个同步辅助类：在一组正在其他线程中的操作执行完成之前，它允许一个或多个线程一直等待。">
+<meta name="keywords" content="java,多线程,thread,join,CountDownLatch,CyclicBarrier">
+<meta property="og:type" content="article">
+<meta property="og:title" content="再谈CountDownLatch">
+<meta property="og:url" content="https://www.howardliu.cn/talk-about-CountDownLatch-again/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="java.util.concurrent.CountDownLatch是JDK 1.5提供的一个同步辅助类：在一组正在其他线程中的操作执行完成之前，它允许一个或多个线程一直等待。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-01-27T09:50:31.640Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="再谈CountDownLatch">
+<meta name="twitter:description" content="java.util.concurrent.CountDownLatch是JDK 1.5提供的一个同步辅助类：在一组正在其他线程中的操作执行完成之前，它允许一个或多个线程一直等待。">
+
+<meta name="keywords" content="java,多线程,thread,join,CountDownLatch,CyclicBarrier">
+
+
+<meta name="description" content="java.util.concurrent.CountDownLatch是JDK 1.5提供的一个同步辅助类：在一组正在其他线程中的操作执行完成之前，它允许一个或多个线程一直等待。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/talk-about-CountDownLatch-again/">再谈CountDownLatch</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2014-09-16</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/talk-about-CountDownLatch-again/" class="leancloud_visitors" data-flag-title="再谈CountDownLatch">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#两个计数器"><span class="toc-text">两个计数器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#一个计数器"><span class="toc-text">一个计数器</span></a></li></ol>
+    </div>
+ -->
+            <p>&emsp;&emsp;java.util.concurrent.CountDownLatch是JDK 1.5提供的一个同步辅助类：在一组正在其他线程中的操作执行完成之前，它允许一个或多个线程一直等待。</p>
+<p>&emsp;&emsp;初始化CountDownLatch时需要指定<em>计数</em>。通过调用countDown方法使当前计数到达零之前，await方法会一直阻塞。之后，所有等待的线程会被释放，await后面的操作也会立即执行。因为计数无法被重置，所以这种操作只会出现一次。如果需要重置计数，请考虑使用java.util.concurrent.CyclicBarrier。</p>
+<a id="more"></a>
+
+<p>&emsp;&emsp;CountDownLatch是一个通用同步工具，它有很多用途。用1初始化的CountDownLatch可以用作一个简单的开/关锁存器或入口：在某一线程调用countDown打开入口前，所有调用await的线程都一直在入口处等待。用N(N&gt;=1)初始化的 CountDownLatch可以使一个线程在N个线程完成某项操作之前一直等待，或者使其在某项操作完成N次之前一直等待。 </p>
+<p>&emsp;&emsp;CountDownLatch的一个有用特性是，在计数达到0之前，它不会阻塞调用countDown方法的线程继续执行，它只是阻止所有调用await的线程继续执行await后面的操作。</p>
+<p>CountDownLatch有两种典型用法：</p>
+<ol>
+<li>有两个计数器，一个启动信号，一个完成信号。</li>
+<li>将一个问题分成N个部分，需要执行的N个子部分定义为Runnable，然后将所有Runnable加入到Executor队列中。当所有的N个子部分完成后，等待的线程将会通过await方法继续执行后续操作。</li>
+</ol>
+<h1 id="两个计数器"><a href="#两个计数器" class="headerlink" title="两个计数器"></a>两个计数器</h1><p>示例代码：</p>
+<pre><code>public class CountDownLatchTest {
+    public static void main(String[] args) throws InterruptedException {
+        CountDownLatch startSignal = new CountDownLatch(1);// 先行条件
+        CountDownLatch doneSignal = new CountDownLatch(N);
+
+        for (int i = 0; i &lt; N; ++i) {
+            new Thread(new Worker(startSignal, doneSignal)).start();
+        }
+
+        doSomethingElse();
+        startSignal.countDown();// 开始
+        doSomethingElse();
+        doneSignal.await();// 等待所有操作结束
+    }
+}
+
+class Worker implements Runnable {
+    private final CountDownLatch startSignal;
+    private final CountDownLatch doneSignal;
+
+    Worker(CountDownLatch startSignal, CountDownLatch doneSignal) {
+        this.startSignal = startSignal;
+        this.doneSignal = doneSignal;
+    }
+
+    @Override
+    public void run() {
+        try {
+            startSignal.await();// 等待先行条件结束
+            doWork();
+            doneSignal.countDown();
+        } catch (InterruptedException ex) {
+        }
+    }
+
+    void doWork() {...}
+}</code></pre><p>&emsp;&emsp;在示例代码中，startSignal为<strong>先决条件</strong>，此处初始计数为1，是一个简单的开关。比如田径比赛中的百米跑，发令枪响前，运动员都在等待；发令枪响后，运动员开始比赛，等到最后一名运动员到达终点，比赛结束。</p>
+<p>简单的代码实现为：</p>
+<pre><code>import java.util.Random;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+public class CountDownLatchTest {
+    public static void main(String[] args) throws InterruptedException {
+        final CountDownLatch begin = new CountDownLatch(1);
+        final CountDownLatch end = new CountDownLatch(3);
+        final ExecutorService exec = Executors.newFixedThreadPool(3);
+
+        for (int index = 0; index &lt; 3; index++) {
+            exec.submit(new Runner(index + 1, begin, end));
+        }
+
+        System.out.println(&quot;各就各位。。。&quot;);
+        System.out.println(&quot;预备。。。&quot;);
+        System.out.println(&quot;嘭。。。&quot;);
+        begin.countDown();
+        end.await();
+        System.out.println(&quot;比赛结束，准备颁奖。&quot;);
+        exec.shutdown();
+    }
+}
+
+class Runner implements Runnable {
+    private int no;
+    private CountDownLatch begin;
+    private CountDownLatch end;
+
+    public Runner(int no, CountDownLatch begin, CountDownLatch end) {
+        this.no = no;
+        this.begin = begin;
+        this.end = end;
+        System.out.println(&quot;No.&quot; + no + &quot;到达起跑线。&quot;);
+    }
+
+    @Override
+    public void run() {
+        try {
+            begin.await();// 等待发令枪响
+            System.out.println(&quot;No.&quot; + no + &quot;向前飞奔着。。。&quot;);
+            TimeUnit.SECONDS.sleep(new Random().nextInt(10));// 奔跑的过程中。。。
+        } catch (InterruptedException e) {
+        }
+        System.out.println(&quot;No.&quot; + no + &quot;到达终点。&quot;);
+        end.countDown();
+    }
+}</code></pre><p>&emsp;&emsp;引申开来，开始定义一系列的执行的链条，第一个没有先决条件，直接执行，第二个以第一个为先决条件，以此类推。我是懒人，不做太多赘述，我一个朋友的文章中写的不错：<a href="http://blog.csdn.net/hawkdowen/article/details/38116755" target="_blank" rel="noopener">利用CountDownLatch同步辅助类进行线程同步</a></p>
+<h1 id="一个计数器"><a href="#一个计数器" class="headerlink" title="一个计数器"></a>一个计数器</h1><p>&emsp;&emsp;一个计数器的情况自己感觉情况比较单一，就是主线程等待子线程结束，再继续执行。这里的主线程、子线程是相对而言的，可能主线程本身是另一个线程的子线程。</p>
+<p>示例代码：</p>
+<pre><code>public class CountDownLatchTest6 {
+    public static void main(String[] args) throws InterruptedException {
+        CountDownLatch doneSignal = new CountDownLatch(3);
+        ExecutorService e = Executors.newCachedThreadPool();
+
+        for (int i = 0; i &lt; 3; ++i) {
+            e.execute(new Worker(doneSignal, i));
+        }
+        doSomethingElse();
+        doneSignal.await();// 等待子线程结束
+        doSomethingElse();
+        e.shutdown();
+    }
+}
+
+class Worker implements Runnable {
+    private final CountDownLatch doneSignal;
+    private final int id;
+
+    Worker(CountDownLatch doneSignal, int id) {
+        this.doneSignal = doneSignal;
+        this.id = id;
+    }
+
+    @Override
+    public void run() {
+        doWork();
+        doneSignal.countDown();
+    }
+
+    void doWork() {...}
+}</code></pre><p>&emsp;&emsp;示例代码中的doSomethingElse方法可以是一些业务逻辑代码，根据具体功能发生变化。</p>
+<p>&emsp;&emsp;对于这种方式可以参看上一篇中关于老板和工人的例子中的第二种解决方法<a href="/main-thread-waiting-for-the-end-of-subthread" title="通过计数器实现">主线程等待子线程结束</a>，这里也不做赘述。</p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/java/">java</a>
+            
+            <a href="/tags/多线程/">多线程</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/talk-about-CyclicBarrier-again/">
+                <i class="icon-previous">再谈CyclicBarrier</i>
+            </a>
+            
+            
+            <a class="next" href="/main-thread-waiting-for-the-end-of-subthread/">
+                <i class="icon-next">主线程等待子线程结束</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/闲聊/" style="font-size: 15px;">闲聊</a> <a href="/tags/非理性/" style="font-size: 15px;">非理性</a> <a href="/tags/认知偏差/" style="font-size: 15px;">认知偏差</a> <a href="/tags/自控术/" style="font-size: 15px;">自控术</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/成本/" style="font-size: 15px;">成本</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/i-resigned-from-hx/">我从 HX 辞职了</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-gracefully-response-exception/">SpringBoot 实战：如何优雅的处理异常</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-gracefully-response/">SpringBoot 实战：一招实现结果的优雅响应</a></li><li class="post-list-item"><a class="post-list-link" href="/tiny-url-system/">系统设计系列之如何设计一个短链服务</a></li><li class="post-list-item"><a class="post-list-link" href="/how-to-use-branch-efficiently-in-git/">如何在微服务团队中高效使用 Git 管理代码？</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2020</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

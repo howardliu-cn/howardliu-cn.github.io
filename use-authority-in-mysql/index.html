@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MySQL用户、权限及密码操作||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="MySQL中对于用户的权限比较简单，本文主要是分为创建用户、修改用户权限、修改用户密码、删除用户等几部分，介绍MySQL对于用户权限的管理。">
+<meta name="keywords" content="mysql,user,authority,password">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL用户、权限及密码操作">
+<meta property="og:url" content="https://www.howardliu.cn/use-authority-in-mysql/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="MySQL中对于用户的权限比较简单，本文主要是分为创建用户、修改用户权限、修改用户密码、删除用户等几部分，介绍MySQL对于用户权限的管理。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-01-27T09:46:41.082Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL用户、权限及密码操作">
+<meta name="twitter:description" content="MySQL中对于用户的权限比较简单，本文主要是分为创建用户、修改用户权限、修改用户密码、删除用户等几部分，介绍MySQL对于用户权限的管理。">
+
+<meta name="keywords" content="mysql,user,authority,password">
+
+
+<meta name="description" content="MySQL中对于用户的权限比较简单，本文主要是分为创建用户、修改用户权限、修改用户密码、删除用户等几部分，介绍MySQL对于用户权限的管理。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/use-authority-in-mysql/">MySQL用户、权限及密码操作</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2015-02-04</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/use-authority-in-mysql/" class="leancloud_visitors" data-flag-title="MySQL用户、权限及密码操作">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-创建用户"><span class="toc-text">1 创建用户</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-create-user"><span class="toc-text">1.1 create user</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-insert-into-mysql-user"><span class="toc-text">1.2 insert into mysql.user</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-修改用户权限"><span class="toc-text">2 修改用户权限</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-为用户赋予权限"><span class="toc-text">2.1 为用户赋予权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-常用权限"><span class="toc-text">2.2 常用权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-权限表"><span class="toc-text">2.3 权限表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-查看用户权限"><span class="toc-text">2.4 查看用户权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-5-撤销权限"><span class="toc-text">2.5 撤销权限</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-修改用户密码"><span class="toc-text">3 修改用户密码</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-mysqladmin命令"><span class="toc-text">3.1 mysqladmin命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-SET-PASSWORD-语句"><span class="toc-text">3.2 SET PASSWORD 语句</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-UPDATE-user-语句"><span class="toc-text">3.3 UPDATE user 语句</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-删除用户"><span class="toc-text">4 删除用户</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-DELETE-FROM-mysql-user"><span class="toc-text">4.1 DELETE FROM mysql.user</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-DROP-USER-username"><span class="toc-text">4.2 DROP USER username</span></a></li></ol></li></ol>
+    </div>
+ -->
+            <p>MySQL中对于用户的权限比较简单，本文主要是分为创建用户、修改用户权限、修改用户密码、删除用户等几部分，介绍MySQL对于用户权限的管理。</p>
+<a id="more"></a>
+<h1 id="1-创建用户"><a href="#1-创建用户" class="headerlink" title="1 创建用户"></a>1 创建用户</h1><h2 id="1-1-create-user"><a href="#1-1-create-user" class="headerlink" title="1.1 create user"></a>1.1 create user</h2><p>格式如下:</p>
+<pre><code>CREATE USER &#39;username&#39;@&#39;hostname&#39; IDENTIFIED BY &#39;password&#39;;</code></pre><p>其中，username为用户名；hostname为主机，localhost指本地用户，通配符%指可以从远程主机登陆用户，如果不指定host，则默认为%；password为密码，可以为空。</p>
+<p>例如，创建用户名为user、密码为123456的用户，主机为本地，则</p>
+<pre><code>CREATE USER &#39;user&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;123456&#39;;</code></pre><p>创建用户名为user、密码为123456的用户，主机为192.168.1.1，则</p>
+<pre><code>CREATE USER &#39;user&#39;@&#39;192.168.1.1&#39; IDENTIFIED BY &#39;123456&#39;;</code></pre><p>创建用户名为user、密码为123456的用户，则</p>
+<pre><code>CREATE USER &#39;user&#39; IDENTIFIED BY &#39;123456&#39;;</code></pre><p>创建用户名为user，则</p>
+<pre><code>CREATE USER user;</code></pre><blockquote>
+<p>注：这种方式需要登录mysql控制台，且登录用户需要CREATE USER权限。</p>
+</blockquote>
+<h2 id="1-2-insert-into-mysql-user"><a href="#1-2-insert-into-mysql-user" class="headerlink" title="1.2 insert into mysql.user"></a>1.2 insert into mysql.user</h2><p>格式如下：</p>
+<pre><code>INSERT INTO mysql.user(host, user, password) VALUES(hostname, username, PASSWORD(password));
+FLUSH PRIVILEGES;</code></pre><p>其中，mysql.user是在mysql库中存储用户信息的user表，hostname表示主机名（localhost指本地用户，通配符%指可以从远程主机登陆用户），第二个password是密码（第一个password是字段）。</p>
+<p>例如，创建用户名为user、密码为123456的用户，则</p>
+<pre><code>INSERT INTO mysql.user(host, user, password) VALUES(&#39;localhost&#39;, &#39;user&#39;, PASSWORD(&#39;123456&#39;));
+FLUSH PRIVILEGES;</code></pre><blockquote>
+<p>注：因为这种方式是手动修改数据库，如果想要这种修改立马生效，还需执行FLUSH PRIVILEGES命令刷新用户权限列表，所以需要登录的用户有SELECT、UPDATE、RELOAD三种权限。</p>
+</blockquote>
+<h1 id="2-修改用户权限"><a href="#2-修改用户权限" class="headerlink" title="2 修改用户权限"></a>2 修改用户权限</h1><h2 id="2-1-为用户赋予权限"><a href="#2-1-为用户赋予权限" class="headerlink" title="2.1 为用户赋予权限"></a>2.1 为用户赋予权限</h2><p>在MySQL中使用GRANT命令给用户授权，如果用户不存在，GRANT会自动创建用户，并进行授权。</p>
+<p>格式如下：</p>
+<pre><code>GRANT privileges ON databases.tablename TO &#39;username&#39;@&#39;hostname&#39; [INDENTIFIED BY ‘password’];</code></pre><p>其中，privileges表示具体的权限名称，多个权限间通过逗号隔开；databases表示数据库，使用*表示所有数据库；tablename表示表名，使用*表示所有表；username表示用户名；hostname表示主机名；password表示密码，[]中用于创建用户时为用户添加密码。</p>
+<h2 id="2-2-常用权限"><a href="#2-2-常用权限" class="headerlink" title="2.2 常用权限"></a>2.2 常用权限</h2><ul>
+<li>表数据: select, update, delete, insert</li>
+<li>表结构: create, alert, drop</li>
+<li>外键: references</li>
+<li>创建临时表: create temporary tables</li>
+<li>操作索引: index</li>
+<li>视图: create view, show view</li>
+<li>存储过程: create routine, alert routine, execute</li>
+<li>所有权限: all</li>
+</ul>
+<h2 id="2-3-权限表"><a href="#2-3-权限表" class="headerlink" title="2.3 权限表"></a>2.3 权限表</h2><ul>
+<li>存储过程权限表: mysql.procs_priv</li>
+<li>列权限表: mysql.columns_priv</li>
+<li>表格权限表: mysql.tables_priv</li>
+<li>用户权限表: information_schema.user_privileges（字段grantee为授权者， 字段privilege_type为权限名称）</li>
+<li>用户信息及权限： mysql.user（后缀为_priv的字段的值与user_privileges的privilege_type一一对应）</li>
+</ul>
+<h2 id="2-4-查看用户权限"><a href="#2-4-查看用户权限" class="headerlink" title="2.4 查看用户权限"></a>2.4 查看用户权限</h2><p>查看用户权限可以通过查询上面的权限表的数据进行查询，或者通过show grants命令进行查询，格式如下：</p>
+<pre><code>SHOW GRANTS [FOR username@hostname]</code></pre><p>其中，username表示用户名，hostname表示主机名，[]中的内容可以省略，是查询当前登录用户的权限。</p>
+<h2 id="2-5-撤销权限"><a href="#2-5-撤销权限" class="headerlink" title="2.5 撤销权限"></a>2.5 撤销权限</h2><p>可以通过命令撤销某用户的某种权限，格式如下：</p>
+<pre><code>REVOKE privileges ON databease.table FROM username@hostname</code></pre><p>撤销权限与赋予权限命令相似，区别在于将TO改为FROM。</p>
+<h1 id="3-修改用户密码"><a href="#3-修改用户密码" class="headerlink" title="3 修改用户密码"></a>3 修改用户密码</h1><h2 id="3-1-mysqladmin命令"><a href="#3-1-mysqladmin命令" class="headerlink" title="3.1 mysqladmin命令"></a>3.1 mysqladmin命令</h2><p>格式如下：</p>
+<pre><code>mysqladmin -u USER -p password NEW_PASSWORD</code></pre><p>其中，USER为用户名，NEW_PASSWORD为新密码。</p>
+<p>该命令直接在命令行中执行，回车之后会提示输入原密码，输入正确后即可修改。</p>
+<p>例如，设置用户user的密码为123456，原密码为654321，则</p>
+<pre><code>mysqladmin -u user -p password 123456
+Enter password:******</code></pre><blockquote>
+<p>注：上面的<strong>**</strong>是自己输入的654321。</p>
+</blockquote>
+<h2 id="3-2-SET-PASSWORD-语句"><a href="#3-2-SET-PASSWORD-语句" class="headerlink" title="3.2 SET PASSWORD 语句"></a>3.2 SET PASSWORD 语句</h2><p>格式如下：</p>
+<pre><code>SET PASSWORD FOR username@hostname=PASSWORD(&#39;password&#39;);</code></pre><p>其中，username为用户名，hostname为指定的主机，password为新密码。</p>
+<p>这种方式需要先登入mysql控制台，即通过正确用户名、密码登入。</p>
+<p>例如：设置在localhost上的用户user的密码为123456，则</p>
+<pre><code>SET PASSWORD FOR user@localhost=PASSWORD(&#39;123456&#39;);</code></pre><blockquote>
+<p>注：通过这种方式修改自己的密码，可以只有基本的USAGE权限；如果修改其他人的密码，需要对mysql数据库存在UPDATE权限。</p>
+</blockquote>
+<h2 id="3-3-UPDATE-user-语句"><a href="#3-3-UPDATE-user-语句" class="headerlink" title="3.3 UPDATE user 语句"></a>3.3 UPDATE user 语句</h2><p>格式如下：</p>
+<pre><code>UPDATE mysql.user SET password=PASSWORD(&#39;password&#39;) WHERE user=&#39;username&#39; and host=&#39;hostname&#39;;
+FLUSH PRIVILEGES;</code></pre><p>其中，mysql.user表示mysql库中的user表，user表示字段为user，username为用户名，password为新密码，hostname为指定的主机。</p>
+<p>这种方式需要先登入mysql控制台，即通过正确用户名、密码登入。</p>
+<p>例如：设置用户user的密码为123456，则</p>
+<pre><code>UPDATE mysql.user SET password=PASSWORD(&#39;123456&#39;) WHERE user=&#39;user&#39; and host=&#39;localhost&#39;;
+FLUSH PRIVILEGES;</code></pre><blockquote>
+<p>注：因为这种方式是手动修改数据库，如果想要这种修改立马生效，还需执行FLUSH PRIVILEGES命令刷新用户权限列表，所以需要登录的用户有SELECT、UPDATE、RELOAD三种权限。</p>
+</blockquote>
+<h1 id="4-删除用户"><a href="#4-删除用户" class="headerlink" title="4 删除用户"></a>4 删除用户</h1><p>在mysql中，可以通过直接删除mysql.user表中的数据删除用户，也可以通过drop命令删除用户，与创建用户的操作类似。</p>
+<h2 id="4-1-DELETE-FROM-mysql-user"><a href="#4-1-DELETE-FROM-mysql-user" class="headerlink" title="4.1 DELETE FROM mysql.user"></a>4.1 DELETE FROM mysql.user</h2><p>格式如下：</p>
+<pre><code>DELETE FROM mysql.user WHERE user=&#39;username&#39; and host=&#39;hostname&#39;</code></pre><p>其中，mysql.user表示mysql库中的user表，user表示字段为user，username为用户名，hostname为指定的主机。</p>
+<h2 id="4-2-DROP-USER-username"><a href="#4-2-DROP-USER-username" class="headerlink" title="4.2 DROP USER username"></a>4.2 DROP USER username</h2><p>格式如下：</p>
+<pre><code>DROP USER &#39;username&#39;@&#39;hostname&#39;</code></pre><p>其中，username为用户名，hostname为指定的主机。</p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/系统运维/">系统运维</a>
+            
+            <a href="/tags/mysql/">mysql</a>
+            
+            <a href="/tags/authority/">authority</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/install-weblogic-dev-on-windows/">
+                <i class="icon-previous">Windows下安装Weblogic Dev版本</i>
+            </a>
+            
+            
+            <a class="next" href="/ubuntu-ufw-settings/">
+                <i class="icon-next">Ubuntu防火墙设置</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/闲聊/" style="font-size: 15px;">闲聊</a> <a href="/tags/非理性/" style="font-size: 15px;">非理性</a> <a href="/tags/认知偏差/" style="font-size: 15px;">认知偏差</a> <a href="/tags/自控术/" style="font-size: 15px;">自控术</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/成本/" style="font-size: 15px;">成本</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/i-resigned-from-hx/">我从 HX 辞职了</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-gracefully-response-exception/">SpringBoot 实战：如何优雅的处理异常</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-gracefully-response/">SpringBoot 实战：一招实现结果的优雅响应</a></li><li class="post-list-item"><a class="post-list-link" href="/tiny-url-system/">系统设计系列之如何设计一个短链服务</a></li><li class="post-list-item"><a class="post-list-link" href="/how-to-use-branch-efficiently-in-git/">如何在微服务团队中高效使用 Git 管理代码？</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2020</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

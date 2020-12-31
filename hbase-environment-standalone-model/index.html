@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>HBase单机模式部署||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="HBase – Hadoop Database，是一个高可靠性、高性能、面向列、可伸缩的分布式存储系统，利用HBase技术可在廉价PC Server上搭建起大规模结构化存储集群。与FUJITSU Cliq等商用大数据产品不同，HBase是Google Bigtable的开源实现，类似Google Bigtable利用GFS作为其文件存储系统，HBase利用Hadoop HDFS作为其文件存储系统；">
+<meta name="keywords" content="开源,大数据,hbase,单机模式,部署">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HBase单机模式部署">
+<meta property="og:url" content="https://www.howardliu.cn/hbase-environment-standalone-model/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="HBase – Hadoop Database，是一个高可靠性、高性能、面向列、可伸缩的分布式存储系统，利用HBase技术可在廉价PC Server上搭建起大规模结构化存储集群。与FUJITSU Cliq等商用大数据产品不同，HBase是Google Bigtable的开源实现，类似Google Bigtable利用GFS作为其文件存储系统，HBase利用Hadoop HDFS作为其文件存储系统；">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://static.howardliu.cn/hbase_logo.png">
+<meta property="og:updated_time" content="2020-07-28T05:48:04.720Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HBase单机模式部署">
+<meta name="twitter:description" content="HBase – Hadoop Database，是一个高可靠性、高性能、面向列、可伸缩的分布式存储系统，利用HBase技术可在廉价PC Server上搭建起大规模结构化存储集群。与FUJITSU Cliq等商用大数据产品不同，HBase是Google Bigtable的开源实现，类似Google Bigtable利用GFS作为其文件存储系统，HBase利用Hadoop HDFS作为其文件存储系统；">
+<meta name="twitter:image" content="https://static.howardliu.cn/hbase_logo.png">
+
+<meta name="keywords" content="开源,大数据,hbase,单机模式,部署">
+
+
+<meta name="description" content="HBase – Hadoop Database，是一个高可靠性、高性能、面向列、可伸缩的分布式存储系统，利用HBase技术可在廉价PC Server上搭建起大规模结构化存储集群。与FUJITSU Cliq等商用大数据产品不同，HBase是Google Bigtable的开源实现，类似Google B">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/hbase-environment-standalone-model/">HBase单机模式部署</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2014-10-15</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/hbase-environment-standalone-model/" class="leancloud_visitors" data-flag-title="HBase单机模式部署">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-安装"><span class="toc-text">1 安装</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-下载、解压"><span class="toc-text">1.1 下载、解压</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-简单配置"><span class="toc-text">1.2 简单配置</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-启动HBase"><span class="toc-text">2 启动HBase</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-初探HBase"><span class="toc-text">3 初探HBase</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-启动shell"><span class="toc-text">3.1 启动shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-查看帮助"><span class="toc-text">3.2 查看帮助</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-create创建表"><span class="toc-text">3.3 create创建表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-4-put插入数据"><span class="toc-text">3.4 put插入数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-5-scan扫描全表"><span class="toc-text">3.5 scan扫描全表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-6-get查询某一行"><span class="toc-text">3.6 get查询某一行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-7-disable使表无效"><span class="toc-text">3.7 disable使表无效</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-8-enable使表有效"><span class="toc-text">3.8 enable使表有效</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-9-drop删除表"><span class="toc-text">3.9 drop删除表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-10-关闭shell"><span class="toc-text">3.10 关闭shell</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-停止HBase"><span class="toc-text">4 停止HBase</span></a></li></ol>
+    </div>
+ -->
+            <p>HBase – Hadoop Database，是一个高可靠性、高性能、面向列、可伸缩的分布式存储系统，利用HBase技术可在廉价PC Server上搭建起大规模结构化存储集群。与FUJITSU Cliq等商用大数据产品不同，HBase是Google Bigtable的开源实现，类似Google Bigtable利用GFS作为其文件存储系统，HBase利用Hadoop HDFS作为其文件存储系统；Google运行MapReduce来处理Bigtable中的海量数据，HBase同样利用Hadoop MapReduce来处理HBase中的海量数据；Google Bigtable利用 Chubby作为协同服务，HBase利用Zookeeper作为对应。</p>
+<a id="more"></a>
+<p><img src="https://static.howardliu.cn/hbase_logo.png" alt="hbase环境搭建" title="hbase"></p>
+<p>&emsp;&emsp;HBase是一个分布式、面向列的开源数据库，是Apache顶层项目，适用于非结构化数据存储的数据库。在Hadoop家族中，很多产品为HBase提供服务：</p>
+<ul>
+<li>Hadoop HDFS为HBase提供了高可靠性的底层存储支持；</li>
+<li>Hadoop MapReduce为HBase提供了高性能的计算能力；</li>
+<li>Zookeeper为HBase提供了稳定服务和failover机制；</li>
+<li>Pig和Hive为HBase提供了高层语言支持，使得在HBase上进行数据统计处理变的非常简单；</li>
+<li>Sqoop为HBase提供了方便的RDBMS数据导入功能，使得传统数据库数据向HBase中迁移变的非常方便。</li>
+</ul>
+<h1 id="1-安装"><a href="#1-安装" class="headerlink" title="1 安装"></a>1 安装</h1><h2 id="1-1-下载、解压"><a href="#1-1-下载、解压" class="headerlink" title="1.1 下载、解压"></a>1.1 下载、解压</h2><p>从<a href="http://hbase.apache.org/" title="Apache HBase" target="_blank" rel="noopener">这里</a>找最新的稳定版下载，本文使用的是hbase-0.98.6.1-hadoop2-bin.tar.gz。</p>
+<p>解压缩，然后进入到那个要解压的目录：</p>
+<pre><code>$ tar xzvf hbase-0.98.6.1-hadoop2-bin.tar.gz
+$ cd hbase-0.98.6.1-hadoop2/</code></pre><h2 id="1-2-简单配置"><a href="#1-2-简单配置" class="headerlink" title="1.2 简单配置"></a>1.2 简单配置</h2><p>这一步可以选择跳过。</p>
+<p>此处需要配置的是<code>$HBASE_HOME/conf/hbase-site.xml</code>中的<code>hbase.rootdir</code>，即HBase保存数据的目录。如果不进行配置，默认<code>hbase.rootdir</code>指向/tmp/hbase-${user.name}，因为系统重启时会清理/tmp目录，所以重启后会丢失数据。如果是在分布式模式部署中，需要提供的是HDFS上的目录位置。</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
+&lt;configuration&gt;
+  &lt;property&gt;
+    &lt;name&gt;hbase.rootdir&lt;/name&gt;
+    &lt;value&gt;file:/home/lxh/hadoop/hbase&lt;/value&gt;
+  &lt;/property&gt;
+&lt;/configuration&gt;</code></pre><h1 id="2-启动HBase"><a href="#2-启动HBase" class="headerlink" title="2 启动HBase"></a>2 启动HBase</h1><p>直接使用<code>start-hbase.sh</code>脚本启动</p>
+<pre><code>$ ./bin/start-hbase.sh</code></pre><p>启动正常时，在<code>$HBASE_HOME/logs/hbase-lxh-master-ubuntu.log</code>日志的中会提示下面内容：</p>
+<pre><code>2014-10-14 09:47:07,189 INFO  [M:0;ubuntu:40435] master.HMaster: Master has completed initialization</code></pre><p>通过<code>jps</code>查询进程，会发现多了<code>HMaster</code>这个进程：</p>
+<pre><code>2694 HMaster</code></pre><h1 id="3-初探HBase"><a href="#3-初探HBase" class="headerlink" title="3 初探HBase"></a>3 初探HBase</h1><h2 id="3-1-启动shell"><a href="#3-1-启动shell" class="headerlink" title="3.1 启动shell"></a>3.1 启动shell</h2><p>进入HBase提供的shell中进行测试。</p>
+<pre><code>$ ./bin/hbase shell
+2014-10-14 10:14:55,859 INFO  [main] Configuration.deprecation: hadoop.native.lib is deprecated. Instead, use io.native.lib.available
+HBase Shell; enter &#39;help&lt;RETURN&gt;&#39; for list of supported commands.
+Type &quot;exit&lt;RETURN&gt;&quot; to leave the HBase Shell
+Version 0.98.6.1-hadoop2, r96a1af660b33879f19a47e9113bf802ad59c7146, Sun Sep 14 21:27:25 PDT 2014
+hbase(main):001:0&gt;</code></pre><h2 id="3-2-查看帮助"><a href="#3-2-查看帮助" class="headerlink" title="3.2 查看帮助"></a>3.2 查看帮助</h2><p>通过键入help命令查看在HBase的shell中的命令。</p>
+<pre><code>hbase(main):001:0&gt; help
+HBase Shell, version 0.98.6.1-hadoop2, r96a1af660b33879f19a47e9113bf802ad59c7146, Sun Sep 14 21:27:25 PDT 2014
+Type &#39;help &quot;COMMAND&quot;&#39;, (e.g. &#39;help &quot;get&quot;&#39; -- the quotes are necessary) for help on a specific command.
+Commands are grouped. Type &#39;help &quot;COMMAND_GROUP&quot;&#39;, (e.g. &#39;help &quot;general&quot;&#39;) for help on a command group.
+
+COMMAND GROUPS:
+  Group name: general
+  Commands: status, table_help, version, whoami
+
+  Group name: ddl
+  Commands: alter, alter_async, alter_status, create, describe, disable, disable_all, drop, drop_all, enable, enable_all, exists, get_table, is_disabled, is_enabled, list, show_filters
+
+  Group name: namespace
+  Commands: alter_namespace, create_namespace, describe_namespace, drop_namespace, list_namespace, list_namespace_tables
+
+  Group name: dml
+  Commands: append, count, delete, deleteall, get, get_counter, incr, put, scan, truncate, truncate_preserve
+
+  Group name: tools
+  Commands: assign, balance_switch, balancer, catalogjanitor_enabled, catalogjanitor_run, catalogjanitor_switch, close_region, compact, flush, hlog_roll, major_compact, merge_region, move, split, trace, unassign, zk_dump
+
+  Group name: replication
+  Commands: add_peer, disable_peer, enable_peer, list_peers, list_replicated_tables, remove_peer, set_peer_tableCFs, show_peer_tableCFs
+
+  Group name: snapshots
+  Commands: clone_snapshot, delete_snapshot, list_snapshots, rename_snapshot, restore_snapshot, snapshot
+
+  Group name: security
+  Commands: grant, revoke, user_permission
+
+  Group name: visibility labels
+  Commands: add_labels, clear_auths, get_auths, set_auths, set_visibility
+
+SHELL USAGE:
+Quote all names in HBase Shell such as table and column names.  Commas delimit
+command parameters.  Type &lt;RETURN&gt; after entering a command to run it.
+Dictionaries of configuration used in the creation and alteration of tables are
+Ruby Hashes. They look like this:
+
+  {&#39;key1&#39; =&gt; &#39;value1&#39;, &#39;key2&#39; =&gt; &#39;value2&#39;, ...}
+
+and are opened and closed with curley-braces.  Key/values are delimited by the
+&#39;=&gt;&#39; character combination.  Usually keys are predefined constants such as
+NAME, VERSIONS, COMPRESSION, etc.  Constants do not need to be quoted.  Type
+&#39;Object.constants&#39; to see a (messy) list of all constants in the environment.
+
+If you are using binary keys or values and need to enter them in the shell, use
+double-quote&#39;d hexadecimal representation. For example:
+
+  hbase&gt; get &#39;t1&#39;, &quot;key\x03\x3f\xcd&quot;
+  hbase&gt; get &#39;t1&#39;, &quot;key\003\023\011&quot;
+  hbase&gt; put &#39;t1&#39;, &quot;test\xef\xff&quot;, &#39;f1:&#39;, &quot;\x01\x33\x40&quot;
+
+The HBase shell is the (J)Ruby IRB with the above HBase-specific commands added.
+For more on the HBase Shell, see http://hbase.apache.org/docs/current/book.html</code></pre><h2 id="3-3-create创建表"><a href="#3-3-create创建表" class="headerlink" title="3.3 create创建表"></a>3.3 create创建表</h2><p>首先创建一个名为<code>test</code>的表，这个表只有一个列族为<code>cf</code>。可以通过<code>list</code>命令列出所有的表来检查创建情况。</p>
+<pre><code>hbase(main):002:0&gt; create &#39;test&#39;, &#39;cf&#39;
+0 row(s) in 0.4330 seconds
+=&gt; Hbase::Table - test
+
+hbase(main):003:0&gt; list
+TABLE                                                                                                                                          
+test                                                                                                                                           
+1 row(s) in 0.0590 seconds
+=&gt; [&quot;test&quot;]</code></pre><h2 id="3-4-put插入数据"><a href="#3-4-put插入数据" class="headerlink" title="3.4 put插入数据"></a>3.4 put插入数据</h2><p><code>test</code>表已经创建成功，通过<code>put &#39;table&#39;, &#39;row&#39;, &#39;col-pre:col-name&#39;, &#39;value&#39;</code>向其中插入数据。<code>table</code>至表名，<code>row</code>指每行的键key，<code>col-pre</code>是列族前缀，<code>col-name</code>是列名，列族前缀与列名之间通过冒号隔开，<code>value</code>是值value。</p>
+<pre><code>hbase(main):005:0&gt; put &#39;test&#39;, &#39;row1&#39;, &#39;cf:a&#39;, &#39;value1&#39;
+0 row(s) in 0.1380 seconds
+
+hbase(main):006:0&gt; put &#39;test&#39;, &#39;row2&#39;, &#39;cf:b&#39;, &#39;value2-b&#39;
+0 row(s) in 0.0130 seconds
+
+hbase(main):007:0&gt; put &#39;test&#39;, &#39;row2&#39;, &#39;cf:c&#39;, &#39;value2-c&#39;
+0 row(s) in 0.0100 seconds
+
+hbase(main):008:0&gt; put &#39;test&#39;, &#39;row3&#39;, &#39;cf&#39;, &#39;value3&#39;
+0 row(s) in 0.0110 seconds
+
+hbase(main):011:0&gt; put &#39;test&#39;, &#39;row3&#39;, &#39;cf:e&#39;, &#39;value3-e&#39;
+0 row(s) in 0.0060 seconds</code></pre><h2 id="3-5-scan扫描全表"><a href="#3-5-scan扫描全表" class="headerlink" title="3.5 scan扫描全表"></a>3.5 scan扫描全表</h2><p>通过<code>scan &#39;table&#39;</code>命令查询表<code>test</code>的数据：</p>
+<pre><code>hbase(main):012:0&gt; scan &#39;test&#39;
+ROW                                  COLUMN+CELL                                                                                               
+ row1                                column=cf:a, timestamp=1413253976039, value=value1                                                        
+ row2                                column=cf:b, timestamp=1413253980776, value=value2-b                                                      
+ row2                                column=cf:c, timestamp=1413253985691, value=value2-c                                                      
+ row3                                column=cf:, timestamp=1413253990953, value=value3                                                         
+ row3                                column=cf:e, timestamp=1413254206302, value=value3-e                                                      
+3 row(s) in 0.0430 seconds</code></pre><h2 id="3-6-get查询某一行"><a href="#3-6-get查询某一行" class="headerlink" title="3.6 get查询某一行"></a>3.6 get查询某一行</h2><p>通过<code>get &#39;table&#39;, &#39;row&#39;</code>命令查询某一行数据：</p>
+<pre><code>hbase(main):013:0&gt; get &#39;test&#39;, &#39;row1&#39;
+COLUMN                               CELL                                                                                                      
+ cf:a                                timestamp=1413253976039, value=value1                                                                     
+1 row(s) in 0.0150 seconds
+
+hbase(main):014:0&gt; get &#39;test&#39;, &#39;row2&#39;
+COLUMN                               CELL                                                                                                      
+ cf:b                                timestamp=1413253980776, value=value2-b                                                                   
+ cf:c                                timestamp=1413253985691, value=value2-c                                                                   
+2 row(s) in 0.0120 seconds
+
+hbase(main):015:0&gt; get &#39;test&#39;, &#39;row3&#39;
+COLUMN                               CELL                                                                                                      
+ cf:                                 timestamp=1413253990953, value=value3                                                                     
+ cf:e                                timestamp=1413254206302, value=value3-e                                                                   
+2 row(s) in 0.0050 seconds</code></pre><h2 id="3-7-disable使表无效"><a href="#3-7-disable使表无效" class="headerlink" title="3.7 disable使表无效"></a>3.7 disable使表无效</h2><p><code>disable &#39;table&#39;</code>命令可以使表无效，表并没有删除，但是不能进行查询等操作。</p>
+<pre><code>hbase(main):017:0&gt; disable &#39;test&#39;
+0 row(s) in 1.4850 seconds</code></pre><p>如果此时再通过<code>get &#39;table&#39;, &#39;row&#39;</code>查询，则会报错：</p>
+<pre><code>hbase(main):018:0&gt; get &#39;test&#39;, &#39;row3&#39;
+COLUMN                               CELL                                                                                                      
+
+ERROR: test is disabled.</code></pre><h2 id="3-8-enable使表有效"><a href="#3-8-enable使表有效" class="headerlink" title="3.8 enable使表有效"></a>3.8 enable使表有效</h2><p>对于无效的表，可以使用<code>enable &#39;table&#39;</code>命令使其有效，此时可以进行一系列对表的操作：</p>
+<pre><code>hbase(main):020:0&gt; enable &#39;test&#39;
+0 row(s) in 0.5540 seconds
+
+hbase(main):021:0&gt; get &#39;test&#39;, &#39;row3&#39;
+COLUMN                               CELL                                                                                                      
+ cf:                                 timestamp=1413253990953, value=value3                                                                     
+ cf:e                                timestamp=1413254206302, value=value3-e                                                                   
+2 row(s) in 0.0160 seconds</code></pre><h2 id="3-9-drop删除表"><a href="#3-9-drop删除表" class="headerlink" title="3.9 drop删除表"></a>3.9 drop删除表</h2><p><code>drop &#39;table&#39;</code>命令可以删除表，该表必须是无效的表，即通过<code>disable &#39;table&#39;</code>命令操作的表。</p>
+<pre><code>hbase(main):030:0&gt; drop &#39;test&#39;
+0 row(s) in 0.2300 seconds</code></pre><h2 id="3-10-关闭shell"><a href="#3-10-关闭shell" class="headerlink" title="3.10 关闭shell"></a>3.10 关闭shell</h2><p>与其他shell类似，退出shell的命令是<code>exit</code></p>
+<pre><code>hbase(main):031:0&gt; exit</code></pre><h1 id="4-停止HBase"><a href="#4-停止HBase" class="headerlink" title="4 停止HBase"></a>4 停止HBase</h1><p>直接使用脚本<code>stop-hbase.sh</code>停止。</p>
+<pre><code>$ ./bin/stop-hbase.sh 
+stopping hbase....................</code></pre>
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/部署/">部署</a>
+            
+            <a href="/tags/大数据/">大数据</a>
+            
+            <a href="/tags/开源/">开源</a>
+            
+            <a href="/tags/hbase/">hbase</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/hbase-environment-pseudo-distributed-model/">
+                <i class="icon-previous">HBase伪分布式模式部署</i>
+            </a>
+            
+            
+            <a class="next" href="/hadoop-environment/">
+                <i class="icon-next">Hadoop环境部署</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/闲聊/" style="font-size: 15px;">闲聊</a> <a href="/tags/非理性/" style="font-size: 15px;">非理性</a> <a href="/tags/认知偏差/" style="font-size: 15px;">认知偏差</a> <a href="/tags/自控术/" style="font-size: 15px;">自控术</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/成本/" style="font-size: 15px;">成本</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/i-resigned-from-hx/">我从 HX 辞职了</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-gracefully-response-exception/">SpringBoot 实战：如何优雅的处理异常</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-gracefully-response/">SpringBoot 实战：一招实现结果的优雅响应</a></li><li class="post-list-item"><a class="post-list-link" href="/tiny-url-system/">系统设计系列之如何设计一个短链服务</a></li><li class="post-list-item"><a class="post-list-link" href="/how-to-use-branch-efficiently-in-git/">如何在微服务团队中高效使用 Git 管理代码？</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2020</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

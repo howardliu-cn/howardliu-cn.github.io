@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MapReduce实现矩阵乘法||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="在海量数据中淘金，已是各大互联网公司的既定目标，亚马逊是数据化运营的成功典范，Google、百度投巨资用于对海量数据进行深度学习研究，阿里把数据与平台、金融并列成为未来三大战略。想在海量数据中淘到金子，强大的挖掘工具是必不可少的，而诸如回归、聚类、主成分分析、决策树等数据挖掘算法常常涉及大规模矩阵运算。这其中，大矩阵乘法具有较大的时间消耗，是算法的瓶颈。所以将矩阵乘法移植到分布式系统中进行运算，可">
+<meta name="keywords" content="线性代数,矩阵,矩阵乘法,hadoop,mapreduce,数据挖掘,机器学习,深度学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MapReduce实现矩阵乘法">
+<meta property="og:url" content="https://www.howardliu.cn/the-multiplication-of-matrices-use-mapreduce/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="在海量数据中淘金，已是各大互联网公司的既定目标，亚马逊是数据化运营的成功典范，Google、百度投巨资用于对海量数据进行深度学习研究，阿里把数据与平台、金融并列成为未来三大战略。想在海量数据中淘到金子，强大的挖掘工具是必不可少的，而诸如回归、聚类、主成分分析、决策树等数据挖掘算法常常涉及大规模矩阵运算。这其中，大矩阵乘法具有较大的时间消耗，是算法的瓶颈。所以将矩阵乘法移植到分布式系统中进行运算，可">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://img.blog.csdn.net/20141009145012665">
+<meta property="og:image" content="http://img.blog.csdn.net/20141009222508641">
+<meta property="og:image" content="http://img.blog.csdn.net/20141010105520586">
+<meta property="og:image" content="http://img.blog.csdn.net/20141010101823682">
+<meta property="og:updated_time" content="2020-01-27T09:48:08.208Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MapReduce实现矩阵乘法">
+<meta name="twitter:description" content="在海量数据中淘金，已是各大互联网公司的既定目标，亚马逊是数据化运营的成功典范，Google、百度投巨资用于对海量数据进行深度学习研究，阿里把数据与平台、金融并列成为未来三大战略。想在海量数据中淘到金子，强大的挖掘工具是必不可少的，而诸如回归、聚类、主成分分析、决策树等数据挖掘算法常常涉及大规模矩阵运算。这其中，大矩阵乘法具有较大的时间消耗，是算法的瓶颈。所以将矩阵乘法移植到分布式系统中进行运算，可">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20141009145012665">
+
+<meta name="keywords" content="线性代数,矩阵,矩阵乘法,hadoop,mapreduce,数据挖掘,机器学习,深度学习">
+
+
+<meta name="description" content="在海量数据中淘金，已是各大互联网公司的既定目标，亚马逊是数据化运营的成功典范，Google、百度投巨资用于对海量数据进行深度学习研究，阿里把数据与平台、金融并列成为未来三大战略。想在海量数据中淘到金子，强大的挖掘工具是必不可少的，而诸如回归、聚类、主成分分析、决策树等数据挖掘算法常常涉及大规模矩阵运">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/the-multiplication-of-matrices-use-mapreduce/">MapReduce实现矩阵乘法</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2014-10-08</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/the-multiplication-of-matrices-use-mapreduce/" class="leancloud_visitors" data-flag-title="MapReduce实现矩阵乘法">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#分析"><span class="toc-text">分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#设计"><span class="toc-text">设计</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#算法"><span class="toc-text">算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#map阶段"><span class="toc-text">map阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#shuffle阶段"><span class="toc-text">shuffle阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reduce阶段"><span class="toc-text">reduce阶段</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据结构"><span class="toc-text">数据结构</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#编写代码"><span class="toc-text">编写代码</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#第一种数据结构"><span class="toc-text">第一种数据结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第二种数据结构"><span class="toc-text">第二种数据结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码分析"><span class="toc-text">代码分析</span></a></li></ol></li></ol>
+    </div>
+ -->
+            <p>在海量数据中淘金，已是各大互联网公司的既定目标，亚马逊是数据化运营的成功典范，Google、百度投巨资用于对海量数据进行深度学习研究，阿里把数据与平台、金融并列成为未来三大战略。想在海量数据中淘到金子，强大的挖掘工具是必不可少的，而诸如回归、聚类、主成分分析、决策树等数据挖掘算法常常涉及大规模矩阵运算。这其中，大矩阵乘法具有较大的时间消耗，是算法的瓶颈。所以将矩阵乘法移植到分布式系统中进行运算，可谓是基本需求，所以本文暂且从最基础开始，简单介绍使用MapReduce实现矩阵乘法的方式。</p>
+<a id="more"></a>
+
+<p>简单回顾一下矩阵乘法：</p>
+<p><img src="http://img.blog.csdn.net/20141009145012665" alt="C=AB"></p>
+<p>矩阵乘法要求左矩阵的列数与右矩阵的行数相等，m×n的矩阵A，与n×p的矩阵B相乘，结果为m×p的矩阵C。详细内容可以查看：<a href="/the-origin-of-matrix-multiplication" title="矩阵乘法的计算和来源">矩阵乘法</a>。</p>
+<p>为了方便描述,先进行假设：</p>
+<ul>
+<li>矩阵A的行数为m，列数为n，a<sub>ij</sub>为矩阵A第i行j列的元素。</li>
+<li>矩阵B的行数为n，列数为p，b<sub>ij</sub>为矩阵B第i行j列的元素。</li>
+</ul>
+<h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>&emsp;&emsp;因为分布式计算的特点，需要找到相互独立的计算过程，以便能够在不同的节点上进行计算而不会彼此影响。根据矩阵乘法的公式，C中各个元素的计算都是相互独立的，即各个c<sub>ij</sub>在计算过程中彼此不影响。这样的话，在Map阶段可以把计算所需要的元素都集中到同一个key中，然后，在Reduce阶段就可以从中解析出各个元素来计算c<sub>ij</sub>。</p>
+<p>&emsp;&emsp;另外，以a<sub>11</sub>为例，它将会在c<sub>11</sub>、c<sub>12</sub>……c<sub>1p</sub>的计算中使用。也就是说，在Map阶段，当我们从HDFS取出一行记录时，如果该记录是A的元素，则需要存储成p个&lt;key, value&gt;对，并且这p个key互不相同；如果该记录是B的元素，则需要存储成m个&lt;key, value&gt;对，同样的，m个key也应互不相同；但同时，用于存放计算c<sub>ij</sub>的a<sub>i1</sub>、a<sub>i2</sub>……a<sub>in</sub>和b<sub>1j</sub>、b<sub>2j</sub>……b<sub>nj</sub>的&lt;key, value&gt;对的key应该都是相同的，这样才能被传递到同一个Reduce中。</p>
+<h1 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h1><p>&emsp;&emsp;普遍有一个共识是：数据结构+算法=程序，所以在编写代码之前需要先理清数据存储结构和处理数据的算法。</p>
+<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><h3 id="map阶段"><a href="#map阶段" class="headerlink" title="map阶段"></a>map阶段</h3><p>&emsp;&emsp;在map阶段，需要做的是进行数据准备。把来自矩阵A的元素a<sub>ij</sub>，标识成p条&lt;key, value&gt;的形式，key=”i,k”,（其中k=1,2,…,p），value=”a:j,a<sub>ij</sub>“；把来自矩阵B的元素b<sub>ij</sub>，标识成m条&lt;key, value&gt;形式，key=”k,j”（其中k=1,2,…,m），value=”b:i,b<sub>ij</sub>“。</p>
+<p>&emsp;&emsp;经过处理，用于计算c<sub>ij</sub>需要的a、b就转变为有相同key（”i,j”）的数据对，通过value中”a:”、”b:”能区分元素是来自矩阵A还是矩阵B，以及具体的位置（在矩阵A的第几列，在矩阵B的第几行）。</p>
+<h3 id="shuffle阶段"><a href="#shuffle阶段" class="headerlink" title="shuffle阶段"></a>shuffle阶段</h3><p>&emsp;&emsp;这个阶段是Hadoop自动完成的阶段，具有相同key的value被分到同一个Iterable中，形成&lt;key,Iterable(value)&gt;对，再传递给reduce。</p>
+<h3 id="reduce阶段"><a href="#reduce阶段" class="headerlink" title="reduce阶段"></a>reduce阶段</h3><p>&emsp;&emsp;通过map数据预处理和shuffle数据分组两个阶段，reduce阶段只需要知道两件事就行：</p>
+<ul>
+<li>&lt;key,Iterable(value)&gt;对经过计算得到的是矩阵C的哪个元素？因为map阶段对数据的处理，key（i,j）中的数据对，就是其在矩阵C中的位置，第i行j列。</li>
+<li>Iterable中的每个value来自于矩阵A和矩阵B的哪个位置？这个也在map阶段进行了标记，对于value（x:y,z），只需要找到y相同的来自不同矩阵（即x分别为a和b）的两个元素，取z相乘，然后加和即可。</li>
+</ul>
+<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>&emsp;&emsp;计算过程已经设计清楚了，就需要对数据结构进行设计。大体有两种设计方案：</p>
+<p>&emsp;&emsp;第一种：使用最原始的表示方式，相同行内不同列数据通过”,”分割，不同行通过换行分割；</p>
+<p>&emsp;&emsp;第二种：通过行列表示法，即文件中的每行数据有三个元素通过分隔符分割，第一个元素表示行，第二个元素表示列，第三个元素表示数据。这种方式对于可以不列出为0的元素，即可以减少稀疏矩阵的数据量。</p>
+<p>&emsp;&emsp;<img src="http://img.blog.csdn.net/20141009222508641" alt="http://img.blog.csdn.net/20141009222508641"></p>
+<p>&emsp;&emsp;在上图中，第一种方式存储的数据量小于第二种，但这只是因为例子中的数据设计成这样。在现实中，使用分布式计算矩阵乘法的环境中，大部分矩阵是稀疏矩阵，且数据量极大，在这种情况下，第二种数据结构的优势就显现了出来。<strong>而且</strong>，因为使用分布式计算，如果数据大于64m，在map阶段将不能够逐行处理，将不能确定数据来自于哪一行。<strong>不过</strong>，由于现实中对于大矩阵的乘法，考虑到存储空间和内存的情况，需要特殊的处理方式，有一种是将矩阵进行行列转换然后计算，这个时候第一种还是挺实用的。</p>
+<h1 id="编写代码"><a href="#编写代码" class="headerlink" title="编写代码"></a>编写代码</h1><h2 id="第一种数据结构"><a href="#第一种数据结构" class="headerlink" title="第一种数据结构"></a>第一种数据结构</h2><p>代码为：</p>
+<pre><code>import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+
+public class MatrixMultiply {
+    public static class MatrixMapper extends
+            Mapper&lt;LongWritable, Text, Text, Text&gt; {
+        private String flag = null;// 数据集名称
+        private int rowNum = 4;// 矩阵A的行数
+        private int colNum = 2;// 矩阵B的列数
+        private int rowIndexA = 1; // 矩阵A，当前在第几行
+        private int rowIndexB = 1; // 矩阵B，当前在第几行
+
+        @Override
+        protected void setup(Context context) throws IOException,
+                InterruptedException {
+            flag = ((FileSplit) context.getInputSplit()).getPath().getName();// 获取文件名称
+        }
+
+        @Override
+        protected void map(LongWritable key, Text value, Context context)
+                throws IOException, InterruptedException {
+            String[] tokens = value.toString().split(&quot;,&quot;);
+            if (&quot;ma&quot;.equals(flag)) {
+                for (int i = 1; i &lt;= colNum; i++) {
+                    Text k = new Text(rowIndexA + &quot;,&quot; + i);
+                    for (int j = 0; j &lt; tokens.length; j++) {
+                        Text v = new Text(&quot;a,&quot; + (j + 1) + &quot;,&quot; + tokens[j]);
+                        context.write(k, v);
+                    }
+                }
+                rowIndexA++;// 每执行一次map方法，矩阵向下移动一行
+            } else if (&quot;mb&quot;.equals(flag)) {
+                for (int i = 1; i &lt;= rowNum; i++) {
+                    for (int j = 0; j &lt; tokens.length; j++) {
+                        Text k = new Text(i + &quot;,&quot; + (j + 1));
+                        Text v = new Text(&quot;b,&quot; + rowIndexB + &quot;,&quot; + tokens[j]);
+                        context.write(k, v);
+                    }
+                }
+                rowIndexB++;// 每执行一次map方法，矩阵向下移动一行
+            }
+        }
+    }
+
+    public static class MatrixReducer extends
+            Reducer&lt;Text, Text, Text, IntWritable&gt; {
+        @Override
+        protected void reduce(Text key, Iterable&lt;Text&gt; values, Context context)
+                throws IOException, InterruptedException {
+            Map&lt;String, String&gt; mapA = new HashMap&lt;String, String&gt;();
+            Map&lt;String, String&gt; mapB = new HashMap&lt;String, String&gt;();
+
+            for (Text value : values) {
+                String[] val = value.toString().split(&quot;,&quot;);
+                if (&quot;a&quot;.equals(val[0])) {
+                    mapA.put(val[1], val[2]);
+                } else if (&quot;b&quot;.equals(val[0])) {
+                    mapB.put(val[1], val[2]);
+                }
+            }
+
+            int result = 0;
+            Iterator&lt;String&gt; mKeys = mapA.keySet().iterator();
+            while (mKeys.hasNext()) {
+                String mkey = mKeys.next();
+                if (mapB.get(mkey) == null) {// 因为mkey取的是mapA的key集合，所以只需要判断mapB是否存在即可。
+                    continue;
+                }
+                result += Integer.parseInt(mapA.get(mkey))
+                        * Integer.parseInt(mapB.get(mkey));
+            }
+            context.write(key, new IntWritable(result));
+        }
+    }
+
+    public static void main(String[] args) throws IOException,
+            ClassNotFoundException, InterruptedException {
+        String input1 = &quot;hdfs://192.168.1.128:9000/user/lxh/matrix/ma&quot;;
+        String input2 = &quot;hdfs://192.168.1.128:9000/user/lxh/matrix/mb&quot;;
+        String output = &quot;hdfs://192.168.1.128:9000/user/lxh/matrix/out&quot;;
+
+        Configuration conf = new Configuration();
+        conf.addResource(&quot;classpath:/hadoop/core-site.xml&quot;);
+        conf.addResource(&quot;classpath:/hadoop/hdfs-site.xml&quot;);
+        conf.addResource(&quot;classpath:/hadoop/mapred-site.xml&quot;);
+        conf.addResource(&quot;classpath:/hadoop/yarn-site.xml&quot;);
+
+        Job job = Job.getInstance(conf, &quot;MatrixMultiply&quot;);
+        job.setJarByClass(MatrixMultiply.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(Text.class);
+
+        job.setMapperClass(MatrixMapper.class);
+        // job.setReducerClass(MatrixReducer.class);
+
+        job.setInputFormatClass(TextInputFormat.class);
+        job.setOutputFormatClass(TextOutputFormat.class);
+
+        FileInputFormat.setInputPaths(job, new Path(input1), new Path(input2));// 加载2个输入数据集
+        Path outputPath = new Path(output);
+        outputPath.getFileSystem(conf).delete(outputPath, true);
+        FileOutputFormat.setOutputPath(job, outputPath);
+
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
+    }
+}</code></pre><p>绘图演示效果：</p>
+<p><img src="http://img.blog.csdn.net/20141010105520586" alt="http://img.blog.csdn.net/20141010105520586"></p>
+<h2 id="第二种数据结构"><a href="#第二种数据结构" class="headerlink" title="第二种数据结构"></a>第二种数据结构</h2><p>代码为：</p>
+<pre><code>import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+
+public class SparseMatrixMultiply {
+    public static class SMMapper extends Mapper&lt;LongWritable, Text, Text, Text&gt; {
+        private String flag = null;
+        private int m = 4;// 矩阵A的行数
+        private int p = 2;// 矩阵B的列数
+
+        @Override
+        protected void setup(Context context) throws IOException,
+                InterruptedException {
+            FileSplit split = (FileSplit) context.getInputSplit();
+            flag = split.getPath().getName();
+        }
+
+        @Override
+        protected void map(LongWritable key, Text value, Context context)
+                throws IOException, InterruptedException {
+            String[] val = value.toString().split(&quot;,&quot;);
+            if (&quot;t1&quot;.equals(flag)) {
+                for (int i = 1; i &lt;= p; i++) {
+                    context.write(new Text(val[0] + &quot;,&quot; + i), new Text(&quot;a,&quot;
+                            + val[1] + &quot;,&quot; + val[2]));
+                }
+            } else if (&quot;t2&quot;.equals(flag)) {
+                for (int i = 1; i &lt;= m; i++) {
+                    context.write(new Text(i + &quot;,&quot; + val[1]), new Text(&quot;b,&quot;
+                            + val[0] + &quot;,&quot; + val[2]));
+                }
+            }
+        }
+    }
+
+    public static class SMReducer extends
+            Reducer&lt;Text, Text, Text, IntWritable&gt; {
+        @Override
+        protected void reduce(Text key, Iterable&lt;Text&gt; values, Context context)
+                throws IOException, InterruptedException {
+            Map&lt;String, String&gt; mapA = new HashMap&lt;String, String&gt;();
+            Map&lt;String, String&gt; mapB = new HashMap&lt;String, String&gt;();
+
+            for (Text value : values) {
+                String[] val = value.toString().split(&quot;,&quot;);
+                if (&quot;a&quot;.equals(val[0])) {
+                    mapA.put(val[1], val[2]);
+                } else if (&quot;b&quot;.equals(val[0])) {
+                    mapB.put(val[1], val[2]);
+                }
+            }
+
+            int result = 0;
+            // 可能在mapA中存在在mapB中不存在的key，或相反情况
+            // 因为，数据定义的时候使用的是稀疏矩阵的定义
+            // 所以，这种只存在于一个map中的key，说明其对应元素为0，不影响结果
+            Iterator&lt;String&gt; mKeys = mapA.keySet().iterator();
+            while (mKeys.hasNext()) {
+                String mkey = mKeys.next();
+                if (mapB.get(mkey) == null) {// 因为mkey取的是mapA的key集合，所以只需要判断mapB是否存在即可。
+                    continue;
+                }
+                result += Integer.parseInt(mapA.get(mkey))
+                        * Integer.parseInt(mapB.get(mkey));
+            }
+            context.write(key, new IntWritable(result));
+        }
+    }
+
+    public static void main(String[] args) throws IOException,
+            ClassNotFoundException, InterruptedException {
+        String input1 = &quot;hdfs://192.168.1.128:9000/user/lxh/matrix/t1&quot;;
+        String input2 = &quot;hdfs://192.168.1.128:9000/user/lxh/matrix/t2&quot;;
+        String output = &quot;hdfs://192.168.1.128:9000/user/lxh/matrix/out&quot;;
+
+        Configuration conf = new Configuration();
+        conf.addResource(&quot;classpath:/hadoop/core-site.xml&quot;);
+        conf.addResource(&quot;classpath:/hadoop/hdfs-site.xml&quot;);
+        conf.addResource(&quot;classpath:/hadoop/mapred-site.xml&quot;);
+        conf.addResource(&quot;classpath:/hadoop/yarn-site.xml&quot;);
+
+        Job job = Job.getInstance(conf, &quot;SparseMatrixMultiply&quot;);
+        job.setJarByClass(SparseMatrixMultiply.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(Text.class);
+
+        job.setMapperClass(SMMapper.class);
+        job.setReducerClass(SMReducer.class);
+
+        job.setInputFormatClass(TextInputFormat.class);
+        job.setOutputFormatClass(TextOutputFormat.class);
+
+        FileInputFormat.setInputPaths(job, new Path(input1), new Path(input2));// 加载2个输入数据集
+        Path outputPath = new Path(output);
+        outputPath.getFileSystem(conf).delete(outputPath, true);
+        FileOutputFormat.setOutputPath(job, outputPath);
+
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
+    }
+}</code></pre><p>绘图演示效果：</p>
+<p><img src="http://img.blog.csdn.net/20141010101823682" alt="http://img.blog.csdn.net/20141010101823682"></p>
+<h2 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h2><p>&emsp;&emsp;比较两种代码，可以很清楚的看出，两种实现只是在map阶段有些区别，reduce阶段基本相同。对于其中关于行i、列j定义不是从0计数（虽然我倾向于从0开始计数，不用写等号，简单），是为了更直观的观察数据处理过程是否符合设计。</p>
+<p>&emsp;&emsp;在第一种实现中，需要记录当前是读取的哪一行数据，所以，这种仅适用于不需要分块的小文件中进行的矩阵乘法运算。第二种实现中，每行数据记录了所在行所在列，不会有这方面的限制。</p>
+<p>&emsp;&emsp;在第二种实现中，遍历两个HashMap时，取mapA的key作为循环标准，是因为在一般情况下，mapA和mapB的key是相同的（如第一种实现），因为使用稀疏矩阵，两个不相同的key说明是0，可以舍弃不参与计算，所以只使用mapA的key，并判断mapB是否存在该key对应的值。</p>
+<p>&emsp;&emsp;两种实现的reduce阶段，计算最后结果时，都是直接使用内存存储数据、计算结果，所以当数据量很大的时候（通常都会很大，否则不会用分布式处理），极易造成内存溢出，所以，对于大矩阵的运算，还需要其他的转换方式，比如<strong>行列相乘运算、分块矩阵运算、基于最小粒度相乘的算法</strong>等方式。另外，因为这两份代码都是demo，所以代码中缺少过滤错误数据的部分。</p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/线性代数/">线性代数</a>
+            
+            <a href="/tags/矩阵/">矩阵</a>
+            
+            <a href="/tags/矩阵乘法/">矩阵乘法</a>
+            
+            <a href="/tags/hadoop/">hadoop</a>
+            
+            <a href="/tags/mapreduce/">mapreduce</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/the-origin-of-matrix-multiplication/">
+                <i class="icon-previous">矩阵乘法的计算和来源</i>
+            </a>
+            
+            
+            <a class="next" href="/talk-about-CyclicBarrier-again/">
+                <i class="icon-next">再谈CyclicBarrier</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/闲聊/" style="font-size: 15px;">闲聊</a> <a href="/tags/非理性/" style="font-size: 15px;">非理性</a> <a href="/tags/认知偏差/" style="font-size: 15px;">认知偏差</a> <a href="/tags/自控术/" style="font-size: 15px;">自控术</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/成本/" style="font-size: 15px;">成本</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/i-resigned-from-hx/">我从 HX 辞职了</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-gracefully-response-exception/">SpringBoot 实战：如何优雅的处理异常</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-gracefully-response/">SpringBoot 实战：一招实现结果的优雅响应</a></li><li class="post-list-item"><a class="post-list-link" href="/tiny-url-system/">系统设计系列之如何设计一个短链服务</a></li><li class="post-list-item"><a class="post-list-link" href="/how-to-use-branch-efficiently-in-git/">如何在微服务团队中高效使用 Git 管理代码？</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2020</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

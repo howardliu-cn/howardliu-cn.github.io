@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>solr-搜索-DisMax查询解析器||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="DisMax查询解析器设计的初衷是处理用户输入的简单短语（没有复杂语法），在多个根据不同含义使用不同权重的字段间进行搜索。另外还有额外的选项，使用户可以根据具体用例（根据用户的输入）影响打分。总的来说，DisMax查询解析器比标准Solr查询请求更像Google的接口。对于许多付费应用，这种相似性使DisMax成为更加适当的查询解析器。她能够接收简单的语法，却很少发生错误。DisMax查询解析器支">
+<meta name="keywords" content="solr,翻译,DisMax查询解析器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="solr-搜索-DisMax查询解析器">
+<meta property="og:url" content="https://www.howardliu.cn/translation-the-dismax-query-parser/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="DisMax查询解析器设计的初衷是处理用户输入的简单短语（没有复杂语法），在多个根据不同含义使用不同权重的字段间进行搜索。另外还有额外的选项，使用户可以根据具体用例（根据用户的输入）影响打分。总的来说，DisMax查询解析器比标准Solr查询请求更像Google的接口。对于许多付费应用，这种相似性使DisMax成为更加适当的查询解析器。她能够接收简单的语法，却很少发生错误。DisMax查询解析器支">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-01-27T10:04:18.750Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="solr-搜索-DisMax查询解析器">
+<meta name="twitter:description" content="DisMax查询解析器设计的初衷是处理用户输入的简单短语（没有复杂语法），在多个根据不同含义使用不同权重的字段间进行搜索。另外还有额外的选项，使用户可以根据具体用例（根据用户的输入）影响打分。总的来说，DisMax查询解析器比标准Solr查询请求更像Google的接口。对于许多付费应用，这种相似性使DisMax成为更加适当的查询解析器。她能够接收简单的语法，却很少发生错误。DisMax查询解析器支">
+
+<meta name="keywords" content="solr,翻译,DisMax查询解析器">
+
+
+<meta name="description" content="DisMax查询解析器设计的初衷是处理用户输入的简单短语（没有复杂语法），在多个根据不同含义使用不同权重的字段间进行搜索。另外还有额外的选项，使用户可以根据具体用例（根据用户的输入）影响打分。总的来说，DisMax查询解析器比标准Solr查询请求更像Google的接口。对于许多付费应用，这种相似性使">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/translation-the-dismax-query-parser/">solr-搜索-DisMax查询解析器</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2015-11-05</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/translation-the-dismax-query-parser/" class="leancloud_visitors" data-flag-title="solr-搜索-DisMax查询解析器">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#DisMax参数"><span class="toc-text">DisMax参数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#q-alt"><span class="toc-text">q.alt</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#qf-Query-Fields"><span class="toc-text">qf(Query Fields)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mm-Minimum-Should-Match"><span class="toc-text">mm (Minimum Should Match)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pf-Phrase-Fields"><span class="toc-text">pf(Phrase Fields)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ps-Phrase-Slop"><span class="toc-text">ps (Phrase Slop)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#qs-Query-Phrase-Slop"><span class="toc-text">qs (Query Phrase Slop)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tie-Tie-Breaker"><span class="toc-text">tie (Tie Breaker)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bq-Boost-Query"><span class="toc-text">bq (Boost Query)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bf-Boost-Functions"><span class="toc-text">bf (Boost Functions)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#示例"><span class="toc-text">示例</span></a></li></ol>
+    </div>
+ -->
+            <p>DisMax查询解析器设计的初衷是处理用户输入的简单短语（没有复杂语法），在多个根据不同含义使用不同权重的字段间进行搜索。另外还有额外的选项，使用户可以根据具体用例（根据用户的输入）影响打分。<br>总的来说，DisMax查询解析器比标准Solr查询请求更像Google的接口。对于许多付费应用，这种相似性使DisMax成为更加适当的查询解析器。她能够接收简单的语法，却很少发生错误。</p>
+<a id="more"></a>
+<p>DisMax查询解析器设计的初衷是处理用户输入的简单短语（没有复杂语法），在多个根据不同含义使用不同权重的字段间进行搜索。另外还有额外的选项，使用户可以根据具体用例（根据用户的输入）影响打分。<br>总的来说，DisMax查询解析器比标准Solr查询请求更像Google的接口。对于许多付费应用，这种相似性使DisMax成为更加适当的查询解析器。她能够接收简单的语法，却很少发生错误。<br>DisMax查询解析器支持非常简化的Lucene查询分析器语法的自己。在Lucene中，引用可以被用于group短语，<code>+/-</code>可以被用于表示<code>并</code>和<code>或</code>。所有其他Lucene查询解析器的特殊字符（除了<code>AND</code>和<code>OR</code>）被舍弃，以便简化用户体验。DisMax查询解析器使用在DisMax查询多字段时的布尔表达式和指定加权来为用户构建更好的查询。也为Solr管理员对人工干预查询结果提供更好的查询、功能和过滤。搜有的这些参数都可以在<code>solrconfig.xml</code>文件中指定默认参数，或通过Solr查询URL重写。<br>对DisMax这个名字感兴趣吗？DisMax代表 Maximum Disjunction（最优分析）。下面是对 Maximum Disjunction（最优分析） 或DisMax查询：</p>
+<blockquote>
+<p>注：通过子查询生成文档集合，对所有子查询的文档赋最高分，对额外的匹配查询添加系数的查询。</p>
+</blockquote>
+<p>记不记得住这个解释都无所谓，只要知道DisMax简单易用，并且接收任何输入但几乎不发生错误。</p>
+<h2 id="DisMax参数"><a href="#DisMax参数" class="headerlink" title="DisMax参数"></a>DisMax参数</h2><p>除了公用的查询参数、高亮参数、和简单的层面分析参数，DisMax查询解析器还支持一下参数。就像是标准查询解析器，DisMax查询解析器支持在<code>solrconfig.xml</code>中指定默认参数值，也支持在查询时通过请求参数指定参数值。</p>
+<table><thead><tr><td>参数</td><td>描述</td></tr></thead><tbody><tr><td>q</td><td>定义查询字符串</td></tr><tr><td>q.alt</td><td>当`q`参数不使用时，调用标准查询分析器的输入字符串。</td></tr><tr><td>qf</td><td>Query Fields：指定索引中查询字段。如果没有指定，默认使用`df`。</td></tr><tr><td>mm</td><td>Minimum "Should" Match：制定查询中必须匹配的最小规则数。如果没有在查询中或在`solrconfig.xml`文件中制定`mm`参数值，`q.op`参数的有效值（查询参数或`schemaconfig.xml`配置文件默认值，或`schema.xml`的`defaultOperator`的参数值）将产生影响。如果`q.op`是`AND`，zemm=100%，如果`q.op`是`OR`，则mm=1（100%表示全部匹配，1表示只要有一个匹配即可）。如果用户想修改这些行为，可以在`solrconfig.xml`文件中定义`mm`参数。用户应该将此参数作为请求的默认参数。这个参数允许在表达式中夹杂空格（比如：" 3 &lt; -25% 10 &gr; -3\n", " \n-25%\n ", " \n3\n "）。</td></tr><tr><td>pf</td><td>Phrase Fields: 为在`q`参数中定义的所有检索词匹配的文档提高分值。</td></tr><tr><td>ps</td><td>Phrase Slop: 指定两个检索词相隔的位置来匹配指定短语。</td></tr><tr><td>qs</td><td>Query Phrase Slop: 指定两个检索词相隔的位置来匹配指定短语。可以`qf`参数。</td></tr><tr><td>tie</td><td>Tie Breaker: 在DisMax查询中指定一个浮点数（大于0小于1）来作为关键值。</td></tr><tr><td>bq</td><td>Boost Query: 指定一个单词或短语提升查询权重</td></tr><tr><td>bf</td><td>Boost Functions: 指定用于提升查询权重的函数。</td></tr></tbody></table>
+下面的章节详细解释这些参数。
+### q
+`q`参数定义了查询过程中的主查询结构。这个参数支持用户的原始输入。`+/-`视为`AND/OR`。在一对引号之间检索词（比如："San Jose"）的被解析为短语。含有奇数个引号的等同于没有引号。
+>注：不支持通配符，比如*。
+
+<h3 id="q-alt"><a href="#q-alt" class="headerlink" title="q.alt"></a>q.alt</h3><p>当主参数<code>q</code>没有输入或是空，<code>q.alt</code>参数来定义查询（）。<code>q.alt</code>参数可以很方便的获取匹配数量（最好加上参数<code>&amp;rows=0</code>）。</p>
+<h3 id="qf-Query-Fields"><a href="#qf-Query-Fields" class="headerlink" title="qf(Query Fields)"></a>qf(Query Fields)</h3><p><code>qf</code>参数可以对一系列字段指定权重，用来提高或降低其在查询中的重要性。比如：<code>qf=&quot;fieldOne^2.3 fieldTwo fieldThree^0.4&quot;</code><br>指定<code>fieldOne</code>权重为2.3，<code>fieldTwo</code>使用默认权重（因为没有指定权重），<code>fieldThree</code>权重为0.4。查询的时候，字段的重要性依次为<code>fieldOne</code> &gt; <code>fieldTwo</code> &gt; <code>fieldThree</code>。</p>
+<h3 id="mm-Minimum-Should-Match"><a href="#mm-Minimum-Should-Match" class="headerlink" title="mm (Minimum Should Match)"></a>mm (Minimum Should Match)</h3><p>执行查询时，Lucene/Solr可以识别三种查询规则：必须符合（且）、不符合（fei），以及可能符合（或称为应该符合，或）。默认情况下，<code>q</code>中定义的短语如果没用<code>+</code>或<code>-</code>修饰，则应该符合“可能”规则（或）。当使用“可能”规则是，<code>mm</code>可以指定必须匹配的最小数量。DisMax查询解析器提供了非常灵活的指定最小数字的方法。<br>下面的表格解析了<code>mm</code>值的多种用法：</p>
+<table><tr><th>语法</th><th>示例</th><th>描述</th></tr><tr><td>正整数</td><td>3</td><td>定义最少匹配数量，无论有多少从句。</td></tr><tr><td>负正数</td><td>-2</td><td>设置最少匹配数量等于可选从句总数减2.</td></tr><tr><td>百分比</td><td>75%</td><td>设置最少匹配可选从句的75%。向下取整。</td></tr><tr><td>负百分比</td><td>-25%</td><td>所有可选从句的指定百分比的数量可以被忽略。向下取整。</td></tr><tr><td>以正整数开始，跟随 &lt; 或 &gt; 和另外一个数 </td><td>3&lt;90%</td><td>定义一个有条件的表达式，表示如果可选从句数量小于等于这个整数，则他们需要全部匹配，但是如果数量大于这个整数，则这个规范起作用。在示例中，如果有1到3条从句，则需要全部匹配，如果是4条或更多，则只需要匹配90%即可。</td></tr><tr><td>多条包含&lt; 或 &gt的表达式</td><td>2&lt;-25% 9&lt;-3</td><td>定义多个条件表达式，当后一个表达式的第一个数大于前一个表达式的第一个数时，整个表达式才有效。在示例中，如果只有1或2条从句，则需要匹配所有从句。如果有3到9条从句，则至多可以不匹配25%。如果多于9条，则至多可以不匹配3条。</td></tr></table>
+当需要指定`mm`值时，需要注意下面几条：
+
+<ul>
+<li>当处理百分比是，在边缘情况下，使用负值可以用来指定不同的行为。当4条从句时，75%和-25%相同，但当5条从句时，75%意味着需要匹配3条，-25%意味着需要匹配4条。</li>
+<li>如果计算出的结果是不需要匹配任何从句，通常布尔查询依然会生效。（因为布尔查询至少需要匹配一条可选从句）</li>
+<li>无论计算出什么数值，Solr都将使用一个不大于可选字句数目且不小于1的值。换句话说，无论计算结果多大或多少，需要匹配的最小数都不会小于1或大于从句数。</li>
+<li>当在多个进行不同配置的字段间查询时，可选从句的数目可能不同。在这种情况下，指定的<code>mm</code>值适用于可选从句最大数目。例如：如果一个可选从句被解析为一个字段是停用词，对于这个字段的可选数将比其他字段小。如果<code>mm</code>被设置为100%，在该字段上，将不会匹配任何值，因为移除的从句认为不匹配。</li>
+</ul>
+<p><code>mm</code>的默认值是100%，即必须匹配所有从句。</p>
+<h3 id="pf-Phrase-Fields"><a href="#pf-Phrase-Fields" class="headerlink" title="pf(Phrase Fields)"></a>pf(Phrase Fields)</h3><p>通过<code>fq</code>和<code>qf</code>参数确定匹配文档后，可以通过<code>pf</code>参数提高<code>q</code>参数中的所有检索词出现更加集中的文档分值。<br>使用格式与<code>qf</code>参数格式相同：列出字段并修改每个字段的打分。</p>
+<h3 id="ps-Phrase-Slop"><a href="#ps-Phrase-Slop" class="headerlink" title="ps (Phrase Slop)"></a>ps (Phrase Slop)</h3><p><code>ps</code>指定一定数量的”phrase slop”，用于<code>pf</code>参数指定的查询。”Phrase slop”是一个标志位需要移动多少距离到另外一个标志位的距离，用于匹配查询中指定的短语。</p>
+<h3 id="qs-Query-Phrase-Slop"><a href="#qs-Query-Phrase-Slop" class="headerlink" title="qs (Query Phrase Slop)"></a>qs (Query Phrase Slop)</h3><p><code>qs</code>是在用<code>qf</code>参数定义的用户查询中指定明确指定短语查询中”slop”的数量。如上面所说，”Phrase slop”是一个标志位需要移动多少距离到另外一个标志位的距离，用于匹配查询中指定的短语。</p>
+<h3 id="tie-Tie-Breaker"><a href="#tie-Tie-Breaker" class="headerlink" title="tie (Tie Breaker)"></a>tie (Tie Breaker)</h3><p><code>tie</code>指定一个在DisMax查询中用来作为”tiebreaker”的浮点数（小于1）。<br>根据用户输入的检索词匹配多个字段，多于一个字段匹配重构。如果是遮阳，每个字段将根据他在这个字段的出现次数有不同的分值（相对于所有其他文件的每个文件）。<code>tie</code>参数可以让你控制查询分值，来影响低分字段与高分字段。<br>数值”0.0”使查询成为”disjunction max query”，就是说，只有最高得分子查询影响最终得分。数值”1.0”使查询成为”disjunction sum query”，就是说，最大分子查询没有影响，最后的得分根据子查询的得分和来起作用。通常比较低的分作用最好，比如0.1。</p>
+<h3 id="bq-Boost-Query"><a href="#bq-Boost-Query" class="headerlink" title="bq (Boost Query)"></a>bq (Boost Query)</h3><p><code>bq</code>可以指定一个影响用户主查询分值的额外、可选的查询从句。比如，如果你想查询最新的文档：</p>
+<pre><code>q=cheese
+bq=date:[NOW/DAY-1YEAR TO NOW/DAY]</code></pre><p>你可以指定一系列的<code>bq</code>参数。如果你希望你的查询被解析成独立的查询从句，可以使用多个<code>bq</code>参数。</p>
+<h3 id="bf-Boost-Functions"><a href="#bf-Boost-Functions" class="headerlink" title="bf (Boost Functions)"></a>bf (Boost Functions)</h3><p><code>bf</code>参数指定将被用于构建将被添加到用户朱查询作为可选重聚影响分值的FunctionQueries的功能（带来可选的加权）。任何Solr内部函数都可以使用。比如：<code>recip(rord(myfield),1,2,3)^1.5</code>。<br><code>bf</code>参数功能本质上是<code>bq</code>参数混合<code>{!func}</code>解析器的简写。<br>比如，如果你想展示最先的文件，可以使用下面两种方式中的任何一个：</p>
+<pre><code>bf=recip(rord(creationDate),1,1000,1000)
+  ...or...
+bq={!func}recip(rord(creationDate),1,1000,1000)</code></pre><h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>使用普通查询请求器，查询指定查询字段，查询单词”video”：</p>
+<pre><code>http://localhost:8983/solr/techproducts/select?q=video&amp;fl=name+score</code></pre><p>DisMax查询被设计为在文本、特征、名称、SKU、编号、manu和字段中获得更好的匹配，匹配名称、或字段的文档得分更高。</p>
+<pre><code>http://localhost:8983/solr/techproducts/select?defType=dismax&amp;q=video</code></pre><p>注意，这个例子也配置了一个默认的字段列表，可以在URL中重写。</p>
+<pre><code>http://localhost:8983/solr/techproducts/select?defType=dismax&amp;q=video&amp;fl=*,score</code></pre><p>你也可以重写每个字段的加权分值：</p>
+<pre><code>http://localhost:8983/solr/techproducts/select?defType=dismax&amp;q=video&amp;qf=features^20.0+text^0.3</code></pre><p>指定某一字段匹配指定值的加权分：</p>
+<pre><code>http://localhost:8983/solr/techproducts/select?defType=dismax&amp;q=video&amp;bq=cat:electronics^5.0</code></pre><p>另外一个示例是指定<code>qt</code>参数是”instock”，稍有不同的配置选项，尤其当设置过滤器是inStock:true的。</p>
+<pre><code>http://localhost:8983/solr/techproducts/select?defType=dismax&amp;q=video&amp;fl=name,score,inStock
+http://localhost:8983/solr/techproducts/select?defType=dismax&amp;q=video&amp;qt=instock&amp;fl=name,score,inStock</code></pre><p>另外一个很酷的功能是，对”BooleanQuery.minimumNumberShouldMatch”的强大支持，可以指定你想在用户查询中匹配多少检索词。这就允许灵活的错别字和部分匹配。对于dismax查询，一个和两个检索词的查询要求所有的可选子句匹配，但是三到五检索词的查询允许一个词不匹配。</p>
+<pre><code>http://localhost:8983/solr/techproducts/select?defType=dismax&amp;q=belkin+ipod
+http://localhost:8983/solr/techproducts/select?defType=dismax&amp;q=belkin+ipod+gibberish
+http://localhost:8983/solr/techproducts/select?defType=dismax&amp;q=belkin+ipod+apple</code></pre><p>就像标准查询器一样，支持查看解析查询调试数据选项，并解释每个文档的得分。</p>
+<pre><code>http://localhost:8983/solr/techproducts/select?defType=dismax&amp;q=belkin+ipod+gibberish&amp;debugQuery=true
+http://localhost:8983/solr/techproducts/select?defType=dismax&amp;q=video+card&amp;debugQuery=true</code></pre><p>原文链接：<a href="https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser" target="_blank" rel="noopener">The DisMax Query Parser</a><br>翻译：<a href="https://www.howardliu.cn">沉潜飞动</a><br>译文链接：<a href="https://www.howardliu.cn/translation-the-dismax-query-parser/">DisMax查询解析器</a></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/翻译/">翻译</a>
+            
+            <a href="/tags/solr/">solr</a>
+            
+            <a href="/tags/DisMax查询解析器/">DisMax查询解析器</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/translation-common-query-parameters/">
+                <i class="icon-previous">solr-搜索-Solr解析器通用的查询参数</i>
+            </a>
+            
+            
+            <a class="next" href="/translation-the-standard-query-parser/">
+                <i class="icon-next">solr-搜索-标准查询解析器</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/闲聊/" style="font-size: 15px;">闲聊</a> <a href="/tags/非理性/" style="font-size: 15px;">非理性</a> <a href="/tags/认知偏差/" style="font-size: 15px;">认知偏差</a> <a href="/tags/自控术/" style="font-size: 15px;">自控术</a> <a href="/tags/solr/" style="font-size: 15px;">solr</a> <a href="/tags/查询参数/" style="font-size: 15px;">查询参数</a> <a href="/tags/成本/" style="font-size: 15px;">成本</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/i-resigned-from-hx/">我从 HX 辞职了</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-gracefully-response-exception/">SpringBoot 实战：如何优雅的处理异常</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-gracefully-response/">SpringBoot 实战：一招实现结果的优雅响应</a></li><li class="post-list-item"><a class="post-list-link" href="/tiny-url-system/">系统设计系列之如何设计一个短链服务</a></li><li class="post-list-item"><a class="post-list-link" href="/how-to-use-branch-efficiently-in-git/">如何在微服务团队中高效使用 Git 管理代码？</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2020</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
