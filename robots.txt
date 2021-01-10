@@ -1,0 +1,7 @@
+# hexo robots.txt
+User-agent: *
+Allow: /
+Disallow:
+
+Sitemap: https://www.howardliu.cn/sitemap.xml
+Sitemap: https://www.howardliu.cn/baidusitemap.xml

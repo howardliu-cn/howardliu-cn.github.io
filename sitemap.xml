@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/keep-moving-forward/</loc>
+    
+    <lastmod>2021-01-10T12:20:18.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/i-resigned-from-hx/</loc>
     
     <lastmod>2020-12-31T10:53:57.000Z</lastmod>
@@ -275,14 +282,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
+    <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
+    <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
@@ -296,13 +303,6 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
-    
-    <lastmod>2020-07-28T05:33:36.667Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.howardliu.cn/storm/trident-tutorial/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
@@ -310,14 +310,21 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/logon-windows-automatic-uncheck-password/</loc>
+    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
+    
+    <lastmod>2020-07-28T05:33:36.667Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/disable-bps-in-eos-project/</loc>
     
     <lastmod>2020-07-28T05:33:36.666Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/disable-bps-in-eos-project/</loc>
+    <loc>https://www.howardliu.cn/logon-windows-automatic-uncheck-password/</loc>
     
     <lastmod>2020-07-28T05:33:36.666Z</lastmod>
     
