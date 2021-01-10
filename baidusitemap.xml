@@ -76,13 +76,13 @@
     <loc>https://www.howardliu.cn/the-introduction-of-iaas-paas-saas/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
     <loc>https://www.howardliu.cn/deploy-ear-from-eos-to-weblogic/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
@@ -121,10 +121,10 @@
     <loc>https://www.howardliu.cn/os/all-about-linux-swap-space/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
+    <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
+    <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
