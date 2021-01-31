@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/java-import-package/</loc>
+    
+    <lastmod>2021-01-31T10:54:40.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/algo-for-jvm-gc/</loc>
     
     <lastmod>2021-01-24T13:48:58.000Z</lastmod>
@@ -198,7 +205,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
+    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
@@ -212,7 +219,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
+    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
@@ -268,6 +275,13 @@
   </url>
   
   <url>
+    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
+    
+    <lastmod>2020-07-28T05:33:36.667Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
@@ -276,13 +290,6 @@
   
   <url>
     <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
-    
-    <lastmod>2020-07-28T05:33:36.667Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
