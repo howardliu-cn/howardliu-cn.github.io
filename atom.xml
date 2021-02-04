@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.howardliu.cn/"/>
-  <updated>2021-01-31T10:54:40.000Z</updated>
+  <updated>2021-02-04T13:08:09.000Z</updated>
   <id>https://www.howardliu.cn/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>如果非要在多线程中使用ArrayList会发生什么？</title>
+    <link href="https://www.howardliu.cn/arraylist-is-not-thread-safe/"/>
+    <id>https://www.howardliu.cn/arraylist-is-not-thread-safe/</id>
+    <published>2021-02-04T13:08:09.000Z</published>
+    <updated>2021-02-04T13:08:09.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="http://static.howardliu.cn/java/road-5837403_1920.jpg" alt="如果非要在多线程中使用ArrayList会发生什么？"></p><p>你好，我是看山。</p><p>我们都知道，Java中的ArrayList是非线程安全的，这个知识点太熟了，甚至面试的时候都很少问了。</p><p>但是我们真的清楚原理吗？或者知道多线程情况下使用ArrayList会发生什么？</p><p>前段时间，我们就踩坑了，而且直接踩了两个坑，今天就来扒一扒。</p><a id="more"></a><h2 id="翠花，上源码"><a href="#翠花，上源码" class="headerlink" title="翠花，上源码"></a>翠花，上源码</h2><p>上代码之前先说下<code>ArrayList</code>的<code>add</code>逻辑：</p><ol><li>检查队列中数组是否还没有添加过元素</li><li>如果是，设置当前需要长度为10，如果否，设置当前需要长度为当前队列长度+1</li><li>判断需要长度是否大于数组大小</li><li>如果是，需要扩容，将数组长度扩容1.5倍（第一次扩容会从0直接到10，后续会按照1.5倍的步幅增长）</li><li>数组中添加元素，队列长度+1</li></ol><p>附上代码，有兴趣的可以在看看源码。</p><pre><code class="java">/** * Appends the specified element to the end of this list. * * @param e element to be appended to this list * @return &lt;tt&gt;true&lt;/tt&gt; (as specified by {@link Collection#add}) */public boolean add(E e) {    // 判断数组容量是否足够，如果不足，增加1.5倍，size是当前队列长度    ensureCapacityInternal(size + 1);  // Increments modCount!!    // 给下标为size的赋值，同时队列长度+1，下标从0开始    elementData[size++] = e;    return true;}private void ensureCapacityInternal(int minCapacity) {    ensureExplicitCapacity(calculateCapacity(elementData, minCapacity));}private static int calculateCapacity(Object[] elementData, int minCapacity) {    // 判断是否首次添加元素，如果是，返回默认队列长度，现在是10    if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) {        return Math.max(DEFAULT_CAPACITY, minCapacity);    }    // 如果不是首次添加元素，就返回当前队列长度+1    return minCapacity;}private void ensureExplicitCapacity(int minCapacity) {    modCount++;    // overflow-conscious code    // 如果需要的长度大于队列中数组长度，扩容，如果可以满足需求，就不用扩容    if (minCapacity - elementData.length &gt; 0)        grow(minCapacity);}/** * Increases the capacity to ensure that it can hold at least the * number of elements specified by the minimum capacity argument. * * @param minCapacity the desired minimum capacity */private void grow(int minCapacity) {    // overflow-conscious code    int oldCapacity = elementData.length;    // 这里就是扩容1.5倍的代码    int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1);    if (newCapacity - minCapacity &lt; 0)        newCapacity = minCapacity;    if (newCapacity - MAX_ARRAY_SIZE &gt; 0)        newCapacity = hugeCapacity(minCapacity);    // minCapacity is usually close to size, so this is a win:    elementData = Arrays.copyOf(elementData, newCapacity);}</code></pre><h2 id="就是这么不安全"><a href="#就是这么不安全" class="headerlink" title="就是这么不安全"></a>就是这么不安全</h2><p>从上面代码可以看出，<code>ArrayList</code>中一丁点考虑多线程的元素都没有，完全的效率优先。</p><h3 id="奇怪的ArrayIndexOutOfBoundsException"><a href="#奇怪的ArrayIndexOutOfBoundsException" class="headerlink" title="奇怪的ArrayIndexOutOfBoundsException"></a>奇怪的ArrayIndexOutOfBoundsException</h3><p>先做一个假设，此时数组长度达到临界边缘，比如目前容量是10，现在已经有9个元素，也就是size=9，然后有两个线程同时向队列中增加元素：</p><ol><li>线程1开始进入<code>add</code>方法，获取size=9，调用<code>ensureCapacityInternal</code>方法进行容量判断，此时数组容量是10，不需要扩容</li><li>线程2也进入<code>add</code>方法，获取size=9，调用<code>ensureCapacityInternal</code>方法进行容量判断，此时数组容量还是10，也不需要扩容</li><li>线程1开始赋值值了，也就是<code>elementData[size++] = e</code>，此时size变成10，达到数组容量极限</li><li>线程2此次开始执行赋值操作，使用的size=10，也就是<code>elementData[10] = e</code>，因为下标从0开始，目前数组容量是10，直接报数组越界<code>ArrayIndexOutOfBoundsException</code>。</li></ol><p>仅仅差了一步，线程2就成为了抛异常的凶手。但是抛出异常还是好的，因为我们知道出错了，可以沿着异常</p><h3 id="诡异的null元素"><a href="#诡异的null元素" class="headerlink" title="诡异的null元素"></a>诡异的null元素</h3><p>这种情况不太容易从代码中发现，得对代码稍加改造，<code>elementData[size++] = e</code>这块代码其实执行了两步：</p><pre><code class="java">elementData[size] = e;size++;</code></pre><p>假设还是有两个线程要赋值，此时数组长度还比较富裕，比如数组长度是10，目前size=5：</p><ol><li>线程1开始进入<code>add</code>方法，获取size=5，调用<code>ensureCapacityInternal</code>方法进行容量判断，此时数组容量是10，不需要扩容</li><li>线程2也进入<code>add</code>方法，获取size=5，调用<code>ensureCapacityInternal</code>方法进行容量判断，此时数组容量还是10，也不需要扩容</li><li>线程1开始赋值，执行<code>elementData[size] = e</code>，此时size=5，在执行<code>size++</code>之前，线程2开始赋值了</li><li>线程2开始赋值，执行<code>elementData[size] = e</code>，此时size还是5，所以线程2把线程1赋的值覆盖了</li><li>线程1开始执行<code>size++</code>，此时size=6</li><li>线程2开始执行<code>size++</code>，此时size=7</li></ol><p>也就是说，添加了2个元素，队列长度+2，但是真正加入队列的元素只有1个，有一个被覆盖了。</p><p>这种情况不会立马报错，排查起来就很麻烦了。而且随着JDK 8的普及，可能随手使用filter过滤空元素，这样就不会立马出错，直到出现业务异常之后才能发现，到那时，错误现场已经不见了，排查起来一头雾水。</p><p>有同学会问，源码中是<code>elementData[size++] = e</code>，是一行操作，为什么会拆成两步执行呢？其实这得从JVM字节码说起了。</p><h3 id="通过JVM字节码说说第二种异常出现的原因"><a href="#通过JVM字节码说说第二种异常出现的原因" class="headerlink" title="通过JVM字节码说说第二种异常出现的原因"></a>通过JVM字节码说说第二种异常出现的原因</h3><p>先来一段简单的代码：</p><pre><code class="java">public class Main {    public static void main(String[] args) {        int[] nums = new int[3];        int index = 0;        nums[index++] = 5;    }}</code></pre><p>通过<code>javac Main.java</code>和<code>javap -v -l Main.class</code>组合操作得到字节码：</p><blockquote><p>下面那些中文是我后加的备注，备注中还列出了局部变量表和栈值的变化，需要有点耐心。</p></blockquote><pre><code class="class">public class Main  minor version: 0  major version: 52  flags: ACC_PUBLIC, ACC_SUPERConstant pool:   #1 = Methodref          #3.#12         // java/lang/Object.&quot;&lt;init&gt;&quot;:()V   #2 = Class              #13            // Main   #3 = Class              #14            // java/lang/Object   #4 = Utf8               &lt;init&gt;   #5 = Utf8               ()V   #6 = Utf8               Code   #7 = Utf8               LineNumberTable   #8 = Utf8               main   #9 = Utf8               ([Ljava/lang/String;)V  #10 = Utf8               SourceFile  #11 = Utf8               Main.java  #12 = NameAndType        #4:#5          // &quot;&lt;init&gt;&quot;:()V  #13 = Utf8               Main  #14 = Utf8               java/lang/Object{  public Main();    descriptor: ()V    flags: ACC_PUBLIC    Code:      stack=1, locals=1, args_size=1         0: aload_0         1: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V         4: return      LineNumberTable:        line 1: 0  public static void main(java.lang.String[]);    descriptor: ([Ljava/lang/String;)V    flags: ACC_PUBLIC, ACC_STATIC    Code:      stack=3, locals=3, args_size=1                                                                               局部变量表                             栈         0: iconst_3                     // 将int型(3)推送至栈顶                                                      args                                3         1: newarray       int           // 创建一个指定原始类型（如int, float, char…）的数组，并将其引用值压入栈顶          args                                数组引用         3: astore_1                     // 将栈顶引用型数值存入第二个本地变量                                            args, nums=数组引用                  null         4: iconst_0                     // 将int型(0)推送至栈顶                                                       args, nums=数组引用                  0         5: istore_2                     // 将栈顶int型数值存入第三个本地变量                                             args, nums=数组引用, index=0         null         6: aload_1                      // 将第二个引用类型本地变量推送至栈顶                                             args, nums=数组引用, index=0         数组引用         7: iload_2                      // 将第三个int型本地变量推送至栈顶                                               args, nums=数组引用, index=0         0, 数组引用         8: iinc          2, 1           // 将指定int型变量增加指定值（i++, i--, i+=2），也就是第三个本地变量增加1            args, nums=数组引用, index=1         0, 数组引用        11: iconst_5                     // 将int型(5)推送至栈顶                                                        args, nums=数组引用, index=1         5, 0, 数组引用        12: iastore                      // 将栈顶int型数值存入指定数组的指定索引位置                                       args, nums=数组引用, index=1         null        13: return                       // 从当前方法返回void      LineNumberTable:        line 3: 0                        // int[] nums = new int[3];        line 4: 4                        // int index = 0;        line 5: 6                        // nums[index++] = 5;        line 6: 13                       // 方法结尾默认的return}</code></pre><p>从上面的字节码可以看到，<code>nums[index++] = 5</code>这一句会被转为5个指令，是从6到12。大体操作如下：</p><ol><li>将数组、下标压入栈</li><li>给下标加值</li><li>将新值压入栈</li><li>取栈顶三个元素开始给元素指定下标赋值</li></ol><p>也即是说，错误出在数组赋值操作时先将数组引用和下标同时压入栈顶，与下标赋值是两步，在多线程环境中，就有可能出现上面说到的null值存在。</p><h2 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h2><p>其实解法也很简单，就是要意识到多线程环境，然后不使用ArrayList。可以使用<code>Collections.synchronizedList()</code>返回的同步队列，也可以使用<code>CopyOnWriteArrayList</code>这个队列，或者自己扩展<code>ArrayList</code>，将add方法做成同步方法。</p><h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p><code>ArrayList</code>整个类的操作都是非线程安全的，一旦在多线程环境中使用，就可能会出现问题。上面提到<code>add</code>操作就会有两种异常行为，一个是数组越界异常，一个是出现丢数且出现空值。这还只是最简单的<code>add</code>操作，如果<code>add</code>、<code>addAll</code>和<code>get</code>混合使用使用时，异常情况就更多了。所以，使用的时候一定要注意是不是单线程操作，如果不是，果断使用其他队列防雷。</p><hr><p>你好，我是看山，公众号：看山的小屋，10 年老后端，Apache Storm、WxJava、Cynomys 开源贡献者。主业：程序猿，兼职：架构师。游于码界，戏享人生。</p><p>个人主页: <a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文: <a href="https://www.howardliu.cn/arraylist-is-not-thread-safe/">如果非要在多线程中使用ArrayList会发生什么？</a><br>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN博文: <a href="https://blog.csdn.net/liuxinghao/article/details/113666581" target="_blank" rel="noopener">如果非要在多线程中使用ArrayList会发生什么？</a></p><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
+    
+    <summary type="html">
+    
+      但是我们真的清楚多线程情况下使用ArrayList会发生什么吗？
+    
+    </summary>
+    
+    
+      <category term="java" scheme="https://www.howardliu.cn/categories/java/"/>
+    
+    
+      <category term="java" scheme="https://www.howardliu.cn/tags/java/"/>
+    
+      <category term="ArrayList" scheme="https://www.howardliu.cn/tags/ArrayList/"/>
+    
+      <category term="线程安全" scheme="https://www.howardliu.cn/tags/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8/"/>
+    
+  </entry>
   
   <entry>
     <title>java import 导入包时，我们需要注意什么呢？</title>
@@ -500,33 +527,6 @@
       <category term="方法论" scheme="https://www.howardliu.cn/tags/%E6%96%B9%E6%B3%95%E8%AE%BA/"/>
     
       <category term="范式" scheme="https://www.howardliu.cn/tags/%E8%8C%83%E5%BC%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>源码安装NGINX</title>
-    <link href="https://www.howardliu.cn/build-nginx-from-sources/"/>
-    <id>https://www.howardliu.cn/build-nginx-from-sources/</id>
-    <published>2019-11-09T05:21:01.000Z</published>
-    <updated>2020-01-27T09:58:58.703Z</updated>
-    
-    <content type="html"><![CDATA[<p>本文主要记录一次从源码安装Nginx过程，参考的是<a href="http://nginx.org/en/docs/configure.html" target="_blank" rel="noopener">Nginx官网</a>。</p><a id="more"></a><p>安装过程比较简单，就是下载源码包，下载依赖包，打包编译安装就完事了。</p><h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><ol><li>安装依赖包<pre><code class="shell">yum -y install gcc automake autoconf libtool makeyum -y install openssl openssl-devel</code></pre>因为下面的安装过程会打包编译https模块，依赖于openssl，所以需要安装这个依赖，否则会出现<code>./configure: error: SSL modules require the OpenSSL library.</code>的异常。</li><li>下载源码包<br>直接从<a href="http://nginx.org/download/nginx-1.17.5.tar.gz" target="_blank" rel="noopener">官网</a>下载安装包即可</li><li>下载依赖包<br>需要的依赖<code>pcre</code>和<code>zlib</code>，从各自的官网下载即可：<a href="http://www.pcre.org/" target="_blank" rel="noopener">PCRE</a>，<a href="https://ftp.pcre.org/pub/pcre/pcre-8.41.tar.gz" target="_blank" rel="noopener">下载地址</a>，<a href="http://zlib.net/" target="_blank" rel="noopener">zlib</a>，<a href="http://zlib.net/zlib-1.2.11.tar.gz" target="_blank" rel="noopener">下载地址</a>。</li><li>配置<pre><code class="shell"> # 进入nginx源码目录中 cd /path/to/nginx-source-directory ./configure \     --sbin-path=/usr/local/nginx/sbin/nginx \     --conf-path=/usr/local/nginx/conf/nginx.conf \     --pid-path=/usr/local/nginx/nginx.pid \     --with-http_ssl_module -\     -with-pcre=../pcre-8.41 \     --with-zlib=../zlib-1.2.11</code></pre></li><li>编译<pre><code class="shell"># 进入nginx源码目录中cd /path/to/nginx-source-directorymake</code></pre></li><li>安装<pre><code class="shell"># 进入nginx源码目录中cd /path/to/nginx-source-directorymake install</code></pre></li></ol><p>到这里Nginx就安装完成了，下面给出一些nginx配置的建议。</p><h1 id="建议"><a href="#建议" class="headerlink" title="建议"></a>建议</h1><p>nginx安装完之后，就需要进行一些配置，下面是我的一些建议。</p><ol><li><p>目录结构</p><p>在<code>conf</code>目录中，创建<code>vhosts</code>和<code>upstreams</code>目录，两个目录分别存储<code>server</code>和<code>upstream</code>的定义。在<code>nginx.conf</code>中添加下面的代码引入配置：</p><pre><code class="conf"> include upstreams/*.conf; include vhosts/*.conf;</code></pre></li><li><p>文件命名</p><p>在<code>vhosts</code>定义文件格式为<code>*.vhost.conf</code>，如果监听服务是域名，以域名倒置格式命名，比如：<code>cn.howardliu.www.vhost.conf</code>，这样的好处是，相同一级域名，不同二级域名的配置文件，在文件列表展示的时候，会在一起，比较好区分隔离。</p><p><code>upstreams</code>定义文件格式为<code>*.upstream.conf</code>，以服务模块名进行区分，好处是能够在一个文件中定义相同服务模块的内容，进行服务或模块隔离，或者以<code>服务.模块.upstream.conf</code>的格式，但是这样的坏处是，比较散，文件比较多。</p></li><li><p>建议显示生命链接超时时间</p><p>在<code>nginx.conf</code>的<code>http</code>中定义超时时间，下面是我测试环境的一个定义，需要根据自己的情况：</p><pre><code class="conf"> fastcgi_connect_timeout 300; fastcgi_read_timeout 300; fastcgi_send_timeout 300; proxy_connect_timeout 300s; proxy_read_timeout 300s; proxy_send_timeout 300s;</code></pre></li></ol><hr><p>个人主页: <a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文: <a href="https://www.howardliu.cn/build-nginx-from-sources/">源码安装NGINX</a><br>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN博文: <a href="https://blog.csdn.net/conansix/article/details/102986884" target="_blank" rel="noopener">源码安装NGINX</a></p>]]></content>
-    
-    <summary type="html">
-    
-      本文主要记录一次从源码安装Nginx过程，参考的是[Nginx官网](http://nginx.org/en/docs/configure.html)。
-    
-    </summary>
-    
-    
-      <category term="devops" scheme="https://www.howardliu.cn/categories/devops/"/>
-    
-    
-      <category term="DevOps" scheme="https://www.howardliu.cn/tags/DevOps/"/>
-    
-      <category term="Nginx" scheme="https://www.howardliu.cn/tags/Nginx/"/>
-    
-      <category term="部署" scheme="https://www.howardliu.cn/tags/%E9%83%A8%E7%BD%B2/"/>
     
   </entry>
   
