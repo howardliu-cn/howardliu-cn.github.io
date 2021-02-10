@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.howardliu.cn/"/>
-  <updated>2021-02-04T13:08:09.000Z</updated>
+  <updated>2021-02-09T06:18:59.000Z</updated>
   <id>https://www.howardliu.cn/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList</title>
+    <link href="https://www.howardliu.cn/understanding-java-list/"/>
+    <id>https://www.howardliu.cn/understanding-java-list/</id>
+    <published>2021-02-09T06:18:59.000Z</published>
+    <updated>2021-02-09T06:18:59.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="http://static.howardliu.cn/java/sunset-5299957_1920.jpg" alt="认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList"></p><p>你好，我是看山。</p><p>书接上文，上次聊了聊 <a href="https://www.howardliu.cn/arraylist-is-not-thread-safe/">在多线程中使用 ArrayList 会发生什么</a>，这次我们说说平时常用的列表：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList。</p><a id="more"></a><h2 id="Vector"><a href="#Vector" class="headerlink" title="Vector"></a>Vector</h2><p><code>Vector</code>是在 JDK 1.0 提供的，虽然没有被标记<code>Deprecated</code>，但是事实上已经没人使用了。主要原因是性能差，且不符合需求。</p><p>从源码可以看出（这里不贴源码了），<code>Vector</code>是基于数组实现，几乎在所有操作方法上，都用<code>synchronized</code>关键字实现方法同步，这种同步方式可以对单一操作进行加锁，比如多个线程同时执行<code>add</code>会同步阻塞执行，但是多线程执行<code>add</code>和<code>remove</code>时，就不会阻塞了。</p><p>但是，大部分需要对队列加锁的场景，是想对整个队列加锁，而不仅仅是对单一操作加锁。也就是说，<code>Vector</code>和我们的期望不同，但是又额外增加了同步操作带来的性能开销。所以，不是必须使用的场景，都可以使用<code>ArrayList</code>代替，即使是多线程情况下需要同步队列，也可以使用<code>CopyOnWriteArrayList</code>和<code>SynchronizedList</code>代替。</p><h2 id="ArrayList"><a href="#ArrayList" class="headerlink" title="ArrayList"></a>ArrayList</h2><p><code>ArrayList</code>是在 JDK 1.1 提供的，作为<code>Vector</code>的继任者（<code>ArrayList</code>实现方式与<code>Vector</code>几乎完全相同），<code>ArrayList</code>把方法上的<code>synchronized</code>全部去掉了，完全没有实现同步，是非线程安全的。</p><p>它的非线程安全，还体现在迭代器的快速失败上。在使用方法<code>iterator</code>和<code>listIterator</code>创建迭代器之后，如果还对原来的<code>ArrayList</code>队列进行修改（add 或 remove），迭代器迭代的时候就会报<code>ConcurrentModificationException</code>异常。从源码可以看出，迭代器在迭代过程中，会检查队列中修改次数<code>modCount</code>与创建迭代器时落下的修改次数快照<code>expectedModCount</code>是否相等，相等表示没有修改过，代码如下：</p><pre><code class="java">private class Itr implements Iterator&lt;E&gt; {    // 这段代码是从 ArrayList 中摘取的    // 只留下检查方法，略过其他代码，有兴趣的可以从源码中查看    final void checkForComodification() {        if (modCount != expectedModCount)            throw new ConcurrentModificationException();    }}</code></pre><p>第三点是在多线程场景中，添加元素可能会丢失数据，或者发生数组越界异常，<a href="https://www.howardliu.cn/arraylist-is-not-thread-safe/">在多线程中使用 ArrayList 会发生什么</a> 有详细描述，这里就不赘述了。</p><h2 id="SynchronizedList"><a href="#SynchronizedList" class="headerlink" title="SynchronizedList"></a>SynchronizedList</h2><p><code>SynchronizedList</code>是<code>Collections</code>的静态内部类，使用<code>Collections.synchronizedList()</code>静态方法创建，是一个通过组合<code>List</code>类实现的封装实现。它的大多数方法通过<code>synchronized (mutex){...}</code>代码块同步方式，因为加锁对象<code>mutex</code>是队列对象中定义的相同对象，所以对<code>mutex</code>加锁时，就实现对整个队列加锁，也就解决了<code>Vector</code>不能对整个队列加锁的问题。所以如果有多个线程同时操作<code>add</code>和<code>remove</code>方法，会阻塞同步执行。</p><p><code>ArrayList</code>中存在的迭代器快速失败情况，依然存在，正如下面源码中的注释：想要使用迭代器，需要用户手动实现同步。</p><pre><code class="java">static class SynchronizedList&lt;E&gt;    extends SynchronizedCollection&lt;E&gt;    implements List&lt;E&gt; {    // 代码摘自 Collections，省略很多代码    public void add(int index, E element) {        synchronized (mutex) {list.add(index, element);}    }    public ListIterator&lt;E&gt; listIterator() {        return list.listIterator(); // Must be manually synched by user    }    public ListIterator&lt;E&gt; listIterator(int index) {        return list.listIterator(index); // Must be manually synched by user    }}</code></pre><p>手动同步的时候需要注意，既然我们关注的全局同步，在迭代器设置同步的时候，要保证锁定对象与<code>add</code>等方法中对象相同。这个在后续补充说明，这里就不展开了。</p><h2 id="CopyOnWriteArrayList"><a href="#CopyOnWriteArrayList" class="headerlink" title="CopyOnWriteArrayList"></a>CopyOnWriteArrayList</h2><p><code>CopyOnWriteArrayList</code>是从 JDK 1.5 开始提供的，先看看<code>add</code>方法的源码：</p><pre><code class="java">public class CopyOnWriteArrayList&lt;E&gt;    implements List&lt;E&gt;, RandomAccess, Cloneable, java.io.Serializable {    /** The lock protecting all mutators */    final transient ReentrantLock lock = new ReentrantLock();    /** The array, accessed only via getArray/setArray. */    private transient volatile Object[] array;    // 代码摘自 CopyOnWriteArrayList，省略很多代码    public boolean add(E e) {        final ReentrantLock lock = this.lock;        lock.lock();        try {            Object[] elements = getArray();            int len = elements.length;            Object[] newElements = Arrays.copyOf(elements, len + 1);            newElements[len] = e;            setArray(newElements);            return true;        } finally {            lock.unlock();        }    }    public boolean addAll(Collection&lt;? extends E&gt; c) {        Object[] cs = (c.getClass() == CopyOnWriteArrayList.class) ?            ((CopyOnWriteArrayList&lt;?&gt;)c).getArray() : c.toArray();        if (cs.length == 0)            return false;        final ReentrantLock lock = this.lock;        lock.lock();        try {            Object[] elements = getArray();            int len = elements.length;            if (len == 0 &amp;&amp; cs.getClass() == Object[].class)                setArray(cs);            else {                Object[] newElements = Arrays.copyOf(elements, len + cs.length);                System.arraycopy(cs, 0, newElements, len, cs.length);                setArray(newElements);            }            return true;        } finally {            lock.unlock();        }    }    private E get(Object[] a, int index) {        return (E) a[index];    }    /**     * {@inheritDoc}     *     * @throws IndexOutOfBoundsException {@inheritDoc}     */    public E get(int index) {        return get(getArray(), index);    }}</code></pre><p>可以看到，<code>CopyOnWriteArrayList</code>借助<code>ReentrantLock</code>实现同步，在<code>synchronized</code>优化之前，<code>ReentrantLock</code>性能高于<code>synchronized</code>。<code>CopyOnWriteArrayList</code>也是通过数组实现的，但是在数组前面增加了<code>volatile</code>关键字，实现了多线程情况下数组的可见性，更加安全。更重要的一点是，<code>CopyOnWriteArrayList</code>在<code>add</code>添加元素的时候，实现方式是重建数组对象，替换原来的数组引用。与<code>ArrayList</code>的扩容方式相比，减少了空间，但是也增加了赋值数组的性能开销。在<code>get</code>获取元素的时候，没有任何锁，直接数据返回。</p><p><code>CopyOnWriteArrayList</code>的迭代器时通过<code>COWIterator</code>实现的，调用<code>iterator</code>方法时，将当前队列中数组的快照赋值到迭代器中的数组引用上。如果原来的队列发生修改，队列中数组会指向别的引用，而迭代器中的数组不会发生变化，所以在多线程执行过程中，通过迭代器遍历数组，也可以修改队列中的数据。这种方式保障线程安全的同时，也可能会出现数据不一致的情况，只能是使用的使用多注意了。</p><pre><code class="java">static final class COWIterator&lt;E&gt; implements ListIterator&lt;E&gt; {    /** Snapshot of the array */    private final Object[] snapshot;    /** Index of element to be returned by subsequent call to next.  */    private int cursor;    private COWIterator(Object[] elements, int initialCursor) {        cursor = initialCursor;        snapshot = elements;    }}</code></pre><h2 id="对比-CopyOnWriteArrayList-和-SynchronizedList"><a href="#对比-CopyOnWriteArrayList-和-SynchronizedList" class="headerlink" title="对比 CopyOnWriteArrayList 和 SynchronizedList"></a>对比 CopyOnWriteArrayList 和 SynchronizedList</h2><p><code>CopyOnWriteArrayList</code>和<code>SynchronizedList</code>都实现了同步，实现方式上采用的是不同策略，各自的侧重点不同。</p><p><code>CopyOnWriteArrayList</code>侧重于读写分离，发生数据写操作（<code>add</code>或<code>remove</code>）时，会加锁，各个线程阻塞执行，执行过程会创建数据副本，替换对象引用；如果同时有读操作（<code>get</code>或<code>iterator</code>），读操作读取的是老数据，或者成为历史数据快照，或者成为缓存数据。这会造成读写同时发生时，数据不一致的情况，但是数据最终会一致。这种方式与数据库读写分离模式几乎相同，很多特性可以类比。</p><p><code>SynchronizedList</code>侧重数据强一致，也就是说当发生数据写操作（<code>add</code>或<code>remove</code>）时，会加锁，各个线程阻塞执行，而且也会通过相同的锁阻塞<code>get</code>操作。</p><p>从<code>CopyOnWriteArrayList</code>和<code>SynchronizedList</code>两种不同事项方式，可以推断<code>CopyOnWriteArrayList</code>在写少读多的场景中执行效率高，<code>SynchronizedList</code>的读写操作效率很均衡，所以在写多读多、写多读少的场景执行效率都会高于<code>CopyOnWriteArrayList</code>。借用网上的测试结果：</p><p><img src="http://static.howardliu.cn/java/CopyOnWriteArrayList-SynchronizedList-Vector.jpg" alt="对比 CopyOnWriteArrayList 和 SynchronizedList"></p><h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><ol><li><code>synchronized</code>关键字在 JDK 8 之前性能比较差，可以看到 JDK1.5 之后实现的同步代码，很多是通过<code>ReentrantLock</code>实现的。</li><li>多线程场景中除了需要考虑同步外，还需要考虑数据可见性，可以通过<code>volatile</code>关键字实现。</li><li><code>ArrayList</code>完全没有同步操作，是非线程安全的</li><li><code>CopyOnWriteArrayList</code>和<code>SynchronizedList</code>属于线程安全队列</li><li><code>CopyOnWriteArrayList</code>实现读写分离，适合场景是写少读多的场景</li><li><code>SynchronizedList</code>要求数据强一致，是队列全局加锁方式，读操作也会加锁</li><li><code>Vector</code>只是在迭代器遍历性能很差，如果不考虑全局锁定队列，单纯读操作和单独写操作性能与<code>SynchronizedList</code>相差不大。</li></ol><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol><li><a href="https://stackoverflow.com/questions/1386275/why-is-java-vector-and-stack-class-considered-obsolete-or-deprecated" target="_blank" rel="noopener">Why is Java Vector (and Stack) class considered obsolete or deprecated?</a></li><li><a href="https://blog.csdn.net/yangzl2008/article/details/39456817" target="_blank" rel="noopener">CopyOnWriteArrayList 与 Collections.synchronizedList 的性能对比</a></li><li><a href="https://juejin.cn/post/6844904054745743367" target="_blank" rel="noopener">Collections.synchronizedList 、CopyOnWriteArrayList、Vector 介绍、源码浅析与性能对比</a></li></ol><h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ol><li><a href="https://www.howardliu.cn/arraylist-is-not-thread-safe/">如果非要在多线程中使用 ArrayList 会发生什么？</a></li></ol><hr><p>你好，我是看山，公众号：看山的小屋，10 年老后端，Apache Storm、WxJava、Cynomys 开源贡献者。主业：程序猿，兼职：架构师。游于码界，戏享人生。</p><p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/understanding-java-list/">认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList</a><br>CSDN 主页：<a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN 博文：<a href="https://blog.csdn.net/liuxinghao/article/details/113780875" target="_blank" rel="noopener">认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList</a></p><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;img src=&quot;http://static.howardliu.cn/java/sunset-5299957_1920.jpg&quot; alt=&quot;认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList&quot;&gt;&lt;/p&gt;
+&lt;p&gt;你好，我是看山。&lt;/p&gt;
+&lt;p&gt;书接上文，上次聊了聊 &lt;a href=&quot;https://www.howardliu.cn/arraylist-is-not-thread-safe/&quot;&gt;在多线程中使用 ArrayList 会发生什么&lt;/a&gt;，这次我们说说平时常用的列表：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="java" scheme="https://www.howardliu.cn/categories/java/"/>
+    
+    
+      <category term="Java" scheme="https://www.howardliu.cn/tags/Java/"/>
+    
+      <category term="线程安全" scheme="https://www.howardliu.cn/tags/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8/"/>
+    
+      <category term="队列" scheme="https://www.howardliu.cn/tags/%E9%98%9F%E5%88%97/"/>
+    
+  </entry>
   
   <entry>
     <title>如果非要在多线程中使用ArrayList会发生什么？</title>
@@ -27,7 +56,7 @@
     
     <summary type="html">
     
-      但是我们真的清楚多线程情况下使用ArrayList会发生什么吗？
+      我们真的清楚多线程情况下使用ArrayList会发生什么吗？
     
     </summary>
     
@@ -35,7 +64,7 @@
       <category term="java" scheme="https://www.howardliu.cn/categories/java/"/>
     
     
-      <category term="java" scheme="https://www.howardliu.cn/tags/java/"/>
+      <category term="Java" scheme="https://www.howardliu.cn/tags/Java/"/>
     
       <category term="ArrayList" scheme="https://www.howardliu.cn/tags/ArrayList/"/>
     
@@ -500,33 +529,6 @@
       <category term="微服务" scheme="https://www.howardliu.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/"/>
     
       <category term="架构" scheme="https://www.howardliu.cn/tags/%E6%9E%B6%E6%9E%84/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>微服务编程范式</title>
-    <link href="https://www.howardliu.cn/the-paradigm-of-microservice/"/>
-    <id>https://www.howardliu.cn/the-paradigm-of-microservice/</id>
-    <published>2019-11-09T09:12:21.000Z</published>
-    <updated>2020-08-25T13:42:18.168Z</updated>
-    
-    <content type="html"><![CDATA[<p><img src="http://static.howardliu.cn/microservice/rome-5195046_1920.jpg" alt="微服务编程范式"></p><p>目前很多互联网公司都采用微服务架构，微服务的优点和缺点被反复说到，这里不在重复赘述，只结合工作中的一些实践，说说要用微服务要注意的点，厚颜写做编程范式，其实就是一些具体实践而已。</p><a id="more"></a><h2 id="原则（道）"><a href="#原则（道）" class="headerlink" title="原则（道）"></a>原则（道）</h2><p>原则是比较抽象的一个概念，简单说是一些指导意见，在不同的组之间可以共享，是为了实现一个共同的目的，必须遵守的一些规则，或者叫做规矩。</p><p>这些规则（或规矩）对我们开发过程中有一定的约束作用，不容置疑，必须遵守。如果发现有那个团队或者个人没有遵守，一定要及时纠正，否则，原则就没有任何存在的意义。</p><p>现在用的很广的一个原则是Heroku的 <strong><a href="http://www.12factor.net" target="_blank" rel="noopener">12-Factor</a></strong> 原则。具体内容如下：</p><blockquote><p>I. 基准代码</p><p>一份基准代码，多份部署</p><p>II. 依赖</p><p>显式声明依赖关系</p><p>III. 配置</p><p>在环境中存储配置</p><p>IV. 后端服务</p><p>把后端服务当作附加资源</p><p>V. 构建，发布，运行</p><p>严格分离构建和运行</p><p>VI. 进程</p><p>以一个或多个无状态进程运行应用</p><p>VII. 端口绑定</p><p>通过端口绑定提供服务</p><p>VIII. 并发</p><p>通过进程模型进行扩展</p><p>IX. 易处理</p><p>快速启动和优雅终止可最大化健壮性</p><p>X. 开发环境与线上环境等价</p><p>尽可能的保持开发，预发布，线上环境相同</p><p>XI. 日志</p><p>把日志当作事件流</p><p>XII. 管理进程</p><p>后台管理任务当作一次性进程运行</p></blockquote><p>在我们团队中有一些原则可以和大家分享：</p><ol><li>不要为了用而用，程序猿（或者叫攻城狮）是最喜欢尝鲜的人，有了新技术出来，就想用。这无疑是优点，但是在工作中这样，就有可能给系统带来灾难。所以如果想用某项技术，必须充分调研之后，经过一系列的验证，才能引入。</li><li>战略目标明确，业务部门愿景清晰。作为开发团队，可能很少关心业务团队的想法，这是很致命的。我们开发的东西，不是业务部门想要的，顾客想要一个吃饭的勺子，你给做了一个铁铲，铁铲做的再好又有什么用。</li><li>服务之间调用必须使用HTTP/RESTful方案，不能引入其他方案。不是说其他方案不好，而是最好协议一致，一致的协议能够减少系统的复杂性和沟通成本。</li></ol><h2 id="标准（术）"><a href="#标准（术）" class="headerlink" title="标准（术）"></a>标准（术）</h2><p>标准的定义会比原则更加具体，有点类似于道和术、战略和战术的关系，不同的技术栈、不同的团队可能会制定不同的标准。</p><ol><li>我们团队都是使用的是Java技术栈，所以标准大体上采用的是<a href="http://dd.ma/m5R1zqRj" target="_blank" rel="noopener">《阿里巴巴Java开发手册》</a>，有一部分内容作了修改，这里对孤尽表示感谢。这个手册脱胎于《Effective Java》和《代码简洁之道》，其中加入了孤尽在阿里的一些实践，所以对于Java栈的同学是比较适用的。</li><li>我们使用的是Spring Cloud，服务之间的调用，必须使用Feign Client形式，指定这个标准是为了以后使用K8s时改动最小。</li><li>页面与服务之间的调用，HTTP返回状态码都是200，在返回的数据中，定义具体的状态码，这个状态码参照HTTP状态码，同时定义一个子级状态码，用来具体定义业务情况。比如，状态码等于500表示服务异常，子级状态码等于5001，表示操作数据库异常等。</li><li>监控系统、日志系统、任务调度等，如果需要，也要指定明确是标准。比如打印日志时，日志开头必须以6位数字开头，因为我们的日志系统与监控系统对接，6位数字能够定位到不同的系统、模块、业务，直接定位问题位置。</li><li>不一而足（每个团队有每个团队具体的标准，这里就不一一列举了）。。。</li></ol><p>这些标准，最好形成文档，放在知识库中。这样，团队的成员可以随时查看，有新人加入时，也能避免老员工口口相传，传错了指令。</p><blockquote><p>有些架构师认为，原则和标准就是一个东西。就我来看，这两个粒度不同，对于大的团队，最好分开。因为大的团队，技术栈更加多样化，标准没有办法做到一致，但是原则可以做到不会脱离大框。对于小的团队，因为技术栈比较单一，有可能就是一个技术栈（就像我现在的团队），因为标准只有一个，就是对原则的细化，所以两者就是一个东西。</p></blockquote><p>标准的另外一个作用，就是告诉团队成员怎么做是对的，怎么做是更好的方案，更加直白的表述是，按照标准进行开发，bug更少。</p><p>有了开发标准之后，就需要将标准推广到所有人，但是每个人的理解力和执行力是有偏差的，所以需要一些手段来快速推广。具体的方法有：DEMO（示例）、代码模板（脚手架）。</p><h3 id="DEMO（示例）"><a href="#DEMO（示例）" class="headerlink" title="DEMO（示例）"></a>DEMO（示例）</h3><p>软件开发是一个比较有技术壁垒的行业，一个新人（没有经验或者有经验刚加入新团队的人）想要快速了解老系统所使用的标准，是比较困难的，毕竟每家团队采用的标准都不是百分之百一致。比较简单的做法就是，提供新人DEMO示例，然后告诉他，“就照着这个做”。</p><blockquote><p>对于有经验的新人，一定是先接受，然后在了解清楚之后，才会提出自己的一些看法，而不是一上来，就搬出自己以前的经验，全盘否定团队指定的标准。</p></blockquote><h3 id="代码模板（脚手架）"><a href="#代码模板（脚手架）" class="headerlink" title="代码模板（脚手架）"></a>代码模板（脚手架）</h3><p>代码模板的作用实现一个服务的集成方案，经过有效可靠的裁剪和定制。在需要新建服务时，就使用这个方案，直接进行业务代码开发即可，所以也被称为脚手架，比如SpringBoot的Starter和AutoConfiguration。</p><p>前面说过，我们团队使用的是Java技术栈，基于SpringCloud开发，所以我们对SpringCloud进行封装，定义了几根通用的组件，比如定义了一个<code>web-misc</code>组件，引入这个组件，就能够实现，引入实现WebMvc，并且提供了统一的获取Metric信息的接口，统一的异常处理的ExceptionHandler等。</p><h2 id="及时清理技术债务"><a href="#及时清理技术债务" class="headerlink" title="及时清理技术债务"></a>及时清理技术债务</h2><p>虽然我们都是代码洁癖，但是有时候迫于时间压力、业务压力，我们不得不背负一些技术债务。</p><p>比如我们知道硬编码会破坏系统灵活性，但是明天就要上线，根本没有时间做配置型服务，所以只能硬编码到系统中，这就是技术债务。第二天系统上线，正常运行，如果这个时候把硬编码事情抛之脑后，这个债务就会产生利息，不知道哪天就会变成炸弹。</p><p>对于技术债务，我们团队的做法是做一个技术债务清单，设置超时提醒功能，限期修复。这个清单是公开的，每一项都注明了，是谁，因为什么，于什么时间，产生的技术债务，需要在什么时候修复。如果是临时特性或功能产生的债务，也需要注明特性或功能过期时间，由专人检查债务是否已经没有了。</p><hr><p>个人主页: <a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文: <a href="https://www.howardliu.cn/the-paradigm-of-microservice/">微服务编程范式</a><br>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN博文: <a href="https://blog.csdn.net/liuxinghao/article/details/102990899" target="_blank" rel="noopener">微服务编程范式</a></p><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
-    
-    <summary type="html">
-    
-      目前很多互联网公司都采用微服务架构，微服务的优点和缺点被反复说到，这里不在重复赘述，只结合工作中的一些实践，说说要用微服务要注意的点，厚颜写做编程范式，其实就是一些技巧而已。
-    
-    </summary>
-    
-    
-      <category term="microservice" scheme="https://www.howardliu.cn/categories/microservice/"/>
-    
-    
-      <category term="微服务" scheme="https://www.howardliu.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/"/>
-    
-      <category term="方法论" scheme="https://www.howardliu.cn/tags/%E6%96%B9%E6%B3%95%E8%AE%BA/"/>
-    
-      <category term="范式" scheme="https://www.howardliu.cn/tags/%E8%8C%83%E5%BC%8F/"/>
     
   </entry>
   

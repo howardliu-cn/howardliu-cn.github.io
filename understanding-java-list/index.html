@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="你好，我是看山。 书接上文，上次聊了聊 在多线程中使用 ArrayList 会发生什么，这次我们说说平时常用的列表：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList。">
+<meta name="keywords" content="Java,List,Vector,ArrayList,CopyOnWriteArrayList,SynchronizedList">
+<meta property="og:type" content="article">
+<meta property="og:title" content="认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList">
+<meta property="og:url" content="https://www.howardliu.cn/understanding-java-list/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="你好，我是看山。 书接上文，上次聊了聊 在多线程中使用 ArrayList 会发生什么，这次我们说说平时常用的列表：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://static.howardliu.cn/java/sunset-5299957_1920.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/java/CopyOnWriteArrayList-SynchronizedList-Vector.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-02-09T06:18:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList">
+<meta name="twitter:description" content="你好，我是看山。 书接上文，上次聊了聊 在多线程中使用 ArrayList 会发生什么，这次我们说说平时常用的列表：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList。">
+<meta name="twitter:image" content="http://static.howardliu.cn/java/sunset-5299957_1920.jpg">
+
+<meta name="keywords" content="Java,List,Vector,ArrayList,CopyOnWriteArrayList,SynchronizedList">
+
+
+<meta name="description" content="你好，我是看山。
+书接上文，上次聊了聊 在多线程中使用 ArrayList 会发生什么，这次我们说说平时常用的列表：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/understanding-java-list/">认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-02-09</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/understanding-java-list/" class="leancloud_visitors" data-flag-title="认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Vector"><span class="toc-text">Vector</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ArrayList"><span class="toc-text">ArrayList</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SynchronizedList"><span class="toc-text">SynchronizedList</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CopyOnWriteArrayList"><span class="toc-text">CopyOnWriteArrayList</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对比-CopyOnWriteArrayList-和-SynchronizedList"><span class="toc-text">对比 CopyOnWriteArrayList 和 SynchronizedList</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-text">参考</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="http://static.howardliu.cn/java/sunset-5299957_1920.jpg" alt="认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList"></p>
+<p>你好，我是看山。</p>
+<p>书接上文，上次聊了聊 <a href="https://www.howardliu.cn/arraylist-is-not-thread-safe/">在多线程中使用 ArrayList 会发生什么</a>，这次我们说说平时常用的列表：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList。</p>
+<a id="more"></a>
+
+<h2 id="Vector"><a href="#Vector" class="headerlink" title="Vector"></a>Vector</h2><p><code>Vector</code>是在 JDK 1.0 提供的，虽然没有被标记<code>Deprecated</code>，但是事实上已经没人使用了。主要原因是性能差，且不符合需求。</p>
+<p>从源码可以看出（这里不贴源码了），<code>Vector</code>是基于数组实现，几乎在所有操作方法上，都用<code>synchronized</code>关键字实现方法同步，这种同步方式可以对单一操作进行加锁，比如多个线程同时执行<code>add</code>会同步阻塞执行，但是多线程执行<code>add</code>和<code>remove</code>时，就不会阻塞了。</p>
+<p>但是，大部分需要对队列加锁的场景，是想对整个队列加锁，而不仅仅是对单一操作加锁。也就是说，<code>Vector</code>和我们的期望不同，但是又额外增加了同步操作带来的性能开销。所以，不是必须使用的场景，都可以使用<code>ArrayList</code>代替，即使是多线程情况下需要同步队列，也可以使用<code>CopyOnWriteArrayList</code>和<code>SynchronizedList</code>代替。</p>
+<h2 id="ArrayList"><a href="#ArrayList" class="headerlink" title="ArrayList"></a>ArrayList</h2><p><code>ArrayList</code>是在 JDK 1.1 提供的，作为<code>Vector</code>的继任者（<code>ArrayList</code>实现方式与<code>Vector</code>几乎完全相同），<code>ArrayList</code>把方法上的<code>synchronized</code>全部去掉了，完全没有实现同步，是非线程安全的。</p>
+<p>它的非线程安全，还体现在迭代器的快速失败上。在使用方法<code>iterator</code>和<code>listIterator</code>创建迭代器之后，如果还对原来的<code>ArrayList</code>队列进行修改（add 或 remove），迭代器迭代的时候就会报<code>ConcurrentModificationException</code>异常。从源码可以看出，迭代器在迭代过程中，会检查队列中修改次数<code>modCount</code>与创建迭代器时落下的修改次数快照<code>expectedModCount</code>是否相等，相等表示没有修改过，代码如下：</p>
+<pre><code class="java">private class Itr implements Iterator&lt;E&gt; {
+    // 这段代码是从 ArrayList 中摘取的
+    // 只留下检查方法，略过其他代码，有兴趣的可以从源码中查看
+    final void checkForComodification() {
+        if (modCount != expectedModCount)
+            throw new ConcurrentModificationException();
+    }
+}</code></pre>
+<p>第三点是在多线程场景中，添加元素可能会丢失数据，或者发生数组越界异常，<a href="https://www.howardliu.cn/arraylist-is-not-thread-safe/">在多线程中使用 ArrayList 会发生什么</a> 有详细描述，这里就不赘述了。</p>
+<h2 id="SynchronizedList"><a href="#SynchronizedList" class="headerlink" title="SynchronizedList"></a>SynchronizedList</h2><p><code>SynchronizedList</code>是<code>Collections</code>的静态内部类，使用<code>Collections.synchronizedList()</code>静态方法创建，是一个通过组合<code>List</code>类实现的封装实现。它的大多数方法通过<code>synchronized (mutex){...}</code>代码块同步方式，因为加锁对象<code>mutex</code>是队列对象中定义的相同对象，所以对<code>mutex</code>加锁时，就实现对整个队列加锁，也就解决了<code>Vector</code>不能对整个队列加锁的问题。所以如果有多个线程同时操作<code>add</code>和<code>remove</code>方法，会阻塞同步执行。</p>
+<p><code>ArrayList</code>中存在的迭代器快速失败情况，依然存在，正如下面源码中的注释：想要使用迭代器，需要用户手动实现同步。</p>
+<pre><code class="java">static class SynchronizedList&lt;E&gt;
+    extends SynchronizedCollection&lt;E&gt;
+    implements List&lt;E&gt; {
+
+    // 代码摘自 Collections，省略很多代码
+
+    public void add(int index, E element) {
+        synchronized (mutex) {list.add(index, element);}
+    }
+
+    public ListIterator&lt;E&gt; listIterator() {
+        return list.listIterator(); // Must be manually synched by user
+    }
+
+    public ListIterator&lt;E&gt; listIterator(int index) {
+        return list.listIterator(index); // Must be manually synched by user
+    }
+}</code></pre>
+<p>手动同步的时候需要注意，既然我们关注的全局同步，在迭代器设置同步的时候，要保证锁定对象与<code>add</code>等方法中对象相同。这个在后续补充说明，这里就不展开了。</p>
+<h2 id="CopyOnWriteArrayList"><a href="#CopyOnWriteArrayList" class="headerlink" title="CopyOnWriteArrayList"></a>CopyOnWriteArrayList</h2><p><code>CopyOnWriteArrayList</code>是从 JDK 1.5 开始提供的，先看看<code>add</code>方法的源码：</p>
+<pre><code class="java">public class CopyOnWriteArrayList&lt;E&gt;
+    implements List&lt;E&gt;, RandomAccess, Cloneable, java.io.Serializable {
+
+    /** The lock protecting all mutators */
+    final transient ReentrantLock lock = new ReentrantLock();
+
+    /** The array, accessed only via getArray/setArray. */
+    private transient volatile Object[] array;
+
+    // 代码摘自 CopyOnWriteArrayList，省略很多代码
+
+    public boolean add(E e) {
+        final ReentrantLock lock = this.lock;
+        lock.lock();
+        try {
+            Object[] elements = getArray();
+            int len = elements.length;
+            Object[] newElements = Arrays.copyOf(elements, len + 1);
+            newElements[len] = e;
+            setArray(newElements);
+            return true;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public boolean addAll(Collection&lt;? extends E&gt; c) {
+        Object[] cs = (c.getClass() == CopyOnWriteArrayList.class) ?
+            ((CopyOnWriteArrayList&lt;?&gt;)c).getArray() : c.toArray();
+        if (cs.length == 0)
+            return false;
+        final ReentrantLock lock = this.lock;
+        lock.lock();
+        try {
+            Object[] elements = getArray();
+            int len = elements.length;
+            if (len == 0 &amp;&amp; cs.getClass() == Object[].class)
+                setArray(cs);
+            else {
+                Object[] newElements = Arrays.copyOf(elements, len + cs.length);
+                System.arraycopy(cs, 0, newElements, len, cs.length);
+                setArray(newElements);
+            }
+            return true;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private E get(Object[] a, int index) {
+        return (E) a[index];
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws IndexOutOfBoundsException {@inheritDoc}
+     */
+    public E get(int index) {
+        return get(getArray(), index);
+    }
+}</code></pre>
+<p>可以看到，<code>CopyOnWriteArrayList</code>借助<code>ReentrantLock</code>实现同步，在<code>synchronized</code>优化之前，<code>ReentrantLock</code>性能高于<code>synchronized</code>。<code>CopyOnWriteArrayList</code>也是通过数组实现的，但是在数组前面增加了<code>volatile</code>关键字，实现了多线程情况下数组的可见性，更加安全。更重要的一点是，<code>CopyOnWriteArrayList</code>在<code>add</code>添加元素的时候，实现方式是重建数组对象，替换原来的数组引用。与<code>ArrayList</code>的扩容方式相比，减少了空间，但是也增加了赋值数组的性能开销。在<code>get</code>获取元素的时候，没有任何锁，直接数据返回。</p>
+<p><code>CopyOnWriteArrayList</code>的迭代器时通过<code>COWIterator</code>实现的，调用<code>iterator</code>方法时，将当前队列中数组的快照赋值到迭代器中的数组引用上。如果原来的队列发生修改，队列中数组会指向别的引用，而迭代器中的数组不会发生变化，所以在多线程执行过程中，通过迭代器遍历数组，也可以修改队列中的数据。这种方式保障线程安全的同时，也可能会出现数据不一致的情况，只能是使用的使用多注意了。</p>
+<pre><code class="java">static final class COWIterator&lt;E&gt; implements ListIterator&lt;E&gt; {
+    /** Snapshot of the array */
+    private final Object[] snapshot;
+    /** Index of element to be returned by subsequent call to next.  */
+    private int cursor;
+
+    private COWIterator(Object[] elements, int initialCursor) {
+        cursor = initialCursor;
+        snapshot = elements;
+    }
+}</code></pre>
+<h2 id="对比-CopyOnWriteArrayList-和-SynchronizedList"><a href="#对比-CopyOnWriteArrayList-和-SynchronizedList" class="headerlink" title="对比 CopyOnWriteArrayList 和 SynchronizedList"></a>对比 CopyOnWriteArrayList 和 SynchronizedList</h2><p><code>CopyOnWriteArrayList</code>和<code>SynchronizedList</code>都实现了同步，实现方式上采用的是不同策略，各自的侧重点不同。</p>
+<p><code>CopyOnWriteArrayList</code>侧重于读写分离，发生数据写操作（<code>add</code>或<code>remove</code>）时，会加锁，各个线程阻塞执行，执行过程会创建数据副本，替换对象引用；如果同时有读操作（<code>get</code>或<code>iterator</code>），读操作读取的是老数据，或者成为历史数据快照，或者成为缓存数据。这会造成读写同时发生时，数据不一致的情况，但是数据最终会一致。这种方式与数据库读写分离模式几乎相同，很多特性可以类比。</p>
+<p><code>SynchronizedList</code>侧重数据强一致，也就是说当发生数据写操作（<code>add</code>或<code>remove</code>）时，会加锁，各个线程阻塞执行，而且也会通过相同的锁阻塞<code>get</code>操作。</p>
+<p>从<code>CopyOnWriteArrayList</code>和<code>SynchronizedList</code>两种不同事项方式，可以推断<code>CopyOnWriteArrayList</code>在写少读多的场景中执行效率高，<code>SynchronizedList</code>的读写操作效率很均衡，所以在写多读多、写多读少的场景执行效率都会高于<code>CopyOnWriteArrayList</code>。借用网上的测试结果：</p>
+<p><img src="http://static.howardliu.cn/java/CopyOnWriteArrayList-SynchronizedList-Vector.jpg" alt="对比 CopyOnWriteArrayList 和 SynchronizedList"></p>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><ol>
+<li><code>synchronized</code>关键字在 JDK 8 之前性能比较差，可以看到 JDK1.5 之后实现的同步代码，很多是通过<code>ReentrantLock</code>实现的。</li>
+<li>多线程场景中除了需要考虑同步外，还需要考虑数据可见性，可以通过<code>volatile</code>关键字实现。</li>
+<li><code>ArrayList</code>完全没有同步操作，是非线程安全的</li>
+<li><code>CopyOnWriteArrayList</code>和<code>SynchronizedList</code>属于线程安全队列</li>
+<li><code>CopyOnWriteArrayList</code>实现读写分离，适合场景是写少读多的场景</li>
+<li><code>SynchronizedList</code>要求数据强一致，是队列全局加锁方式，读操作也会加锁</li>
+<li><code>Vector</code>只是在迭代器遍历性能很差，如果不考虑全局锁定队列，单纯读操作和单独写操作性能与<code>SynchronizedList</code>相差不大。</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
+<li><a href="https://stackoverflow.com/questions/1386275/why-is-java-vector-and-stack-class-considered-obsolete-or-deprecated" target="_blank" rel="noopener">Why is Java Vector (and Stack) class considered obsolete or deprecated?</a></li>
+<li><a href="https://blog.csdn.net/yangzl2008/article/details/39456817" target="_blank" rel="noopener">CopyOnWriteArrayList 与 Collections.synchronizedList 的性能对比</a></li>
+<li><a href="https://juejin.cn/post/6844904054745743367" target="_blank" rel="noopener">Collections.synchronizedList 、CopyOnWriteArrayList、Vector 介绍、源码浅析与性能对比</a></li>
+</ol>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ol>
+<li><a href="https://www.howardliu.cn/arraylist-is-not-thread-safe/">如果非要在多线程中使用 ArrayList 会发生什么？</a></li>
+</ol>
+<hr>
+<p>你好，我是看山，公众号：看山的小屋，10 年老后端，Apache Storm、WxJava、Cynomys 开源贡献者。主业：程序猿，兼职：架构师。游于码界，戏享人生。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/understanding-java-list/">认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList</a><br>CSDN 主页：<a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN 博文：<a href="https://blog.csdn.net/liuxinghao/article/details/113780875" target="_blank" rel="noopener">认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList</a></p>
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/Java/">Java</a>
+            
+            <a href="/tags/线程安全/">线程安全</a>
+            
+            <a href="/tags/队列/">队列</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/arraylist-is-not-thread-safe/">
+                <i class="icon-next">如果非要在多线程中使用ArrayList会发生什么？</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/闲聊/" style="font-size: 15px;">闲聊</a> <a href="/tags/辞职/" style="font-size: 15px;">辞职</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/understanding-java-list/">认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList</a></li><li class="post-list-item"><a class="post-list-link" href="/arraylist-is-not-thread-safe/">如果非要在多线程中使用ArrayList会发生什么？</a></li><li class="post-list-item"><a class="post-list-link" href="/java-import-package/">java import 导入包时，我们需要注意什么呢？</a></li><li class="post-list-item"><a class="post-list-link" href="/algo-for-jvm-gc/">JVM 垃圾收集算法</a></li><li class="post-list-item"><a class="post-list-link" href="/caching-techniques/">软件架构-缓存技术</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2021</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

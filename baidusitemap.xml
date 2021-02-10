@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.howardliu.cn/understanding-java-list/</loc>
+    <lastmod>2021-02-09</lastmod>
+  </url>  <url>
     <loc>https://www.howardliu.cn/arraylist-is-not-thread-safe/</loc>
     <lastmod>2021-02-04</lastmod>
   </url>  <url>
@@ -91,13 +94,13 @@
     <loc>https://www.howardliu.cn/deploy-ear-from-eos-to-weblogic/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
     <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/hadoop-environment/</loc>
