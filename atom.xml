@@ -27,14 +27,7 @@
     
     <summary type="html">
     
-      &lt;p&gt;&lt;img src=&quot;http://static.howardliu.cn/software-architecture/jellyfish-2427426_1920.jpg&quot; alt=&quot;软件架构-事件驱动架构&quot;&gt;&lt;/p&gt;
-&lt;p&gt;你好，我是看山。&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;本文源自并发编程网的翻译邀请，翻译的是 Jakob Jenkov 的 &lt;a href=&quot;http://tutorials.jenkov.com/software-architecture/index.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;《软件架构》&lt;/a&gt; 中关于事件驱动的内容，虽然是 2014 年的文章，但是从软件架构层面上，并不过时。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;以下是正文。&lt;/p&gt;
-&lt;p&gt;事件驱动架构是一种系统或组件之间通过发送事件和响应事件彼此交互的架构风格。当某个事件发生时，组件A不直接调用组件B，而只是发出一个事件。组件A不知道哪些组件监听并处理这些事件。事件驱动架构可以在进程内和进程间使用。比如，GUI框架中会大量使用事件驱动。【译者注：目前很多系统采用微服务架构，事件驱动使用的更加广泛了。】此外，正如我在&lt;a href=&quot;http://tutorials.jenkov.com/java-concurrency/concurrency-models.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;并发模型教程&lt;/a&gt; 中所提到的，装配线并发模型（AKA reactive，非阻塞并发模型）也使用了事件驱动架构。&lt;/p&gt;
-&lt;p&gt;本文主要介绍进程之间的事件驱动架构，后文提到这个词的时候也是指进程交互方式。&lt;/p&gt;
+      事件驱动架构是一种系统或组件之间通过发送事件和响应事件彼此交互的架构风格。
     
     </summary>
     
