@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>软件架构-事件驱动架构||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="你好，我是看山。  本文源自并发编程网的翻译邀请，翻译的是 Jakob Jenkov 的 《软件架构》 中关于事件驱动的内容，虽然是 2014 年的文章，但是从软件架构层面上，并不过时。  以下是正文。 事件驱动架构是一种系统或组件之间通过发送事件和响应事件彼此交互的架构风格。当某个事件发生时，组件A不直接调用组件B，而只是发出一个事件。组件A不知道哪些组件监听并处理这些事件。事件驱动架构可以在">
+<meta name="keywords" content="软件架构,事件驱动,event,event-driven">
+<meta property="og:type" content="article">
+<meta property="og:title" content="软件架构-事件驱动架构">
+<meta property="og:url" content="https://www.howardliu.cn/event-driven-architecture/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="你好，我是看山。  本文源自并发编程网的翻译邀请，翻译的是 Jakob Jenkov 的 《软件架构》 中关于事件驱动的内容，虽然是 2014 年的文章，但是从软件架构层面上，并不过时。  以下是正文。 事件驱动架构是一种系统或组件之间通过发送事件和响应事件彼此交互的架构风格。当某个事件发生时，组件A不直接调用组件B，而只是发出一个事件。组件A不知道哪些组件监听并处理这些事件。事件驱动架构可以在">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://static.howardliu.cn/software-architecture/jellyfish-2427426_1920.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/software-architecture/event-driven-architecture-1.png">
+<meta property="og:image" content="http://static.howardliu.cn/software-architecture/event-driven-architecture-2.png">
+<meta property="og:image" content="http://static.howardliu.cn/software-architecture/event-driven-architecture-3.png">
+<meta property="og:image" content="http://static.howardliu.cn/software-architecture/event-driven-architecture-4.png">
+<meta property="og:image" content="http://static.howardliu.cn/software-architecture/event-driven-architecture-5.png">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-02-20T13:21:45.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="软件架构-事件驱动架构">
+<meta name="twitter:description" content="你好，我是看山。  本文源自并发编程网的翻译邀请，翻译的是 Jakob Jenkov 的 《软件架构》 中关于事件驱动的内容，虽然是 2014 年的文章，但是从软件架构层面上，并不过时。  以下是正文。 事件驱动架构是一种系统或组件之间通过发送事件和响应事件彼此交互的架构风格。当某个事件发生时，组件A不直接调用组件B，而只是发出一个事件。组件A不知道哪些组件监听并处理这些事件。事件驱动架构可以在">
+<meta name="twitter:image" content="http://static.howardliu.cn/software-architecture/jellyfish-2427426_1920.jpg">
+
+<meta name="keywords" content="软件架构,事件驱动,event,event-driven">
+
+
+<meta name="description" content="你好，我是看山。
+
+本文源自并发编程网的翻译邀请，翻译的是 Jakob Jenkov 的 《软件架构》 中关于事件驱动的内容，虽然是 2014 年的文章，但是从软件架构层面上，并不过时。
+
+以下是正文。
+事件驱动架构是一种系统或组件之间通过发送事件和响应事件彼此交互的架构风格。当某个事件发生时，组件">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/event-driven-architecture/">软件架构-事件驱动架构</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-02-20</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/event-driven-architecture/" class="leancloud_visitors" data-flag-title="软件架构-事件驱动架构">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#进程间的事件驱动架构"><span class="toc-text">进程间的事件驱动架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#事件队列"><span class="toc-text">事件队列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#事件日志"><span class="toc-text">事件日志</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#事件收集器"><span class="toc-text">事件收集器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#响应队列"><span class="toc-text">响应队列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#读事件-vs-写事件"><span class="toc-text">读事件 vs. 写事件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#事件日志重放的挑战"><span class="toc-text">事件日志重放的挑战</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#处理动态数据"><span class="toc-text">处理动态数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#与外部系统的交互"><span class="toc-text">与外部系统的交互</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#事件日志重放解决方案"><span class="toc-text">事件日志重放解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#重放模式"><span class="toc-text">重放模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多步骤事件队列"><span class="toc-text">多步骤事件队列</span></a></li></ol></li></ol>
+    </div>
+ -->
+            <p><img src="http://static.howardliu.cn/software-architecture/jellyfish-2427426_1920.jpg" alt="软件架构-事件驱动架构"></p>
+<p>你好，我是看山。</p>
+<blockquote>
+<p>本文源自并发编程网的翻译邀请，翻译的是 Jakob Jenkov 的 <a href="http://tutorials.jenkov.com/software-architecture/index.html" target="_blank" rel="noopener">《软件架构》</a> 中关于事件驱动的内容，虽然是 2014 年的文章，但是从软件架构层面上，并不过时。</p>
+</blockquote>
+<p>以下是正文。</p>
+<p>事件驱动架构是一种系统或组件之间通过发送事件和响应事件彼此交互的架构风格。当某个事件发生时，组件A不直接调用组件B，而只是发出一个事件。组件A不知道哪些组件监听并处理这些事件。事件驱动架构可以在进程内和进程间使用。比如，GUI框架中会大量使用事件驱动。【译者注：目前很多系统采用微服务架构，事件驱动使用的更加广泛了。】此外，正如我在<a href="http://tutorials.jenkov.com/java-concurrency/concurrency-models.html" target="_blank" rel="noopener">并发模型教程</a> 中所提到的，装配线并发模型（AKA reactive，非阻塞并发模型）也使用了事件驱动架构。</p>
+<p>本文主要介绍进程之间的事件驱动架构，后文提到这个词的时候也是指进程交互方式。</p>
+<a id="more"></a>
+
+<h2 id="进程间的事件驱动架构"><a href="#进程间的事件驱动架构" class="headerlink" title="进程间的事件驱动架构"></a>进程间的事件驱动架构</h2><p>事件驱动架构是一种架构风格，先将请求事件集中存放在一个或多个事件队列中，然后事件从这些事件队列转发到后端服务，处理这些事件。</p>
+<p>因为事件可以被看做是消息流，所以事件驱动架构也被称为消息驱动架构或者流处理架构。流处理架构又可以被称为lambda架构。为了保证统一，后文会继续使用事件驱动这个名词。</p>
+<h2 id="事件队列"><a href="#事件队列" class="headerlink" title="事件队列"></a>事件队列</h2><p>在事件驱动架构中，你会有一个或多个集中的事件队列，所有的事件被处理前，会先保存在集中的事件队列中。下面给出一个简单示例：</p>
+<p><img src="http://static.howardliu.cn/software-architecture/event-driven-architecture-1.png" alt="event-driven-architecture"></p>
+<p>事件插入队列时是有序的，这样就可以顺序处理这些事件。</p>
+<h2 id="事件日志"><a href="#事件日志" class="headerlink" title="事件日志"></a>事件日志</h2><p>写入事件队列时，消息可能写入到事件日志（通常是磁盘存储）中。如果发生系统崩溃，系统只需要重放事件日志即可恢复到崩溃前的状态。下面是一个事件驱动架构的示例，其中包括一个用于持久化事件的事件日志：</p>
+<p><img src="http://static.howardliu.cn/software-architecture/event-driven-architecture-2.png" alt="event-driven-architecture"></p>
+<p>我们还可以通过备份事件日志，来备份系统状态。在将新版本的系统部署在生产环境之前，可以使用这个备份数据对其性能进行测试。或者，通过重放事件日志的备份，来重现某些错误。</p>
+<h2 id="事件收集器"><a href="#事件收集器" class="headerlink" title="事件收集器"></a>事件收集器</h2><p>请求都是通过网络传输，比如HTTP或者其他协议。为了保持一致，可以通过事件采集器接收来自不同来源的事件。下面是一个添加了事件收集器的事件驱动架构示例：</p>
+<p><img src="http://static.howardliu.cn/software-architecture/event-driven-architecture-3.png" alt="event-driven-architecture"></p>
+<h2 id="响应队列"><a href="#响应队列" class="headerlink" title="响应队列"></a>响应队列</h2><p>有时，我们还需要向请求（即事件）返回响应，所以，很多事件驱动架构除了包含事件队列，还会有一个响应队列。下面是包含事件队列（入队队列）和响应队列（出队队列）的事件驱动架构示例：</p>
+<p><img src="http://static.howardliu.cn/software-architecture/event-driven-architecture-4.png" alt="event-driven-architecture"></p>
+<p>如你所见，响应队列必须路由到正确的事件收集器。比如，如果HTTP收集器（本质上是web服务器）通过HTTP接收的请求发送到事件队列中，则该事件生成的响应可能也需要通过HTTP收集器发回客户端。</p>
+<p>通常，响应队列不会持久化，也就意味着它不会写入事件日志，只有输入的事件才会持久化到事件日志中。</p>
+<h2 id="读事件-vs-写事件"><a href="#读事件-vs-写事件" class="headerlink" title="读事件 vs. 写事件"></a>读事件 vs. 写事件</h2><p>如果将所有传入的请求都认为是事件，就需要将这些事件都推送到事件队列中。如果事件队列是实现了持久化（持久化到事件日志中），就意味着所有事件都需要持久化。通常持久化都比较慢，如果我们能够过滤掉一些不需要持久化的事件，我们就能够提升队列的性能。</p>
+<p>我们将事件持久化到事件日志的原因是，我们可以重放事件日志，并重建因为事件引起的系统状态变化。为了支持这个特性，实际上只需要持久化更改系统状态的事件。换句话说，我们只需要将事件分为读事件和写事件。读事件只读取系统数据，不会更改，写事件会更改系统数据。</p>
+<p>通过根据读和写划分事件，我们只需要持久化写事件的消息即可。这将提升事件队列的性能，提升比例大小，取决于读写事件之间的比例。</p>
+<p>为了将事件划分为读写事件，需要在事件到达事件队列之前，也就是事件收集器中进行区分。否则，事件队列无法知道到达的事件是否需要持久化。</p>
+<p>还可以将事件队列拆分为两个，一个用于存储读事件的事件队列，一个用于存储写事件的事件队列。这样读事件就不会慢于写事件，事件队列也不需要检查每条事件是否需要持久化。读事件队列不需要进行持久化，写事件队列始终持久化事件。</p>
+<p>下面是一个事件驱动架构的示例，其中事件队列分为读和写事件队列：</p>
+<p><img src="http://static.howardliu.cn/software-architecture/event-driven-architecture-5.png" alt="event-driven-architecture"></p>
+<p>上图示例中箭头比较乱，但实际上创建3个丢列并在它们之间分发消息简单很多。</p>
+<h2 id="事件日志重放的挑战"><a href="#事件日志重放的挑战" class="headerlink" title="事件日志重放的挑战"></a>事件日志重放的挑战</h2><p>事件驱动架构的一大优点是，在系统崩溃或系统重启情况下，只需要重放事件日志，就能够重建系统状态。在日志可以独立于时间和周边系统的情况下重放日志，这是一个很大的优势。</p>
+<p>但是，完全独立于时间重放事件日志有时候很难实现。接下来介绍下事件日志重放的一些挑战。</p>
+<h3 id="处理动态数据"><a href="#处理动态数据" class="headerlink" title="处理动态数据"></a>处理动态数据</h3><p>如前所述，写事件处理时可能会修改系统数据。有些情况，这种数据的修改受事件处理时动态数据的影响。比如，处理事件的日期和时间或者特定日期和时间的货币汇率。</p>
+<p>这些动态数据会对事件重放造成困难。如果在不同的时间重放事件日志，处理该事件的服务可能会解析不同的动态值，比如其他的日期和时间或其他汇率。因此，在不同的日期重放事件日志，可能会出现重建系统数据与最初处理事件产生的数据不一致。</p>
+<p>要解决动态数据的问题，可以让写事件队列将所需的动态数据标记在事件中。但是，要实现这种方案，需要事件队列知道每条事件消息需要哪些动态数据。这样会使事件队列的设计复杂化，每次需要新的动态数据时，事件队列都需要知道如何查找这些动态数据。</p>
+<p>另外一种解决方案是，写事件队列只在写事件上标记事件的日期和时间。使用事件的原始日期和时间，处理事件的服务可以查找给定日期和时间对应的动态数据。比如，可以通过原始的日期和时间，查询当时有效的汇率。这就要求处理事件的服务需要基于日期和时间查询动态数据，但是这只是理想状态。</p>
+<h3 id="与外部系统的交互"><a href="#与外部系统的交互" class="headerlink" title="与外部系统的交互"></a>与外部系统的交互</h3><p>事件日志重放的另一个挑战是与外部系统的协调。比如，事件日志中包含电商平台的订单，在第一次处理这个事件时，需要将订单发送到外部支付网关，以从客户信用卡中收费。</p>
+<p>如果重放事件日志，就不希望再次为同一个订单向客户收费。因此，就不希望在事件重放时，将订单发送到外部支付网关。</p>
+<h2 id="事件日志重放解决方案"><a href="#事件日志重放解决方案" class="headerlink" title="事件日志重放解决方案"></a>事件日志重放解决方案</h2><p>解决重放事件日志问题挺不容易的。有些系统没有问题，可以直接重放事件日志；有些系统可能需要知道原始事件的日期和时间；有些系统可能需要知道更多类似于事件原始处理过程中从外部系统获取的原始数据。</p>
+<h3 id="重放模式"><a href="#重放模式" class="headerlink" title="重放模式"></a>重放模式</h3><p>在任何情况下，倾听写事件队列中事件的任何服务都必须知道传入事件是原始事件还是重放事件。这样，处理服务就能够确定如何处理动态数据或者如何与外部系统交互了。</p>
+<h3 id="多步骤事件队列"><a href="#多步骤事件队列" class="headerlink" title="多步骤事件队列"></a>多步骤事件队列</h3><p>另外一个解决方案是采用多步骤事件队列。第一步，收集所有写事件；第二步，解析动态数据；第三步，与外部系统交互。如果需要重放事件日志，只需要跳过第一步和第二步，重放第三步即可。具体如何实现，需要取决于具体的系统设计。</p>
+<hr>
+<p>你好，我是看山，公众号：看山的小屋，10 年老后端，Apache Storm、WxJava、Cynomys 开源贡献者。主业：程序猿，兼职：架构师。游于码界，戏享人生。</p>
+<p>原文链接：<a href="http://tutorials.jenkov.com/software-architecture/event-driven-architecture.html" target="_blank" rel="noopener">Event-driven Architecture</a><br>翻译: <a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>译文链接: <a href="https://www.howardliu.cn/event-driven-architecture/">软件架构-事件驱动架构</a><br>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN博文: <a href="https://blog.csdn.net/liuxinghao/article/details/103794938" target="_blank" rel="noopener">软件架构-事件驱动架构</a></p>
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/架构/">架构</a>
+            
+            <a href="/tags/事件驱动/">事件驱动</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/understanding-java-list/">
+                <i class="icon-next">认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/闲聊/" style="font-size: 15px;">闲聊</a> <a href="/tags/非理性/" style="font-size: 15px;">非理性</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/event-driven-architecture/">软件架构-事件驱动架构</a></li><li class="post-list-item"><a class="post-list-link" href="/understanding-java-list/">认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList</a></li><li class="post-list-item"><a class="post-list-link" href="/arraylist-is-not-thread-safe/">如果非要在多线程中使用ArrayList会发生什么？</a></li><li class="post-list-item"><a class="post-list-link" href="/java-import-package/">java import 导入包时，我们需要注意什么呢？</a></li><li class="post-list-item"><a class="post-list-link" href="/algo-for-jvm-gc/">JVM 垃圾收集算法</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2021</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
