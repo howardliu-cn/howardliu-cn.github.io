@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Docker 教程（一）：Docker 是什么||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="Docker 是一种将应用程序和服务器配置打包成 Docker 镜像的方法，使用了一种称为 Dockerfile 的简单打包规范。Docker 镜像可以启动多个多个实例，这些运行的实例被称为 Docker 容器。这个系列的内容主要包括讲解什么是 Docker 镜像、什么是容器、什么是 Dockerfile，以及如何创建、运行和发布等。">
+<meta name="keywords" content="Devops,Docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker 教程（一）：Docker 是什么">
+<meta property="og:url" content="https://www.howardliu.cn/docker-tutorial/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="Docker 是一种将应用程序和服务器配置打包成 Docker 镜像的方法，使用了一种称为 Dockerfile 的简单打包规范。Docker 镜像可以启动多个多个实例，这些运行的实例被称为 Docker 容器。这个系列的内容主要包括讲解什么是 Docker 镜像、什么是容器、什么是 Dockerfile，以及如何创建、运行和发布等。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://static.howardliu.cn/docker/dandelion-5975473_1920.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/docker/docker-introduction-1.png">
+<meta property="og:image" content="http://static.howardliu.cn/docker/docker-introduction-2.png">
+<meta property="og:image" content="http://static.howardliu.cn/docker/docker-introduction-3.png">
+<meta property="og:image" content="http://static.howardliu.cn/docker/docker-introduction-4.png">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-03-07T09:42:18.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker 教程（一）：Docker 是什么">
+<meta name="twitter:description" content="Docker 是一种将应用程序和服务器配置打包成 Docker 镜像的方法，使用了一种称为 Dockerfile 的简单打包规范。Docker 镜像可以启动多个多个实例，这些运行的实例被称为 Docker 容器。这个系列的内容主要包括讲解什么是 Docker 镜像、什么是容器、什么是 Dockerfile，以及如何创建、运行和发布等。">
+<meta name="twitter:image" content="http://static.howardliu.cn/docker/dandelion-5975473_1920.jpg">
+
+<meta name="keywords" content="Devops,Docker">
+
+
+<meta name="description" content="Docker 是一种将应用程序和服务器配置打包成 Docker 镜像的方法，使用了一种称为 Dockerfile 的简单打包规范。Docker 镜像可以启动多个多个实例，这些运行的实例被称为 Docker 容器。这个系列的内容主要包括讲解什么是 Docker 镜像、什么是容器、什么是 Dockerf">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/docker-tutorial/">Docker 教程（一）：Docker 是什么</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-03-07</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/docker-tutorial/" class="leancloud_visitors" data-flag-title="Docker 教程（一）：Docker 是什么">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-的优势"><span class="toc-text">Docker 的优势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是-Docker-容器"><span class="toc-text">什么是 Docker 容器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-容器-vs-虚拟机"><span class="toc-text">Docker 容器 vs. 虚拟机</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dockerfile"><span class="toc-text">Dockerfile</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-镜像"><span class="toc-text">Docker 镜像</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-仓库"><span class="toc-text">Docker 仓库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-命令行工具"><span class="toc-text">Docker 命令行工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-Compose"><span class="toc-text">Docker Compose</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="http://static.howardliu.cn/docker/dandelion-5975473_1920.jpg" alt="Docker 教程"></p>
+<blockquote>
+<p>本文源自并发编程网的翻译邀请，翻译的是 Jakob Jenkov 的 <a href="http://tutorials.jenkov.com/docker/index.html" target="_blank" rel="noopener">《Docker 教程》</a> 中的第一篇，本文大概介绍了 Docker 是什么和有什么用。可能在工作中，会有专业运维同学管理服务器镜像或其他内容，但是如果不了解这些概念，很多时候我们不会全面了解到系统的全貌。</p>
+</blockquote>
+<a id="more"></a>
+
+<p>Docker 是一种将应用程序和服务器配置打包成 Docker 镜像的方法，使用了一种称为 Dockerfile 的简单打包规范。Docker 镜像可以启动多个多个实例，这些运行的实例被称为 Docker 容器。这个系列的内容主要包括讲解什么是 Docker 镜像、什么是容器、什么是 Dockerfile，以及如何创建、运行和发布等。</p>
+<h2 id="Docker-的优势"><a href="#Docker-的优势" class="headerlink" title="Docker 的优势"></a>Docker 的优势</h2><p>使用 Dockerfile 打包应用和服务器配置最大的好处是：</p>
+<ul>
+<li>不会忘记服务器是如何配置的，这些配置信息都记录在 Dockerfile 中。</li>
+<li>很容易在一个全新啊的 Docker 主机上运行应用程序，只需要将应用程序的 Docker 镜像部署到这台 Docker 主机上，然后启动它即可。</li>
+<li>可以使用 Kubernetes 和 Swarm 轻松管理集群中的 Docker 容器。</li>
+<li>目前许多云服务器平台可以很轻松的部署 Docker 容器，Docker 已经成为让云更加独立的部署方案。</li>
+<li>Docker 容器可以很简单的实现在客户自己的服务器上按照你的应用程序。</li>
+</ul>
+<h2 id="什么是-Docker-容器"><a href="#什么是-Docker-容器" class="headerlink" title="什么是 Docker 容器"></a>什么是 Docker 容器</h2><p>Linux 操作系统有几个特性：运行在操作系统上运行容器化的应用程序，这些容器化的特性，运行将文件系统和网络在各个容器化应用程序之间彼此分离。换句话说，一个容器化应用程序，不能访问另一个容器化应用程序的文件系统或网络，除非增加特殊配置，允许这种操作。Docker 使用 Linux 的容器化特性，并通过一组易于使用的工具公开这些特性。</p>
+<p><img src="http://static.howardliu.cn/docker/docker-introduction-1.png" alt="什么是 Docker 容器"></p>
+<h2 id="Docker-容器-vs-虚拟机"><a href="#Docker-容器-vs-虚拟机" class="headerlink" title="Docker 容器 vs. 虚拟机"></a>Docker 容器 vs. 虚拟机</h2><p>Docker 容器在本质上类似于虚拟机，两者的不同之处在于，虚拟机在总栈上有一个额外的操作系统。也就是说，虚拟机有完整的操作系统，然后这个虚拟机运行在一个有操作系统的主机上。</p>
+<p>Docker 容器与虚拟机的实现不同，它没有自己单独的操作系统，直接运行在所在主机的操作系统中。所以，Docker 容器足够小，因为它不包含虚拟机操作系统。Docker 容器运行的也很好，因为它不需要虚拟机的虚拟化。</p>
+<p><img src="http://static.howardliu.cn/docker/docker-introduction-2.png" alt="Docker 容器 vs. 虚拟机"></p>
+<h2 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h2><p>如前所述，我们可以通过一个按规则定义的 Dockerfile 文件，指定要包含在 Docker 容器中的内容。Dockerfile 文件包含了一组有 Docker 命令行工具执行的 Docker 指令，按照 Dockerfile 执行的结果是 Docker 镜像。我们可以从 <a href="http://tutorials.jenkov.com/docker/dockerfile.html" target="_blank" rel="noopener">Dockerfile 教程</a> 中得到更详细的解释。【译者注：后续翻译完成后，将替换此处链接。】</p>
+<h2 id="Docker-镜像"><a href="#Docker-镜像" class="headerlink" title="Docker 镜像"></a>Docker 镜像</h2><p>Docker 命令行工具按照 Dockerfile 中定义的结构执行指令时，会生产一个可移植、可运行的 Docker 镜像。这个 Docker 镜像中包含了所有 Docker 容器需要的文件和指令，同一个 Docker 镜像可以启动多个 Docker 容器。</p>
+<p><img src="http://static.howardliu.cn/docker/docker-introduction-3.png" alt="Docker 镜像"></p>
+<h2 id="Docker-仓库"><a href="#Docker-仓库" class="headerlink" title="Docker 仓库"></a>Docker 仓库</h2><p>Docker 镜像可以存储在 Docker 仓库中，一个可以将 Docker 镜像上传、下载的存储仓库。Docker 仓库可以是私有的，只能你或者你的组织或者你指定的人管理其中的镜像，也可以是公有的，任何人都可以管理其中的镜像，或者是从中下载 Docker 镜像。</p>
+<p>一个公有的 Docker 仓库，是运行潜在用户下载、安装和运行软件的很好的方式，只需要将应用程序打包为 Docker 镜像，上传到公有的 Docker 仓库中，你的用户就可以访问并使用它。</p>
+<p>Docker 公司已将 Docker 仓库作为一项托管服务，提供了私有和公有两种服务。一些云服务商，比如 AWS、AZure 和 Google，也提供了 Docker 仓库服务器，可以上传自己的 Docker 镜像。很容易的就能在云基础设施上的虚拟机或 Kubernetes 中使用这些镜像。</p>
+<p><img src="http://static.howardliu.cn/docker/docker-introduction-4.png" alt="Docker 仓库"></p>
+<h2 id="Docker-命令行工具"><a href="#Docker-命令行工具" class="headerlink" title="Docker 命令行工具"></a>Docker 命令行工具</h2><p>当在操作系统中安装 Docker 的时候，会同时安装 Docker 命令行工具。Docker 命令行工具可以通过 Dockerfile 构建 Docker 镜像，可以将 Docker 镜像上传到 Docker 仓库中，可以从 Docker 仓库中下载 Docker 镜像，可以操作 Docker 镜像启动或停止 Docker 容器。</p>
+<h2 id="Docker-Compose"><a href="#Docker-Compose" class="headerlink" title="Docker Compose"></a>Docker Compose</h2><p>Docker Compose 提供一种功能，可以将多个 Docker 容器链接成一个组合中，这个组合中的所有容器，可以一次性全部部署或停止。比如，一个 Docker 容器中运行应用，一个 Docker 容器中运行数据库，应用依赖于数据库，同时启动或停止，可以实现应用依赖的数据库没有正常运行。</p>
+<hr>
+<p>你好，我是看山，公众号：看山的小屋，10 年老猿，Apache Storm、WxJava、Cynomys 开源贡献者。游于码界，戏享人生。</p>
+<p>原文链接：<a href="http://tutorials.jenkov.com/docker/index.html" target="_blank" rel="noopener">Docker Tutorial</a><br>翻译：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>译文链接：<a href="https://www.howardliu.cn/docker-tutorial/">Docker 教程（一）：Docker 是什么</a><br>CSDN 主页：<a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN 博文：<a href="https://blog.csdn.net/liuxinghao/article/details/103794938" target="_blank" rel="noopener">Docker 教程（一）：Docker 是什么</a></p>
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/DevOps/">DevOps</a>
+            
+            <a href="/tags/Docker/">Docker</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/java-vector-vs-collections-synchronizedlist-arraylist/">
+                <i class="icon-next">Java 中 Vector 和 SynchronizedList 的区别</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/闲聊/" style="font-size: 15px;">闲聊</a> <a href="/tags/非理性/" style="font-size: 15px;">非理性</a> <a href="/tags/认知偏差/" style="font-size: 15px;">认知偏差</a> <a href="/tags/自控术/" style="font-size: 15px;">自控术</a> <a href="/tags/学非探其花/" style="font-size: 15px;">学非探其花</a> <a href="/tags/要自拔其根/" style="font-size: 15px;">要自拔其根</a> <a href="/tags/辞职/" style="font-size: 15px;">辞职</a> <a href="/tags/成本/" style="font-size: 15px;">成本</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/缓存/" style="font-size: 15px;">缓存</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/docker-tutorial/">Docker 教程（一）：Docker 是什么</a></li><li class="post-list-item"><a class="post-list-link" href="/java-vector-vs-collections-synchronizedlist-arraylist/">Java 中 Vector 和 SynchronizedList 的区别</a></li><li class="post-list-item"><a class="post-list-link" href="/event-driven-architecture/">软件架构-事件驱动架构</a></li><li class="post-list-item"><a class="post-list-link" href="/understanding-java-list/">认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList</a></li><li class="post-list-item"><a class="post-list-link" href="/arraylist-is-not-thread-safe/">如果非要在多线程中使用ArrayList会发生什么？</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2021</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
