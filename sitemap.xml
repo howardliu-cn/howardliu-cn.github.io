@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/docker-dockerfile/</loc>
+    
+    <lastmod>2021-03-13T15:30:08.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/docker-tutorial/</loc>
     
     <lastmod>2021-03-07T09:42:18.000Z</lastmod>
