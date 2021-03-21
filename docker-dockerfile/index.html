@@ -8,28 +8,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Docker 教程（二）：Dockerfile||沉潜飞动|君子藏器于身，待时而动。</title>
-<meta name="description" content="你好，我是看山。  本文源自并发编程网的翻译邀请，翻译的是 Jakob Jenkov 的 《Docker 教程》 中的第二篇。">
+<meta name="description" content="Dockerfile 包含一组关于如何构建 Docker 镜像的说明，通过 docker build 命令执行 Dockerfile 文件，可以构建一个 Docker 镜像，本文介绍了如何编写 Dockerfile 文件以及构建一个 Docker 镜像。">
 <meta name="keywords" content="Devops,Docker,Dockerfile">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Docker 教程（二）：Dockerfile">
 <meta property="og:url" content="https://www.howardliu.cn/docker-dockerfile/index.html">
 <meta property="og:site_name" content="沉潜飞动">
-<meta property="og:description" content="你好，我是看山。  本文源自并发编程网的翻译邀请，翻译的是 Jakob Jenkov 的 《Docker 教程》 中的第二篇。">
+<meta property="og:description" content="Dockerfile 包含一组关于如何构建 Docker 镜像的说明，通过 docker build 命令执行 Dockerfile 文件，可以构建一个 Docker 镜像，本文介绍了如何编写 Dockerfile 文件以及构建一个 Docker 镜像。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://static.howardliu.cn/docker/shops-5992277_1920.jpg">
 <meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
 <meta property="og:updated_time" content="2021-03-13T15:30:08.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Docker 教程（二）：Dockerfile">
-<meta name="twitter:description" content="你好，我是看山。  本文源自并发编程网的翻译邀请，翻译的是 Jakob Jenkov 的 《Docker 教程》 中的第二篇。">
+<meta name="twitter:description" content="Dockerfile 包含一组关于如何构建 Docker 镜像的说明，通过 docker build 命令执行 Dockerfile 文件，可以构建一个 Docker 镜像，本文介绍了如何编写 Dockerfile 文件以及构建一个 Docker 镜像。">
 <meta name="twitter:image" content="http://static.howardliu.cn/docker/shops-5992277_1920.jpg">
 
 <meta name="keywords" content="Devops,Docker,Dockerfile">
 
 
-<meta name="description" content="你好，我是看山。
-
-本文源自并发编程网的翻译邀请，翻译的是 Jakob Jenkov 的 《Docker 教程》 中的第二篇。">
+<meta name="description" content="Dockerfile 包含一组关于如何构建 Docker 镜像的说明，通过 docker build 命令执行 Dockerfile 文件，可以构建一个 Docker 镜像，本文介绍了如何编写 Dockerfile 文件以及构建一个 Docker 镜像。">
 
 <meta name="author" content="Howard Liu,howardliu1988@163.com">
 
@@ -107,7 +105,7 @@
             <!-- 
     <div id="toc" class="toc-content">
       <strong class="toc-title">目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Dockerfile的好处"><span class="toc-text">Dockerfile的好处</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dockerfile的结构"><span class="toc-text">Dockerfile的结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker基础镜像"><span class="toc-text">Docker基础镜像</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MAINTAINER"><span class="toc-text">MAINTAINER</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FROM"><span class="toc-text">FROM</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CMD"><span class="toc-text">CMD</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#COPY"><span class="toc-text">COPY</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ADD"><span class="toc-text">ADD</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ENV"><span class="toc-text">ENV</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RUN"><span class="toc-text">RUN</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ARG"><span class="toc-text">ARG</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#WORKDIR"><span class="toc-text">WORKDIR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EXPOSE"><span class="toc-text">EXPOSE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VOLUME"><span class="toc-text">VOLUME</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ENTRYPOINT"><span class="toc-text">ENTRYPOINT</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HEALTHCHECK"><span class="toc-text">HEALTHCHECK</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#健康检查间隔时间"><span class="toc-text">健康检查间隔时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#健康检查开始时间"><span class="toc-text">健康检查开始时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#健康检查超时时间"><span class="toc-text">健康检查超时时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#健康检查重复次数"><span class="toc-text">健康检查重复次数</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Dockerfile-的好处"><span class="toc-text">Dockerfile 的好处</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dockerfile-的结构"><span class="toc-text">Dockerfile 的结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-基础镜像"><span class="toc-text">Docker 基础镜像</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MAINTAINER"><span class="toc-text">MAINTAINER</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FROM"><span class="toc-text">FROM</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CMD"><span class="toc-text">CMD</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#COPY"><span class="toc-text">COPY</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ADD"><span class="toc-text">ADD</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ENV"><span class="toc-text">ENV</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RUN"><span class="toc-text">RUN</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ARG"><span class="toc-text">ARG</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#WORKDIR"><span class="toc-text">WORKDIR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EXPOSE"><span class="toc-text">EXPOSE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VOLUME"><span class="toc-text">VOLUME</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ENTRYPOINT"><span class="toc-text">ENTRYPOINT</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HEALTHCHECK"><span class="toc-text">HEALTHCHECK</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#健康检查间隔时间"><span class="toc-text">健康检查间隔时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#健康检查开始时间"><span class="toc-text">健康检查开始时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#健康检查超时时间"><span class="toc-text">健康检查超时时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#健康检查重复次数"><span class="toc-text">健康检查重复次数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
     </div>
  -->
             <p><img src="http://static.howardliu.cn/docker/shops-5992277_1920.jpg" alt="Docker 教程（二）：Dockerfile"></p>
@@ -117,83 +115,83 @@
 </blockquote>
 <a id="more"></a>
 
-<p>Dockerfile包含一组关于如何构建Docker镜像的说明，通过<code>docker build</code>命令执行Dockerfile文件，可以构建一个Docker镜像，本文介绍了如何编写Dockerfile文件以及构建一个Docker镜像。</p>
-<h2 id="Dockerfile的好处"><a href="#Dockerfile的好处" class="headerlink" title="Dockerfile的好处"></a>Dockerfile的好处</h2><p>Dockerfile文件以书面形式说明了如何构建一个Docker镜像，Docker镜像通常包含如下内容：</p>
+<p>Dockerfile 包含一组关于如何构建 Docker 镜像的说明，通过<code>docker build</code>命令执行 Dockerfile 文件，可以构建一个 Docker 镜像，本文介绍了如何编写 Dockerfile 文件以及构建一个 Docker 镜像。</p>
+<h2 id="Dockerfile-的好处"><a href="#Dockerfile-的好处" class="headerlink" title="Dockerfile 的好处"></a>Dockerfile 的好处</h2><p>Dockerfile 文件以书面形式说明了如何构建一个 Docker 镜像，Docker 镜像通常包含如下内容：</p>
 <ul>
-<li>首先需要一个基本的Docker镜像，在这个基础Docker镜像上构建自己的Docker镜像。</li>
-<li>一组需要安装在Docker镜像中的工具和应用。</li>
-<li>一组需要复制到Docker镜像中的文件（比如配置文件）。</li>
+<li>首先需要一个基本的 Docker 镜像，在这个基础 Docker 镜像上构建自己的 Docker 镜像。</li>
+<li>一组需要安装在 Docker 镜像中的工具和应用。</li>
+<li>一组需要复制到 Docker 镜像中的文件（比如配置文件）。</li>
 <li>可能需要在防火墙中打开的网络（TPC/UDP）端口或其他。</li>
-<li>等等。。。</li>
+<li>等等。</li>
 </ul>
-<p>首先，在Dockerfile文件中以书面形式说明这些，就意味着，我们不用特意记住应用程序如何安装，包括操作系统什么要求、需要安装的应用程序、需要赋值的文件、需要打开的网络端口等，这些内容都被记录在Dockerfile中。</p>
-<p>另外，通过Dockerfile文件构建Docker镜像，我们不需要手动执行这些繁琐重复且容易出错的工作。Docker会自动做这些事情，简单、快速、且不容易出错。</p>
-<p>第三，我们很容易和其他人分享Dockerfile文件，并且他们可以自己构建Docker镜像。</p>
-<p>第四，Dockerfile很容易存储在Git这样的版本控制器中，这样就可以跟踪Dockerfile（服务器、应用配置）的变更记录。版本控制器也可以很容易的让人们协同合作，比如在Dockerfile上，以及分享Dockerfile。</p>
-<h2 id="Dockerfile的结构"><a href="#Dockerfile的结构" class="headerlink" title="Dockerfile的结构"></a>Dockerfile的结构</h2><p>Dockerfile包含一组指令，每个指令有一个命令和参数组成，类似于命令行可执行文件。下面是一个Dockerfile简单示例：</p>
+<p>首先，在 Dockerfile 文件中以书面形式说明这些，就意味着，我们不用特意记住应用程序如何安装，包括操作系统什么要求、需要安装的应用程序、需要赋值的文件、需要打开的网络端口等，这些内容都被记录在 Dockerfile 中。</p>
+<p>另外，通过 Dockerfile 文件构建 Docker 镜像，我们不需要手动执行这些繁琐重复且容易出错的工作。Docker 会自动做这些事情，简单、快速、且不容易出错。</p>
+<p>第三，我们很容易和其他人分享 Dockerfile 文件，并且他们可以自己构建 Docker 镜像。</p>
+<p>第四，Dockerfile 很容易存储在 Git 这样的版本控制器中，这样就可以跟踪 Dockerfile（服务器、应用配置）的变更记录。版本控制器也可以很容易的让人们协同合作，比如在 Dockerfile 上，以及分享 Dockerfile。</p>
+<h2 id="Dockerfile-的结构"><a href="#Dockerfile-的结构" class="headerlink" title="Dockerfile 的结构"></a>Dockerfile 的结构</h2><p>Dockerfile 包含一组指令，每个指令有一个命令和参数组成，类似于命令行可执行文件。下面是一个 Dockerfile 简单示例：</p>
 <pre><code class="dockerfile"># 基础镜像
 FROM ubuntu:latest
 
 # 这里可以有更多安装软件和复制文件到镜像中的说明。
 COPY    /myapp/target/myapp.jar    /myapp/myapp.jar
 
-# 在Docker容器中执行的命令。
+# 在 Docker 容器中执行的命令。
 CMD echo Starting Docker Container</code></pre>
-<h2 id="Docker基础镜像"><a href="#Docker基础镜像" class="headerlink" title="Docker基础镜像"></a>Docker基础镜像</h2><p>Docker镜像是由层组成，每一层都会为最终的Docker镜像添加一些内容。每一个层实际上都是一个单独的Docker镜像，所以说，Docker镜像是由一个或多个层镜像组成，我们可以在其上添加自己的层。</p>
-<p>当通过Dockerfile文件指定自己的Docker镜像时，通常是从一个Docker基础镜像开始。这是另一个Docker镜像，可以在其上构建自己的Docker镜像。这个Docker基础镜像本身可能也包含多个层，并且是基于另一个基础镜像构建的。</p>
-<p>我们可以使用<code>From</code>命令在Dockerfile文件中指定Docker镜像作为基础镜像，如下节所述。</p>
-<h2 id="MAINTAINER"><a href="#MAINTAINER" class="headerlink" title="MAINTAINER"></a>MAINTAINER</h2><p><code>MAINTAINER</code>命令用于说明谁在维护这个Dockerfile文件。比如：</p>
+<h2 id="Docker-基础镜像"><a href="#Docker-基础镜像" class="headerlink" title="Docker 基础镜像"></a>Docker 基础镜像</h2><p>Docker 镜像是由层组成，每一层都会为最终的 Docker 镜像添加一些内容。每一个层实际上都是一个单独的 Docker 镜像，所以说，Docker 镜像是由一个或多个层镜像组成，我们可以在其上添加自己的层。</p>
+<p>当通过 Dockerfile 文件指定自己的 Docker 镜像时，通常是从一个 Docker 基础镜像开始。这是另一个 Docker 镜像，可以在其上构建自己的 Docker 镜像。这个 Docker 基础镜像本身可能也包含多个层，并且是基于另一个基础镜像构建的。</p>
+<p>我们可以使用<code>From</code>命令在 Dockerfile 文件中指定 Docker 镜像作为基础镜像，如下节所述。</p>
+<h2 id="MAINTAINER"><a href="#MAINTAINER" class="headerlink" title="MAINTAINER"></a>MAINTAINER</h2><p><code>MAINTAINER</code>命令用于说明谁在维护这个 Dockerfile 文件。比如：</p>
 <pre><code class="dockerfile">MAINTAINER   Joe Blocks &lt;joe@blocks.com&gt;</code></pre>
-<p><code>MAINTAINER</code>命令并不常用，因为这类信息在Git存储或其他地方有了。</p>
-<h2 id="FROM"><a href="#FROM" class="headerlink" title="FROM"></a>FROM</h2><p><code>FROM</code>命令用于指定Docker基础镜像，如果是从原始Linux镜像开始，可以使用如下命令：</p>
+<p><code>MAINTAINER</code>命令并不常用，因为这类信息在 Git 存储或其他地方有了。</p>
+<h2 id="FROM"><a href="#FROM" class="headerlink" title="FROM"></a>FROM</h2><p><code>FROM</code>命令用于指定 Docker 基础镜像，如果是从原始 Linux 镜像开始，可以使用如下命令：</p>
 <pre><code class="dockerfile"># 基础镜像
 FROM ubuntu:latest</code></pre>
-<h2 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h2><p><code>CMD</code>命令用于指定启动Docker容器是需要执行的命令，该容器是基于此Dockerfile构建的Docker镜像，下面是一些Dockerfile的<code>CMD</code>示例：</p>
+<h2 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h2><p><code>CMD</code>命令用于指定启动 Docker 容器是需要执行的命令，该容器是基于此 Dockerfile 构建的 Docker 镜像，下面是一些 Dockerfile 的<code>CMD</code>示例：</p>
 <pre><code class="dockerfile">CMD echo Docker container started.</code></pre>
 <p>本例是打印“Docker container started”这行文本。</p>
-<p>下一个<code>CMD</code>示例是启动一个java应用：</p>
+<p>下一个<code>CMD</code>示例是启动一个 java 应用：</p>
 <pre><code class="dockerfile">CMD java -cp /myapp/myapp.jar com.jenkov.myapp.MainClass arg1 arg2 arg3</code></pre>
-<h2 id="COPY"><a href="#COPY" class="headerlink" title="COPY"></a>COPY</h2><p><code>COPY</code>命令将一个或多个文件从主机（从Dockerfile文件构建Docker镜像的机器）复制到Docker镜像中，可以复制的内容包括文件或目录，下面是一个示例：</p>
+<h2 id="COPY"><a href="#COPY" class="headerlink" title="COPY"></a>COPY</h2><p><code>COPY</code>命令将一个或多个文件从主机（从 Dockerfile 文件构建 Docker 镜像的机器）复制到 Docker 镜像中，可以复制的内容包括文件或目录，下面是一个示例：</p>
 <pre><code class="dockerfile">COPY    /myapp/target/myapp.jar    /myapp/myapp.jar</code></pre>
-<p>这个例子是把主机的/myapp/target/myapp.jar文件复制到Docker进行中的/myapp/myapp.jar文件。第一个参数是主机路径（从哪里来），第二个参数是Docker镜像的路径（到哪里去）。</p>
-<p>我们还可以复制一个目录到Docker镜像中，比如：</p>
+<p>这个例子是把主机的/myapp/target/myapp.jar 文件复制到 Docker 进行中的/myapp/myapp.jar 文件。第一个参数是主机路径（从哪里来），第二个参数是 Docker 镜像的路径（到哪里去）。</p>
+<p>我们还可以复制一个目录到 Docker 镜像中，比如：</p>
 <pre><code class="dockerfile">COPY    /myapp/config/prod    /myapp/config</code></pre>
-<p>这个例子是把主机的/myapp/config/prod目录复制到Docker镜像中的/myapp/config目录。</p>
-<p>我们还可以复制多个文件到Docker镜像中的一个目录中，比如：</p>
+<p>这个例子是把主机的/myapp/config/prod 目录复制到 Docker 镜像中的/myapp/config 目录。</p>
+<p>我们还可以复制多个文件到 Docker 镜像中的一个目录中，比如：</p>
 <pre><code class="dockerfile">COPY    /myapp/config/prod/conf1.cfg   /myapp/config/prod/conf2.cfg   /myapp/config/</code></pre>
-<p>这个例子是将主机的/myapp/config/prod/conf1.cfg文件和/myapp/conig/prod/conf2.cfg文件复制到Docker镜像中的/myapp/config/目录中。注意，目标目录必须以/（斜杠）结束才能工作。</p>
+<p>这个例子是将主机的/myapp/config/prod/conf1.cfg 文件和/myapp/conig/prod/conf2.cfg 文件复制到 Docker 镜像中的/myapp/config/目录中。注意，目标目录必须以/（斜杠）结束才能工作。</p>
 <h2 id="ADD"><a href="#ADD" class="headerlink" title="ADD"></a>ADD</h2><p><code>ADD</code>命令与<code>COPY</code>命令工作方式相同，只有一些细微的差别：</p>
 <ul>
-<li><code>ADD</code>命令可以复制并提取TAR文件到Docker镜像中。</li>
-<li><code>ADD</code>命令可以通过HTTP下载文件，并复制到Docker镜像中。</li>
+<li><code>ADD</code>命令可以复制并提取 TAR 文件到 Docker 镜像中。</li>
+<li><code>ADD</code>命令可以通过 HTTP 下载文件，并复制到 Docker 镜像中。</li>
 </ul>
 <p>下是一些示例：</p>
 <pre><code class="dockerfile">ADD    myapp.tar    /myapp/</code></pre>
-<p>这个例子是将指定的TAR文件解压缩并提取到Docker镜像的/myapp/目录中。</p>
+<p>这个例子是将指定的 TAR 文件解压缩并提取到 Docker 镜像的/myapp/目录中。</p>
 <p>下面是另一个例子：</p>
 <pre><code class="dockerfile">ADD    http://jenkov.com/myapp.jar    /myapp/</code></pre>
-<h2 id="ENV"><a href="#ENV" class="headerlink" title="ENV"></a>ENV</h2><p><code>ENV</code>命令是在Docker镜像中设置环境变量，此环境变量可用于<code>CMD</code>命令在Docker镜像内部启动应用程序。举个例子：</p>
+<h2 id="ENV"><a href="#ENV" class="headerlink" title="ENV"></a>ENV</h2><p><code>ENV</code>命令是在 Docker 镜像中设置环境变量，此环境变量可用于<code>CMD</code>命令在 Docker 镜像内部启动应用程序。举个例子：</p>
 <pre><code class="dockerfile">ENV    MY_VAR   123</code></pre>
-<p>本例将环境变量<code>MY_VAR</code>设置为值123。</p>
-<h2 id="RUN"><a href="#RUN" class="headerlink" title="RUN"></a>RUN</h2><p><code>RUN</code>可以在Docker镜像中执行命令行指令，执行时机是Docker镜像构建过程中，所以<code>RUN</code>命令只会执行一次。<code>RUN</code>命令可用于在Docker镜像中安装应用程序、提取文件或其他命令行功能，这些操作只需要执行一次，以供Docker镜像后续使用。</p>
+<p>本例将环境变量<code>MY_VAR</code>设置为值 123。</p>
+<h2 id="RUN"><a href="#RUN" class="headerlink" title="RUN"></a>RUN</h2><p><code>RUN</code>可以在 Docker 镜像中执行命令行指令，执行时机是 Docker 镜像构建过程中，所以<code>RUN</code>命令只会执行一次。<code>RUN</code>命令可用于在 Docker 镜像中安装应用程序、提取文件或其他命令行功能，这些操作只需要执行一次，以供 Docker 镜像后续使用。</p>
 <pre><code class="dockerfile">RUN apt-get install some-needed-app</code></pre>
-<h2 id="ARG"><a href="#ARG" class="headerlink" title="ARG"></a>ARG</h2><p><code>ARG</code>命令允许定义一个参数，这个参数可以在通过Dockerfile文件构建Docker镜像时，通过命令参数传递给Docker。比如：</p>
+<h2 id="ARG"><a href="#ARG" class="headerlink" title="ARG"></a>ARG</h2><p><code>ARG</code>命令允许定义一个参数，这个参数可以在通过 Dockerfile 文件构建 Docker 镜像时，通过命令参数传递给 Docker。比如：</p>
 <pre><code class="dockerfile">ARG tcpPort</code></pre>
-<p>当执行<code>docker build</code>命令执行Dockerfile构建Docker镜像时，可以指定<code>tcpPort</code>参数，比如：</p>
+<p>当执行<code>docker build</code>命令执行 Dockerfile 构建 Docker 镜像时，可以指定<code>tcpPort</code>参数，比如：</p>
 <pre><code class="dockerfile">docker build --build-arg tcpPort=8080 .</code></pre>
 <blockquote>
-<p>注意，<code>--build-arg</code>后面的<code>tcpPort=8080</code>，是将<code>tcpPort</code>参数的值设置为8080。</p>
+<p>注意，<code>--build-arg</code>后面的<code>tcpPort=8080</code>，是将<code>tcpPort</code>参数的值设置为 8080。</p>
 </blockquote>
 <p>我们可以通过多个<code>ARG</code>命令定义多个参数，举个例子：</p>
 <pre><code class="dockerfile">ARG tcpPort
 ARG useTls</code></pre>
-<p>当构建Docker镜像时，必须为所有构建参数提供值。【译者注，1.13版本之前，不提供值会直接报错，1.13版本之后，不提供值不会报错，但是会弹出警告】。举个例子：</p>
+<p>当构建 Docker 镜像时，必须为所有构建参数提供值。【译者注，1.13 版本之前，不提供值会直接报错，1.13 版本之后，不提供值不会报错，但是会弹出警告】。举个例子：</p>
 <pre><code class="dockerfile">docker build --build-arg tcpPort=8080 --build-arg useTls=true .</code></pre>
-<p>我们可以为<code>ARG</code>设置默认值，当构建Docker镜像时，如果没有指定参数值，将使用默认值。举个例子：</p>
+<p>我们可以为<code>ARG</code>设置默认值，当构建 Docker 镜像时，如果没有指定参数值，将使用默认值。举个例子：</p>
 <pre><code class="dockerfile">ARG tcpPort=8080
 ARG useTls=true</code></pre>
-<p>如果<code>tcpPort</code>和<code>useTls</code>在生成Docker镜像时，都没有设置参数，将使用默认值8080和true。</p>
-<p><code>ARG</code>声明的参数通常在Dockerfile的其他地方引用，比如：</p>
+<p>如果<code>tcpPort</code>和<code>useTls</code>在生成 Docker 镜像时，都没有设置参数，将使用默认值 8080 和 true。</p>
+<p><code>ARG</code>声明的参数通常在 Dockerfile 的其他地方引用，比如：</p>
 <pre><code class="dockerfile">ARG tcpPort=8080
 ARG useTls=true
 
@@ -202,32 +200,37 @@ CMD start-my-server.sh -port ${tcpPort} -tls ${useTls}</code></pre>
 <p>注意：两个引用<code>${tcpPort}</code>和<code>${useTls}</code>，引用名是<code>tcpPort</code>和<code>useTls</code>这两个<code>ARG</code>声明的参数。</p>
 </blockquote>
 <pre><code class="dockerfile">docker build --build-arg tcpPort=8080</code></pre>
-<h2 id="WORKDIR"><a href="#WORKDIR" class="headerlink" title="WORKDIR"></a>WORKDIR</h2><p><code>WORKDIR</code>命令指明了Docker镜像中的工作目录，工作目录将对<code>WORKDIR</code>指令之后的所有命令生效，举个例子：</p>
+<h2 id="WORKDIR"><a href="#WORKDIR" class="headerlink" title="WORKDIR"></a>WORKDIR</h2><p><code>WORKDIR</code>命令指明了 Docker 镜像中的工作目录，工作目录将对<code>WORKDIR</code>指令之后的所有命令生效，举个例子：</p>
 <pre><code class="dockerfile">WORKDIR    /java/jdk/bin</code></pre>
-<h2 id="EXPOSE"><a href="#EXPOSE" class="headerlink" title="EXPOSE"></a>EXPOSE</h2><p><code>EXPOSE</code>命令将对外开放Docker容器中的网络端口，比如，如果Docker容器运行一个web服务器，那么，该web服务器可能需要打开端口80，以便客户端链接到它。举个例子：</p>
+<h2 id="EXPOSE"><a href="#EXPOSE" class="headerlink" title="EXPOSE"></a>EXPOSE</h2><p><code>EXPOSE</code>命令将对外开放 Docker 容器中的网络端口，比如，如果 Docker 容器运行一个 web 服务器，那么，该 web 服务器可能需要打开端口 80，以便客户端链接到它。举个例子：</p>
 <pre><code class="dockerfile">EXPOSE   8080</code></pre>
-<p>我们还可以指明打开端口的通信协议，比如：UDP和TCP。下面是设置允许通信协议的示例：</p>
+<p>我们还可以指明打开端口的通信协议，比如：UDP 和 TCP。下面是设置允许通信协议的示例：</p>
 <pre><code class="dockerfile">EXPOSE   8080/tcp 9999/udp</code></pre>
-<p>如果没有指定协议，将默认认定为TCP协议。</p>
-<h2 id="VOLUME"><a href="#VOLUME" class="headerlink" title="VOLUME"></a>VOLUME</h2><p><code>VOLUME</code>命令会在Docker镜像中创建一个目录，这个目录可以挂载到Docker主机上。换句话说，可以在Docker镜像中创建目录，比如<code>/data</code>，这个目录可以在稍后挂载到Docker主机的<code>/container-data/container1</code>目录上。挂载成功后，容器会启动。下面是一个使用<code>VOLUME</code>命令在Dockerfile中定义装载目录的示例：</p>
+<p>如果没有指定协议，将默认认定为 TCP 协议。</p>
+<h2 id="VOLUME"><a href="#VOLUME" class="headerlink" title="VOLUME"></a>VOLUME</h2><p><code>VOLUME</code>命令会在 Docker 镜像中创建一个目录，这个目录可以挂载到 Docker 主机上。换句话说，可以在 Docker 镜像中创建目录，比如<code>/data</code>，这个目录可以在稍后挂载到 Docker 主机的<code>/container-data/container1</code>目录上。挂载成功后，容器会启动。下面是一个使用<code>VOLUME</code>命令在 Dockerfile 中定义装载目录的示例：</p>
 <pre><code class="dockerfile">VOLUME   /data</code></pre>
-<h2 id="ENTRYPOINT"><a href="#ENTRYPOINT" class="headerlink" title="ENTRYPOINT"></a>ENTRYPOINT</h2><p><code>ENTRYPOINT</code>命令为从该Docker镜像启动Docker容器提供入口点，入口点是Docker容器启动时执行的应用程序或命令。这样，<code>ENTRYPOINT</code>和<code>CMD</code>工作方式类似，不同之处在于，使用<code>ENTRYPOINT</code>时，当<code>ENTRYPOINT</code>执行的应用程序完成时，Docker容器将关闭。因此，<code>ENTRYPOINT</code>使Docker镜像本身成为一个可执行命令，可以启动，完成后关闭。以下是<code>ENTRYPOINT</code>示例：</p>
+<h2 id="ENTRYPOINT"><a href="#ENTRYPOINT" class="headerlink" title="ENTRYPOINT"></a>ENTRYPOINT</h2><p><code>ENTRYPOINT</code>命令为从该 Docker 镜像启动 Docker 容器提供入口点，入口点是 Docker 容器启动时执行的应用程序或命令。这样，<code>ENTRYPOINT</code>和<code>CMD</code>工作方式类似，不同之处在于，使用<code>ENTRYPOINT</code>时，当<code>ENTRYPOINT</code>执行的应用程序完成时，Docker 容器将关闭。因此，<code>ENTRYPOINT</code>使 Docker 镜像本身成为一个可执行命令，可以启动，完成后关闭。以下是<code>ENTRYPOINT</code>示例：</p>
 <pre><code class="dockerfile">ENTRYPOINT java -cp /apps/myapp/myapp.jar com.jenkov.myapp.Main</code></pre>
-<p>这个示例将在容器启动时执行Java应用程序的主类<code>com.jenkov.myapp.Main</code>，当应用程序关闭时，Docker容器也会关闭。</p>
-<h2 id="HEALTHCHECK"><a href="#HEALTHCHECK" class="headerlink" title="HEALTHCHECK"></a>HEALTHCHECK</h2><p><code>HEALTHCHECK</code>命令可以定期执行健康检查，以监视Docker容器中运行的应用程序的运行状况。如果命令返回0，Docker将认为应用程序和容器正常，如果命令返回1，Docker会认为应用程序和容器不正常。示例如下：</p>
+<p>这个示例将在容器启动时执行 Java 应用程序的主类<code>com.jenkov.myapp.Main</code>，当应用程序关闭时，Docker 容器也会关闭。</p>
+<h2 id="HEALTHCHECK"><a href="#HEALTHCHECK" class="headerlink" title="HEALTHCHECK"></a>HEALTHCHECK</h2><p><code>HEALTHCHECK</code>命令可以定期执行健康检查，以监视 Docker 容器中运行的应用程序的运行状况。如果命令返回 0，Docker 将认为应用程序和容器正常，如果命令返回 1，Docker 会认为应用程序和容器不正常。示例如下：</p>
 <pre><code class="dockerfile">HEALTHCHECK java -cp /apps/myapp/healthcheck.jar com.jenkov.myapp.HealthCheck https://localhost/healthcheck</code></pre>
-<p>这个示例中使用了java应用程序的<code>com.jenkov.myapp.HealthCheck</code>作为健康检查的命令，我们可以使用任何有意义的健康检查命令。</p>
-<h3 id="健康检查间隔时间"><a href="#健康检查间隔时间" class="headerlink" title="健康检查间隔时间"></a>健康检查间隔时间</h3><p>默认情况下，Docker每30秒执行一次<code>HEALTHCHECK</code>命令。如果想修改时间间隔，我们可以自定义时间，通过<code>--interval</code>参数，可以指定健康检查的检查间隔时间。下面是一个将<code>HEALTHCHECK</code>间隔设置为60秒的示例：</p>
+<p>这个示例中使用了 java 应用程序的<code>com.jenkov.myapp.HealthCheck</code>作为健康检查的命令，我们可以使用任何有意义的健康检查命令。</p>
+<h3 id="健康检查间隔时间"><a href="#健康检查间隔时间" class="headerlink" title="健康检查间隔时间"></a>健康检查间隔时间</h3><p>默认情况下，Docker 每 30 秒执行一次<code>HEALTHCHECK</code>命令。如果想修改时间间隔，我们可以自定义时间，通过<code>--interval</code>参数，可以指定健康检查的检查间隔时间。下面是一个将<code>HEALTHCHECK</code>间隔设置为 60 秒的示例：</p>
 <pre><code class="dockerfile">HEALTHCHECK --interval=60s java -cp /apps/myapp/healthcheck.jar com.jenkov.myapp.HealthCheck https://localhost/healthcheck</code></pre>
-<h3 id="健康检查开始时间"><a href="#健康检查开始时间" class="headerlink" title="健康检查开始时间"></a>健康检查开始时间</h3><p>默认情况下，Docker会立即检查Docker容器的监控状况。但是，有些应用程序可能需要一段时间启动，因此，只有经过某段时间后再进行健康检查才有意义。我们可以使用<code>--start-period</code>参数设置健康检查开始时间。下面是一个将健康检查设置为5分钟的示例，在Docker开始健康检查之前，为容器和应用程序提供300秒（5分钟）的启动时间：</p>
+<h3 id="健康检查开始时间"><a href="#健康检查开始时间" class="headerlink" title="健康检查开始时间"></a>健康检查开始时间</h3><p>默认情况下，Docker 会立即检查 Docker 容器的监控状况。但是，有些应用程序可能需要一段时间启动，因此，只有经过某段时间后再进行健康检查才有意义。我们可以使用<code>--start-period</code>参数设置健康检查开始时间。下面是一个将健康检查设置为 5 分钟的示例，在 Docker 开始健康检查之前，为容器和应用程序提供 300 秒（5 分钟）的启动时间：</p>
 <pre><code class="dockerfile">HEALTHCHECK --start-period=300s java -cp /apps/myapp/healthcheck.jar com.jenkov.myapp.HealthCheck https://localhost/healthcheck</code></pre>
-<h3 id="健康检查超时时间"><a href="#健康检查超时时间" class="headerlink" title="健康检查超时时间"></a>健康检查超时时间</h3><p>健康检查很有可能超时，如果<code>HEALTCHECK</code>命令需要超过给定时间限制才完成，Docker将认为健康检查超时。可以使用<code>--timeout</code>参数设置超时时间，如下是设置超时时间为5秒的示例：</p>
+<h3 id="健康检查超时时间"><a href="#健康检查超时时间" class="headerlink" title="健康检查超时时间"></a>健康检查超时时间</h3><p>健康检查很有可能超时，如果<code>HEALTCHECK</code>命令需要超过给定时间限制才完成，Docker 将认为健康检查超时。可以使用<code>--timeout</code>参数设置超时时间，如下是设置超时时间为 5 秒的示例：</p>
 <pre><code class="dockerfile">HEALTHCHECK --timeout=5s java -cp /apps/myapp/healthcheck.jar com.jenkov.myapp.HealthCheck https://localhost/healthcheck</code></pre>
 <blockquote>
-<p>注意，如果健康检查超时，Docker也会认为容器不健康。</p>
+<p>注意，如果健康检查超时，Docker 也会认为容器不健康。</p>
 </blockquote>
-<h3 id="健康检查重复次数"><a href="#健康检查重复次数" class="headerlink" title="健康检查重复次数"></a>健康检查重复次数</h3><p>如果<code>HEALTHCHECK</code>命令执行失败，有可能是结果返回1，或者执行超时，Docker会在认定容器不健康前，重试3次<code>HEALTHCHECK</code>命令，用于检查Docker容器是否返回健康状态。可以通过<code>--retries</code>设置重试次数。下面是将重试次数设置为5的示例：</p>
+<h3 id="健康检查重复次数"><a href="#健康检查重复次数" class="headerlink" title="健康检查重复次数"></a>健康检查重复次数</h3><p>如果<code>HEALTHCHECK</code>命令执行失败，有可能是结果返回 1，或者执行超时，Docker 会在认定容器不健康前，重试 3 次<code>HEALTHCHECK</code>命令，用于检查 Docker 容器是否返回健康状态。可以通过<code>--retries</code>设置重试次数。下面是将重试次数设置为 5 的示例：</p>
 <pre><code class="dockerfile">HEALTHCHECK --retries=5 java -cp /apps/myapp/healthcheck.jar com.jenkov.myapp.HealthCheck https://localhost/healthcheck</code></pre>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://www.howardliu.cn/docker-tutorial/">Docker 教程（一）：Docker 是什么</a></li>
+<li><a href="https://www.howardliu.cn/docker-dockerfile/">Docker 教程（二）：Dockerfile</a></li>
+<li><a href="https://www.howardliu.cn/docker-commands/">Docker 教程（三）：Docker 命令</a></li>
+</ul>
 <hr>
 <p>你好，我是看山，公众号：看山的小屋，10 年老猿，Apache Storm、WxJava、Cynomys 开源贡献者。游于码界，戏享人生。</p>
 <p>原文链接：<a href="http://tutorials.jenkov.com/docker/dockerfile.html" target="_blank" rel="noopener">Docker Dockerfile</a><br>翻译：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>译文链接：<a href="https://www.howardliu.cn/docker-dockerfile/">Docker 教程（二）：Dockerfile</a><br>CSDN 主页：<a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN 博文：<a href="https://blog.csdn.net/liuxinghao/article/details/114808891" target="_blank" rel="noopener">Docker 教程（二）：Dockerfile</a></p>
@@ -247,6 +250,10 @@ CMD start-my-server.sh -port ${tcpPort} -tls ${useTls}</code></pre>
         
         
         <div class="post-nav">
+            
+            <a class="pre" href="/docker-commands/">
+                <i class="icon-previous">Docker 教程（三）：Docker 命令</i>
+            </a>
             
             
             <a class="next" href="/docker-tutorial/">
@@ -286,14 +293,14 @@ CMD start-my-server.sh -port ${tcpPort} -tls ${useTls}</code></pre>
 <div class="sidebar">
     <div class="well">
         <h2>标签云</h2>
-        <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/闲聊/" style="font-size: 15px;">闲聊</a> <a href="/tags/非理性/" style="font-size: 15px;">非理性</a>
+        <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/闲聊/" style="font-size: 15px;">闲聊</a> <a href="/tags/辞职/" style="font-size: 15px;">辞职</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/非理性/" style="font-size: 15px;">非理性</a> <a href="/tags/认知偏差/" style="font-size: 15px;">认知偏差</a> <a href="/tags/自控术/" style="font-size: 15px;">自控术</a> <a href="/tags/成本/" style="font-size: 15px;">成本</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/学非探其花/" style="font-size: 15px;">学非探其花</a> <a href="/tags/要自拔其根/" style="font-size: 15px;">要自拔其根</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/缓存/" style="font-size: 15px;">缓存</a> <a href="/tags/事件驱动/" style="font-size: 15px;">事件驱动</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a>
     </div>
 </div>
 
 <div class="sidebar">
     <div class="well">
         <h2>归档</h2>
-        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
     </div>
 </div>
 
@@ -301,7 +308,7 @@ CMD start-my-server.sh -port ${tcpPort} -tls ${useTls}</code></pre>
 <div class="sidebar ">
     <div class="well">
         <h2>最新文章</h2>
-        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/docker-dockerfile/">Docker 教程（二）：Dockerfile</a></li><li class="post-list-item"><a class="post-list-link" href="/docker-tutorial/">Docker 教程（一）：Docker 是什么</a></li><li class="post-list-item"><a class="post-list-link" href="/java-vector-vs-collections-synchronizedlist-arraylist/">Java 中 Vector 和 SynchronizedList 的区别</a></li><li class="post-list-item"><a class="post-list-link" href="/event-driven-architecture/">软件架构-事件驱动架构</a></li><li class="post-list-item"><a class="post-list-link" href="/understanding-java-list/">认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList</a></li></ul>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/docker-commands/">Docker 教程（三）：Docker 命令</a></li><li class="post-list-item"><a class="post-list-link" href="/docker-dockerfile/">Docker 教程（二）：Dockerfile</a></li><li class="post-list-item"><a class="post-list-link" href="/docker-tutorial/">Docker 教程（一）：Docker 是什么</a></li><li class="post-list-item"><a class="post-list-link" href="/java-vector-vs-collections-synchronizedlist-arraylist/">Java 中 Vector 和 SynchronizedList 的区别</a></li><li class="post-list-item"><a class="post-list-link" href="/event-driven-architecture/">软件架构-事件驱动架构</a></li></ul>
     </div>
 </div>
 
