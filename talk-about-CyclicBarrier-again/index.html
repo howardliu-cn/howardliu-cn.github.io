@@ -7,24 +7,27 @@
 <meta http-equiv="Cache-Control" content="no-siteapp">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>再谈CyclicBarrier||沉潜飞动|君子藏器于身，待时而动。</title>
-<meta name="description" content="java.util.concurrent.CyclicBarrier也是JDK 1.5提供的一个同步辅助类，它允许一组线程互相等待，直到到达某个临界点（a common barrier point，翻译成公共障碍点、公共栅栏点都不够传神，直接用临界点吧）。在某个程序中，一组固定大小的线程必须互相等待时，CyclicBarrier将起很大的作用。因为在等待线程被释放后，这个临界点可以重用，所以说是循">
-<meta name="keywords" content="java,多线程,join,CountDownLatch,CyclicBarrier">
+<title>Java 并发基础（四）：再谈 CyclicBarrier||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="java.util.concurrent.CyclicBarrier 也是 JDK 1.5 提供的一个同步辅助类，它允许一组线程互相等待，直到到达某个临界点（a common barrier point，翻译成公共障碍点、公共栅栏点都不够传神，直接用临界点吧）。在某个程序中，一组固定大小的线程必须互相等待时，CyclicBarrier 将起很大的作用。因为在等待线程被释放后，这个临界点可以重用，所">
+<meta name="keywords" content="java,thread,join,CountDownLatch,CyclicBarrier,多线程">
 <meta property="og:type" content="article">
-<meta property="og:title" content="再谈CyclicBarrier">
+<meta property="og:title" content="Java 并发基础（四）：再谈 CyclicBarrier">
 <meta property="og:url" content="https://www.howardliu.cn/talk-about-CyclicBarrier-again/index.html">
 <meta property="og:site_name" content="沉潜飞动">
-<meta property="og:description" content="java.util.concurrent.CyclicBarrier也是JDK 1.5提供的一个同步辅助类，它允许一组线程互相等待，直到到达某个临界点（a common barrier point，翻译成公共障碍点、公共栅栏点都不够传神，直接用临界点吧）。在某个程序中，一组固定大小的线程必须互相等待时，CyclicBarrier将起很大的作用。因为在等待线程被释放后，这个临界点可以重用，所以说是循">
+<meta property="og:description" content="java.util.concurrent.CyclicBarrier 也是 JDK 1.5 提供的一个同步辅助类，它允许一组线程互相等待，直到到达某个临界点（a common barrier point，翻译成公共障碍点、公共栅栏点都不够传神，直接用临界点吧）。在某个程序中，一组固定大小的线程必须互相等待时，CyclicBarrier 将起很大的作用。因为在等待线程被释放后，这个临界点可以重用，所">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-01-27T09:50:39.781Z">
+<meta property="og:image" content="http://static.howardliu.cn/java/eggs-3216877_1920.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-04-11T09:03:40.313Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="再谈CyclicBarrier">
-<meta name="twitter:description" content="java.util.concurrent.CyclicBarrier也是JDK 1.5提供的一个同步辅助类，它允许一组线程互相等待，直到到达某个临界点（a common barrier point，翻译成公共障碍点、公共栅栏点都不够传神，直接用临界点吧）。在某个程序中，一组固定大小的线程必须互相等待时，CyclicBarrier将起很大的作用。因为在等待线程被释放后，这个临界点可以重用，所以说是循">
+<meta name="twitter:title" content="Java 并发基础（四）：再谈 CyclicBarrier">
+<meta name="twitter:description" content="java.util.concurrent.CyclicBarrier 也是 JDK 1.5 提供的一个同步辅助类，它允许一组线程互相等待，直到到达某个临界点（a common barrier point，翻译成公共障碍点、公共栅栏点都不够传神，直接用临界点吧）。在某个程序中，一组固定大小的线程必须互相等待时，CyclicBarrier 将起很大的作用。因为在等待线程被释放后，这个临界点可以重用，所">
+<meta name="twitter:image" content="http://static.howardliu.cn/java/eggs-3216877_1920.jpg">
 
-<meta name="keywords" content="java,多线程,join,CountDownLatch,CyclicBarrier">
+<meta name="keywords" content="java,thread,join,CountDownLatch,CyclicBarrier,多线程">
 
 
-<meta name="description" content="java.util.concurrent.CyclicBarrier也是JDK 1.5提供的一个同步辅助类，它允许一组线程互相等待，直到到达某个临界点（a common barrier point，翻译成公共障碍点、公共栅栏点都不够传神，直接用临界点吧）。在某个程序中，一组固定大小的线程必须互相等待">
+<meta name="description" content="java.util.concurrent.CyclicBarrier 也是 JDK 1.5 提供的一个同步辅助类，它允许一组线程互相等待，直到到达某个临界点（a common barrier point，翻译成公共障碍点、公共栅栏点都不够传神，直接用临界点吧）。在某个程序中，一组固定大小的线程必须互">
 
 <meta name="author" content="Howard Liu,howardliu1988@163.com">
 
@@ -85,14 +88,14 @@
                 <div class="col-md-8">
                     <div class="article">
     <div class="well">
-        <h1><a href="/talk-about-CyclicBarrier-again/">再谈CyclicBarrier</a></h1>
+        <h1><a href="/talk-about-CyclicBarrier-again/">Java 并发基础（四）：再谈 CyclicBarrier</a></h1>
         <div class="post-meta">
             <div class="post-time">
                 <i class="fa fa-calendar"></i><time> 2014-09-17</time>
             </div>
             <div class="post-visitors-count">
                 <i class="fa fa-ge"></i>
-                <span id="/talk-about-CyclicBarrier-again/" class="leancloud_visitors" data-flag-title="再谈CyclicBarrier">
+                <span id="/talk-about-CyclicBarrier-again/" class="leancloud_visitors" data-flag-title="Java 并发基础（四）：再谈 CyclicBarrier">
                     <span class="post-meta-item-text">阅读量 </span>
                     <i class="leancloud-visitors-count">0</i>
                 </span>
@@ -102,18 +105,20 @@
             <!-- 
     <div id="toc" class="toc-content">
       <strong class="toc-title">目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CountDownLatch与CyclicBarrier"><span class="toc-text">CountDownLatch与CyclicBarrier</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CyclicBarrier实例"><span class="toc-text">CyclicBarrier实例</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#扩展"><span class="toc-text">扩展</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#CountDownLatch-与-CyclicBarrier"><span class="toc-text">CountDownLatch 与 CyclicBarrier</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CyclicBarrier-实例"><span class="toc-text">CyclicBarrier 实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#扩展"><span class="toc-text">扩展</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
     </div>
  -->
-            <p>&emsp;&emsp;java.util.concurrent.CyclicBarrier也是JDK 1.5提供的一个同步辅助类（为什么用也呢？参见<a href="/talk-about-CountDownLatch-again" title="再谈CountDownLatch">再谈CountDownLatch</a>），它允许一组线程互相等待，直到到达某个临界点（a common barrier point，翻译成公共障碍点、公共栅栏点都不够传神，直接用临界点吧）。在某个程序中，一组固定大小的线程必须互相等待时，CyclicBarrier将起很大的作用。因为在等待线程被释放后，这个临界点可以重用，所以说是循环的。</p>
+            <p><img src="http://static.howardliu.cn/java/eggs-3216877_1920.jpg" alt="Java 并发基础（四）：再谈 CyclicBarrier"></p>
+<p>你好，我是看山。</p>
+<p><code>java.util.concurrent.CyclicBarrier</code> 也是 JDK 1.5 提供的一个同步辅助类（为什么用也呢？参见 <a href="https://www.howardliu.cn/talk-about-CountDownLatch-again/" title="再谈 CountDownLatch">再谈 CountDownLatch</a>），它允许一组线程互相等待，直到到达某个临界点（a common barrier point，翻译成公共障碍点、公共栅栏点都不够传神，直接用临界点吧）。在某个程序中，一组固定大小的线程必须互相等待时，CyclicBarrier 将起很大的作用。因为在等待线程被释放后，这个临界点可以重用，所以说是循环的。</p>
 <a id="more"></a>
 
-<p>&emsp;&emsp;CyclicBarrier支持一个可选的Runnable，在一组线程中的最后一个线程完成之后、释放所有线程之前，该Runnable在屏障点运行一次（每循环一次Runnable运行一次）。这种方式可以用来在下一波继续运行的线程运行之前更新共享状态（比如下一波僵尸来之前，检查武器弹药）。</p>
-<h1 id="CountDownLatch与CyclicBarrier"><a href="#CountDownLatch与CyclicBarrier" class="headerlink" title="CountDownLatch与CyclicBarrier"></a>CountDownLatch与CyclicBarrier</h1><p>&emsp;&emsp;CountDownLatch是不能够重复使用的，是一次性的，其锁定一经打开，就不能够在重复使用。就像引线，点燃后就在燃烧减少，燃烧完了就不能再次使用了。CyclicBarrier是一种循环的方式进行锁定，这次锁定被打开之后，还能够重复计数，再次使用。就像沙漏，这次漏完了，倒过来接着漏。</p>
-<p>&emsp;&emsp;还有一点是两者之间很大的区别，就是CountDownLatch在等待子线程的过程中，会锁定主线程，而CyclicBarrier不会锁定主线程，只是在所有子线程结束后，根据定义执行其可选的Runnable线程。</p>
-<p>&emsp;&emsp;所以在这两种辅助类中进行选择时，能够很明显进行区分。</p>
-<h1 id="CyclicBarrier实例"><a href="#CyclicBarrier实例" class="headerlink" title="CyclicBarrier实例"></a>CyclicBarrier实例</h1><p>&emsp;&emsp;可以考虑这么一种情况，我们需要向数据库导入一些数据，没导入几条希望能进行一次计时，便于我们查看。因为实现比较简单，直接上代码：</p>
-<pre><code>import java.util.Random;
+<p>CyclicBarrier 支持一个可选的 Runnable，在一组线程中的最后一个线程完成之后、释放所有线程之前，该 Runnable 在屏障点运行一次（每循环一次 Runnable 运行一次）。这种方式可以用来在下一波继续运行的线程运行之前更新共享状态（比如下一波僵尸来之前，检查武器弹药）。</p>
+<h2 id="CountDownLatch-与-CyclicBarrier"><a href="#CountDownLatch-与-CyclicBarrier" class="headerlink" title="CountDownLatch 与 CyclicBarrier"></a>CountDownLatch 与 CyclicBarrier</h2><p>CountDownLatch 是不能够重复使用的，是一次性的，其锁定一经打开，就不能够在重复使用。就像引线，点燃后就在燃烧减少，燃烧完了就不能再次使用了。CyclicBarrier 是一种循环的方式进行锁定，这次锁定被打开之后，还能够重复计数，再次使用。就像沙漏，这次漏完了，倒过来接着漏。</p>
+<p>还有一点是两者之间很大的区别，就是 CountDownLatch 在等待子线程的过程中，会锁定主线程，而 CyclicBarrier 不会锁定主线程，只是在所有子线程结束后，根据定义执行其可选的 Runnable 线程。</p>
+<p>所以在这两种辅助类中进行选择时，能够很明显进行区分。</p>
+<h2 id="CyclicBarrier-实例"><a href="#CyclicBarrier-实例" class="headerlink" title="CyclicBarrier 实例"></a>CyclicBarrier 实例</h2><p>可以考虑这么一种情况，我们需要向数据库导入一些数据，没导入几条希望能进行一次计时，便于我们查看。因为实现比较简单，直接上代码：</p>
+<pre><code class="java">import java.util.Random;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
@@ -150,37 +155,40 @@ public class CyclicBarrierTest {
         }
         System.out.println(&quot;====主线程结束====&quot;);
     }
-}</code></pre><p>执行结果为：</p>
-<pre><code>====主线程结束====
-4完成导入操作。
-2完成导入操作。
-1完成导入操作。
-导入3条数据，至此总共用时：4006毫秒
-5完成导入操作。
-6完成导入操作。
-8完成导入操作。
-导入3条数据，至此总共用时：4007毫秒
-3完成导入操作。
-0完成导入操作。
-7完成导入操作。
-导入3条数据，至此总共用时：8006毫秒</code></pre><p>&emsp;&emsp;程序没导入3条会进行一次计时，统计已经执行的时间。如果CyclicBarrier构造函数的数字和for循环的次数相等的话，这个就是总共用时。</p>
-<h1 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h1><p>&emsp;&emsp;考虑一下上面的例子，如果for循环的次数不是CyclicBarrier监听次数的整数倍，比如是10，那执行结果将会是：</p>
-<pre><code>====主线程结束====
-2完成导入操作。
-5完成导入操作。
-4完成导入操作。
-导入3条数据，至此总共用时：4005毫秒
-8完成导入操作。
-1完成导入操作。
-3完成导入操作。
-导入3条数据，至此总共用时：5005毫秒
-7完成导入操作。
-6完成导入操作。
-0完成导入操作。
-导入3条数据，至此总共用时：8005毫秒
-9完成导入操作。</code></pre><p>&emsp;&emsp;在打印完“9完成导入操作。”之后，将一直等待。在这里可以通过barrier.getNumberWaiting()查看还差多少个线程达到屏障点。如果出现这种情况，那就需要和CountDownLatch配合使用了，当子线程全部执行完，有判断barrier.getNumberWaiting()不等于0，则调用barrier.reset()重置。这个时候将会触发BrokenBarrierException异常，但是将结束整个过程。</p>
+}</code></pre>
+<p>执行结果为：</p>
+<pre><code class="text">====主线程结束====
+4 完成导入操作。
+2 完成导入操作。
+1 完成导入操作。
+导入 3 条数据，至此总共用时：4006 毫秒
+5 完成导入操作。
+6 完成导入操作。
+8 完成导入操作。
+导入 3 条数据，至此总共用时：4007 毫秒
+3 完成导入操作。
+0 完成导入操作。
+7 完成导入操作。
+导入 3 条数据，至此总共用时：8006 毫秒</code></pre>
+<p>程序没导入 3 条会进行一次计时，统计已经执行的时间。如果 CyclicBarrier 构造函数的数字和 for 循环的次数相等的话，这个就是总共用时。</p>
+<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><p>考虑一下上面的例子，如果 for 循环的次数不是 CyclicBarrier 监听次数的整数倍，比如是 10，那执行结果将会是：</p>
+<pre><code class="text">====主线程结束====
+2 完成导入操作。
+5 完成导入操作。
+4 完成导入操作。
+导入 3 条数据，至此总共用时：4005 毫秒
+8 完成导入操作。
+1 完成导入操作。
+3 完成导入操作。
+导入 3 条数据，至此总共用时：5005 毫秒
+7 完成导入操作。
+6 完成导入操作。
+0 完成导入操作。
+导入 3 条数据，至此总共用时：8005 毫秒
+9 完成导入操作。</code></pre>
+<p>在打印完“9 完成导入操作。”之后，将一直等待。在这里可以通过 barrier.getNumberWaiting() 查看还差多少个线程达到屏障点。如果出现这种情况，那就需要和 CountDownLatch 配合使用了，当子线程全部执行完，有判断 barrier.getNumberWaiting() 不等于 0，则调用 barrier.reset() 重置。这个时候将会触发 BrokenBarrierException 异常，但是将结束整个过程。</p>
 <p>修改的代码如下：</p>
-<pre><code>import java.util.Random;
+<pre><code class="java">import java.util.Random;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
@@ -212,7 +220,7 @@ public class CyclicBarrierTest {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (BrokenBarrierException e) {
-                        System.out.println(&quot;触发BrokenBarrierException异常。&quot;);
+                        System.out.println(&quot;触发 BrokenBarrierException 异常。&quot;);
                     }
                 }
             }).start();
@@ -220,30 +228,43 @@ public class CyclicBarrierTest {
         count.await();
 
         if(barrier.getNumberWaiting() != 0) {
-            System.out.println(&quot;不是整数倍。都已执行完，重置CyclicBarrier。&quot;);
+            System.out.println(&quot;不是整数倍。都已执行完，重置 CyclicBarrier。&quot;);
             barrier.reset();
         }
 
         System.out.println(&quot;====主线程结束====&quot;);
     }
-}</code></pre><p>执行结果为：</p>
-<pre><code>3完成导入操作。
-9完成导入操作。
-6完成导入操作。
-导入3条数据，至此总共用时：3005毫秒
-8完成导入操作。
-5完成导入操作。
-10完成导入操作。
-导入3条数据，至此总共用时：7005毫秒
-1完成导入操作。
-7完成导入操作。
-4完成导入操作。
-2完成导入操作。
-导入3条数据，至此总共用时：9005毫秒
-不是整数倍。都已执行完，重置CyclicBarrier。
+}</code></pre>
+<p>执行结果为：</p>
+<pre><code class="text">3 完成导入操作。
+9 完成导入操作。
+6 完成导入操作。
+导入 3 条数据，至此总共用时：3005 毫秒
+8 完成导入操作。
+5 完成导入操作。
+10 完成导入操作。
+导入 3 条数据，至此总共用时：7005 毫秒
+1 完成导入操作。
+7 完成导入操作。
+4 完成导入操作。
+2 完成导入操作。
+导入 3 条数据，至此总共用时：9005 毫秒
+不是整数倍。都已执行完，重置 CyclicBarrier。
 ====主线程结束====
-触发BrokenBarrierException异常。</code></pre><p>&emsp;&emsp;使用barrier.reset()进行重置，因为CyclicBarrier是一个循环，开头就是结尾，所以重置也可以理解为直接完成。</p>
-<p>&emsp;&emsp;另外，因为使用了CountDownLatch，所以主线程会锁定，直到线程通过count.await()向下执行。</p>
+触发 BrokenBarrierException 异常。</code></pre>
+<p>使用 barrier.reset() 进行重置，因为 CyclicBarrier 是一个循环，开头就是结尾，所以重置也可以理解为直接完成。</p>
+<p>另外，因为使用了 CountDownLatch，所以主线程会锁定，直到线程通过 count.await() 向下执行。</p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://www.howardliu.cn/java-concurrency-synchronized/">Java 并发基础（一）：synchronized 锁同步</a></li>
+<li><a href="https://www.howardliu.cn/main-thread-waiting-for-the-end-of-subthread/">Java 并发基础（二）：主线程等待子线程结束</a></li>
+<li><a href="https://www.howardliu.cn/talk-about-CountDownLatch-again/">Java 并发基础（三）：再谈 CountDownLatch</a></li>
+<li><a href="https://www.howardliu.cn/talk-about-CyclicBarrier-again/">Java 并发基础（四）：再谈 CyclicBarrier</a></li>
+<li><a href="https://www.howardliu.cn/java-concurrency-ordered-thread-print/">Java 并发基础（五）：面试实战之多线程顺序打印</a></li>
+</ul>
+<hr>
+<p>你好，我是看山，公众号：看山的小屋，10 年老猿，Apache Storm、WxJava、Cynomys 开源贡献者。游于码界，戏享人生。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/talk-about-CyclicBarrier-again/">Java 并发基础（四）：再谈 CyclicBarrier</a><br>CSDN 主页：<a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN 博文：<a href="https://blog.csdn.net/liuxinghao/article/details/39348545" target="_blank" rel="noopener">Java 并发基础（四）：再谈 CyclicBarrier</a></p>
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
 
         </div>
         
@@ -251,7 +272,7 @@ public class CyclicBarrierTest {
             
             <a href="/tags/java/">java</a>
             
-            <a href="/tags/多线程/">多线程</a>
+            <a href="/tags/concurrency/">concurrency</a>
             
         </div>
         
@@ -264,7 +285,7 @@ public class CyclicBarrierTest {
             
             
             <a class="next" href="/talk-about-CountDownLatch-again/">
-                <i class="icon-next">再谈CountDownLatch</i>
+                <i class="icon-next">Java 并发基础（三）：再谈 CountDownLatch</i>
             </a>
             
         </div>
@@ -300,14 +321,14 @@ public class CyclicBarrierTest {
 <div class="sidebar">
     <div class="well">
         <h2>标签云</h2>
-        <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/多线程/" style="font-size: 15px;">多线程</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a>
+        <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a>
     </div>
 </div>
 
 <div class="sidebar">
     <div class="well">
         <h2>归档</h2>
-        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
     </div>
 </div>
 
@@ -315,7 +336,7 @@ public class CyclicBarrierTest {
 <div class="sidebar ">
     <div class="well">
         <h2>最新文章</h2>
-        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/java-concurrency-synchronized/">Java 并发基础（一）：synchronized 锁同步</a></li><li class="post-list-item"><a class="post-list-link" href="/docker-commands/">Docker 教程（三）：Docker 命令</a></li><li class="post-list-item"><a class="post-list-link" href="/docker-dockerfile/">Docker 教程（二）：Dockerfile</a></li><li class="post-list-item"><a class="post-list-link" href="/docker-tutorial/">Docker 教程（一）：Docker 是什么</a></li><li class="post-list-item"><a class="post-list-link" href="/java-vector-vs-collections-synchronizedlist-arraylist/">Java 中 Vector 和 SynchronizedList 的区别</a></li></ul>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/java-concurrency-ordered-thread-print/">Java 并发基础（五）：面试实战之多线程顺序打印</a></li><li class="post-list-item"><a class="post-list-link" href="/java-concurrency-synchronized/">Java 并发基础（一）：synchronized 锁同步</a></li><li class="post-list-item"><a class="post-list-link" href="/docker-commands/">Docker 教程（三）：Docker 命令</a></li><li class="post-list-item"><a class="post-list-link" href="/docker-dockerfile/">Docker 教程（二）：Dockerfile</a></li><li class="post-list-item"><a class="post-list-link" href="/docker-tutorial/">Docker 教程（一）：Docker 是什么</a></li></ul>
     </div>
 </div>
 

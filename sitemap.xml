@@ -2,6 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/talk-about-CyclicBarrier-again/</loc>
+    
+    <lastmod>2021-04-11T09:03:40.313Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/talk-about-CountDownLatch-again/</loc>
+    
+    <lastmod>2021-04-11T09:03:35.399Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/main-thread-waiting-for-the-end-of-subthread/</loc>
+    
+    <lastmod>2021-04-11T09:03:29.637Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/java-concurrency-ordered-thread-print/</loc>
+    
+    <lastmod>2021-04-11T08:52:20.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/java-concurrency-synchronized/</loc>
     
     <lastmod>2021-03-28T07:55:40.000Z</lastmod>
@@ -289,14 +317,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
+    <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
+    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
@@ -338,14 +366,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
+    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
+    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
@@ -387,14 +415,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
+    <loc>https://www.howardliu.cn/storm/trident-tutorial/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/storm/trident-tutorial/</loc>
+    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
@@ -628,27 +656,6 @@
     <loc>https://www.howardliu.cn/os/WindowsUpdate_800B0100-failed-to-updates/</loc>
     
     <lastmod>2020-01-27T09:52:11.584Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/talk-about-CyclicBarrier-again/</loc>
-    
-    <lastmod>2020-01-27T09:50:39.781Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/talk-about-CountDownLatch-again/</loc>
-    
-    <lastmod>2020-01-27T09:50:31.640Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/main-thread-waiting-for-the-end-of-subthread/</loc>
-    
-    <lastmod>2020-01-27T09:50:06.209Z</lastmod>
     
   </url>
   

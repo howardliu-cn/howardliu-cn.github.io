@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Java 并发基础（五）：面试实战之多线程顺序打印||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="实现 3 个线程 A、B、C，A 线程持续打印“A”，B 线程持续打印“B”，C 线程持续打印“C”，启动顺序是线程 C、线程 B、线程 A，打印的结果是：ABC。">
+<meta name="keywords" content="java,concurrency,condition,thread">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 并发基础（五）：面试实战之多线程顺序打印">
+<meta property="og:url" content="https://www.howardliu.cn/java-concurrency-ordered-thread-print/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="实现 3 个线程 A、B、C，A 线程持续打印“A”，B 线程持续打印“B”，C 线程持续打印“C”，启动顺序是线程 C、线程 B、线程 A，打印的结果是：ABC。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://static.howardliu.cn/java/plant-3263600_1920.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-04-11T08:52:20.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java 并发基础（五）：面试实战之多线程顺序打印">
+<meta name="twitter:description" content="实现 3 个线程 A、B、C，A 线程持续打印“A”，B 线程持续打印“B”，C 线程持续打印“C”，启动顺序是线程 C、线程 B、线程 A，打印的结果是：ABC。">
+<meta name="twitter:image" content="http://static.howardliu.cn/java/plant-3263600_1920.jpg">
+
+<meta name="keywords" content="java,concurrency,condition,thread">
+
+
+<meta name="description" content="实现 3 个线程 A、B、C，A 线程持续打印“A”，B 线程持续打印“B”，C 线程持续打印“C”，启动顺序是线程 C、线程 B、线程 A，打印的结果是：ABC。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/java-concurrency-ordered-thread-print/">Java 并发基础（五）：面试实战之多线程顺序打印</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-04-11</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/java-concurrency-ordered-thread-print/" class="leancloud_visitors" data-flag-title="Java 并发基础（五）：面试实战之多线程顺序打印">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#解法一：状态位变量控制"><span class="toc-text">解法一：状态位变量控制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解法二：Condition实现条件判断"><span class="toc-text">解法二：Condition实现条件判断</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解法三：信号量"><span class="toc-text">解法三：信号量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="http://static.howardliu.cn/java/plant-3263600_1920.jpg" alt="Java 并发基础（五）：面试实战之多线程顺序打印"></p>
+<p>你好，我是看山。</p>
+<p>来个面试题，让大家练练手。这个题在阿里和小米都被问过，所以放在这个抛砖引玉，期望能够得到一个更佳的答案。</p>
+<a id="more"></a>
+
+<p>实现 3 个线程 A、B、C，A 线程持续打印“A”，B 线程持续打印“B”，C 线程持续打印“C”，启动顺序是线程 C、线程 B、线程 A，打印的结果是：ABC。</p>
+<h2 id="解法一：状态位变量控制"><a href="#解法一：状态位变量控制" class="headerlink" title="解法一：状态位变量控制"></a>解法一：状态位变量控制</h2><p>这个问题考察的是多线程协同顺序执行。也就是第一个线程最先达到执行条件，开始执行，执行完之后，第二个线程达到执行条件，开始执行，以此类推。可以想到的是，通过状态位来表示线程执行的条件，多个线程自旋等待状态位变化。</p>
+<p>线上代码：</p>
+<pre><code class="java">import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+class ABCThread {
+    private static final Lock lock = new ReentrantLock();
+    private static volatile int state = 0;
+
+    private static final Thread threadA = new Thread(() -&gt; {
+        while (true) {
+            lock.lock();
+            try {
+                if (state % 3 == 0) {
+                    System.out.println(&quot;A&quot;);
+                    state++;
+                    break;
+                } else {
+                    System.out.println(&quot;A thread &amp; state = &quot; + state);
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
+    });
+
+    private static final Thread threadB = new Thread(() -&gt; {
+        while (true) {
+            lock.lock();
+            try {
+                if (state % 3 == 1) {
+                    System.out.println(&quot;B&quot;);
+                    state++;
+                    break;
+                } else {
+                    System.out.println(&quot;B thread &amp; state = &quot; + state);
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
+    });
+
+    private static final Thread threadC = new Thread(() -&gt; {
+        while (true) {
+            lock.lock();
+            try {
+                if (state % 3 == 2) {
+                    System.out.println(&quot;C&quot;);
+                    state++;
+                    break;
+                } else {
+                    System.out.println(&quot;C thread &amp; state = &quot; + state);
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
+    });
+
+    public static void main(String[] args) {
+        threadC.start();
+        threadB.start();
+        threadA.start();
+    }
+}</code></pre>
+<p>可以看到，状态位<code>state</code>使用<code>volatile</code>修饰，是希望一个线程修改状态位值之后，其他线程可以读取到刚修改的数据，这个属于 Java 内存模型的范围，后续会有单独的章节描述。</p>
+<p>这个可以解题，但是却有很多性能上的损耗。因为每个进程都在自旋检查状态值<code>state</code>是否符合条件，而且自旋过程中会有获取锁的过程，代码中在不符合条件时打印了一些内容，比如：<code>System.out.println(&quot;A thread &amp; state = &quot; + state);</code>，我们可以运行一下看看结果：</p>
+<pre><code class="log">C thread &amp; state = 0
+...67行
+C thread &amp; state = 0
+B thread &amp; state = 0
+...43行
+B thread &amp; state = 0
+A
+C thread &amp; state = 1
+...53行
+C thread &amp; state = 1
+B
+C</code></pre>
+<p>可以看到，在A线程获取到锁之前，C线程和B线程自旋了100多次，然后A线程才获取机会获取锁和打印。然后在B线程获取锁之前，C线程又自旋了53次。性能损耗可见一斑。</p>
+<h2 id="解法二：Condition实现条件判断"><a href="#解法二：Condition实现条件判断" class="headerlink" title="解法二：Condition实现条件判断"></a>解法二：Condition实现条件判断</h2><p>既然无条件自旋浪费性能，那就加上条件自旋。</p>
+<p>代码如下：</p>
+<pre><code class="java">import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+class ABCThread2 {
+    private static final Lock lock = new ReentrantLock();
+    private static volatile int state = 0;
+    private static final Condition conditionA = lock.newCondition();
+    private static final Condition conditionB = lock.newCondition();
+    private static final Condition conditionC = lock.newCondition();
+
+    private static final Thread threadA = new Thread(() -&gt; {
+        while (true) {
+            lock.lock();
+            try {
+                while(state % 3 != 0) {
+                    System.out.println(&quot;A await start&quot;);
+                    conditionA.await();
+                    System.out.println(&quot;A await end&quot;);
+                }
+                System.out.println(&quot;A&quot;);
+                state++;
+                conditionB.signal();
+                break;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                lock.unlock();
+            }
+        }
+    });
+
+    private static final Thread threadB = new Thread(() -&gt; {
+        while (true) {
+            lock.lock();
+            try {
+                while(state % 3 != 1) {
+                    System.out.println(&quot;B await start&quot;);
+                    conditionB.await();
+                    System.out.println(&quot;B await end&quot;);
+                }
+                System.out.println(&quot;B&quot;);
+                state++;
+                conditionC.signal();
+                break;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                lock.unlock();
+            }
+        }
+    });
+
+    private static final Thread threadC = new Thread(() -&gt; {
+        while (true) {
+            lock.lock();
+            try {
+                while(state % 3 != 2) {
+                    System.out.println(&quot;C await start&quot;);
+                    conditionC.await();
+                    System.out.println(&quot;C await end&quot;);
+                }
+                System.out.println(&quot;C&quot;);
+                state++;
+                break;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                lock.unlock();
+            }
+        }
+    });
+
+    public static void main(String[] args) {
+        threadC.start();
+        threadB.start();
+        threadA.start();
+    }
+}</code></pre>
+<p>通过<code>Lock</code>锁的<code>Condition</code>实现有条件自旋，运行结果如下：</p>
+<pre><code class="log">C await start
+B await start
+A
+B await end
+B
+C await end
+C</code></pre>
+<p>可以从运行结果看到，C线程发现自己不符合要求，就通过<code>conditionC.await();</code>释放锁，然后等待条件被唤醒后重新获得锁。然后是B线程，最后是A线程开始执行，发现符合条件，直接运行，然后唤醒B线程的锁条件，依次类推。这种方式其实和信号量很类似。</p>
+<h2 id="解法三：信号量"><a href="#解法三：信号量" class="headerlink" title="解法三：信号量"></a>解法三：信号量</h2><p>先上代码：</p>
+<pre><code class="java">import java.util.concurrent.Semaphore;
+
+class ABCThread3 {
+    private static Semaphore semaphoreA = new Semaphore(1);
+    private static Semaphore semaphoreB = new Semaphore(1);
+    private static Semaphore semaphoreC = new Semaphore(1);
+
+    private static final Thread threadA = new Thread(() -&gt; {
+        try {
+            semaphoreA.acquire();
+            System.out.println(&quot;A&quot;);
+            semaphoreB.release();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    });
+
+    private static final Thread threadB = new Thread(() -&gt; {
+        try {
+            semaphoreB.acquire();
+            System.out.println(&quot;B&quot;);
+            semaphoreC.release();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    });
+
+    private static final Thread threadC = new Thread(() -&gt; {
+        try {
+            semaphoreC.acquire();
+            System.out.println(&quot;C&quot;);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    });
+
+    public static void main(String[] args) throws InterruptedException {
+        semaphoreB.acquire();
+        semaphoreC.acquire();
+        threadC.start();
+        threadB.start();
+        threadA.start();
+    }
+}</code></pre>
+<p>代码中执行前先执行了<code>semaphoreB.acquire();</code>和<code>semaphoreC.acquire();</code>，是为了将B和C的信号释放，这个时候，就能够阻塞B线程、C线程中信号量的获取，直到顺序获取了信号值。</p>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>这个题是考察大家对线程执行顺序和线程之间协同的理解，文中所实现的三种方式，都能解题，只不过代码复杂度和性能有差异。因为其中涉及很多多线程的内容，后续会单独开文说明每个知识点。</p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://www.howardliu.cn/java-concurrency-synchronized/">Java 并发基础（一）：synchronized 锁同步</a></li>
+<li><a href="https://www.howardliu.cn/main-thread-waiting-for-the-end-of-subthread/">Java 并发基础（二）：主线程等待子线程结束</a></li>
+<li><a href="https://www.howardliu.cn/talk-about-CountDownLatch-again/">Java 并发基础（三）：再谈 CountDownLatch</a></li>
+<li><a href="https://www.howardliu.cn/talk-about-CyclicBarrier-again/">Java 并发基础（四）：再谈 CyclicBarrier</a></li>
+<li><a href="https://www.howardliu.cn/java-concurrency-ordered-thread-print/">Java 并发基础（五）：面试实战之多线程顺序打印</a></li>
+</ul>
+<hr>
+<p>你好，我是看山，公众号：看山的小屋，10 年老猿，Apache Storm、WxJava、Cynomys 开源贡献者。游于码界，戏享人生。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/java-concurrency-ordered-thread-print/">Java 并发基础（五）：面试实战之多线程顺序打印</a><br>CSDN 主页：<a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN 博文：<a href="https://blog.csdn.net/liuxinghao/article/details/115609160" target="_blank" rel="noopener">Java 并发基础（五）：面试实战之多线程顺序打印</a></p>
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/java/">java</a>
+            
+            <a href="/tags/concurrency/">concurrency</a>
+            
+            <a href="/tags/thread/">thread</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/java-concurrency-synchronized/">
+                <i class="icon-next">Java 并发基础（一）：synchronized 锁同步</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/java-concurrency-ordered-thread-print/">Java 并发基础（五）：面试实战之多线程顺序打印</a></li><li class="post-list-item"><a class="post-list-link" href="/java-concurrency-synchronized/">Java 并发基础（一）：synchronized 锁同步</a></li><li class="post-list-item"><a class="post-list-link" href="/docker-commands/">Docker 教程（三）：Docker 命令</a></li><li class="post-list-item"><a class="post-list-link" href="/docker-dockerfile/">Docker 教程（二）：Dockerfile</a></li><li class="post-list-item"><a class="post-list-link" href="/docker-tutorial/">Docker 教程（一）：Docker 是什么</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2021</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
