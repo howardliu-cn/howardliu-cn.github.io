@@ -2,6 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/os/all-about-linux-swap-space/</loc>
+    
+    <lastmod>2021-04-19T05:51:13.733Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/storm/trident-tutorial/</loc>
+    
+    <lastmod>2021-04-19T05:50:44.364Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
+    
+    <lastmod>2021-04-19T05:50:37.564Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
+    
+    <lastmod>2021-04-19T05:50:19.493Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/talk-about-CyclicBarrier-again/</loc>
     
     <lastmod>2021-04-11T09:03:40.313Z</lastmod>
@@ -261,6 +289,13 @@
   </url>
   
   <url>
+    <loc>https://www.howardliu.cn/hbase-environment-standalone-model/</loc>
+    
+    <lastmod>2020-07-28T05:48:04.720Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
     
     <lastmod>2020-07-28T05:48:04.720Z</lastmod>
@@ -269,13 +304,6 @@
   
   <url>
     <loc>https://www.howardliu.cn/os/init-my-ubuntu/</loc>
-    
-    <lastmod>2020-07-28T05:48:04.720Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/hbase-environment-standalone-model/</loc>
     
     <lastmod>2020-07-28T05:48:04.720Z</lastmod>
     
@@ -303,6 +331,13 @@
   </url>
   
   <url>
+    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
+    
+    <lastmod>2020-07-28T05:48:04.719Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
@@ -310,7 +345,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
+    <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
@@ -324,13 +359,6 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/reprint-10-reasons-to-replace-your-jsps-with-freemarker-templates/</loc>
-    
-    <lastmod>2020-07-28T05:48:04.719Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.howardliu.cn/middleware/the-different-between-some-distributed-message-queue/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
@@ -338,7 +366,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
+    <loc>https://www.howardliu.cn/reprint-10-reasons-to-replace-your-jsps-with-freemarker-templates/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
@@ -387,35 +415,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/os/all-about-linux-swap-space/</loc>
-    
-    <lastmod>2020-07-28T05:33:36.667Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
-    
-    <lastmod>2020-07-28T05:33:36.667Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
-    
-    <lastmod>2020-07-28T05:33:36.667Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
-    
-    <lastmod>2020-07-28T05:33:36.667Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/storm/trident-tutorial/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
@@ -429,14 +429,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/logon-windows-automatic-uncheck-password/</loc>
+    <loc>https://www.howardliu.cn/disable-bps-in-eos-project/</loc>
     
     <lastmod>2020-07-28T05:33:36.666Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/disable-bps-in-eos-project/</loc>
+    <loc>https://www.howardliu.cn/logon-windows-automatic-uncheck-password/</loc>
     
     <lastmod>2020-07-28T05:33:36.666Z</lastmod>
     
