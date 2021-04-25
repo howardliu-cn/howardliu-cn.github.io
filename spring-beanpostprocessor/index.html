@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Spring 实战：通过 BeanPostProcessor 动态注入 ID 生成器||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="本文通过实战的方式，了解 BeanPostProcessor 的作用。">
+<meta name="keywords" content="BeanPostProcessor,实战">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring 实战：通过 BeanPostProcessor 动态注入 ID 生成器">
+<meta property="og:url" content="https://www.howardliu.cn/spring-beanpostprocessor/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="本文通过实战的方式，了解 BeanPostProcessor 的作用。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://static.howardliu.cn/spring/pine-5541335_1920.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/spring/1350888580_1225.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-04-25T09:03:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring 实战：通过 BeanPostProcessor 动态注入 ID 生成器">
+<meta name="twitter:description" content="本文通过实战的方式，了解 BeanPostProcessor 的作用。">
+<meta name="twitter:image" content="http://static.howardliu.cn/spring/pine-5541335_1920.jpg">
+
+<meta name="keywords" content="BeanPostProcessor,实战">
+
+
+<meta name="description" content="本文通过实战的方式，了解 BeanPostProcessor 的作用。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/spring-beanpostprocessor/">Spring 实战：通过 BeanPostProcessor 动态注入 ID 生成器</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-04-25</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/spring-beanpostprocessor/" class="leancloud_visitors" data-flag-title="Spring 实战：通过 BeanPostProcessor 动态注入 ID 生成器">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#实现"><span class="toc-text">实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#自定义注解"><span class="toc-text">自定义注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#定义-ID-生成器"><span class="toc-text">定义 ID 生成器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#定义-BeanPostProcessor"><span class="toc-text">定义 BeanPostProcessor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试我们的代码"><span class="toc-text">测试我们的代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末思考"><span class="toc-text">文末思考</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#源码"><span class="toc-text">源码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-text">参考</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="http://static.howardliu.cn/spring/pine-5541335_1920.jpg" alt="Spring 实战：通过 BeanPostProcessor 动态注入 ID 生成器"></p>
+<p>你好，我是看山。</p>
+<p>在分布式系统中，我们会需要 ID 生成器的组件，这个组件可以实现帮助我们生成顺序的或者带业务含义的 ID。目前有很多经典的 ID 生成方式，比如数据库自增列（自增主键或序列）、Snowflake 算法、美团 Leaf 算法等等，所以，会有一些公司级或者业务级的 ID 生成器组件的诞生。本文就是通过 BeanPostProcessor 实现动态注入 ID 生成器的实战。</p>
+<a id="more"></a>
+
+<p>在 Spring 中，实现注入的方式很多，比如 springboot 的 starter，在自定义的 Configuration 中初始化 ID 生成器的 Bean，业务代码中通过<code>@AutoWired</code>或者<code>@Resource</code>注入即可，开箱即用。这种方式简单直接，但是缺点也是过于简单，缺少了使用方自定义的入口。考虑一下实际场景，在同一个业务单据中，要保持 ID 的唯一，但是在不同单据中，可以重复。而且，这些算法在生成 ID 的时候，为了保持多线程返回结果唯一，都会锁定共享资源。如果不同业务，并发情景不同，可能低并发的业务被高并发的业务阻塞获取 ID，造成一些性能的损失。所以，我们要考虑将 ID 生成器，根据业务隔离开，这样 springboot 的 starter 就会显得不够灵活了。</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>根据上面的需求，我们可以分几步实现我们的逻辑：</p>
+<ol>
+<li>自定义属性注解，用于判断是否需要注入属性对象</li>
+<li>定义 ID 生成器接口、实现类，以及工厂类，工厂类是为了根据定义创建不同的 ID 生成器实现对象</li>
+<li>定义 BeanPostProcessor，查找使用自定义注解定义的属性，实现注入</li>
+</ol>
+<h3 id="自定义注解"><a href="#自定义注解" class="headerlink" title="自定义注解"></a>自定义注解</h3><p>首先自定义一个注解，可以定义一个<code>value</code>属性，作为隔离业务的标识：</p>
+<pre><code class="java">@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.METHOD})
+public @interface IdGeneratorClient {
+    /**
+     * ID 生成器名称
+     *
+     * @return
+     */
+    String value() default &quot;DEFAULT&quot;;
+}</code></pre>
+<h3 id="定义-ID-生成器"><a href="#定义-ID-生成器" class="headerlink" title="定义 ID 生成器"></a>定义 ID 生成器</h3><p>定义 ID 生成器的接口：</p>
+<pre><code class="java">public interface IdGenerator {
+    String groupName();
+
+    long nextId();
+}</code></pre>
+<p>实现 ID 生成器接口，偷懒使用<code>AtomicLong</code>实现自增，同时考虑 ID 生成器是分组的，通过<code>ConcurrentHashMap</code>实现 ID 生成器的持有：</p>
+<pre><code class="java">class DefaultIdGenerator implements IdGenerator {
+    private static final Map&lt;String, AtomicLong&gt; ID_CACHE = new ConcurrentHashMap&lt;&gt;(new HashMap&lt;&gt;());
+    private final String groupName;
+
+    DefaultIdGenerator(final String groupName) {
+        this.groupName = groupName;
+        synchronized (ID_CACHE) {
+            ID_CACHE.computeIfAbsent(groupName, key -&gt; new AtomicLong(1));
+        }
+    }
+
+    @Override
+    public String groupName() {
+        return this.groupName;
+    }
+
+    @Override
+    public long nextId() {
+        return ID_CACHE.get(this.groupName).getAndIncrement();
+    }
+}</code></pre>
+<p>如前面设计的，我们需要一个工厂类来创建 ID 生成器，示例中使用最简单的实现，我们真正使用的时候，还可以通过更加灵活的 SPI 实现（关于 SPI 的实现，这里挖个坑，后面专门写一篇填坑）：</p>
+<pre><code class="java">public enum IdGeneratorFactory {
+    INSTANCE;
+
+    private static final Map&lt;String, IdGenerator&gt; ID_GENERATOR_MAP = new ConcurrentHashMap&lt;&gt;(new HashMap&lt;&gt;());
+
+    public synchronized IdGenerator create(final String groupName) {
+        return ID_GENERATOR_MAP.computeIfAbsent(groupName, key -&gt; new DefaultIdGenerator(groupName));
+    }
+}</code></pre>
+<h3 id="定义-BeanPostProcessor"><a href="#定义-BeanPostProcessor" class="headerlink" title="定义 BeanPostProcessor"></a>定义 BeanPostProcessor</h3><p>前面都是属于基本操作，这里才是扩展的核心。我们的实现逻辑是：</p>
+<ol>
+<li>扫描 bean 的所有属性，然后找到定义了<code>IdGeneratorClient</code>注解的属性</li>
+<li>获取注解的<code>value</code>值，作为 ID 生成器的分组标识</li>
+<li>使用<code>IdGeneratorFactory</code>这个工厂类生成 ID 生成器实例，这里会返回新建的或已经定义的实例</li>
+<li>通过反射将 ID 生成器实例写入 bean</li>
+</ol>
+<pre><code class="java">public class IdGeneratorBeanPostProcessor implements BeanPostProcessor {
+
+    @Override
+    public Object postProcessBeforeInitialization(final Object bean, final String beanName) throws BeansException {
+        return bean;
+    }
+
+    @Override
+    public Object postProcessAfterInitialization(final Object bean, final String beanName) throws BeansException {
+        parseFields(bean);
+        return bean;
+    }
+
+    private void parseFields(final Object bean) {
+        if (bean == null) {
+            return;
+        }
+        Class&lt;?&gt; clazz = bean.getClass();
+        parseFields(bean, clazz);
+
+        while (clazz.getSuperclass() != null &amp;&amp; !clazz.getSuperclass().equals(Object.class)) {
+            clazz = clazz.getSuperclass();
+            parseFields(bean, clazz);
+        }
+    }
+
+    private void parseFields(final Object bean, Class&lt;?&gt; clazz) {
+        if (bean == null || clazz == null) {
+            return;
+        }
+
+        for (final Field field : clazz.getDeclaredFields()) {
+            try {
+                final IdGeneratorClient annotation = AnnotationUtils.getAnnotation(field, IdGeneratorClient.class);
+                if (annotation == null) {
+                    continue;
+                }
+
+                final String groupName = annotation.value();
+
+                final Class&lt;?&gt; fieldType = field.getType();
+                if (fieldType.equals(IdGenerator.class)) {
+                    final IdGenerator idGenerator = IdGeneratorFactory.INSTANCE.create(groupName);
+                    invokeSetField(bean, field, idGenerator);
+                    continue;
+                }
+
+                throw new RuntimeException(&quot;未知字段类型无法初始化，bean: &quot; + bean + &quot;，field: &quot; + field);
+            } catch (Throwable t) {
+                throw new RuntimeException(&quot;初始化字段失败，bean=&quot; + bean + &quot;，field=&quot; + field, t);
+            }
+        }
+    }
+
+    private void invokeSetField(final Object bean, final Field field, final Object param) {
+        ReflectionUtils.makeAccessible(field);
+        ReflectionUtils.setField(field, bean, param);
+    }
+}</code></pre>
+<p>实现<code>BeanPostProcessor</code>接口需要完成<code>postProcessBeforeInitialization</code>和<code>postProcessAfterInitialization</code>两个方法的定义。下图是 Spring 中 Bean 的实例化过程：</p>
+<p><img src="http://static.howardliu.cn/spring/1350888580_1225.jpg" alt="Spring 中 Bean 的实例化过程图示"></p>
+<p>从图中可以知道，Spring 调用<code>BeanPostProcessor</code>的这两个方法时，bean 已经被实例化，所有能注入的属性都已经被注入了，是一个完整的 bean。而且两个方法的返回值，可以是原来的 bean 实例，也可以是包装后的实例，这就要看我们的定义了。</p>
+<h3 id="测试我们的代码"><a href="#测试我们的代码" class="headerlink" title="测试我们的代码"></a>测试我们的代码</h3><p>写一个测试用例，验证我们的实现是否生效：</p>
+<pre><code class="java">@SpringBootTest
+class SpringBeanPostProcessorApplicationTests {
+    @IdGeneratorClient
+    private IdGenerator defaultIdGenerator;
+    @IdGeneratorClient(&quot;group1&quot;)
+    private IdGenerator group1IdGenerator;
+
+    @Test
+    void contextLoads() {
+        Assert.notNull(defaultIdGenerator, &quot;注入失败&quot;);
+        System.out.println(defaultIdGenerator.groupName() + &quot; =&gt; &quot; + defaultIdGenerator.nextId());
+
+        Assert.notNull(group1IdGenerator, &quot;注入失败&quot;);
+        for (int i = 0; i &lt; 5; i++) {
+            System.out.println(defaultIdGenerator.groupName() + &quot; =&gt; &quot; + defaultIdGenerator.nextId());
+            System.out.println(group1IdGenerator.groupName() + &quot; =&gt; &quot; + group1IdGenerator.nextId());
+        }
+    }
+
+}</code></pre>
+<p>运行结果为：</p>
+<pre><code class="log">DEFAULT =&gt; 1
+DEFAULT =&gt; 2
+group1 =&gt; 1
+DEFAULT =&gt; 3
+group1 =&gt; 2
+DEFAULT =&gt; 4
+group1 =&gt; 3
+DEFAULT =&gt; 5
+group1 =&gt; 4
+DEFAULT =&gt; 6
+group1 =&gt; 5</code></pre>
+<p>可以看到，默认的 ID 生成器与定义名称为 group1 的 ID 生成器是分别生成的，符合预期。</p>
+<h2 id="文末思考"><a href="#文末思考" class="headerlink" title="文末思考"></a>文末思考</h2><p>我们实现了通过<code>BeanPostProcessor</code>实现自动注入自定义的业务对象，上面的实现还比较简单，有很多可以扩展的地方，比如工厂方法实现，可以借助 SPI 的方式更加灵活的创建 ID 生成器对象。同时，考虑到分布式场景，我们还可以在 ID 生成器实现类中，通过注入 rpc 实例，实现远程 ID 生成逻辑。</p>
+<p>玩法无限，就看我们的想象了。</p>
+<h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><p>附上源码：<a href="https://github.com/howardliu-cn/effective-spring/tree/main/spring-beanpostprocessor" target="_blank" rel="noopener">https://github.com/howardliu-cn/effective-spring/tree/main/spring-beanpostprocessor</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://howtodoinjava.com/spring-core/spring-bean-post-processors/" target="_blank" rel="noopener">Spring BeanPostProcessor Example</a></li>
+<li><a href="https://www.baeldung.com/spring-beanpostprocessor" target="_blank" rel="noopener">Spring BeanPostProcessor</a></li>
+</ul>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://www.howardliu.cn/springboot-action-gracefully-response/">SpringBoot 实战：一招实现结果的优雅响应</a></li>
+<li><a href="https://www.howardliu.cn/springboot-action-gracefully-response-exception/">SpringBoot 实战：如何优雅的处理异常</a></li>
+<li><a href="https://www.howardliu.cn/spring-beanpostprocessor/">Spring 实战：通过 BeanPostProcessor 动态注入 ID 生成器</a></li>
+</ul>
+<hr>
+<p>你好，我是看山，公众号：看山的小屋，10 年老猿，Apache Storm、WxJava、Cynomys 开源贡献者。游于码界，戏享人生。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/spring-beanpostprocessor/">Spring 实战：通过 BeanPostProcessor 动态注入 ID 生成器</a><br>CSDN 主页：<a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN 博文：<a href="https://blog.csdn.net/liuxinghao/article/details/103794938" target="_blank" rel="noopener">Spring 实战：通过 BeanPostProcessor 动态注入 ID 生成器</a></p>
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/BeanPostProcessor/">BeanPostProcessor</a>
+            
+            <a href="/tags/实战/">实战</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/java-concurrency-ordered-thread-print/">
+                <i class="icon-next">Java 并发基础（五）：面试实战之多线程顺序打印</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/交换空间/" style="font-size: 15px;">交换空间</a> <a href="/tags/工作环境/" style="font-size: 15px;">工作环境</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/spring-beanpostprocessor/">Spring 实战：通过 BeanPostProcessor 动态注入 ID 生成器</a></li><li class="post-list-item"><a class="post-list-link" href="/java-concurrency-ordered-thread-print/">Java 并发基础（五）：面试实战之多线程顺序打印</a></li><li class="post-list-item"><a class="post-list-link" href="/java-concurrency-synchronized/">Java 并发基础（一）：synchronized 锁同步</a></li><li class="post-list-item"><a class="post-list-link" href="/docker-commands/">Docker 教程（三）：Docker 命令</a></li><li class="post-list-item"><a class="post-list-link" href="/docker-dockerfile/">Docker 教程（二）：Dockerfile</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2021</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
