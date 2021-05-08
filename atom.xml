@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.howardliu.cn/"/>
-  <updated>2021-04-29T03:22:51.000Z</updated>
+  <updated>2021-05-08T02:46:53.000Z</updated>
   <id>https://www.howardliu.cn/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>面试真题：无重复字符的最长子串</title>
+    <link href="https://www.howardliu.cn/longest-substring-without-repeating-character/"/>
+    <id>https://www.howardliu.cn/longest-substring-without-repeating-character/</id>
+    <published>2021-05-08T02:46:53.000Z</published>
+    <updated>2021-05-08T02:46:53.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="http://static.howardliu.cn/altorithm/surfing-5628803_1920.jpg" alt="面试真题：无重复字符的最长子串"></p><p>你好，我是看山。</p><p>来一个算法题，面试之后查了一下，是 LeetCode 的第三题，难度中等。居然在面试过程中碰到 LeetCode 真题，事后总结一波。加深印象。</p><a id="more"></a><p>先看一下题目描述：</p><blockquote><p>给定一个字符串，请你找出其中不含有重复字符的最长子串的长度。</p><p>输入：s = “abcabcbb”<br>输出：3<br>解释：因为无重复字符的最长子串是 “abc”，所以其长度为 3。</p><p>输入：s = “pwwkew”<br>输出：3<br>解释：因为无重复字符的最长子串是 “wke”，所以其长度为 3。</p><p>请注意，你的答案必须是 子串 的长度，”pwke” 是一个子序列，不是子串。</p></blockquote><p>看过题目之后，我最先想到的是一道数学题：一个线段上有 10 个点，求总共有多少的线段？如果是小朋友解题的话，一般就是，左手固定，右手向右移动，每移动一个点就加一个数，右手移动到末尾后，左手向右移动一个点，以此类推，知道最后一个点。这样就能够数出所有的线段数量，而且还不会乱。</p><p>其实上面这个算法题和我说的这个数学题的解法类似，采用小学生解法，只不过需要在数数的时候加一些判断，比如，线段中的点，有没有相同的。</p><p>来个图例：</p><p><img src="http://static.howardliu.cn/altorithm/WX20210508-115432.png" alt="无重复字符的最长子串"></p><p>根据图例写代码：</p><pre><code class="java">import java.util.HashSet;import java.util.Set;class Solution {    public static int lengthOfLongestSubstring(String s) {        if (s == null || s.isEmpty()) {            return 0;        }        final int len = s.length();        final Set&lt;Character&gt; sets = new HashSet&lt;&gt;();        int i = 0, j = 0, result = 0;        Character tmp ;        while (i &lt; len &amp;&amp; j &lt; len) {            tmp = s.charAt(j);            if (sets.contains(tmp)) {                sets.remove(s.charAt(i++));            } else {                sets.add(tmp);                result = Math.max(result, j++ - i + 1);            }        }        return result;    }}</code></pre><p>如果是面试，这个时候就可以交差了。既然是总结，就得再想一下这个解法有没有通用性。我们所采用的办法是，通过两个变量 i 和 j 指向计算元素，然后与 i 与 j 之间的元素进行判断，这种方式江湖称之为“双指针”。贴心的 LeetCode 也给过定义：</p><blockquote><p>双指针从广义上来说，是指用两个变量在线性结构上遍历而解决的问题。狭义上说，</p><ul><li>对于数组，指两个变量在数组上相向移动解决的问题；</li><li>对于链表，指两个变量在链表上同向移动解决的问题，也称为「快慢指针」问题。</li></ul><p>双指针算法通常不难，是基于暴力解法的优化，<strong>它们是很好的学习算法的入门问题</strong>。</p></blockquote><p>从 <a href="https://leetcode-cn.com/tag/two-pointers/problemset/" target="_blank" rel="noopener">这里</a> 可以找到所有 LeetCode 中关于双指针解法的题目，可以过足瘾。</p><hr><p>你好，我是看山，公众号：看山的小屋，10 年老猿，Apache Storm、WxJava、Cynomys 开源贡献者。游于码界，戏享人生。</p><p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/longest-substring-without-repeating-character/">面试真题：无重复字符的最长子串</a><br>CSDN 主页：<a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN 博文：<a href="https://blog.csdn.net/liuxinghao/article/details/116545038" target="_blank" rel="noopener">面试真题：无重复字符的最长子串</a></p><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
+    
+    <summary type="html">
+    
+      找出不含有重复字符的最长子串的长度。
+    
+    </summary>
+    
+    
+      <category term="算法" scheme="https://www.howardliu.cn/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="算法" scheme="https://www.howardliu.cn/tags/%E7%AE%97%E6%B3%95/"/>
+    
+      <category term="双指针" scheme="https://www.howardliu.cn/tags/%E5%8F%8C%E6%8C%87%E9%92%88/"/>
+    
+      <category term="滑动窗口" scheme="https://www.howardliu.cn/tags/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/"/>
+    
+  </entry>
   
   <entry>
     <title>Spring 实战：自定义 Filter 优雅获取请求参数和响应结果</title>
@@ -504,31 +531,6 @@
       <category term="架构设计" scheme="https://www.howardliu.cn/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/"/>
     
       <category term="短链服务" scheme="https://www.howardliu.cn/tags/%E7%9F%AD%E9%93%BE%E6%9C%8D%E5%8A%A1/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>如何在微服务团队中高效使用 Git 管理代码？</title>
-    <link href="https://www.howardliu.cn/how-to-use-branch-efficiently-in-git/"/>
-    <id>https://www.howardliu.cn/how-to-use-branch-efficiently-in-git/</id>
-    <published>2020-07-22T13:38:11.000Z</published>
-    <updated>2020-07-24T13:30:11.000Z</updated>
-    
-    <content type="html"><![CDATA[<p><img src="https://static.howardliu.cn/git/sunset-5371719_1920.jpg" alt="如何在微服务团队中高效使用 Git 管理代码"></p><p>用了 Git 多年，优势和挑战都是深有体会。</p><p>话不多说，直接上问题：如何在微服务团队中高效使用 Git 管理代码？</p><p>继续不多话，直接上答案：分支管理。</p><a id="more"></a><p>Git 的分支管理有很多实践，有些是从 SVN 类的集中式版本管理工具继承的，有些是根据 Git 自己的特性总结的，目前市面上比较有名的三种 Git 分支管理模型是：</p><ul><li>TrunkBased：主干在手，天下我有。所有代码都往主干上招呼，发版也只用主干。</li><li>GitFlow：严谨、规范、难用，主要是记不住该往哪个分支合并了。</li><li>AoneFlow：前两种都不行，那就借鉴各自的优点，达到阴阳平衡，中庸也。</li></ul><h2 id="TrunkBased"><a href="#TrunkBased" class="headerlink" title="TrunkBased"></a>TrunkBased</h2><p>TrunkBased，又叫主干开发，有一个网站专门介绍这种开发方式：<a href="https://trunkbaseddevelopment.com/" target="_blank" rel="noopener">Trunk Based Development</a>。</p><p>TrunkBased 是持续集成思想所崇尚的工作方式，它由单个主干分支和许多发布分支组成，每个发布分支在特定版本的提交点上从主干创建出来，用来进行上线部署和 Hotfix。在 TrunkBased 模式中，没有显性的特性分支。当然实际上 Git 的分布式特征天生允许每个人有本地分支，TrunkBased 也并非排斥短期的特性分支存在，只不过在说这种模式的时候，大家通常都不会明确强调它罢了。</p><p><img src="https://static.howardliu.cn/git/trunk-based.jpg" alt="TrunkBased"></p><p>使用主干开发后，我们的代码库原则上就只能有一个 Trunk 分支即 master 分支了，所有新功能的提交也都提交到 master 分支上，保证每次提交后 master 分支都是可随时发布的状态。没有了分支的代码隔离，测试和解决冲突都变得简单，持续集成也变得稳定了许多。</p><p>但是这种方案缺点也比较明显，如果大家都在主干进行开发，当代码提交合并时，将会异常痛苦，一不小心就会出现冲突。而且，这种因为这种方式没有明显的特性分支，想要移除已经上线的特性会变得非常困难。（如果你说把不要的功能注释，重新发版，那就当我什么也没说。）还有一种方案是引入特性开关，通过开关控制特性是否启用和关闭，但是增加开关就引入了复杂性，引入复杂性就引入了出 bug 的风险，毕竟多增加的每行代码都有可能是一个新的 bug。</p><h2 id="GitFlow"><a href="#GitFlow" class="headerlink" title="GitFlow"></a>GitFlow</h2><p>GitFlow 来源于 Vincent Driessen 提出的 <a href="https://nvie.com/posts/a-successful-git-branching-model/" target="_blank" rel="noopener">A successful Git branching model</a>，整体来说，是一套完善的版本管理流程。缺点就是太过严格，不太适合喜欢自由而且懒的程序猿。当然，在程序猿这种物种中，没有完美的解决方案，总有那么一小撮人会觉得不好。参考 Ant、Maven 和 Gradle。</p><p>先上图：</p><p><img src="https://static.howardliu.cn/git/gitflow.png" alt="GitFlow：A successful Git branching model"></p><p>GitFlow 常用分支：</p><ul><li>主干分支（<code>master</code>）：最近发布到生产环境代码的分支，这个分支只能从其他分支合并，不能再 Master 分支直接修改。</li><li>主开发分支（<code>develop</code>）：包含所有要发布到下一个 Release 版本的代码。可以在 Develop 直接开发，也可以将 Feature 的特性代码合并到 Develop 中。<br><img src="https://static.howardliu.cn/git/gitflow-develop.png" alt="主开发分支"></li><li>特性分支（<code>feature/*</code>）：功能项开发分支，以<code>feature/</code>开头命名分支，当功能项开发完成，将被合并到主开发分支进入下一个 Release，合并完分支后一般会删掉这个特性分支。<br><img src="https://static.howardliu.cn/git/gitflow-feature.png" alt="特性分支"></li><li>发布分支（<code>release/*</code>）：基于主开发分支创建的一个发布分支，以<code>release/</code>开头命名分支，用于测试、bug 修复及上线。完成后，合并到主干分支和主开发分支，同时在主干分支上打个 Tag 记住 Release 版本号，然后可以删除发布分支。<br><img src="https://static.howardliu.cn/git/gitflow-release.png" alt="发布分支"></li><li>热修复分支（<code>hotfix/*</code>）：用于解决线上 Release 版本出现的 bug，以<code>hotfix/</code>开头命名分支，修复线上问题，完成后，合并到主干分支和主开发分支，同时在主干分支上打个 tag。<br><img src="https://static.howardliu.cn/git/gitflow-hotfix.png" alt="热修复分支"></li></ul><p>根据上面描述，GitFlow 是一套完整的从开发到生产的管理方式，但是各种分支来回切换及合并，很容易把人搞晕，所以用的人也是越来越少。</p><h2 id="AoneFlow"><a href="#AoneFlow" class="headerlink" title="AoneFlow"></a>AoneFlow</h2><p>AoneFlow 是阿里内部的一套版本管理模型，兼顾了 TrunkBased 易于持续集成和 GitFlow 易于管理需求的特点，又规避了 GitFlow 分支繁琐的缺点，也就是中庸。</p><p>AoneFlow 使用三个分支：主干分支（<code>master</code>）、特性分支（<code>feature/*</code>）、发布分支（<code>release/*</code>），以及三条原则：</p><p><strong>规则一，开始工作前，从主干分支创建特性分支。</strong></p><p>这条规则借鉴了 GitFlow，每当开始一件新的工作项（比如新的功能或是待解决的问题，可以是一个人完成，或是多个人协作完成）时，从代表最新已发布版本的主干分支上创建一个通常以<code>feature/</code>前缀命名的特性分支，然后在这个分支上提交代码修改。也就是说，每个工作项对应一个特性分支，所有的修改都不允许直接提交到主干。</p><p><img src="https://static.howardliu.cn/git/aoneflow-feature.jpg" alt="从主干创建特性分支"></p><p>特性分支不止承担了新功能，也是待解决问题的分支。对于我们团队，为了避免歧义，会将新功能以<code>feature/</code>为前缀，待解决问题以<code>hotfix/</code>为前缀，除了名称外，其他都按照规则一执行。</p><p><strong>规则二，通过合并特性分支，形成发布分支。</strong></p><p>GitFlow 先将已经完成的特性分支合并回主干分支和主开发分支，然后在主干分支上打 Tag 记录发布信息。TrunkBased 是等所有需要的特性都在主干分支上开发完成，然后从主干分支的特定位置拉出发布分支。而 AoneFlow 的思路是，从主干上拉出一条新分支，将所有本次要集成或发布的特性分支依次合并过去，从而得到发布分支，发布分支通常以<code>release/</code>前缀命名。</p><p><img src="https://static.howardliu.cn/git/aoneflow-release.jpg" alt="合并特性分支，形成发布分支"></p><p>我们可以将每条发布分支与具体的环境相对应，<code>release/test</code>对应部署测试环境，<code>release/prod</code>对应线上正式环境等，并与流水线工具相结合，串联各个环境上的代码质量扫描和自动化测试关卡，将产出的部署包直接发布到相应环境上。</p><p>另外，发布分支的特性组成是动态的，调整起来特别容易。在一些市场瞬息万变的互联网企业，以及采用“敏捷运作”的乙方企业经常会遇到这种情况，已经完成就等待上线的需求，随时可能由于市场策略调整或者甲方的一个临时决定，其中某个功能忽然要求延迟发布或者干脆不要了。再或者是某个特性在上线前发现存在严重的开发问题，需要排除。按往常的做法，这时候就要来手工“剔代码”了，将已经合并到开发分支或者主干分支的相关提交一个个剔除出去，做过的同学都知道很麻烦。在 AoneFlow 模式下，重建发布分支，只需要将原本的发布分支删掉，从主干拉出新的同名发布分支，再把需要保留的各特性分支合并过来就搞定，而且代码是干净的，没有包含不必要的特性。</p><p>此外，发布分支之间是松耦合的，这样就可以有多个集成环境分别进行不同的特性组合的集成测试，也能方便的管理各个特性进入到不同环境上部署的时机。松耦合并不代表没有相关性，由于测试环境、集成环境、预发布环境、灰度环境和线上正式环境等发布流程通常是顺序进行的，在流程上可以要求只有通过前一环境验证的特性，才能传递到下一个环境做部署，形成漏斗形的特性发布流。当然，这种玩法比较适合有完整开发集成平台的公司，小团队玩不转，比如我们团队就玩不动这种高级玩法。</p><p><strong>规则三，发布到线上正式环境后，合并相应的发布分支到主干，在主干添加 Tag，同时删除该发布分支关联的特性分支。</strong></p><p>当一条发布分支上的流水线完成了一次线上正式环境的部署，就意味着相应的功能真正的发布了，此时应该将这条发布分支合并到主干。为了避免在代码仓库里堆积大量历史上的特性分支，还应该清理掉已经上线部分特性分支。与 GitFlow 相似，主干分支上的最新版本始终与线上版本一致，如果要回溯历史版本，只需在主干分支上找到相应的版本标签即可。</p><p><img src="https://static.howardliu.cn/git/aoneflow-master.jpg" alt="合并相应的发布分支到主干，在主干添加 Tag，同时删除该发布分支关联的特性分支"></p><p>除了基本规则，还有一些实际操作中不成文的技巧。比如上线后的热修复，正常的处理方法应该是，创建一条新的发布分支，对应线上环境（相当于 Hotfix 分支），同时为这个分支创建临时流水线，以保障必要的发布前检查和冒烟测试能够自动执行。</p><h2 id="再啰嗦几句废话"><a href="#再啰嗦几句废话" class="headerlink" title="再啰嗦几句废话"></a>再啰嗦几句废话</h2><p>不管哪种方式，既然存在，都会有一定合理性。所以，不管最终翻了哪个牌子，不是因为这个好看，而是因为这个更适合自己。</p><hr><p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/how-to-use-branch-efficiently-in-git/">如何在微服务团队中高效使用 Git 管理代码？</a><br>CSDN 主页：<a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN 博文：<a href="https://blog.csdn.net/liuxinghao/article/details/107570189" target="_blank" rel="noopener">如何在微服务团队中高效使用 Git 管理代码？</a></p><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
-    
-    <summary type="html">
-    
-      TrunkBased：主干在手，天下我有。所有代码都往主干上招呼，发版也只用主干。GitFlow：严谨、规范、难用，主要是记不住该往哪个分支合并了。AoneFlow：前两种都不行，那就借鉴各自的优点，达到阴阳平衡，中庸也。
-    
-    </summary>
-    
-    
-      <category term="microservice" scheme="https://www.howardliu.cn/categories/microservice/"/>
-    
-    
-      <category term="微服务" scheme="https://www.howardliu.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/"/>
-    
-      <category term="Git" scheme="https://www.howardliu.cn/tags/Git/"/>
     
   </entry>
   
