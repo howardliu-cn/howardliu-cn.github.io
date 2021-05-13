@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.howardliu.cn/java-stream-collectors/</loc>
+    <lastmod>2021-05-12</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/main-thread-waiting-for-the-end-of-subthread/</loc>
+    <lastmod>2021-05-12</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/talk-about-CountDownLatch-again/</loc>
+    <lastmod>2021-05-12</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/talk-about-CyclicBarrier-again/</loc>
+    <lastmod>2021-05-12</lastmod>
+  </url>  <url>
     <loc>https://www.howardliu.cn/longest-substring-without-repeating-character/</loc>
     <lastmod>2021-05-08</lastmod>
   </url>  <url>
@@ -27,15 +39,6 @@
   </url>  <url>
     <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
     <lastmod>2021-04-19</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/talk-about-CyclicBarrier-again/</loc>
-    <lastmod>2021-04-11</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/talk-about-CountDownLatch-again/</loc>
-    <lastmod>2021-04-11</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/main-thread-waiting-for-the-end-of-subthread/</loc>
-    <lastmod>2021-04-11</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/java-concurrency-ordered-thread-print/</loc>
     <lastmod>2021-04-11</lastmod>
@@ -148,10 +151,10 @@
     <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
+    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
+    <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/hadoop-environment/</loc>

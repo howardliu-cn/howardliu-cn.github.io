@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>一文掌握 Java8 Stream 中 Collectors 的 24 个操作||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="一文掌握 Java8 Stream 中 Collectors 的 24 个操作。">
+<meta name="keywords" content="java,jdk8,stream,collectors,Collectors.toMap,Collectors.groupingBy,Collectors.collectingAndThen,Function.identity">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一文掌握 Java8 Stream 中 Collectors 的 24 个操作">
+<meta property="og:url" content="https://www.howardliu.cn/java-stream-collectors/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="一文掌握 Java8 Stream 中 Collectors 的 24 个操作。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://static.howardliu.cn/cover/stadttheater-5002861_1920.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-05-12T11:49:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一文掌握 Java8 Stream 中 Collectors 的 24 个操作">
+<meta name="twitter:description" content="一文掌握 Java8 Stream 中 Collectors 的 24 个操作。">
+<meta name="twitter:image" content="http://static.howardliu.cn/cover/stadttheater-5002861_1920.jpg">
+
+<meta name="keywords" content="java,jdk8,stream,collectors,Collectors.toMap,Collectors.groupingBy,Collectors.collectingAndThen,Function.identity">
+
+
+<meta name="description" content="一文掌握 Java8 Stream 中 Collectors 的 24 个操作。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/java-stream-collectors/">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-05-12</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/java-stream-collectors/" class="leancloud_visitors" data-flag-title="一文掌握 Java8 Stream 中 Collectors 的 24 个操作">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#定义示例数据"><span class="toc-text">定义示例数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据统计"><span class="toc-text">数据统计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#元素数量：counting"><span class="toc-text">元素数量：counting</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#平均值：averagingDouble、averagingInt、averagingLong"><span class="toc-text">平均值：averagingDouble、averagingInt、averagingLong</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#和：summingDouble、summingInt、summingLong"><span class="toc-text">和：summingDouble、summingInt、summingLong</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最大值-最小值元素：maxBy、minBy"><span class="toc-text">最大值/最小值元素：maxBy、minBy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#统计结果：summarizingDouble、summarizingInt、summarizingLong"><span class="toc-text">统计结果：summarizingDouble、summarizingInt、summarizingLong</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#聚合、分组"><span class="toc-text">聚合、分组</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#聚合元素：toList、toSet、toCollection"><span class="toc-text">聚合元素：toList、toSet、toCollection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#聚合元素：toMap、toConcurrentMap"><span class="toc-text">聚合元素：toMap、toConcurrentMap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分组：groupingBy、groupingByConcurrent"><span class="toc-text">分组：groupingBy、groupingByConcurrent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分组：partitioningBy"><span class="toc-text">分组：partitioningBy</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#链接数据：joining"><span class="toc-text">链接数据：joining</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#操作链：collectingAndThen"><span class="toc-text">操作链：collectingAndThen</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#操作后聚合：mapping"><span class="toc-text">操作后聚合：mapping</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#聚合后操作：reducing"><span class="toc-text">聚合后操作：reducing</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="http://static.howardliu.cn/cover/stadttheater-5002861_1920.jpg" alt="一文掌握 Java8 Stream 中 Collectors 的 24 个操作"></p>
+<p>你好，我是看山。</p>
+<p>Java8 应该算是业界主版本了，版本中重要性很高的一个更新是<code>Stream</code>流处理。关于流处理内容比较多，本文主要是说一下<code>Stream</code>中的<code>Collectors</code>工具类的使用。</p>
+<a id="more"></a>
+
+<p><code>Collectors</code>是<code>java.util.stream</code>包下的一个工具类，其中各个方法的返回值可以作为<code>java.util.stream.Stream#collect</code>的入参，实现对队列的各种操作，包括：分组、聚合等。官方文档给出一些例子：</p>
+<blockquote>
+<p>Implementations of {@link Collector} that implement various useful reduction operations, such as accumulating elements into collections, summarizing elements according to various criteria, etc.</p>
+<p>The following are examples of using the predefined collectors to perform common mutable reduction tasks:</p>
+<pre><code class="java">// Accumulate names into a List
+List&lt;String&gt; list = people.stream().map(Person::getName).collect(Collectors.toList());
+
+// Accumulate names into a TreeSet
+Set&lt;String&gt; set = people.stream().map(Person::getName).collect(Collectors.toCollection(TreeSet::new));
+
+// Convert elements to strings and concatenate them, separated by commas
+String joined = things.stream()
+        .map(Object::toString)
+        .collect(Collectors.joining(&quot;, &quot;));
+
+// Compute sum of salaries of employee
+int total = employees.stream()
+        .collect(Collectors.summingInt(Employee::getSalary)));
+
+// Group employees by department
+Map&lt;Department, List&lt;Employee&gt;&gt; byDept = employees.stream()
+        .collect(Collectors.groupingBy(Employee::getDepartment));
+
+// Compute sum of salaries by department
+Map&lt;Department, Integer&gt; totalByDept = employees.stream()
+        .collect(Collectors.groupingBy(Employee::getDepartment, Collectors.summingInt(Employee::getSalary)));
+
+// Partition students into passing and failing
+Map&lt;Boolean, List&lt;Student&gt;&gt; passingFailing = students.stream()
+        .collect(Collectors.partitioningBy(s -&gt; s.getGrade() &gt;= PASS_THRESHOLD));</code></pre>
+</blockquote>
+<h2 id="定义示例数据"><a href="#定义示例数据" class="headerlink" title="定义示例数据"></a>定义示例数据</h2><p>先定义待操作对象，一个万能的<code>Student</code>类（用到了 lombok）：</p>
+<pre><code class="java">@Data
+@AllArgsConstructor
+public class Student {
+    private String id;
+    private String name;
+    private LocalDate birthday;
+    private int age;
+    private double score;
+}</code></pre>
+<p>然后定义一组测试数据：</p>
+<pre><code class="java">final List&lt;Student&gt; students = Lists.newArrayList();
+students.add(new Student(&quot;1&quot;, &quot;张三&quot;, LocalDate.of(2009, Month.JANUARY, 1), 12, 12.123));
+students.add(new Student(&quot;2&quot;, &quot;李四&quot;, LocalDate.of(2010, Month.FEBRUARY, 2), 11, 22.123));
+students.add(new Student(&quot;3&quot;, &quot;王五&quot;, LocalDate.of(2011, Month.MARCH, 3), 10, 32.123));</code></pre>
+<h2 id="数据统计"><a href="#数据统计" class="headerlink" title="数据统计"></a>数据统计</h2><h3 id="元素数量：counting"><a href="#元素数量：counting" class="headerlink" title="元素数量：counting"></a>元素数量：counting</h3><p>这个比较简单，就是统计聚合结果的元素数量：</p>
+<pre><code class="java">// 3
+students.stream().collect(Collectors.counting())</code></pre>
+<h3 id="平均值：averagingDouble、averagingInt、averagingLong"><a href="#平均值：averagingDouble、averagingInt、averagingLong" class="headerlink" title="平均值：averagingDouble、averagingInt、averagingLong"></a>平均值：averagingDouble、averagingInt、averagingLong</h3><p>这几个方法是计算聚合元素的平均值，区别是输入参数需要是对应的类型。</p>
+<p>比如，求学生的分数平均值，因为分数是<code>double</code>类型，所以在不转类型的情况下，需要使用<code>averagingDouble</code>：</p>
+<pre><code class="java">// 22.123
+students.stream().collect(Collectors.averagingDouble(Student::getScore))</code></pre>
+<p>如果考虑转换精度，也是可以实现：</p>
+<pre><code class="java">// 22.0
+students.stream().collect(Collectors.averagingInt(s -&gt; (int)s.getScore()))
+// 22.0
+students.stream().collect(Collectors.averagingLong(s -&gt; (long)s.getScore()))</code></pre>
+<p>如果是求学生的平均年龄，因为年龄是<code>int</code>类型，就可以随意使用任何一个函数了：</p>
+<pre><code class="java">// 11.0
+students.stream().collect(Collectors.averagingInt(Student::getAge))
+// 11.0
+students.stream().collect(Collectors.averagingDouble(Student::getAge))
+// 11.0
+students.stream().collect(Collectors.averagingLong(Student::getAge))</code></pre>
+<blockquote>
+<p>注意：这三个方法的返回值都是<code>Double</code>类型。</p>
+</blockquote>
+<h3 id="和：summingDouble、summingInt、summingLong"><a href="#和：summingDouble、summingInt、summingLong" class="headerlink" title="和：summingDouble、summingInt、summingLong"></a>和：summingDouble、summingInt、summingLong</h3><p>这三个方法和上面的平均值方法类似，也是需要注意元素的类型，在需要类型转换时，需要强制转换：</p>
+<pre><code class="java">// 66
+students.stream().collect(Collectors.summingInt(s -&gt; (int)s.getScore()))
+// 66.369
+students.stream().collect(Collectors.summingDouble(Student::getScore))
+// 66
+students.stream().collect(Collectors.summingLong(s -&gt; (long)s.getScore()))</code></pre>
+<p>但是对于不需要强制转换的类型，可以随意使用任何一个函数：</p>
+<pre><code class="java">// 33
+students.stream().collect(Collectors.summingInt(Student::getAge))
+// 33.0
+students.stream().collect(Collectors.summingDouble(Student::getAge))
+// 33
+students.stream().collect(Collectors.summingLong(Student::getAge))</code></pre>
+<blockquote>
+<p>注意：这三个方法返回值和平均值的三个方法不一样，<code>summingDouble</code>返回的是<code>Double</code>类型、<code>summingInt</code>返回的是<code>Integer</code>类型，<code>summingLong</code>返回的是<code>Long</code>类型。</p>
+</blockquote>
+<h3 id="最大值-最小值元素：maxBy、minBy"><a href="#最大值-最小值元素：maxBy、minBy" class="headerlink" title="最大值/最小值元素：maxBy、minBy"></a>最大值/最小值元素：maxBy、minBy</h3><p>顾名思义，这两个函数就是求聚合元素中指定比较器中的最大/最小元素。比如，求年龄最大/最小的<code>Student</code>对象：</p>
+<pre><code class="java">// Optional[Student(id=3, name=王五, birthday=2011-03-03, age=10, score=32.123)]，注意返回类型是Optional
+students.stream().collect(Collectors.minBy(Comparator.comparing(Student::getAge)))
+// Optional[Student(id=1, name=张三, birthday=2009-01-01, age=12, score=12.123)]，注意返回类型是Optional
+students.stream().collect(Collectors.maxBy(Comparator.comparing(Student::getAge)))</code></pre>
+<p>从源码可以看出来，这两个方法算是作者给的福利，用于完善数据统计的结果。内部都是封装了<code>reducing</code>方法和<code>BinaryOperator</code>工具类，这些下面会讲到。</p>
+<pre><code class="java">public static &lt;T&gt; Collector&lt;T, ?, Optional&lt;T&gt;&gt; maxBy(Comparator&lt;? super T&gt; comparator) {
+    return reducing(BinaryOperator.maxBy(comparator));
+}
+
+public static &lt;T&gt; Collector&lt;T, ?, Optional&lt;T&gt;&gt; minBy(Comparator&lt;? super T&gt; comparator) {
+    return reducing(BinaryOperator.minBy(comparator));
+}</code></pre>
+<h3 id="统计结果：summarizingDouble、summarizingInt、summarizingLong"><a href="#统计结果：summarizingDouble、summarizingInt、summarizingLong" class="headerlink" title="统计结果：summarizingDouble、summarizingInt、summarizingLong"></a>统计结果：summarizingDouble、summarizingInt、summarizingLong</h3><p>既然是数据操作，基本上逃不出计数、求平局、求和、最大、最小这几个，所以作者也是很贴心的实现了一组聚合的数据统计方法。</p>
+<p>这组方法与求和、求平均的方法类似，都需要注意方法类型。比如，按照分数统计的话，需要进行类型转换：</p>
+<pre><code class="java">// IntSummaryStatistics{count=3, sum=66, min=12, average=22.000000, max=32}
+students.stream().collect(Collectors.summarizingInt(s -&gt; (int) s.getScore()))
+// DoubleSummaryStatistics{count=3, sum=66.369000, min=12.123000, average=22.123000, max=32.123000}
+students.stream().collect(Collectors.summarizingDouble(Student::getScore))
+// LongSummaryStatistics{count=3, sum=66, min=12, average=22.000000, max=32}
+students.stream().collect(Collectors.summarizingLong(s -&gt; (long) s.getScore()))</code></pre>
+<p>如果是用年龄统计的话，三个方法通用：</p>
+<pre><code class="java">// IntSummaryStatistics{count=3, sum=33, min=10, average=11.000000, max=12}
+students.stream().collect(Collectors.summarizingInt(Student::getAge))
+// DoubleSummaryStatistics{count=3, sum=33.000000, min=10.000000, average=11.000000, max=12.000000}
+students.stream().collect(Collectors.summarizingDouble(Student::getAge))
+// LongSummaryStatistics{count=3, sum=33, min=10, average=11.000000, max=12}
+students.stream().collect(Collectors.summarizingLong(Student::getAge))</code></pre>
+<blockquote>
+<p>注意：这三个方法返回值不一样，<code>summarizingDouble</code>返回<code>DoubleSummaryStatistics</code>类型，<code>summarizingInt</code>返回<code>IntSummaryStatistics</code>类型，<code>summarizingLong</code>返回<code>LongSummaryStatistics</code>类型。</p>
+</blockquote>
+<h2 id="聚合、分组"><a href="#聚合、分组" class="headerlink" title="聚合、分组"></a>聚合、分组</h2><h3 id="聚合元素：toList、toSet、toCollection"><a href="#聚合元素：toList、toSet、toCollection" class="headerlink" title="聚合元素：toList、toSet、toCollection"></a>聚合元素：toList、toSet、toCollection</h3><p>这几个函数比较简单，是将聚合之后的元素，重新封装到队列中，然后返回。比如，得到所有<code>Student</code>的 ID 列表，只需要根据需要的结果类型使用不同的方法即可：</p>
+<pre><code class="java">// List: [1, 2, 3]
+final List&lt;String&gt; idList = students.stream().map(Student::getId).collect(Collectors.toList());
+// Set: [1, 2, 3]
+final Set&lt;String&gt; idSet = students.stream().map(Student::getId).collect(Collectors.toSet());
+// TreeSet: [1, 2, 3]
+final Collection&lt;String&gt; idTreeSet = students.stream().map(Student::getId).collect(Collectors.toCollection(TreeSet::new));</code></pre>
+<blockquote>
+<p>注意：<code>toList</code>方法返回的是<code>List</code>子类，<code>toSet</code>返回的是<code>Set</code>子类，<code>toCollection</code>返回的是<code>Collection</code>子类。我们都知道，<code>Collection</code>的子类包括<code>List</code>、<code>Set</code>等众多子类，所以<code>toCollection</code>更加灵活。</p>
+</blockquote>
+<h3 id="聚合元素：toMap、toConcurrentMap"><a href="#聚合元素：toMap、toConcurrentMap" class="headerlink" title="聚合元素：toMap、toConcurrentMap"></a>聚合元素：toMap、toConcurrentMap</h3><p>这两个方法的作用是将聚合元素，重新组装为<code>Map</code>结构，也就是 k-v 结构。两者用法一样，区别是<code>toMap</code>返回的是<code>Map</code>，<code>toConcurrentMap</code>返回<code>ConcurrentMap</code>，也就是说，<code>toConcurrentMap</code>返回的是线程安全的 Map 结构。</p>
+<p>比如，我们需要聚合<code>Student</code>的 id：</p>
+<pre><code class="java">// {1=Student(id=1, name=张三, birthday=2009-01-01, age=12, score=12.123), 2=Student(id=2, name=李四, birthday=2010-02-02, age=11, score=22.123), 3=Student(id=3, name=王五, birthday=2011-03-03, age=10, score=32.123)}
+final Map&lt;String, Student&gt; map11 = students.stream()
+    .collect(Collectors.toMap(Student::getId, Function.identity()));</code></pre>
+<p>但是，如果 id 有重复的，会抛出<code>java.lang.IllegalStateException: Duplicate key</code>异常，所以，为了保险起见，我们需要借助<code>toMap</code>另一个重载方法：</p>
+<pre><code class="java">// {1=Student(id=1, name=张三, birthday=2009-01-01, age=12, score=12.123), 2=Student(id=2, name=李四, birthday=2010-02-02, age=11, score=22.123), 3=Student(id=3, name=王五, birthday=2011-03-03, age=10, score=32.123)}
+final Map&lt;String, Student&gt; map2 = students.stream()
+    .collect(Collectors.toMap(Student::getId, Function.identity(), (x, y) -&gt; x));</code></pre>
+<p>可以看到，<code>toMap</code>有不同的重载方法，可以实现比较复杂的逻辑。比如，我们需要得到根据 id 分组的<code>Student</code>的姓名：</p>
+<pre><code class="java">// {1=张三, 2=李四, 3=王五}
+final Map&lt;String, String&gt; map3 = students.stream()
+    .collect(Collectors.toMap(Student::getId, Student::getName, (x, y) -&gt; x));</code></pre>
+<p>比如，我们需要得到相同年龄得分最高的<code>Student</code>对象集合：</p>
+<pre><code class="java">// {10=Student(id=3, name=王五, birthday=2011-03-03, age=10, score=32.123), 11=Student(id=2, name=李四, birthday=2010-02-02, age=11, score=22.123), 12=Student(id=1, name=张三, birthday=2009-01-01, age=12, score=12.123)}
+final Map&lt;Integer, Student&gt; map5 = students.stream()
+    .collect(Collectors.toMap(Student::getAge, Function.identity(), BinaryOperator.maxBy(Comparator.comparing(Student::getScore))));</code></pre>
+<p>所以，<code>toMap</code>可玩性很高。</p>
+<h3 id="分组：groupingBy、groupingByConcurrent"><a href="#分组：groupingBy、groupingByConcurrent" class="headerlink" title="分组：groupingBy、groupingByConcurrent"></a>分组：groupingBy、groupingByConcurrent</h3><p><code>groupingBy</code>与<code>toMap</code>都是将聚合元素进行分组，区别是，<code>toMap</code>结果是 1:1 的 k-v 结构，<code>groupingBy</code>的结果是 1:n 的 k-v 结构。</p>
+<p>比如，我们对<code>Student</code>的年龄分组：</p>
+<pre><code class="java">// List: {10=[Student(id=3, name=王五, birthday=2011-03-03, age=10, score=32.123)], 11=[Student(id=2, name=李四, birthday=2010-02-02, age=11, score=22.123)], 12=[Student(id=1, name=张三, birthday=2009-01-01, age=12, score=12.123)]}
+final Map&lt;Integer, List&lt;Student&gt;&gt; map1 = students.stream().collect(Collectors.groupingBy(Student::getAge));
+// Set: {10=[Student(id=3, name=王五, birthday=2011-03-03, age=10, score=32.123)], 11=[Student(id=2, name=李四, birthday=2010-02-02, age=11, score=22.123)], 12=[Student(id=1, name=张三, birthday=2009-01-01, age=12, score=12.123)]}
+final Map&lt;Integer, Set&lt;Student&gt;&gt; map12 = students.stream().collect(Collectors.groupingBy(Student::getAge, Collectors.toSet()));</code></pre>
+<p>既然<code>groupingBy</code>也是分组，是不是也能够实现与<code>toMap</code>类似的功能，比如，根据 id 分组的<code>Student</code>：</p>
+<pre><code class="java">// {1=Student(id=1, name=张三, birthday=2009-01-01, age=12, score=12.123), 2=Student(id=2, name=李四, birthday=2010-02-02, age=11, score=22.123), 3=Student(id=3, name=王五, birthday=2011-03-03, age=10, score=32.123)}
+final Map&lt;String, Student&gt; map3 = students.stream()
+    .collect(Collectors.groupingBy(Student::getId, Collectors.collectingAndThen(Collectors.toList(), list -&gt; list.get(0))));</code></pre>
+<p>为了对比，把<code>toMap</code>的写法放在这：</p>
+<pre><code class="java">// {1=Student(id=1, name=张三, birthday=2009-01-01, age=12, score=12.123), 2=Student(id=2, name=李四, birthday=2010-02-02, age=11, score=22.123), 3=Student(id=3, name=王五, birthday=2011-03-03, age=10, score=32.123)}
+final Map&lt;String, Student&gt; map2 = students.stream()
+    .collect(Collectors.toMap(Student::getId, Function.identity(), (x, y) -&gt; x));</code></pre>
+<p>如果想要线程安全的<code>Map</code>，可以使用<code>groupingByConcurrent</code>。</p>
+<h3 id="分组：partitioningBy"><a href="#分组：partitioningBy" class="headerlink" title="分组：partitioningBy"></a>分组：partitioningBy</h3><p><code>partitioningBy</code>与<code>groupingBy</code>的区别在于，<code>partitioningBy</code>借助<code>Predicate</code>断言，可以将集合元素分为<code>true</code>和<code>false</code>两部分。比如，按照年龄是否大于 11 分组：</p>
+<pre><code class="java">// List: {false=[Student(id=2, name=李四, birthday=2010-02-02, age=11, score=22.123), Student(id=3, name=王五, birthday=2011-03-03, age=10, score=32.123)], true=[Student(id=1, name=张三, birthday=2009-01-01, age=12, score=12.123)]}
+final Map&lt;Boolean, List&lt;Student&gt;&gt; map6 = students.stream().collect(Collectors.partitioningBy(s -&gt; s.getAge() &gt; 11));
+// Set: {false=[Student(id=3, name=王五, birthday=2011-03-03, age=10, score=32.123), Student(id=2, name=李四, birthday=2010-02-02, age=11, score=22.123)], true=[Student(id=1, name=张三, birthday=2009-01-01, age=12, score=12.123)]}
+final Map&lt;Boolean, Set&lt;Student&gt;&gt; map7 = students.stream().collect(Collectors.partitioningBy(s -&gt; s.getAge() &gt; 11, Collectors.toSet()));</code></pre>
+<h2 id="链接数据：joining"><a href="#链接数据：joining" class="headerlink" title="链接数据：joining"></a>链接数据：joining</h2><p>这个方法对<code>String</code>类型的元素进行聚合，拼接成一个字符串返回，作用与<code>java.lang.String#join</code>类似，提供了 3 个不同重载方法，可以实现不同的需要。比如：</p>
+<pre><code class="java">// javagosql
+Stream.of(&quot;java&quot;, &quot;go&quot;, &quot;sql&quot;).collect(Collectors.joining());
+// java, go, sql
+Stream.of(&quot;java&quot;, &quot;go&quot;, &quot;sql&quot;).collect(Collectors.joining(&quot;, &quot;));
+// 【java, go, sql】
+Stream.of(&quot;java&quot;, &quot;go&quot;, &quot;sql&quot;).collect(Collectors.joining(&quot;, &quot;, &quot;【&quot;, &quot;】&quot;));</code></pre>
+<h2 id="操作链：collectingAndThen"><a href="#操作链：collectingAndThen" class="headerlink" title="操作链：collectingAndThen"></a>操作链：collectingAndThen</h2><p>这个方法在<code>groupingBy</code>的例子中出现过，它是先对集合进行一次聚合操作，然后通过<code>Function</code>定义的函数，对聚合后的结果再次处理。</p>
+<p>比如<code>groupingBy</code>中的例子：</p>
+<pre><code class="java">// {1=Student(id=1, name=张三, birthday=2009-01-01, age=12, score=12.123), 2=Student(id=2, name=李四, birthday=2010-02-02, age=11, score=22.123), 3=Student(id=3, name=王五, birthday=2011-03-03, age=10, score=32.123)}
+final Map&lt;String, Student&gt; map3 = students.stream()
+    .collect(Collectors.groupingBy(Student::getId, Collectors.collectingAndThen(Collectors.toList(), list -&gt; list.get(0))));</code></pre>
+<p>显示将结果聚合成<code>List</code>列表，然后取列表的第 0 个元素返回，通过这种方式，实现 1:1 的 map 结构。</p>
+<p>再来一个复杂一些的，找到聚合元素中年龄数据正确的<code>Student</code>列表：</p>
+<pre><code class="java">// []，结果为空，是因为例子中所有人的年龄都是对的
+students.stream()
+        .collect(
+                Collectors.collectingAndThen(Collectors.toList(), (
+                        list -&gt; list.stream()
+                                .filter(s -&gt; (LocalDate.now().getYear() - s.getBirthday().getYear()) != s.getAge())
+                                .collect(Collectors.toList()))
+                )
+        );</code></pre>
+<blockquote>
+<p>这个例子纯粹是为了使用<code>collectingAndThen</code>的用法，其实可以简化为：</p>
+<pre><code class="java">students.stream()
+        .filter(s -&gt; (LocalDate.now().getYear() - s.getBirthday().getYear()) != s.getAge())
+        .collect(Collectors.toList());</code></pre>
+</blockquote>
+<h2 id="操作后聚合：mapping"><a href="#操作后聚合：mapping" class="headerlink" title="操作后聚合：mapping"></a>操作后聚合：mapping</h2><p><code>mapping</code>先通过<code>Function</code>函数处理数据，然后通过<code>Collector</code>方法聚合元素。比如，获取获取<code>students</code>的姓名列表：</p>
+<pre><code class="java">// [张三, 李四, 王五]
+students.stream()
+        .collect(Collectors.mapping(Student::getName, Collectors.toList()));</code></pre>
+<p>这种计算与<code>java.util.stream.Stream#map</code>方式类似：</p>
+<pre><code class="java">// [张三, 李四, 王五]
+students.stream()
+        .map(Student::getName)
+        .collect(Collectors.toList());</code></pre>
+<p>从这点上看，还是通过<code>java.util.stream.Stream#map</code>更清晰一些。</p>
+<h2 id="聚合后操作：reducing"><a href="#聚合后操作：reducing" class="headerlink" title="聚合后操作：reducing"></a>聚合后操作：reducing</h2><p><code>reducing</code>提供了 3 个重载方法：</p>
+<ul>
+<li><code>public static &lt;T&gt; Collector&lt;T, ?, Optional&lt;T&gt;&gt; reducing(BinaryOperator&lt;T&gt; op)</code>：直接通过<code>BinaryOperator</code>操作，返回值是<code>Optional</code></li>
+<li><code>public static &lt;T&gt; Collector&lt;T, ?, T&gt; reducing(T identity, BinaryOperator&lt;T&gt; op)</code>：预定默认值，然后通过<code>BinaryOperator</code>操作</li>
+<li><code>public static &lt;T, U&gt; Collector&lt;T, ?, U&gt; reducing(U identity, Function&lt;? super T, ? extends U&gt; mapper, BinaryOperator&lt;U&gt; op)</code>：预定默认值，通过<code>Function</code>操作元素，然后通过<code>BinaryOperator</code>操作</li>
+</ul>
+<p>比如，计算所有<code>students</code>的得分总数：</p>
+<pre><code class="java">// Optional[66.369]，注意返回类型是Optional
+students.stream()
+        .map(Student::getScore)
+        .collect(Collectors.reducing(Double::sum));
+// 66.369
+students.stream()
+        .map(Student::getScore)
+        .collect(Collectors.reducing(0.0, Double::sum));
+// 66.369
+students.stream()
+        .collect(Collectors.reducing(0.0, Student::getScore, Double::sum));</code></pre>
+<p>同<code>mapping</code>，<code>reducing</code>的操作与<code>java.util.stream.Stream#reduce</code>方式类似：</p>
+<pre><code class="java">// Optional[66.369]，注意返回类型是Optional
+students.stream().map(Student::getScore).reduce(Double::sum);
+// 66.369
+students.stream().map(Student::getScore).reduce(0.0, Double::sum);</code></pre>
+<p>在上文说到<code>maxBy</code>和<code>minBy</code>时，提到这两个函数就是通过<code>reducing</code>实现的。</p>
+<blockquote>
+<p>对于<code>mapping</code>和<code>reducing</code>，可以参考函数式编程中 map-reduce 的概念。</p>
+</blockquote>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>本文主要讲解了 Java8 Stream 中 Collectors 定义的 24 个方法，这种流式计算逻辑，依靠 Fork/Join 框架，性能方面有很大的优势。如果没有掌握这些用法，可能在后续阅读代码时，会很吃力，毕竟，Java8 基本上已经是业界标杆了。</p>
+<hr>
+<p>你好，我是看山，公众号：看山的小屋，10 年老猿，开源贡献者。游于码界，戏享人生。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/java-stream-collectors/">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a><br>CSDN 主页：<a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN 博文：<a href="https://blog.csdn.net/liuxinghao/article/details/116762456" target="_blank" rel="noopener">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a></p>
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/java/">java</a>
+            
+            <a href="/tags/JDK8/">JDK8</a>
+            
+            <a href="/tags/stream/">stream</a>
+            
+            <a href="/tags/collectors/">collectors</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/longest-substring-without-repeating-character/">
+                <i class="icon-next">面试真题：无重复字符的最长子串</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/java-stream-collectors/">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a></li><li class="post-list-item"><a class="post-list-link" href="/longest-substring-without-repeating-character/">面试真题：无重复字符的最长子串</a></li><li class="post-list-item"><a class="post-list-link" href="/spring-request-recorder/">Spring 实战：自定义 Filter 优雅获取请求参数和响应结果</a></li><li class="post-list-item"><a class="post-list-link" href="/spring-beanpostprocessor/">Spring 实战：通过 BeanPostProcessor 动态注入 ID 生成器</a></li><li class="post-list-item"><a class="post-list-link" href="/java-concurrency-ordered-thread-print/">Java 并发基础（五）：面试实战之多线程顺序打印</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2021</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
