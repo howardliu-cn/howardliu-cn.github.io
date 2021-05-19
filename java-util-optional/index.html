@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>一文掌握 Java8 的 Optional 的 6 种操作||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="一文掌握 Java8 的 Optional 的 6 种操作">
+<meta name="keywords" content="java,jdk8,stream,optional,map,flatmap,isPresent,ifPresent,filter,orElse,orElseGet,orElseThrow">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一文掌握 Java8 的 Optional 的 6 种操作">
+<meta property="og:url" content="https://www.howardliu.cn/java-util-optional/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="一文掌握 Java8 的 Optional 的 6 种操作">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://static.howardliu.cn/cover/hamburg-5286863_1920.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-05-17T06:17:26.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一文掌握 Java8 的 Optional 的 6 种操作">
+<meta name="twitter:description" content="一文掌握 Java8 的 Optional 的 6 种操作">
+<meta name="twitter:image" content="http://static.howardliu.cn/cover/hamburg-5286863_1920.jpg">
+
+<meta name="keywords" content="java,jdk8,stream,optional,map,flatmap,isPresent,ifPresent,filter,orElse,orElseGet,orElseThrow">
+
+
+<meta name="description" content="一文掌握 Java8 的 Optional 的 6 种操作">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/java-util-optional/">一文掌握 Java8 的 Optional 的 6 种操作</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-05-17</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/java-util-optional/" class="leancloud_visitors" data-flag-title="一文掌握 Java8 的 Optional 的 6 种操作">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#定义示例数据"><span class="toc-text">定义示例数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建实例：of、ofNullable"><span class="toc-text">创建实例：of、ofNullable</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#获取数据：get"><span class="toc-text">获取数据：get</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#值为空判断：isPresent、ifPresent"><span class="toc-text">值为空判断：isPresent、ifPresent</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#值处理：map、flatMap"><span class="toc-text">值处理：map、flatMap</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#值为空的处理：orElse、orElseGet、orElseThrow"><span class="toc-text">值为空的处理：orElse、orElseGet、orElseThrow</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#条件过滤：filter"><span class="toc-text">条件过滤：filter</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他：equals、hashCode、toString"><span class="toc-text">其他：equals、hashCode、toString</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="http://static.howardliu.cn/cover/hamburg-5286863_1920.jpg" alt="一文掌握 Java8 的 Optional 的 6 种操作"></p>
+<p>你好，我是看山。</p>
+<p>Java8 中引入了一个特别有意思类：<code>Optional</code>，一个可以让我们更加轻松的避免 NPE（空指针异常，NullPointException）的工具。</p>
+<p>很久很久以前，为了避免 NPE，我们会写很多类似<code>if (obj != null) {}</code>的代码，有时候忘记写，就可能出现 NPE，造成线上故障。在 Java 技术栈中，如果谁的代码出现了 NPE，有极大的可能会被笑话，这个异常被很多人认为是低级错误。<code>Optional</code>的出现，可以让大家更加轻松的避免因为低级错误被嘲讽的概率。</p>
+<a id="more"></a>
+
+<h2 id="定义示例数据"><a href="#定义示例数据" class="headerlink" title="定义示例数据"></a>定义示例数据</h2><p>先定义待操作对象，万能的<code>Student</code>类和<code>Clazz</code>类（用到了 lombok 和 guava）：</p>
+<pre><code class="java">@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Clazz {
+    private String id;
+    private String name;
+}</code></pre>
+<pre><code class="java">@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Student {
+    private String id;
+    private String name;
+    private Clazz clazz;
+}</code></pre>
+<p>然后定义一组测试数据：</p>
+<pre><code class="java">final Clazz clazz1 = new Clazz(&quot;1&quot;, &quot;高一一班&quot;);
+
+final Student s1 = new Student(&quot;1&quot;, &quot;张三&quot;, clazz1);
+final Student s2 = new Student(&quot;2&quot;, &quot;李四&quot;, null);
+
+final List&lt;Student&gt; students = Lists.newArrayList(s1, s2);
+final List&lt;Student&gt; emptyStudents = Lists.newArrayList();
+final List&lt;Student&gt; nullStudents = null;</code></pre>
+<h2 id="创建实例：of、ofNullable"><a href="#创建实例：of、ofNullable" class="headerlink" title="创建实例：of、ofNullable"></a>创建实例：of、ofNullable</h2><p>为了控制生成实例的方式，也是为了收紧空值<code>Optional</code>的定义，<code>Optional</code>将构造函数定义为<code>private</code>。想要创建<code>Optional</code>实例，可以借助<code>of</code>和<code>ofNullable</code>两个方法实现。</p>
+<p>这两个方法的区别在于：<code>of</code>方法传入的参数不能是<code>null</code>的，否则会抛出<code>NullPointerException</code>。所以，对于可能是<code>null</code>的结果，一定使用<code>ofNullable</code>。</p>
+<p>代码如下：</p>
+<pre><code class="java">Optional.of(students);
+Optional.of(emptyStudents);
+Optional.ofNullable(nullStudents);</code></pre>
+<p><code>Optional</code>类中还有一个静态方法：<code>empty</code>，这个方法直接返回了内部定义的一个常量<code>Optional&lt;?&gt; EMPTY = new Optional&lt;&gt;()</code>，这个常量的<code>value</code>是<code>null</code>。<code>ofNullable</code>方法也是借助了<code>empty</code>实现<code>null</code>的包装：</p>
+<pre><code class="java">public static &lt;T&gt; Optional&lt;T&gt; ofNullable(T value) {
+    return value == null ? empty() : of(value);
+}</code></pre>
+<p>所以说，对于<code>null</code>的<code>Optional</code>包装类，指向的都是相同的实例对象，<code>Optional.empty() == Optional.ofNullable(null)</code>返回的是<code>true</code>。换句话说，空<code>Optional</code>是单例的。</p>
+<blockquote>
+<p>为了方便描述，下文中对值为<code>null</code>的<code>Optional</code>统称为“<strong>空<code>Optional</code></strong>”。</p>
+</blockquote>
+<h2 id="获取数据：get"><a href="#获取数据：get" class="headerlink" title="获取数据：get"></a>获取数据：get</h2><p><code>Optional</code>的<code>get</code>方法有些坑人，先看下它的源码：</p>
+<pre><code class="java">public T get() {
+    if (value == null) {
+        throw new NoSuchElementException(&quot;No value present&quot;);
+    }
+    return value;
+}</code></pre>
+<p>也就是说，<code>Optional</code>值为空时，使用<code>get</code>方法将抛出<code>NoSuchElementException</code>异常。如果不想抛出异常，或者能够 100%确定不是空<code>Optional</code>，或者使用<code>isPresent</code>方法判断。</p>
+<p>如果能 100%确定不是空<code>Optional</code>，那就没有必要使用<code>Optional</code>包装，直接返回即可。如果需要使用<code>isPresent</code>方法，那就和直接判空没有区别了。所以，无论是第一种情况还是第二种情况，都违背了设计这个类的初衷。</p>
+<h2 id="值为空判断：isPresent、ifPresent"><a href="#值为空判断：isPresent、ifPresent" class="headerlink" title="值为空判断：isPresent、ifPresent"></a>值为空判断：isPresent、ifPresent</h2><p><code>isPresent</code>用来判断值是否为空，类似于<code>obj != null</code>，<code>ifPresent</code>可以传入一个<code>Consumer</code>操作，当值不为空的时候，会执行<code>Consumer</code>函数。比如：</p>
+<pre><code class="java">final Optional&lt;List&lt;Student&gt;&gt; nullValue = Optional.ofNullable(nullStudents);
+
+if (nullValue.isPresent()) {
+    System.out.println(&quot;value: &quot; + nullValue.get());
+}</code></pre>
+<p>上面的方法等价于：</p>
+<pre><code class="java">nullValue.ifPresent(value -&gt; System.out.println(&quot;value: &quot; + value));</code></pre>
+<p><code>isPresent</code>判断的写法上是不是感觉很熟悉，感觉可以直接写为：</p>
+<pre><code class="java">if (nullStudents != null) {
+    System.out.println(&quot;value: &quot; + nullStudents);
+}</code></pre>
+<p>对于<code>isPresent</code>，如果是在自己可控的代码范围内，完全没有必要将值封装之后再判空。对于自己不可控的代码，后续的<code>filter</code>或者<code>map</code>方法可能比<code>isPresent</code>更好用一些。</p>
+<p>对于<code>ifPresent</code>，在使用的时候会有一些限制，就是必须是非空<code>Optional</code>的时候，在会执行传入的<code>Consumer</code>函数。</p>
+<h2 id="值处理：map、flatMap"><a href="#值处理：map、flatMap" class="headerlink" title="值处理：map、flatMap"></a>值处理：map、flatMap</h2><p><code>map</code>和<code>flatMap</code>是对<code>Optional</code>的值进行操作的方法，区别在于，<code>map</code>会将结果包装到<code>Optional</code>中返回，<code>flatMap</code>不会。但是两个方法返回值都是<code>Optional</code>类型，这也就要求，<code>flatMap</code>的方法函数返回值需要是<code>Optional</code>类型。</p>
+<p>我们来看看<code>map</code>的实现：</p>
+<pre><code class="java">public&lt;U&gt; Optional&lt;U&gt; map(Function&lt;? super T, ? extends U&gt; mapper) {
+    Objects.requireNonNull(mapper);
+    if (!isPresent())
+        return empty();
+    else {
+        return Optional.ofNullable(mapper.apply(value));
+    }
+}</code></pre>
+<p>可以看到，如果<code>Optional</code>的值为空，<code>map</code>直接返回<code>Optional.EMPTY</code>，否则会执行函数结果，并使用<code>Optional.ofNullable</code>包装并返回。也即是说，只要类结构允许，我们可以一直<code>map</code>下去，就像是扒洋葱，一层一层，直到核心。</p>
+<p>比如，我们要获取<code>s2</code>所在班级名称，在定义的时候，我们将<code>s2</code>的<code>clazz</code>属性定义为 null，如果以前需要写为：</p>
+<pre><code class="java">String clazzNameOld;
+if (s2 != null &amp;&amp; s2.getClazz() != null &amp;&amp; s2.getClazz().getName() != null) {
+    clazzNameOld = s2.getClazz().getName();
+} else {
+    clazzNameOld = &quot;DEFAULT_NAME&quot;;
+}</code></pre>
+<p>现在借助<code>Optional</code>可以写为：</p>
+<pre><code class="java">final String clazzName = Optional.ofNullable(s2)
+        .map(Student::getClazz)
+        .map(Clazz::getName)
+        .orElse(&quot;DEFAULT_NAME&quot;);</code></pre>
+<p>从代码上似乎没有多大改变，但是如果<code>Clazz</code>内部还有类对象。或者，我们在<code>if</code>判断的时候，少写一层检查呢？而且，<code>map</code>的精巧还在于它的返回值永远是<code>Optional</code>，这样，我们可以重复调用<code>map</code>方法，而不需要中间被打断，增加各种判空逻辑。</p>
+<h2 id="值为空的处理：orElse、orElseGet、orElseThrow"><a href="#值为空的处理：orElse、orElseGet、orElseThrow" class="headerlink" title="值为空的处理：orElse、orElseGet、orElseThrow"></a>值为空的处理：orElse、orElseGet、orElseThrow</h2><p>这几个方法可以与<code>map</code>操作结合，一起完成对象操作。当值为空时，<code>orElse</code>和<code>orElseGet</code>返回默认值，<code>orElseThrow</code>抛出指定的异常。</p>
+<p><code>orElse</code>和<code>orElseGet</code>的区别是，<code>orElse</code>方法传入的参数是明确的默认值，<code>orElseGet</code>方法传入的参数是获取默认值的函数。如果默认值的构造过程比较复杂，需要经过一系列的运算逻辑，那一定要使用<code>orElseGet</code>，因为<code>orElseGet</code>是在值为空的时候，才会执行函数，并返回默认值，如果值不为空，则不会执行函数，相比于<code>orElse</code>而言，减少了一次构造默认值的过程。</p>
+<p>同样以上面的例子：</p>
+<p><code>orElse</code>的写法：</p>
+<pre><code class="java">final String clazzName = Optional.ofNullable(s2)
+        .map(Student::getClazz)
+        .map(Clazz::getName)
+        .orElse(null);</code></pre>
+<p><code>orElseGet</code>的写法：</p>
+<pre><code class="java">final String clazzName = Optional.of(s2)
+        .map(Student::getClazz)
+        .map(Clazz::getName)
+        .orElseGet(() -&gt; null);</code></pre>
+<p>如果<code>clazz</code>属性一定不为空，为空则返回异常，可以使用<code>orElseThrow</code>：</p>
+<pre><code class="java">final String clazzName = Optional.of(s2)
+        .map(Student::getClazz)
+        .map(Clazz::getName)
+        .orElseThrow(() -&gt; new IllegalArgumentException(&quot;clazz属性不合法&quot;));</code></pre>
+<h2 id="条件过滤：filter"><a href="#条件过滤：filter" class="headerlink" title="条件过滤：filter"></a>条件过滤：filter</h2><p><code>filter</code>方法提供的是值验证，如果值验证为 true，返回当前值；否则，返回空<code>Optional</code>。比如，我们要遍历<code>students</code>，找到班级属性为空的，打印学生id：</p>
+<pre><code class="java">for (final Student s : students) {
+    Optional.of(s)
+            .filter(x -&gt; x.getClazz() == null)
+            .ifPresent(x -&gt; System.out.println(x.getId()));
+}</code></pre>
+<h2 id="其他：equals、hashCode、toString"><a href="#其他：equals、hashCode、toString" class="headerlink" title="其他：equals、hashCode、toString"></a>其他：equals、hashCode、toString</h2><p><code>Optional</code>重写了这三个方法。因为<code>Optional</code>可以认为是包装类，所以还是围绕这被包装的值重写这三个方法。下面给出这三个方法的源码：</p>
+<pre><code class="java">public boolean equals(Object obj) {
+    // 同一对象判断
+    if (this == obj) {
+        return true;
+    }
+
+    // 类型判断
+    if (!(obj instanceof Optional)) {
+        return false;
+    }
+
+    Optional&lt;?&gt; other = (Optional&lt;?&gt;) obj;
+    // 最终还是值的判断
+    return Objects.equals(value, other.value);
+}
+
+public int hashCode() {
+    // 直接返回值的hashCode
+    return Objects.hashCode(value);
+}
+
+public String toString() {
+    return value != null
+        ? String.format(&quot;Optional[%s]&quot;, value) // 用到了值的toString结果
+        : &quot;Optional.empty&quot;;
+}</code></pre>
+<p><code>equals</code>方法，<code>Optional.of(s1).equals(Optional.of(s2))</code>完全等价于<code>s1.equals(s2)</code>。</p>
+<p><code>hashCode</code>方法，直接返回的是值的hashCode，如果是空<code>Optional</code>，返回的是0。</p>
+<p><code>toString</code>方法，为了能够识别是<code>Optional</code>，将打印数据包装了一下。如果是空<code>Optional</code>，返回的是字符串“Optional.empty”；如果是非空，返回是是“Optional[值的toString]”。</p>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>NPE 之所以讨厌，就是只要出现 NPE，我们就能够解决。但是一旦出现，都已经是事后，可能已经出现线上故障。偏偏在 Java 语言中，NPE 又很容易出现。<code>Optional</code>提供了模板方法，有效且高效的避免 NPE。</p>
+<p>接下来，我们针对上面的使用，总结一下：</p>
+<ol>
+<li><code>Optional</code>是一个包装类，且不可变，不可序列化</li>
+<li>没有公共构造函数，创建需要使用<code>of</code>、<code>ofNullable</code>方法</li>
+<li>空<code>Optional</code>是单例，都是引用<code>Optional.EMPTY</code></li>
+<li>想要获取<code>Optional</code>的值，可以使用<code>get</code>、<code>orElse</code>、<code>orElseGet</code>、<code>orElseThrow</code></li>
+</ol>
+<p>另外，还有一些实践上的建议：</p>
+<ol>
+<li>使用<code>get</code>方法前，必须使用<code>isPresent</code>检查。但是使用<code>isPresent</code>前，先思考下是否可以使用<code>orElse</code>、<code>orElseGet</code>等方法代替实现。</li>
+<li><code>orElse</code>和<code>orElseGet</code>，优先选择<code>orElseGet</code>，这个是惰性计算</li>
+<li><code>Optional</code>不要作为参数或者类属性，可以作为返回值</li>
+<li>尽量将<code>map</code>、<code>filter</code>的函数参数抽出去作为单独方法，这样能够保持链式调用</li>
+</ol>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://www.howardliu.cn/java-stream-collectors/">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a></li>
+<li><a href="https://www.howardliu.cn/java-util-optional/">一文掌握 Java8 的 Optional 的 6 种操作</a></li>
+</ul>
+<hr>
+<p>你好，我是看山，公众号：看山的小屋，10 年老猿，开源贡献者。游于码界，戏享人生。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/java-util-optional/">一文掌握 Java8 的 Optional 的 6 种操作</a><br>CSDN 主页：<a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN 博文：<a href="https://blog.csdn.net/liuxinghao/article/details/117057756" target="_blank" rel="noopener">一文掌握 Java8 的 Optional 的 6 种操作</a></p>
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/java/">java</a>
+            
+            <a href="/tags/jdk8/">jdk8</a>
+            
+            <a href="/tags/stream/">stream</a>
+            
+            <a href="/tags/optional/">optional</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/java-stream-collectors/">
+                <i class="icon-next">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/jdk8/" style="font-size: 15px;">jdk8</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/java-util-optional/">一文掌握 Java8 的 Optional 的 6 种操作</a></li><li class="post-list-item"><a class="post-list-link" href="/java-stream-collectors/">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a></li><li class="post-list-item"><a class="post-list-link" href="/longest-substring-without-repeating-character/">面试真题：无重复字符的最长子串</a></li><li class="post-list-item"><a class="post-list-link" href="/spring-request-recorder/">Spring 实战：自定义 Filter 优雅获取请求参数和响应结果</a></li><li class="post-list-item"><a class="post-list-link" href="/spring-beanpostprocessor/">Spring 实战：通过 BeanPostProcessor 动态注入 ID 生成器</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2021</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
