@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.howardliu.cn/http/the-introduction-of-the-http-service/</loc>
+    <lastmod>2021-06-09</lastmod>
+  </url>  <url>
     <loc>https://www.howardliu.cn/geek-talk-20210523/</loc>
     <lastmod>2021-05-31</lastmod>
   </url>  <url>
@@ -133,9 +136,6 @@
     <loc>https://www.howardliu.cn/springboot-action-gracefully-response/</loc>
     <lastmod>2020-08-12</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/http/the-introduction-of-the-http-service/</loc>
-    <lastmod>2020-07-29</lastmod>
-  </url>  <url>
     <loc>https://www.howardliu.cn/tiny-url-system/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
@@ -160,10 +160,10 @@
     <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
+    <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
+    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/hadoop-environment/</loc>
