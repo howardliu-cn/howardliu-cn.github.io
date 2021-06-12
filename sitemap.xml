@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/thinking/the-solution-about-job-queue/</loc>
+    
+    <lastmod>2021-06-12T07:38:02.605Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/rabbitmq-operation/</loc>
+    
+    <lastmod>2021-06-11T15:21:05.203Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/os/all-about-linux-swap-space/</loc>
     
     <lastmod>2021-06-10T15:24:39.910Z</lastmod>
@@ -275,13 +289,6 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/thinking/the-solution-about-job-queue/</loc>
-    
-    <lastmod>2020-08-23T12:50:35.334Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.howardliu.cn/http/http-connection/</loc>
     
     <lastmod>2020-08-23T12:34:18.452Z</lastmod>
@@ -443,14 +450,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
+    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
+    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
@@ -649,13 +656,6 @@
     <loc>https://www.howardliu.cn/ubuntu-ufw-settings/</loc>
     
     <lastmod>2020-01-27T10:00:25.821Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/rabbitmq-operation/</loc>
-    
-    <lastmod>2020-01-27T10:00:19.757Z</lastmod>
     
   </url>
   

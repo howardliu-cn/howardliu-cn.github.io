@@ -7,21 +7,24 @@
 <meta http-equiv="Cache-Control" content="no-siteapp">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>RabbitMQ运维||沉潜飞动|君子藏器于身，待时而动。</title>
-<meta name="description" content="这是一次比较苦逼的运维，完全不熟悉的系统、不清楚环境、不清楚配置，两眼一抹黑。为啥？就是因为原来的负责人撤了、交接人休假、再次交接人也休假，再再次交接人只有一份不全的文档。而我是再、再、再次交接人，连文档也没有。更要命的是，这是生产环境，大家都懂得，生产环境就是不能出问题，自封一个“奉命于危难之间”吧。抱怨了一整段了，还是简单的说下这次运维吧，运维的是RabbitMQ集群，3个节点A、B、C，每个">
-<meta name="keywords" content="DevOps,系统运维,MQ,RabbitMQ,集群">
+<title>记一次差点跑路的 RabbitMQ 运维经历||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="这是一次比较苦逼的运维，完全不熟悉的系统、不清楚环境、不清楚配置，两眼一抹黑。为啥？就是因为原来的负责人撤了、交接人休假、再次交接人也休假，再再次交接人只有一份不全的文档。而我是再、再、再次交接人，连文档也没有。更要命的是，这是生产环境，大家都懂得，生产环境就是不能出问题，自封一个“奉命于危难之间”吧。抱怨了一整段了，还是简单的说下这次运维吧，运维的是 RabbitMQ 集群，3 个节点 A、B、">
+<meta name="keywords" content="DevOps,系统运维，MQ,RabbitMQ,集群">
 <meta property="og:type" content="article">
-<meta property="og:title" content="RabbitMQ运维">
+<meta property="og:title" content="记一次差点跑路的 RabbitMQ 运维经历">
 <meta property="og:url" content="https://www.howardliu.cn/rabbitmq-operation/index.html">
 <meta property="og:site_name" content="沉潜飞动">
-<meta property="og:description" content="这是一次比较苦逼的运维，完全不熟悉的系统、不清楚环境、不清楚配置，两眼一抹黑。为啥？就是因为原来的负责人撤了、交接人休假、再次交接人也休假，再再次交接人只有一份不全的文档。而我是再、再、再次交接人，连文档也没有。更要命的是，这是生产环境，大家都懂得，生产环境就是不能出问题，自封一个“奉命于危难之间”吧。抱怨了一整段了，还是简单的说下这次运维吧，运维的是RabbitMQ集群，3个节点A、B、C，每个">
+<meta property="og:description" content="这是一次比较苦逼的运维，完全不熟悉的系统、不清楚环境、不清楚配置，两眼一抹黑。为啥？就是因为原来的负责人撤了、交接人休假、再次交接人也休假，再再次交接人只有一份不全的文档。而我是再、再、再次交接人，连文档也没有。更要命的是，这是生产环境，大家都懂得，生产环境就是不能出问题，自封一个“奉命于危难之间”吧。抱怨了一整段了，还是简单的说下这次运维吧，运维的是 RabbitMQ 集群，3 个节点 A、B、">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-01-27T10:00:19.757Z">
+<meta property="og:image" content="http://static.howardliu.cn/cover/fashion-3080644_1920.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-06-11T15:21:05.203Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="RabbitMQ运维">
-<meta name="twitter:description" content="这是一次比较苦逼的运维，完全不熟悉的系统、不清楚环境、不清楚配置，两眼一抹黑。为啥？就是因为原来的负责人撤了、交接人休假、再次交接人也休假，再再次交接人只有一份不全的文档。而我是再、再、再次交接人，连文档也没有。更要命的是，这是生产环境，大家都懂得，生产环境就是不能出问题，自封一个“奉命于危难之间”吧。抱怨了一整段了，还是简单的说下这次运维吧，运维的是RabbitMQ集群，3个节点A、B、C，每个">
+<meta name="twitter:title" content="记一次差点跑路的 RabbitMQ 运维经历">
+<meta name="twitter:description" content="这是一次比较苦逼的运维，完全不熟悉的系统、不清楚环境、不清楚配置，两眼一抹黑。为啥？就是因为原来的负责人撤了、交接人休假、再次交接人也休假，再再次交接人只有一份不全的文档。而我是再、再、再次交接人，连文档也没有。更要命的是，这是生产环境，大家都懂得，生产环境就是不能出问题，自封一个“奉命于危难之间”吧。抱怨了一整段了，还是简单的说下这次运维吧，运维的是 RabbitMQ 集群，3 个节点 A、B、">
+<meta name="twitter:image" content="http://static.howardliu.cn/cover/fashion-3080644_1920.jpg">
 
-<meta name="keywords" content="DevOps,系统运维,MQ,RabbitMQ,集群">
+<meta name="keywords" content="DevOps,系统运维，MQ,RabbitMQ,集群">
 
 
 <meta name="description" content="这是一次比较苦逼的运维，完全不熟悉的系统、不清楚环境、不清楚配置，两眼一抹黑。为啥？就是因为原来的负责人撤了、交接人休假、再次交接人也休假，再再次交接人只有一份不全的文档。而我是再、再、再次交接人，连文档也没有。更要命的是，这是生产环境，大家都懂得，生产环境就是不能出问题，自封一个“奉命于危难之间”">
@@ -85,14 +88,14 @@
                 <div class="col-md-8">
                     <div class="article">
     <div class="well">
-        <h1><a href="/rabbitmq-operation/">RabbitMQ运维</a></h1>
+        <h1><a href="/rabbitmq-operation/">记一次差点跑路的 RabbitMQ 运维经历</a></h1>
         <div class="post-meta">
             <div class="post-time">
                 <i class="fa fa-calendar"></i><time> 2016-07-26</time>
             </div>
             <div class="post-visitors-count">
                 <i class="fa fa-ge"></i>
-                <span id="/rabbitmq-operation/" class="leancloud_visitors" data-flag-title="RabbitMQ运维">
+                <span id="/rabbitmq-operation/" class="leancloud_visitors" data-flag-title="记一次差点跑路的 RabbitMQ 运维经历">
                     <span class="post-meta-item-text">阅读量 </span>
                     <i class="leancloud-visitors-count">0</i>
                 </span>
@@ -102,22 +105,24 @@
             <!-- 
     <div id="toc" class="toc-content">
       <strong class="toc-title">目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-正确启动"><span class="toc-text">1. 正确启动</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-启动各个节点"><span class="toc-text">1.1 启动各个节点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-创建集群"><span class="toc-text">1.2 创建集群</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-拆分集群"><span class="toc-text">1.3 拆分集群</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-几个异常"><span class="toc-text">2. 几个异常</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-一台机器上启动多个实例"><span class="toc-text">2.1 一台机器上启动多个实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-Bad-cookie-in-table-definition-rabbit-durable-queue"><span class="toc-text">2.2 Bad cookie in table definition rabbit_durable_queue</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-already-member"><span class="toc-text">2.3 already_member</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-千万不要在磁盘节点上删除var-lib-rabbitmq-mnesia中的文件"><span class="toc-text">2.4 千万不要在磁盘节点上删除var/lib/rabbitmq/mnesia中的文件</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-正确启动"><span class="toc-text">1. 正确启动</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-启动各个节点"><span class="toc-text">1.1 启动各个节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-创建集群"><span class="toc-text">1.2 创建集群</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-拆分集群"><span class="toc-text">1.3 拆分集群</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-几个异常"><span class="toc-text">2. 几个异常</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-一台机器上启动多个实例"><span class="toc-text">2.1 一台机器上启动多个实例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Bad-cookie-in-table-definition-rabbit-durable-queue"><span class="toc-text">2.2 Bad cookie in table definition rabbit_durable_queue</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-already-member"><span class="toc-text">2.3 already_member</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-千万不要在磁盘节点上删除-var-lib-rabbitmq-mnesia-中的文件"><span class="toc-text">2.4 千万不要在磁盘节点上删除 var/lib/rabbitmq/mnesia 中的文件</span></a></li></ol>
     </div>
  -->
-            <p>这是一次比较苦逼的运维，完全不熟悉的系统、不清楚环境、不清楚配置，两眼一抹黑。为啥？就是因为原来的负责人撤了、交接人休假、再次交接人也休假，再再次交接人只有一份不全的文档。而我是再、再、再次交接人，连文档也没有。更要命的是，这是生产环境，大家都懂得，生产环境就是不能出问题，自封一个“奉命于危难之间”吧。</p>
-<p>抱怨了一整段了，还是简单的说下这次运维吧，运维的是RabbitMQ集群，3个节点A、B、C，每个节点上启动了2个实例a1/a2、b1/b2、c1/c2，其中a1、b1、c1组成一套集群环境rabbit cluster1，a1是磁盘节点；a2、b2、c2组成一套集群环境rabbit cluster2，c2是磁盘节点。</p>
-<p>就是因为完全不熟悉RabbitMQ集群，所以基本上趟了一堆的坑，碰到了一堆不应该出现的错误，也算是新手村长经验了。按照套路，这里先说说正确的启动方式，然后再说说碰到的异常。</p>
+            <p><img src="http://static.howardliu.cn/cover/fashion-3080644_1920.jpg" alt="记一次差点跑路的 RabbitMQ 运维经历"></p>
+<p>你好，我是看山。</p>
+<p>这是一次比较苦逼的运维，完全不熟悉的系统、不清楚环境、不清楚配置，两眼一抹黑。为啥？就是因为原来的负责人撤了、交接人休假、再次交接人也休假，再再次交接人只有一份不全的文档。而我是再、再、再次交接人，连文档也没有。更要命的是，这是生产环境，大家都懂得，生产环境就是不能出问题，自封一个“奉命于危难之间”吧。</p>
+<p>抱怨了一整段了，还是简单的说下这次运维吧，运维的是 RabbitMQ 集群，3 个节点 A、B、C，每个节点上启动了 2 个实例 a1/a2、b1/b2、c1/c2，其中 a1、b1、c1 组成一套集群环境 rabbit cluster1，a1 是磁盘节点；a2、b2、c2 组成一套集群环境 rabbit cluster2，c2 是磁盘节点。</p>
+<p>就是因为完全不熟悉 RabbitMQ 集群，所以基本上趟了一堆的坑，碰到了一堆不应该出现的错误，也算是新手村长经验了。按照套路，这里先说说正确的启动方式，然后再说说碰到的异常。</p>
 <a id="more"></a>
 
-<h1 id="1-正确启动"><a href="#1-正确启动" class="headerlink" title="1. 正确启动"></a>1. 正确启动</h1><h2 id="1-1-启动各个节点"><a href="#1-1-启动各个节点" class="headerlink" title="1.1 启动各个节点"></a>1.1 启动各个节点</h2><p>因为找不到自己启动的历史了，就是摘取<a href="https://www.rabbitmq.com/clustering.html" target="_blank" rel="noopener">官网</a>的部分内容放在这里。有3个服务器节点，hostname分别是：rabbit1、rabbit2、rabbit3。</p>
-<p>分别在3个节点上启动Rabbit MQ：</p>
+<h2 id="1-正确启动"><a href="#1-正确启动" class="headerlink" title="1. 正确启动"></a>1. 正确启动</h2><h3 id="1-1-启动各个节点"><a href="#1-1-启动各个节点" class="headerlink" title="1.1 启动各个节点"></a>1.1 启动各个节点</h3><p>因为找不到自己启动的历史了，就是摘取 <a href="https://www.rabbitmq.com/clustering.html" target="_blank" rel="noopener">官网</a> 的部分内容放在这里。有 3 个服务器节点，hostname 分别是：rabbit1、rabbit2、rabbit3。</p>
+<p>分别在 3 个节点上启动 Rabbit MQ：</p>
 <pre><code class="bash">rabbit1$ rabbitmq-server -detached
 
 rabbit2$ rabbitmq-server -detached
 
 rabbit3$ rabbitmq-server -detached</code></pre>
-<p>通过命令<code>rabbitmq-server -detached</code>就可以启动rabbit服务。</p>
+<p>通过命令<code>rabbitmq-server -detached</code>就可以启动 rabbit 服务。</p>
 <p>然后在每个节点上查看集群状态：</p>
 <pre><code class="bash">rabbit1$ rabbitmqctl cluster_status
 Cluster status of node rabbit@rabbit1 ...
@@ -133,9 +138,9 @@ rabbit3$ rabbitmqctl cluster_status
 Cluster status of node rabbit@rabbit3 ...
 [{nodes,[{disc,[rabbit@rabbit3]}]},{running_nodes,[rabbit@rabbit3]}]
 ...done.</code></pre>
-<p>RabbitMQ服务节点的名字是rabbit@shorthostname，所以上面3个节点分别是rabbit@rabbit1、rabbit@rabbit2、rabbit@rabbit3。需要注意的是使用<code>rabbitmq-server</code>基本执行的名字都是小写的，如果是在Windows中使用<code>rabbitmq-server.bat</code>，那节点名字就是大写的了，比如rabbit@RABBIT1。</p>
-<h2 id="1-2-创建集群"><a href="#1-2-创建集群" class="headerlink" title="1.2 创建集群"></a>1.2 创建集群</h2><p>这里把rabbit@rabbit2和rabbit@rabbit3加入rabbit@rabbit1中，也就是说rabbit@rabbit1是磁盘节点，其他两个都是内存节点。</p>
-<p>先把rabbit@rabbit2加入到rabbit@rabbit1中：</p>
+<p>RabbitMQ 服务节点的名字是 rabbit@shorthostname，所以上面 3 个节点分别是 rabbit@rabbit1、rabbit@rabbit2、rabbit@rabbit3。需要注意的是使用<code>rabbitmq-server</code>基本执行的名字都是小写的，如果是在 Windows 中使用<code>rabbitmq-server.bat</code>，那节点名字就是大写的了，比如 rabbit@RABBIT1。</p>
+<h3 id="1-2-创建集群"><a href="#1-2-创建集群" class="headerlink" title="1.2 创建集群"></a>1.2 创建集群</h3><p>这里把 rabbit@rabbit2 和 rabbit@rabbit3 加入 rabbit@rabbit1 中，也就是说 rabbit@rabbit1 是磁盘节点，其他两个都是内存节点。</p>
+<p>先把 rabbit@rabbit2 加入到 rabbit@rabbit1 中：</p>
 <pre><code class="bash">rabbit2$ rabbitmqctl stop_app
 Stopping node rabbit@rabbit2 ...done.
 
@@ -144,7 +149,7 @@ Clustering node rabbit@rabbit2 with [rabbit@rabbit1] ...done.
 
 rabbit2$ rabbitmqctl start_app
 Starting node rabbit@rabbit2 ...done.</code></pre>
-<p>如果没有报错，rabbit@rabbit2就已经加入到rabbit@rabbit1中了，可以使用命令<code>rabbitmqctl cluster_status</code>查看集群状态：</p>
+<p>如果没有报错，rabbit@rabbit2 就已经加入到 rabbit@rabbit1 中了，可以使用命令<code>rabbitmqctl cluster_status</code>查看集群状态：</p>
 <pre><code class="bash">rabbit1$ rabbitmqctl cluster_status
 Cluster status of node rabbit@rabbit1 ...
 [{nodes,[{disc,[rabbit@rabbit1,rabbit@rabbit2]}]},
@@ -156,8 +161,8 @@ Cluster status of node rabbit@rabbit2 ...
 [{nodes,[{disc,[rabbit@rabbit1,rabbit@rabbit2]}]},
  {running_nodes,[rabbit@rabbit1,rabbit@rabbit2]}]
 ...done.</code></pre>
-<p>通过<code>join_cluster --ram</code>可以指定节点以内存节点的形式加入集群。然后在rabbit@rabbit3上执行相同的操作即可，这里不再赘述。</p>
-<h2 id="1-3-拆分集群"><a href="#1-3-拆分集群" class="headerlink" title="1.3 拆分集群"></a>1.3 拆分集群</h2><p>拆分集群实际上就是在想要从集群中删除的节点上执行<code>reset</code>即可，他会通知集群中所有的节点不要再理这个节点了。</p>
+<p>通过<code>join_cluster --ram</code>可以指定节点以内存节点的形式加入集群。然后在 rabbit@rabbit3 上执行相同的操作即可，这里不再赘述。</p>
+<h3 id="1-3-拆分集群"><a href="#1-3-拆分集群" class="headerlink" title="1.3 拆分集群"></a>1.3 拆分集群</h3><p>拆分集群实际上就是在想要从集群中删除的节点上执行<code>reset</code>即可，他会通知集群中所有的节点不要再理这个节点了。</p>
 <pre><code class="bash">rabbit3$ rabbitmqctl stop_app
 Stopping node rabbit@rabbit3 ...done.
 
@@ -184,22 +189,24 @@ Cluster status of node rabbit@rabbit3 ...
 [{nodes,[{disc,[rabbit@rabbit3]}]},{running_nodes,[rabbit@rabbit3]}]
 ...done.</code></pre>
 <p>还可以在某节点上删除别的节点，可以使用<code>forget_cluster_node</code>来进行，这里不进行赘述，后面的一种异常中会用到这个命令。</p>
-<h1 id="2-几个异常"><a href="#2-几个异常" class="headerlink" title="2. 几个异常"></a>2. 几个异常</h1><h2 id="2-1-一台机器上启动多个实例"><a href="#2-1-一台机器上启动多个实例" class="headerlink" title="2.1 一台机器上启动多个实例"></a>2.1 一台机器上启动多个实例</h2><p>RabbitMQ允许在一台机器上启动多个实例，自己在这次运维中占用时间最长的就是不知道这3个节点上部署了两套集群，通过<code>ps -ef|grep rabbit</code>命令看到有两个实例，就天真的以为是有一个没有成功关闭，所以直接把两个都<code>kill</code>了。所以这里记录一下如果在一台机器上启动多个实例。</p>
+<h2 id="2-几个异常"><a href="#2-几个异常" class="headerlink" title="2. 几个异常"></a>2. 几个异常</h2><h3 id="2-1-一台机器上启动多个实例"><a href="#2-1-一台机器上启动多个实例" class="headerlink" title="2.1 一台机器上启动多个实例"></a>2.1 一台机器上启动多个实例</h3><p>RabbitMQ 允许在一台机器上启动多个实例，自己在这次运维中占用时间最长的就是不知道这 3 个节点上部署了两套集群，通过<code>ps -ef|grep rabbit</code>命令看到有两个实例，就天真的以为是有一个没有成功关闭，所以直接把两个都<code>kill</code>了。所以这里记录一下如果在一台机器上启动多个实例。</p>
 <pre><code class="bash">$ RABBITMQ_NODE_PORT=5673 RABBITMQ_SERVER_START_ARGS=&quot;-rabbitmq_management listener [{port,15673}]&quot; RABBITMQ_NODENAME=hare rabbitmq-server -detached
 $ rabbitmqctl -n hare stop_app
 $ rabbitmqctl -n hare join_cluster rabbit@rabbit1
 $ rabbitmqctl -n hare start_app</code></pre>
 <p>执行命令需要使用<code>-n</code>来指定执行命令的实例，这个是需要记住的。</p>
-<h2 id="2-2-Bad-cookie-in-table-definition-rabbit-durable-queue"><a href="#2-2-Bad-cookie-in-table-definition-rabbit-durable-queue" class="headerlink" title="2.2 Bad cookie in table definition rabbit_durable_queue"></a>2.2 Bad cookie in table definition rabbit_durable_queue</h2><p>这个已经找不到错误的具体描述了，就从Google上找了一条，基本类似。</p>
-<pre><code>rabbitmqctl cluster rabbit@vmrabbita
+<h3 id="2-2-Bad-cookie-in-table-definition-rabbit-durable-queue"><a href="#2-2-Bad-cookie-in-table-definition-rabbit-durable-queue" class="headerlink" title="2.2 Bad cookie in table definition rabbit_durable_queue"></a>2.2 Bad cookie in table definition rabbit_durable_queue</h3><p>这个已经找不到错误的具体描述了，就从 Google 上找了一条，基本类似。</p>
+<pre><code class="sh">rabbitmqctl cluster rabbit@vmrabbita
 Clustering node rabbit@vmrabbitb with [rabbit@vmrabbita] ...
 Error: {unable_to_join_cluster,
           [rabbit@vmrabbita],
           {merge_schema_failed,
-              &quot;Bad cookie in table definition rabbit_durable_queue: rabbit@vmrabbitb = {cstruct,rabbit_durable_queue,set,[],[rabbit@vmrabbitb],[],0,read_write,[],[],false,amqqueue,[name,durable,auto_delete,arguments,pid],[],[],{{1266,16863,365586},rabbit@vmrabbitb},{{2,0},[]}}, rabbit@vmrabbita = {cstruct,rabbit_durable_queue,set,[],[rabbit@vmrabbitc,rabbit@vmrabbita],[],0,read_write,[],[],false,amqqueue,[name,durable,auto_delete,arguments,pid],[],[],{{1266,14484,94839},rabbit@vmrabbita},{{4,0},{rabbit@vmrabbitc,{1266,16151,144423}}}}\n&quot;}}</code></pre><p>主要的就是<code>Bad cookie in table definition rabbit_durable_queue</code>这句，这是因为节点之间是通过“the Erlang Cookie”彼此识别的，存储在$HOME/.erlang.cookie中。如果因为某种原因，集群中几个节点服务器上的cookie不一致，就会不能够彼此识别，出现这样那样的错误。更多的是上面的这个”Bad cookie。。。”，还会有”Connection attempt from disallowed node”、 “Could not auto-cluster”。</p>
-<h2 id="2-3-already-member"><a href="#2-3-already-member" class="headerlink" title="2.3 already_member"></a>2.3 already_member</h2><p>这个问题就是比较2的一个问题了，自己给自己挖的坑，只能自己填了。集群几个节点之间不能通信，然后我就把一个内存节点的<code>var/lib/rabbitmq/mnesia</code>中的文件夹删了，然后又执行了<code>reset</code>，当执行<code>join_cluster</code>命令的时候，就会报出错误：</p>
-<pre><code>Error: {ok,already_member}</code></pre><p>分析一下可以明白，当前节点上没有待加入集群的信息，但是待加入集群中已经有了该节点的信息，但是发现两个信息不一致。所以当当前节点期望加入到集群的时候，出于安全考虑，集群就说你小子已经是集群里的一员了，不要再加了。扒出日志来看：</p>
-<pre><code>=INFO REPORT==== 25-Jul-2016::20:11:10 ===
+              &quot;Bad cookie in table definition rabbit_durable_queue: rabbit@vmrabbitb = {cstruct,rabbit_durable_queue,set,[],[rabbit@vmrabbitb],[],0,read_write,[],[],false,amqqueue,[name,durable,auto_delete,arguments,pid],[],[],{{1266,16863,365586},rabbit@vmrabbitb},{{2,0},[]}}, rabbit@vmrabbita = {cstruct,rabbit_durable_queue,set,[],[rabbit@vmrabbitc,rabbit@vmrabbita],[],0,read_write,[],[],false,amqqueue,[name,durable,auto_delete,arguments,pid],[],[],{{1266,14484,94839},rabbit@vmrabbita},{{4,0},{rabbit@vmrabbitc,{1266,16151,144423}}}}\n&quot;}}</code></pre>
+<p>主要的就是<code>Bad cookie in table definition rabbit_durable_queue</code>这句，这是因为节点之间是通过“the Erlang Cookie”彼此识别的，存储在$HOME/.erlang.cookie 中。如果因为某种原因，集群中几个节点服务器上的 cookie 不一致，就会不能够彼此识别，出现这样那样的错误。更多的是上面的这个”Bad cookie。”，还会有”Connection attempt from disallowed node”、 “Could not auto-cluster”。</p>
+<h3 id="2-3-already-member"><a href="#2-3-already-member" class="headerlink" title="2.3 already_member"></a>2.3 already_member</h3><p>这个问题就是比较 2 的一个问题了，自己给自己挖的坑，只能自己填了。集群几个节点之间不能通信，然后我就把一个内存节点的<code>var/lib/rabbitmq/mnesia</code>中的文件夹删了，然后又执行了<code>reset</code>，当执行<code>join_cluster</code>命令的时候，就会报出错误：</p>
+<pre><code class="sh">Error: {ok,already_member}</code></pre>
+<p>分析一下可以明白，当前节点上没有待加入集群的信息，但是待加入集群中已经有了该节点的信息，但是发现两个信息不一致。所以当当前节点期望加入到集群的时候，出于安全考虑，集群就说你小子已经是集群里的一员了，不要再加了。扒出日志来看：</p>
+<pre><code class="log">=INFO REPORT==== 25-Jul-2016::20:11:10 ===
 Error description:
    {could_not_start,rabbitmq_management,
        {{shutdown,
@@ -217,17 +224,21 @@ Error description:
 
 Log files (may contain more information):
    ./../var/log/rabbitmq/hare.log
-   ./../var/log/rabbitmq/hare-sasl.log</23251.1658.0></code></pre><p>既然集群中已经有个该节点信息，所以不要该节点重复加入。那就把集群里该节点信息删了，再加入集群，不就应该类似与一个全新的节点加入集群一样吗？</p>
-<pre><code>rabbitmqctl -n hare forget_cluster_node hare@rabbit1</code></pre><p>这样，集群中就没有hare@rabbit1的信息了，之后就重新执行<code>join_cluster</code>命令即可。</p>
-<h2 id="2-4-千万不要在磁盘节点上删除var-lib-rabbitmq-mnesia中的文件"><a href="#2-4-千万不要在磁盘节点上删除var-lib-rabbitmq-mnesia中的文件" class="headerlink" title="2.4 千万不要在磁盘节点上删除var/lib/rabbitmq/mnesia中的文件"></a>2.4 千万不要在磁盘节点上删除var/lib/rabbitmq/mnesia中的文件</h2><p>这个文件夹中的内容是磁盘节点用于记录集群信息的文件，一旦删除，会出现各种各样的异常。</p>
+   ./../var/log/rabbitmq/hare-sasl.log</23251.1658.0></code></pre>
+<p>既然集群中已经有个该节点信息，所以不要该节点重复加入。那就把集群里该节点信息删了，再加入集群，不就应该类似与一个全新的节点加入集群一样吗？</p>
+<pre><code class="sh">rabbitmqctl -n hare forget_cluster_node hare@rabbit1</code></pre>
+<p>这样，集群中就没有 hare@rabbit1 的信息了，之后就重新执行<code>join_cluster</code>命令即可。</p>
+<h2 id="2-4-千万不要在磁盘节点上删除-var-lib-rabbitmq-mnesia-中的文件"><a href="#2-4-千万不要在磁盘节点上删除-var-lib-rabbitmq-mnesia-中的文件" class="headerlink" title="2.4 千万不要在磁盘节点上删除 var/lib/rabbitmq/mnesia 中的文件"></a>2.4 千万不要在磁盘节点上删除 var/lib/rabbitmq/mnesia 中的文件</h2><p>这个文件夹中的内容是磁盘节点用于记录集群信息的文件，一旦删除，会出现各种各样的异常。</p>
 <ol>
-<li>如果是磁盘节点，集群中配置的Exchanges、Queues、User等信息全都丢失</li>
+<li>如果是磁盘节点，集群中配置的 Exchanges、Queues、User 等信息全都丢失</li>
 <li>如果是内存节点，连接集群的信息丢失，重新加入集群是会失败</li>
 </ol>
-<p>因为是两套集群，这两个问题我都碰到了。生产环境啊，可以想象当我正在为集群正常启动后得意的时候，突然发现所有的Exchanges、Queues信息全都没了的时候的心情吗？幸亏还有一套预生产环境，直接把预生产环境的内容导出，然后在生产环境导入。</p>
-<p>唉，有种劫后余生的感动。。。</p>
+<p>因为是两套集群，这两个问题我都碰到了。生产环境啊，可以想象当我正在为集群正常启动后得意的时候，突然发现所有的 Exchanges、Queues 信息全都没了的时候的心情吗？幸亏还有一套预生产环境，直接把预生产环境的内容导出，然后在生产环境导入。</p>
+<p>唉，有种劫后余生的感动。</p>
 <hr>
-<p>个人主页: <a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文: <a href="https://www.howardliu.cn/rabbitmq-operation/">RabbitMQ运维</a><br>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN博文: <a href="http://blog.csdn.net/liuxinghao/article/details/52076436" target="_blank" rel="noopener">RabbitMQ运维</a></p>
+<p>你好，我是看山，公众号：<a href="http://static.howardliu.cn/about/kanshanshuo.png" target="_blank" rel="noopener">看山的小屋</a>，10 年老猿，开源贡献者。游于码界，戏享人生。关注我，领取资料。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/rabbitmq-operation/">记一次差点跑路的 RabbitMQ 运维经历</a><br>CSDN 主页：<a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN 博文：<a href="http://blog.csdn.net/liuxinghao/article/details/52076436" target="_blank" rel="noopener">记一次差点跑路的 RabbitMQ 运维经历</a></p>
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
 
         </div>
         
@@ -286,7 +297,7 @@ Log files (may contain more information):
 <div class="sidebar">
     <div class="well">
         <h2>标签云</h2>
-        <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a> <a href="/tags/jdk8/" style="font-size: 15px;">jdk8</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a>
+        <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/jdk8/" style="font-size: 15px;">jdk8</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/操作系统/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/系统更新/" style="font-size: 15px;">系统更新</a>
     </div>
 </div>
 
