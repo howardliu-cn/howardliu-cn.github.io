@@ -8,23 +8,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>JDK 工具一览||沉潜飞动|君子藏器于身，待时而动。</title>
-<meta name="description" content="jdk工具：appletviewer, extcheck, jar, java, javac, javadoc, javah, javap, jdb, jdeps, keytool, jarsigner, policytool, kinit, klist, ktab, native2ascii, rmic, rmiregistry, rmid, serialver, tnameserv, idlj">
+<meta name="description" content="jdk 工具：appletviewer, extcheck, jar, java, javac, javadoc, javah, javap, jdb, jdeps, keytool, jarsigner, policytool, kinit, klist, ktab, native2ascii, rmic, rmiregistry, rmid, serialver, tnameserv, idl">
 <meta name="keywords" content="appletviewer,extcheck,jar,java,javac,javadoc,javah,javap,jdb,jdeps,keytool,jarsigner,policytool,kinit,klist,ktab,native2ascii,rmic,rmiregistry,rmid,serialver,tnameserv,idlj,orbd,servertool,javapackager,pack200,unpack200,javaws,jcmd,jconsole,jmc,jvisualvm,schemagen,wsgen,wsimport,xjc,jps,jstat,jstatd,jinfo,jhat,jmap,jsadebugd,jstack,jjs,jrunscript">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JDK 工具一览">
 <meta property="og:url" content="https://www.howardliu.cn/java/jdk-tools-and-utilities/index.html">
 <meta property="og:site_name" content="沉潜飞动">
-<meta property="og:description" content="jdk工具：appletviewer, extcheck, jar, java, javac, javadoc, javah, javap, jdb, jdeps, keytool, jarsigner, policytool, kinit, klist, ktab, native2ascii, rmic, rmiregistry, rmid, serialver, tnameserv, idlj">
+<meta property="og:description" content="jdk 工具：appletviewer, extcheck, jar, java, javac, javadoc, javah, javap, jdb, jdeps, keytool, jarsigner, policytool, kinit, klist, ktab, native2ascii, rmic, rmiregistry, rmid, serialver, tnameserv, idl">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-01-27T10:02:59.690Z">
+<meta property="og:image" content="http://static.howardliu.cn/cover/old-town-6300696_1920.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-06-15T14:56:24.836Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JDK 工具一览">
-<meta name="twitter:description" content="jdk工具：appletviewer, extcheck, jar, java, javac, javadoc, javah, javap, jdb, jdeps, keytool, jarsigner, policytool, kinit, klist, ktab, native2ascii, rmic, rmiregistry, rmid, serialver, tnameserv, idlj">
+<meta name="twitter:description" content="jdk 工具：appletviewer, extcheck, jar, java, javac, javadoc, javah, javap, jdb, jdeps, keytool, jarsigner, policytool, kinit, klist, ktab, native2ascii, rmic, rmiregistry, rmid, serialver, tnameserv, idl">
+<meta name="twitter:image" content="http://static.howardliu.cn/cover/old-town-6300696_1920.jpg">
 
 <meta name="keywords" content="appletviewer,extcheck,jar,java,javac,javadoc,javah,javap,jdb,jdeps,keytool,jarsigner,policytool,kinit,klist,ktab,native2ascii,rmic,rmiregistry,rmid,serialver,tnameserv,idlj,orbd,servertool,javapackager,pack200,unpack200,javaws,jcmd,jconsole,jmc,jvisualvm,schemagen,wsgen,wsimport,xjc,jps,jstat,jstatd,jinfo,jhat,jmap,jsadebugd,jstack,jjs,jrunscript">
 
 
-<meta name="description" content="jdk工具：appletviewer, extcheck, jar, java, javac, javadoc, javah, javap, jdb, jdeps, keytool, jarsigner, policytool, kinit, klist, ktab, native2ascii, r">
+<meta name="description" content="jdk 工具：appletviewer, extcheck, jar, java, javac, javadoc, javah, javap, jdb, jdeps, keytool, jarsigner, policytool, kinit, klist, ktab, native2ascii,">
 
 <meta name="author" content="Howard Liu,howardliu1988@163.com">
 
@@ -102,296 +105,99 @@
             <!-- 
     <div id="toc" class="toc-content">
       <strong class="toc-title">目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-标准工具"><span class="toc-text">1. 标准工具</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-基础-appletviewer-extcheck-jar-java-javac-javadoc-javah-javap-jdb-jdeps"><span class="toc-text">1.1 基础 (appletviewer, extcheck, jar, java, javac, javadoc, javah, javap, jdb, jdeps)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-安全-keytool-jarsigner-policytool"><span class="toc-text">1.2 安全 (keytool, jarsigner, policytool)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-国际化-i18n-native2ascii"><span class="toc-text">1.3 国际化/i18n (native2ascii)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-4-远程方法调用-RMI-rmic-rmiregistry-rmid-serialver"><span class="toc-text">1.4 远程方法调用/RMI (rmic, rmiregistry, rmid, serialver)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-5-Java-IDL-与-RMI-IIOP-tnameserv-idlj-orbd-servertool"><span class="toc-text">1.5 Java IDL 与 RMI-IIOP (tnameserv, idlj, orbd, servertool)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-6-Java-发布工具-javapackager-pack200-unpack200"><span class="toc-text">1.6 Java 发布工具 (javapackager, pack200, unpack200)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-7-Java-Web-启动工具-javaws"><span class="toc-text">1.7 Java Web 启动工具 (javaws)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-8-故障排查，分析，监控和管理-jcmd-jconsole-jmc-jvisualvm"><span class="toc-text">1.8 故障排查，分析，监控和管理 (jcmd, jconsole, jmc, jvisualvm)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-9-WebService工具-schemagen-wsgen-wsimport-xjc"><span class="toc-text">1.9 WebService工具 (schemagen, wsgen, wsimport, xjc)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-实验性工具"><span class="toc-text">2. 实验性工具</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-监控-jps-jstat-jstatd"><span class="toc-text">2.1 监控 (jps, jstat, jstatd)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-故障排查-jinfo-jhat-jmap-jsadebugd-jstack"><span class="toc-text">2.2 故障排查 (jinfo, jhat, jmap, jsadebugd, jstack)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-脚本工具-jjs-jrunscript"><span class="toc-text">2.3 脚本工具 (jjs, jrunscript)</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-标准工具"><span class="toc-text">1. 标准工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-基础-appletviewer-extcheck-jar-java-javac-javadoc-javah-javap-jdb-jdeps"><span class="toc-text">1.1 基础 (appletviewer, extcheck, jar, java, javac, javadoc, javah, javap, jdb, jdeps)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-安全-keytool-jarsigner-policytool"><span class="toc-text">1.2 安全 (keytool, jarsigner, policytool)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-国际化-i18n-native2ascii"><span class="toc-text">1.3 国际化/i18n (native2ascii)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-远程方法调用-RMI-rmic-rmiregistry-rmid-serialver"><span class="toc-text">1.4 远程方法调用/RMI (rmic, rmiregistry, rmid, serialver)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-Java-IDL-与-RMI-IIOP-tnameserv-idlj-orbd-servertool"><span class="toc-text">1.5 Java IDL 与 RMI-IIOP (tnameserv, idlj, orbd, servertool)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-6-Java-发布工具-javapackager-pack200-unpack200"><span class="toc-text">1.6 Java 发布工具 (javapackager, pack200, unpack200)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-7-Java-Web-启动工具-javaws"><span class="toc-text">1.7 Java Web 启动工具 (javaws)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-8-故障排查，分析，监控和管理-jcmd-jconsole-jmc-jvisualvm"><span class="toc-text">1.8 故障排查，分析，监控和管理 (jcmd, jconsole, jmc, jvisualvm)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-9-WebService-工具-schemagen-wsgen-wsimport-xjc"><span class="toc-text">1.9 WebService 工具 (schemagen, wsgen, wsimport, xjc)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-实验性工具"><span class="toc-text">2. 实验性工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-监控-jps-jstat-jstatd"><span class="toc-text">2.1 监控 (jps, jstat, jstatd)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-故障排查-jinfo-jhat-jmap-jsadebugd-jstack"><span class="toc-text">2.2 故障排查 (jinfo, jhat, jmap, jsadebugd, jstack)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-脚本工具-jjs-jrunscript"><span class="toc-text">2.3 脚本工具 (jjs, jrunscript)</span></a></li></ol></li></ol>
     </div>
  -->
-            <p>Java 坑如此大，需要慢慢填。</p>
-<p>本文是列出JDK自带的一些工具，介于篇幅，简单列出工具列表及工具的作用。至少先做到知道有哪些工具，然后才能在实际中用到。</p>
+            <p><img src="http://static.howardliu.cn/cover/old-town-6300696_1920.jpg" alt="JDK 工具一览"></p>
 <blockquote>
-<p>本文参考了<a href="http://docs.oracle.com/javase/8/docs/technotes/tools/" target="_blank" rel="noopener">官方介绍</a>和本机<code>man</code>命令的介绍。</p>
+<p>该图片由<a href="https://pixabay.com/zh/users/tomasha73-20895442/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6300696" target="_blank" rel="noopener">Thang Ha</a>在<a href="https://pixabay.com/zh/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6300696" target="_blank" rel="noopener">Pixabay</a>上发布</p>
+</blockquote>
+<p>你好，我是看山。</p>
+<p>Java 坑如此大，需要慢慢填。</p>
+<p>本文是列出 JDK 自带的一些工具，介于篇幅，简单列出工具列表及工具的作用。至少先做到知道有哪些工具，然后才能在实际中用到。</p>
+<blockquote>
+<p>本文参考了 <a href="http://docs.oracle.com/javase/8/docs/technotes/tools/" target="_blank" rel="noopener">官方介绍</a> 和本机<code>man</code>命令的介绍。</p>
 </blockquote>
 <a id="more"></a>
 
-<h1 id="1-标准工具"><a href="#1-标准工具" class="headerlink" title="1. 标准工具"></a>1. 标准工具</h1><p>这些工具都是JDK提供的，通常都是长期支持的工具，JDK承诺这些工具比较好用。不同系统、不同版本之间可能会有差异，但是不会突然就有一个工具消失。</p>
-<h2 id="1-1-基础-appletviewer-extcheck-jar-java-javac-javadoc-javah-javap-jdb-jdeps"><a href="#1-1-基础-appletviewer-extcheck-jar-java-javac-javadoc-javah-javap-jdb-jdeps" class="headerlink" title="1.1 基础 (appletviewer, extcheck, jar, java, javac, javadoc, javah, javap, jdb, jdeps)"></a>1.1 基础 (appletviewer, extcheck, jar, java, javac, javadoc, javah, javap, jdb, jdeps)</h2><table>
-<thead>
-<tr>
-<th>工具</th>
-<th align="left">简述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/appletviewer.html" target="_blank" rel="noopener">appletviewer</a></td>
-<td align="left">在没有web浏览器的情况下运行和调试applet</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/extcheck.html" target="_blank" rel="noopener">extcheck</a></td>
-<td align="left">检查Jar冲突的工具</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jar.html" target="_blank" rel="noopener">jar</a></td>
-<td align="left">创建和管理Jar文件</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html" target="_blank" rel="noopener">java</a></td>
-<td align="left">Java运行工具，用于运行.class字节码文件或.jar文件</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/javac.html" target="_blank" rel="noopener">javac</a></td>
-<td align="left">用于Java编程语言的编译器</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/javadoc.html" target="_blank" rel="noopener">javadoc</a></td>
-<td align="left">API文档生成器</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/javah.html" target="_blank" rel="noopener">javah</a></td>
-<td align="left">C头文件和stub函数生成器，用于编写native方法</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/javap.html" target="_blank" rel="noopener">javap</a></td>
-<td align="left">类文件反汇编器，主要用于根据Java字节码文件反汇编为Java源代码文件</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jdb.html" target="_blank" rel="noopener">jdb</a></td>
-<td align="left">Java调试器(Java Debugger)</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jdeps.html" target="_blank" rel="noopener">jdeps</a></td>
-<td align="left">Java类依赖性分析器</td>
-</tr>
-</tbody></table>
-<h2 id="1-2-安全-keytool-jarsigner-policytool"><a href="#1-2-安全-keytool-jarsigner-policytool" class="headerlink" title="1.2 安全 (keytool, jarsigner, policytool)"></a>1.2 安全 (keytool, jarsigner, policytool)</h2><table>
-<thead>
-<tr>
-<th>工具</th>
-<th align="left">简述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/keytool.html" target="_blank" rel="noopener">keytool</a></td>
-<td align="left">管理密钥库和证书。主要用于获取或缓存Kerberos协议的票据授权票据。允许用户查看本地凭据缓存和密钥表中的条目(用于Kerberos协议)。Kerberos密钥表管理工具，允许用户管理存储于本地密钥表中的主要名称和服务密钥。</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jarsigner.html" target="_blank" rel="noopener">jarsigner</a></td>
-<td align="left">生成并验证JAR签名</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/policytool.html" target="_blank" rel="noopener">policytool</a></td>
-<td align="left">管理策略文件的GUI工具，用于管理用户策略文件(.java.policy)</td>
-</tr>
-</tbody></table>
-<h2 id="1-3-国际化-i18n-native2ascii"><a href="#1-3-国际化-i18n-native2ascii" class="headerlink" title="1.3 国际化/i18n (native2ascii)"></a>1.3 国际化/i18n (native2ascii)</h2><table>
-<thead>
-<tr>
-<th>工具</th>
-<th align="left">简述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/native2ascii.html" target="_blank" rel="noopener">native2ascii</a></td>
-<td align="left">本地编码到ASCII编码的转换器(Native-to-ASCII Converter)，用于“任意受支持的字符编码”和与之对应的“ASCII编码和(或)Unicode转义”之间的相互转换。</td>
-</tr>
-</tbody></table>
-<h2 id="1-4-远程方法调用-RMI-rmic-rmiregistry-rmid-serialver"><a href="#1-4-远程方法调用-RMI-rmic-rmiregistry-rmid-serialver" class="headerlink" title="1.4 远程方法调用/RMI (rmic, rmiregistry, rmid, serialver)"></a>1.4 远程方法调用/RMI (rmic, rmiregistry, rmid, serialver)</h2><table>
-<thead>
-<tr>
-<th>工具</th>
-<th align="left">简述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/rmic.html" target="_blank" rel="noopener">rmic</a></td>
-<td align="left">Java RMI 编译器，为使用JRMP或IIOP协议的远程对象生成stub、skeleton、和tie类，也用于生成OMG IDL。</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/rmiregistry.html" target="_blank" rel="noopener">rmiregistry</a></td>
-<td align="left">远程对象注册表服务，用于在当前主机的指定端口上创建并启动一个远程对象注册表。</td>
-</tr>
-<tr>
-<td></td>
-<td align="left"></td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/rmid.html" target="_blank" rel="noopener">rmid</a></td>
-<td align="left">启动激活系统守护进程，允许在虚拟机中注册或激活对象。</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/serialver.html" target="_blank" rel="noopener">serialver</a></td>
-<td align="left">生成并返回指定类的序列化版本ID</td>
-</tr>
-</tbody></table>
-<h2 id="1-5-Java-IDL-与-RMI-IIOP-tnameserv-idlj-orbd-servertool"><a href="#1-5-Java-IDL-与-RMI-IIOP-tnameserv-idlj-orbd-servertool" class="headerlink" title="1.5 Java IDL 与 RMI-IIOP (tnameserv, idlj, orbd, servertool)"></a>1.5 Java IDL 与 RMI-IIOP (tnameserv, idlj, orbd, servertool)</h2><table>
-<thead>
-<tr>
-<th>工具</th>
-<th align="left">简述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/tnameserv.html" target="_blank" rel="noopener">tnameserv</a></td>
-<td align="left">提供对命名服务的访问</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/idlj.html" target="_blank" rel="noopener">idlj</a></td>
-<td align="left">IDL转Java编译器(IDL-to-Java Compiler)，生成映射OMG IDL接口的.java文件，并启用以Java编程语言编写的使用CORBA功能的应用程序的.java文件。IDL意即接口定义语言(Interface Definition Language)。</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/orbd.html" target="_blank" rel="noopener">orbd</a></td>
-<td align="left">对象请求代理守护进程(Object Request Broker Daemon)，提供从客户端查找和调用CORBA环境服务端上的持久化对象的功能。使用ORBD代替瞬态命名服务tnameserv。ORBD包括瞬态命名服务和持久命名服务。ORBD工具集成了服务器管理器，互操作命名服务和引导名称服务器的功能。当客户端想进行服务器时定位，注册和激活功能时，可以与servertool一起使用。</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/servertool.html" target="_blank" rel="noopener">servertool</a></td>
-<td align="left">为应用程序注册，注销，启动和关闭服务器提供易用的接口</td>
-</tr>
-</tbody></table>
-<h2 id="1-6-Java-发布工具-javapackager-pack200-unpack200"><a href="#1-6-Java-发布工具-javapackager-pack200-unpack200" class="headerlink" title="1.6 Java 发布工具 (javapackager, pack200, unpack200)"></a>1.6 Java 发布工具 (javapackager, pack200, unpack200)</h2><table>
-<thead>
-<tr>
-<th>工具</th>
-<th align="left">简述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/javapackager.html" target="_blank" rel="noopener">javapackager</a></td>
-<td align="left">打包、签名Java和JavaFX应用程序</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/pack200.html" target="_blank" rel="noopener">pack200</a></td>
-<td align="left">使用Java gzip压缩器将JAR文件转换为压缩的pack200文件。压缩的压缩文件是高度压缩的JAR，可以直接部署，节省带宽并减少下载时间。</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/unpack200.html" target="_blank" rel="noopener">unpack200</a></td>
-<td align="left">将pack200生成的打包文件解压提取为JAR文件</td>
-</tr>
-</tbody></table>
-<h2 id="1-7-Java-Web-启动工具-javaws"><a href="#1-7-Java-Web-启动工具-javaws" class="headerlink" title="1.7 Java Web 启动工具 (javaws)"></a>1.7 Java Web 启动工具 (javaws)</h2><table>
-<thead>
-<tr>
-<th>工具</th>
-<th align="left">简述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/javaws.html" target="_blank" rel="noopener">javaws</a></td>
-<td align="left">启动Java Web Start并设置各种选项的工具</td>
-</tr>
-</tbody></table>
-<h2 id="1-8-故障排查，分析，监控和管理-jcmd-jconsole-jmc-jvisualvm"><a href="#1-8-故障排查，分析，监控和管理-jcmd-jconsole-jmc-jvisualvm" class="headerlink" title="1.8 故障排查，分析，监控和管理 (jcmd, jconsole, jmc, jvisualvm)"></a>1.8 故障排查，分析，监控和管理 (jcmd, jconsole, jmc, jvisualvm)</h2><table>
-<thead>
-<tr>
-<th>工具</th>
-<th align="left">简述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jcmd.html" target="_blank" rel="noopener">jcmd</a></td>
-<td align="left">JVM诊断命令工具，将诊断命令请求发送到正在运行的Java虚拟机。</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jconsole.html" target="_blank" rel="noopener">jconsole</a></td>
-<td align="left">用于监控Java虚拟机的使用JMX规范的图形工具。它可以监控本地和远程JVM。它还可以监控和管理应用程序。</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jmc.html" target="_blank" rel="noopener">jmc</a></td>
-<td align="left">Java任务控制客户端（JMC，Java Mission Control），包含用于监控和管理Java应用程序的工具，而不会引入与这些工具相关联的性能开销。开发者可以使用jmc命令来<a href="https://docs.oracle.com/javacomponents/jmc-5-5/jmc-user-guide/toc.htm" target="_blank" rel="noopener">创建JMC工具</a>。</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jconsole.html" target="_blank" rel="noopener">jvisualvm</a></td>
-<td align="left">一种图形化工具，可在Java虚拟机中运行时提供有关基于Java技术的应用程序（Java应用程序）的详细信息。 Java VisualVM提供内存和CPU分析，堆转储分析，内存泄漏检测，MBean访问和垃圾收集。</td>
-</tr>
-</tbody></table>
-<h2 id="1-9-WebService工具-schemagen-wsgen-wsimport-xjc"><a href="#1-9-WebService工具-schemagen-wsgen-wsimport-xjc" class="headerlink" title="1.9 WebService工具 (schemagen, wsgen, wsimport, xjc)"></a>1.9 WebService工具 (schemagen, wsgen, wsimport, xjc)</h2><table>
-<thead>
-<tr>
-<th>工具</th>
-<th align="left">简述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/schemagen.html" target="_blank" rel="noopener">schemagen</a></td>
-<td align="left">用于XML绑定的Schema生成器，用于生成XML schema文件。</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/wsgen.html" target="_blank" rel="noopener">wsgen</a></td>
-<td align="left">XML Web Service 2.0的Java API，生成用于JAX-WS Web Service的JAX-WS便携式产物。</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/wsimport.html" target="_blank" rel="noopener">wsimport</a></td>
-<td align="left">XML Web Service 2.0的Java API，主要用于根据服务端发布的wsdl文件生成客户端</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/xjc.html" target="_blank" rel="noopener">xjc</a></td>
-<td align="left">主要用于根据XML schema文件生成对应的Java类。</td>
-</tr>
-</tbody></table>
-<h1 id="2-实验性工具"><a href="#2-实验性工具" class="headerlink" title="2. 实验性工具"></a>2. 实验性工具</h1><p>所谓的实验性工具，就是HotSpot JDK提供了，但是可能在之后的某个版本中突然就不可用了。通过<code>man</code>命令查看这些工具的详细介绍的时候，都会在第一行有<code>This command is experimental and unsupported.</code>这么一句。<strong>HotSpot JDK再三强调要谨慎使用，但是由于这些工具在Java性能调优方面作用太大，所以我们就谨慎的研究然后谨慎的使用吧。</strong></p>
-<h2 id="2-1-监控-jps-jstat-jstatd"><a href="#2-1-监控-jps-jstat-jstatd" class="headerlink" title="2.1 监控 (jps, jstat, jstatd)"></a>2.1 监控 (jps, jstat, jstatd)</h2><table>
-<thead>
-<tr>
-<th>工具</th>
-<th align="left">简述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jps.html" target="_blank" rel="noopener">jps</a></td>
-<td align="left">JVM进程状态工具(JVM Process Status Tool)，在目标系统上列出HotSpot Java虚拟机进程的描述信息</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jstat.html" target="_blank" rel="noopener">jstat</a></td>
-<td align="left">JVM统计监控工具(JVM Statistics Monitoring Tool)，根据参数指定的方式收集和记录指定的jvm进程的性能统计信息。</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jstatd.html" target="_blank" rel="noopener">jstatd</a></td>
-<td align="left">JVM jstat守护程序，启动一个RMI服务器应用程序，用于监视测试的HotSpot Java虚拟机的创建和终止，并提供一个界面，允许远程监控工具附加到在本地系统上运行的Java虚拟机。</td>
-</tr>
-</tbody></table>
-<h2 id="2-2-故障排查-jinfo-jhat-jmap-jsadebugd-jstack"><a href="#2-2-故障排查-jinfo-jhat-jmap-jsadebugd-jstack" class="headerlink" title="2.2 故障排查 (jinfo, jhat, jmap, jsadebugd, jstack)"></a>2.2 故障排查 (jinfo, jhat, jmap, jsadebugd, jstack)</h2><table>
-<thead>
-<tr>
-<th>工具</th>
-<th align="left">简述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jinfo.html" target="_blank" rel="noopener">jinfo</a></td>
-<td align="left">Java的配置信息工具(Java Configuration Information)，用于打印指定Java进程、核心文件或远程调试服务器的配置信息。</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jhat.html" target="_blank" rel="noopener">jhat</a></td>
-<td align="left">Java堆分析工具(Java Heap Analysis Tool)，用于分析Java堆内存中的对象信息。</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jmap.html" target="_blank" rel="noopener">jmap</a></td>
-<td align="left">Java内存映射工具(Java Memory Map)，主要用于打印指定Java进程、核心文件或远程调试服务器的共享对象内存映射或堆内存细节。</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jsadebugd.html" target="_blank" rel="noopener">jsadebugd</a></td>
-<td align="left">适用于Java的可维护性代理调试守护程序(Java Serviceability Agent Debug Daemon)，主要用于附加到指定的Java进程、核心文件，或充当一个调试服务器。</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jstack.html" target="_blank" rel="noopener">jstack</a></td>
-<td align="left">Java的堆栈跟踪工具，主要用于打印指定Java进程、核心文件或远程调试服务器的Java线程的堆栈跟踪信息。</td>
-</tr>
-</tbody></table>
-<h2 id="2-3-脚本工具-jjs-jrunscript"><a href="#2-3-脚本工具-jjs-jrunscript" class="headerlink" title="2.3 脚本工具 (jjs, jrunscript)"></a>2.3 脚本工具 (jjs, jrunscript)</h2><table>
-<thead>
-<tr>
-<th>工具</th>
-<th align="left">简述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jjs.html" target="_blank" rel="noopener">jjs</a></td>
-<td align="left">对Nashorn引擎的调用。Nashorn是基于Java实现一个轻量级高性能的JavaScript运行环境。</td>
-</tr>
-<tr>
-<td><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jrunscript.html" target="_blank" rel="noopener">jrunscript</a></td>
-<td align="left">Java命令行脚本外壳工具(command line script shell)，主要用于解释执行javascript、groovy、ruby等脚本语言。</td>
-</tr>
-</tbody></table>
+<h2 id="1-标准工具"><a href="#1-标准工具" class="headerlink" title="1. 标准工具"></a>1. 标准工具</h2><p>这些工具都是 JDK 提供的，通常都是长期支持的工具，JDK 承诺这些工具比较好用。不同系统、不同版本之间可能会有差异，但是不会突然就有一个工具消失。</p>
+<h3 id="1-1-基础-appletviewer-extcheck-jar-java-javac-javadoc-javah-javap-jdb-jdeps"><a href="#1-1-基础-appletviewer-extcheck-jar-java-javac-javadoc-javah-javap-jdb-jdeps" class="headerlink" title="1.1 基础 (appletviewer, extcheck, jar, java, javac, javadoc, javah, javap, jdb, jdeps)"></a>1.1 基础 (appletviewer, extcheck, jar, java, javac, javadoc, javah, javap, jdb, jdeps)</h3><ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/appletviewer.html" target="_blank" rel="noopener">appletviewer</a>：在没有 web 浏览器的情况下运行和调试 applet</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/extcheck.html" target="_blank" rel="noopener">extcheck</a>：检查 Jar 冲突的工具</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jar.html" target="_blank" rel="noopener">jar</a>：创建和管理 Jar 文件</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html" target="_blank" rel="noopener">java</a>：Java 运行工具，用于运行。class 字节码文件或。jar 文件</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/javac.html" target="_blank" rel="noopener">javac</a>：用于 Java 编程语言的编译器</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/javadoc.html" target="_blank" rel="noopener">javadoc</a>：API 文档生成器</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/javah.html" target="_blank" rel="noopener">javah</a>：C 头文件和 stub 函数生成器，用于编写 native 方法</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/javap.html" target="_blank" rel="noopener">javap</a>：类文件反汇编器，主要用于根据 Java 字节码文件反汇编为 Java 源代码文件</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jdb.html" target="_blank" rel="noopener">jdb</a>：Java 调试器 (Java Debugger)</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jdeps.html" target="_blank" rel="noopener">jdeps</a>：Java 类依赖性分析器</li>
+</ul>
+<h3 id="1-2-安全-keytool-jarsigner-policytool"><a href="#1-2-安全-keytool-jarsigner-policytool" class="headerlink" title="1.2 安全 (keytool, jarsigner, policytool)"></a>1.2 安全 (keytool, jarsigner, policytool)</h3><ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/keytool.html" target="_blank" rel="noopener">keytool</a>：管理密钥库和证书。主要用于获取或缓存 Kerberos 协议的票据授权票据。允许用户查看本地凭据缓存和密钥表中的条目（用于 Kerberos 议）。Kerberos 密钥表管理工具，允许用户管理存储于本地密钥表中的主要名称和服务密钥。</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jarsigner.html" target="_blank" rel="noopener">jarsigner</a>：生成并验证 JAR 签名</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/policytool.html" target="_blank" rel="noopener">policytool</a>：管理策略文件的 GUI 工具，用于管理用户策略文件 (.java.policy)</li>
+</ul>
+<h3 id="1-3-国际化-i18n-native2ascii"><a href="#1-3-国际化-i18n-native2ascii" class="headerlink" title="1.3 国际化/i18n (native2ascii)"></a>1.3 国际化/i18n (native2ascii)</h3><ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/native2ascii.html" target="_blank" rel="noopener">native2ascii</a>：本地编码到 ASCII 编码的转换器 (Native-to-ASCII Converter)，用于“任意受支持的字符编码”和与之对应的“ASCII 编码和（或）Unicode 转义”之间的相互转换。</li>
+</ul>
+<h3 id="1-4-远程方法调用-RMI-rmic-rmiregistry-rmid-serialver"><a href="#1-4-远程方法调用-RMI-rmic-rmiregistry-rmid-serialver" class="headerlink" title="1.4 远程方法调用/RMI (rmic, rmiregistry, rmid, serialver)"></a>1.4 远程方法调用/RMI (rmic, rmiregistry, rmid, serialver)</h3><ul>
+<li><p><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/rmic.html" target="_blank" rel="noopener">rmic</a>：Java RMI 编译器，为使用 JRMP 或 IIOP 协议的远程对象生成 stub、skeleton、和 tie 类，也用于生成 OMG IDL。</p>
+</li>
+<li><p><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/rmiregistry.html" target="_blank" rel="noopener">rmiregistry</a>：远程对象注册表服务，用于在当前主机的指定端口上创建并启动一个远程对象注册表。</p>
+</li>
+<li><p><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/rmid.html" target="_blank" rel="noopener">rmid</a>：启动激活系统守护进程，允许在虚拟机中注册或激活对象。</p>
+</li>
+<li><p><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/serialver.html" target="_blank" rel="noopener">serialver</a>：生成并返回指定类的序列化版本 ID</p>
+</li>
+</ul>
+<h3 id="1-5-Java-IDL-与-RMI-IIOP-tnameserv-idlj-orbd-servertool"><a href="#1-5-Java-IDL-与-RMI-IIOP-tnameserv-idlj-orbd-servertool" class="headerlink" title="1.5 Java IDL 与 RMI-IIOP (tnameserv, idlj, orbd, servertool)"></a>1.5 Java IDL 与 RMI-IIOP (tnameserv, idlj, orbd, servertool)</h3><ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/tnameserv.html" target="_blank" rel="noopener">tnameserv</a>：提供对命名服务的访问</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/idlj.html" target="_blank" rel="noopener">idlj</a>：IDL 转 Java 编译器 (IDL-to-Java Compiler)，生成映射 OMG IDL 接口的。java 文件，并启用以 Java 编程语言编写的使用 CORBA 功能的应用程序的。java 文件。IDL 意即接口定义语言 (Interface Definition Language)。</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/orbd.html" target="_blank" rel="noopener">orbd</a>：对象请求代理守护进程 (Object Request Broker Daemon)，提供从客户端查找和调用 CORBA 环境服务端上的持久化对象的功能。使用 ORBD 代替瞬态命名服务 tnameserv。ORBD 包括瞬态命名服务和持久命名服务。ORBD 工具集成了服务器管理器，互操作命名服务和引导名称服务器的功能。当客户端想进行服务器时定位，注册和激活功能时，可以与 servertool 一起使用。</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/servertool.html" target="_blank" rel="noopener">servertool</a>：为应用程序注册，注销，启动和关闭服务器提供易用的接口</li>
+</ul>
+<h3 id="1-6-Java-发布工具-javapackager-pack200-unpack200"><a href="#1-6-Java-发布工具-javapackager-pack200-unpack200" class="headerlink" title="1.6 Java 发布工具 (javapackager, pack200, unpack200)"></a>1.6 Java 发布工具 (javapackager, pack200, unpack200)</h3><ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/javapackager.html" target="_blank" rel="noopener">javapackager</a>：打包、签名 Java 和 JavaFX 应用程序</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/pack200.html" target="_blank" rel="noopener">pack200</a>：使用 Java gzip 压缩器将 JAR 文件转换为压缩的 pack200 文件。压缩的压缩文件是高度压缩的 JAR，可以直接部署，节省带宽并减少下载时间。</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/unpack200.html" target="_blank" rel="noopener">unpack200</a>：将 pack200 生成的打包文件解压提取为 JAR 文件</li>
+</ul>
+<h3 id="1-7-Java-Web-启动工具-javaws"><a href="#1-7-Java-Web-启动工具-javaws" class="headerlink" title="1.7 Java Web 启动工具 (javaws)"></a>1.7 Java Web 启动工具 (javaws)</h3><ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/javaws.html" target="_blank" rel="noopener">javaws</a>：启动 Java Web Start 并设置各种选项的工具</li>
+</ul>
+<h3 id="1-8-故障排查，分析，监控和管理-jcmd-jconsole-jmc-jvisualvm"><a href="#1-8-故障排查，分析，监控和管理-jcmd-jconsole-jmc-jvisualvm" class="headerlink" title="1.8 故障排查，分析，监控和管理 (jcmd, jconsole, jmc, jvisualvm)"></a>1.8 故障排查，分析，监控和管理 (jcmd, jconsole, jmc, jvisualvm)</h3><ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jcmd.html" target="_blank" rel="noopener">jcmd</a>：JVM 诊断命令工具，将诊断命令请求发送到正在运行的 Java 虚拟机。</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jconsole.html" target="_blank" rel="noopener">jconsole</a>：用于监控 Java 虚拟机的使用 JMX 规范的图形工具。它可以监控本地和远程 JVM。它还可以监控和管理应用程序。</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jmc.html" target="_blank" rel="noopener">jmc</a>：Java 任务控制客户端（JMC，Java Mission Control），包含用于监控和管理 Java 应用程序的工具，而不会引入与这些工具相关联的性能开销。开发者可以使用 jmc 命令来 <a href="https://docs.oracle.com/javacomponents/jmc-5-5/jmc-user-guide/toc.htm" target="_blank" rel="noopener">创建 JMC 工具</a>。</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jconsole.html" target="_blank" rel="noopener">jvisualvm</a>：一种图形化工具，可在 Java 虚拟机中运行时提供有关基于 Java 技术的应用程序（Java 应用程序）的详细信息。 Java VisualVM 提供内存和 CPU 分析，堆转储分析，内存泄漏检测，MBean 访问和垃圾收集。</li>
+</ul>
+<h3 id="1-9-WebService-工具-schemagen-wsgen-wsimport-xjc"><a href="#1-9-WebService-工具-schemagen-wsgen-wsimport-xjc" class="headerlink" title="1.9 WebService 工具 (schemagen, wsgen, wsimport, xjc)"></a>1.9 WebService 工具 (schemagen, wsgen, wsimport, xjc)</h3><ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/schemagen.html" target="_blank" rel="noopener">schemagen</a>：用于 XML 绑定的 Schema 生成器，用于生成 XML schema 文件。</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/wsgen.html" target="_blank" rel="noopener">wsgen</a>：XML Web Service 2.0 的 Java API，生成用于 JAX-WS Web Service 的 JAX-WS 便携式产物。</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/wsimport.html" target="_blank" rel="noopener">wsimport</a>：XML Web Service 2.0 的 Java API，主要用于根据服务端发布的 wsdl 文件生成客户端</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/xjc.html" target="_blank" rel="noopener">xjc</a>：主要用于根据 XML schema 文件生成对应的 Java 类。</li>
+</ul>
+<h2 id="2-实验性工具"><a href="#2-实验性工具" class="headerlink" title="2. 实验性工具"></a>2. 实验性工具</h2><p>所谓的实验性工具，就是 HotSpot JDK 提供了，但是可能在之后的某个版本中突然就不可用了。通过<code>man</code>命令查看这些工具的详细介绍的时候，都会在第一行有<code>This command is experimental and unsupported.</code>这么一句。<strong>HotSpot JDK 再三强调要谨慎使用，但是由于这些工具在 Java 性能调优方面作用太大，所以我们就谨慎的研究然后谨慎的使用吧。</strong></p>
+<h3 id="2-1-监控-jps-jstat-jstatd"><a href="#2-1-监控-jps-jstat-jstatd" class="headerlink" title="2.1 监控 (jps, jstat, jstatd)"></a>2.1 监控 (jps, jstat, jstatd)</h3><ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jps.html" target="_blank" rel="noopener">jps</a>：JVM 进程状态工具 (JVM Process Status Tool)，在目标系统上列出 HotSpot Java 虚拟机进程的描述信息</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jstat.html" target="_blank" rel="noopener">jstat</a>：JVM 统计监控工具 (JVM Statistics Monitoring Tool)，根据参数指定的方式收集和记录指定的 jvm 进程的性能统计信息。</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jstatd.html" target="_blank" rel="noopener">jstatd</a>：JVM jstat 守护程序，启动一个 RMI 服务器应用程序，用于监视测试的 HotSpot Java 虚拟机的创建和终止，并提供一个界面，允许远程监控工具附加到在本地系统上运行的 Java 虚拟机。</li>
+</ul>
+<h3 id="2-2-故障排查-jinfo-jhat-jmap-jsadebugd-jstack"><a href="#2-2-故障排查-jinfo-jhat-jmap-jsadebugd-jstack" class="headerlink" title="2.2 故障排查 (jinfo, jhat, jmap, jsadebugd, jstack)"></a>2.2 故障排查 (jinfo, jhat, jmap, jsadebugd, jstack)</h3><ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jinfo.html" target="_blank" rel="noopener">jinfo</a>：Java 的配置信息工具 (Java Configuration Information)，用于打印指定 Java 进程、核心文件或远程调试服务器的配置信息。</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jhat.html" target="_blank" rel="noopener">jhat</a>：Java 堆分析工具 (Java Heap Analysis Tool)，用于分析 Java 堆内存中的对象信息。</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jmap.html" target="_blank" rel="noopener">jmap</a>：Java 内存映射工具 (Java Memory Map)，主要用于打印指定 Java 进程、核心文件或远程调试服务器的共享对象内存映射或堆内存细节。</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jsadebugd.html" target="_blank" rel="noopener">jsadebugd</a>：适用于 Java 的可维护性代理调试守护程序 (Java Serviceability Agent Debug Daemon)，主要用于附加到指定的 Java 进程、核心文件，或充当一个调试服务器。</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jstack.html" target="_blank" rel="noopener">jstack</a>：Java 的堆栈跟踪工具，主要用于打印指定 Java 进程、核心文件或远程调试服务器的 Java 线程的堆栈跟踪信息。</li>
+</ul>
+<h3 id="2-3-脚本工具-jjs-jrunscript"><a href="#2-3-脚本工具-jjs-jrunscript" class="headerlink" title="2.3 脚本工具 (jjs, jrunscript)"></a>2.3 脚本工具 (jjs, jrunscript)</h3><ul>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jjs.html" target="_blank" rel="noopener">jjs</a>：对 Nashorn 引擎的调用。Nashorn 是基于 Java 实现一个轻量级高性能的 JavaScript 运行环境。</li>
+<li><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jrunscript.html" target="_blank" rel="noopener">jrunscript</a>：Java 命令行脚本外壳工具 (command line script shell)，主要用于解释执行 javascript、groovy、ruby 等脚本语言。</li>
+</ul>
 <hr>
-<p>个人主页: <a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文: <a href="https://www.howardliu.cn/java/jdk-tools-and-utilities/">JDK 工具一览</a><br>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN博文: <a href="http://blog.csdn.net/liuxinghao/article/details/70805900" target="_blank" rel="noopener">JDK 工具一览</a></p>
+<p>你好，我是看山，10 年老猿，开源贡献者。游于码界，戏享人生。关注公众号：<a href="http://static.howardliu.cn/about/kanshanshuo.png" target="_blank" rel="noopener">看山的小屋</a>，领取学习资料。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/java/jdk-tools-and-utilities/">JDK 工具一览</a><br>CSDN 主页：<a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN 博文：<a href="http://blog.csdn.net/liuxinghao/article/details/70805900" target="_blank" rel="noopener">JDK 工具一览</a></p>
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
 
         </div>
         
@@ -450,14 +256,14 @@
 <div class="sidebar">
     <div class="well">
         <h2>标签云</h2>
-        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/网络，概念，http/" style="font-size: 15px;">网络，概念，http</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jdk8/" style="font-size: 15px;">jdk8</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/网络，概念，http/" style="font-size: 15px;">网络，概念，http</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Date/" style="font-size: 15px;">Date</a> <a href="/tags/Time/" style="font-size: 15px;">Time</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/jdk8/" style="font-size: 15px;">jdk8</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a>
     </div>
 </div>
 
 <div class="sidebar">
     <div class="well">
         <h2>归档</h2>
-        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
     </div>
 </div>
 
@@ -465,7 +271,7 @@
 <div class="sidebar ">
     <div class="well">
         <h2>最新文章</h2>
-        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/lists-book-recommendations-2021/">程序员进阶书单2021版</a></li><li class="post-list-item"><a class="post-list-link" href="/geek-talk-20210523/">Geek 青年说北京沙龙分享</a></li><li class="post-list-item"><a class="post-list-link" href="/java-util-optional/">一文掌握 Java8 的 Optional 的 6 种操作</a></li><li class="post-list-item"><a class="post-list-link" href="/java-stream-collectors/">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a></li><li class="post-list-item"><a class="post-list-link" href="/longest-substring-without-repeating-character/">面试真题：无重复字符的最长子串</a></li></ul>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/java-date-and-time-intro/">Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API</a></li><li class="post-list-item"><a class="post-list-link" href="/lists-book-recommendations-2021/">程序员进阶书单2021版</a></li><li class="post-list-item"><a class="post-list-link" href="/geek-talk-20210523/">Geek 青年说北京沙龙分享</a></li><li class="post-list-item"><a class="post-list-link" href="/java-util-optional/">一文掌握 Java8 的 Optional 的 6 种操作</a></li><li class="post-list-item"><a class="post-list-link" href="/java-stream-collectors/">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a></li></ul>
     </div>
 </div>
 

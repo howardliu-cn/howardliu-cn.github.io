@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="本文作为这个系列的第一篇，扒一扒 Date 和 Calendar 存在的问题，说说 Java8 提供的时间库是怎么解决这些问题的。后续再说一下 Java8 中 java.time 包中的一些核心类，例如 LocalDate、LocalTime、LocalDateTime、ZonedDateTime、Period、Duration。">
+<meta name="keywords" content="Java8,Date,Calendar,LocalDate,LocalTime,LocalDateTime,ZonedDateTime,Period,Duration">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API">
+<meta property="og:url" content="https://www.howardliu.cn/java-date-and-time-intro/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="本文作为这个系列的第一篇，扒一扒 Date 和 Calendar 存在的问题，说说 Java8 提供的时间库是怎么解决这些问题的。后续再说一下 Java8 中 java.time 包中的一些核心类，例如 LocalDate、LocalTime、LocalDateTime、ZonedDateTime、Period、Duration。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://static.howardliu.cn/cover/strawberries-6165597_1920.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-06-15T15:03:23.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API">
+<meta name="twitter:description" content="本文作为这个系列的第一篇，扒一扒 Date 和 Calendar 存在的问题，说说 Java8 提供的时间库是怎么解决这些问题的。后续再说一下 Java8 中 java.time 包中的一些核心类，例如 LocalDate、LocalTime、LocalDateTime、ZonedDateTime、Period、Duration。">
+<meta name="twitter:image" content="http://static.howardliu.cn/cover/strawberries-6165597_1920.jpg">
+
+<meta name="keywords" content="Java8,Date,Calendar,LocalDate,LocalTime,LocalDateTime,ZonedDateTime,Period,Duration">
+
+
+<meta name="description" content="本文作为这个系列的第一篇，扒一扒 Date 和 Calendar 存在的问题，说说 Java8 提供的时间库是怎么解决这些问题的。后续再说一下 Java8 中 java.time 包中的一些核心类，例如 LocalDate、LocalTime、LocalDateTime、ZonedDateTime、">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/java-date-and-time-intro/">Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-06-15</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/java-date-and-time-intro/" class="leancloud_visitors" data-flag-title="Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#老时间-API-存在的问题"><span class="toc-text">老时间 API 存在的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LocalDate、LocalTime、LocalDateTime"><span class="toc-text">LocalDate、LocalTime、LocalDateTime</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LocalDate"><span class="toc-text">LocalDate</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LocalTime"><span class="toc-text">LocalTime</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LocalDateTime"><span class="toc-text">LocalDateTime</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ZonedDateTime"><span class="toc-text">ZonedDateTime</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Period、Duration"><span class="toc-text">Period、Duration</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Period"><span class="toc-text">Period</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Duration"><span class="toc-text">Duration</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#从老时间-API-创建"><span class="toc-text">从老时间 API 创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#时间格式化"><span class="toc-text">时间格式化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-text">参考</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="http://static.howardliu.cn/cover/strawberries-6165597_1920.jpg" alt="Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API"></p>
+<blockquote>
+<p>该图片由<a href="https://pixabay.com/zh/users/onderortel-8618939/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6165597" target="_blank" rel="noopener">Önder Örtel</a>在<a href="https://pixabay.com/zh/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6165597" target="_blank" rel="noopener">Pixabay</a>上发布</p>
+</blockquote>
+<p>你好，我是看山。</p>
+<p>年龄大的 Java 程序员都有体会，Java8 之前，Java 提供了一组时间类：<code>java.util.Date</code>、<code>java.util.Calendar</code>及其子类和工具类等。功能比较全面，最大的缺点是难用。所以很多团队直接放弃原生时间类，使用第三方的时间类库。后来，Java8 吸收了 joda-time 的优秀设计，提供了一组新的时间处理 API<code>java.time.</code>。</p>
+<p>本文作为这个系列的第一篇，扒一扒<code>Date</code>和<code>Calendar</code>存在的问题，说说 Java8 提供的时间库是怎么解决这些问题的。后续再说一下 Java8 中<code>java.time.</code>包中的一些核心类，例如<code>LocalDate</code>、<code>LocalTime</code>、<code>LocalDateTime</code>、<code>ZonedDateTime</code>、<code>Period</code>、<code>Duration</code>。</p>
+<a id="more"></a>
+
+<h2 id="老时间-API-存在的问题"><a href="#老时间-API-存在的问题" class="headerlink" title="老时间 API 存在的问题"></a>老时间 API 存在的问题</h2><ol>
+<li>线程安全性：老的时间 API 是非线程安全的，而我们的代码都是运行在并发环境下，这样就不得不处理难以调试的并发问题，而且还需要额外的代码处理线程安全。一不小心，就会碰到一些比较诡异的错误，本地还不容易复现，比如定义了一个公用的<code>SimpleDateFormt</code>去操作时间，偶尔并发时会出错，只能通过迂回的办法实现（比如借助<code>ThreadLocal</code>）。在 Java8 中引入的新时间 API 是不可变对象，天然保证了线程安全。</li>
+<li>API 设计和可理解性：老的时间 API 在这设计上没有一致的模型，而且日常操作功能不全。而且有一些比较让人诟病的设计，比如<code>Date</code>类的构造方法<code>public Date(int year, int month, int date)</code>，其中<code>month</code>字段取值是<code>0-11</code>，也就是按照计算机的 0 作为第一个数，但是<code>day</code>没有这种情况，取值是<code>1-31</code>，很容易搞错。新 API 以 ISO 为中心，遵循日期、时间、持续时间、时间间隔等一致的域模型，而且为时间 API 增加很多实用的工具方法。</li>
+<li>时区处理：老的时间 API 在处理时区逻辑时比较繁琐，但是在新的 API 中，只需要通过<code>Local*</code>或<code>Zoned*</code>等类处理时区即可。</li>
+</ol>
+<p>下面就开始实际上手 Java8 的时间 API 了。</p>
+<h2 id="LocalDate、LocalTime、LocalDateTime"><a href="#LocalDate、LocalTime、LocalDateTime" class="headerlink" title="LocalDate、LocalTime、LocalDateTime"></a>LocalDate、LocalTime、LocalDateTime</h2><p>这三个是最常用的几个时间类了，根据名字可以知道，这三个类是默认使用当前机器上的时区作为参考系的时间对象。也就是说，在不需要显示指定时区时，我们就可以使用这几个类。</p>
+<h3 id="LocalDate"><a href="#LocalDate" class="headerlink" title="LocalDate"></a>LocalDate</h3><p><code>LocalDate</code>是 ISO 格式（yyyy-MM-dd）的日期，没有时分秒的时间数据。我们可以用它表示生日、放假等只关心日期的数据。通过<code>now</code>方法创建当前日期实例：</p>
+<pre><code class="java">LocalDate localDate = LocalDate.now();</code></pre>
+<p>这里是使用机器时间创建的。</p>
+<p>我们还可以使用<code>of</code>方法或<code>parse</code>方法获取指定日期的<code>LocalDate</code>实例，比如，我们想要时间为 2021 年 6 月 11 号：</p>
+<pre><code class="java">LocalDate.of(2021, 6, 11);
+LocalDate.parse(&quot;2021-06-11&quot;);</code></pre>
+<p><code>LocalDate</code>还提供了各种实用方法来获取时间信息，接下来快速浏览一下这些 API 方法。</p>
+<ol>
+<li>获取明天的日期，即当前日期加一天：</li>
+</ol>
+<pre><code class="java">LocalDate tomorrow = LocalDate.now().plusDays(1);</code></pre>
+<ol start="2">
+<li>获取上个月的今天，即当前日期并减去一个月（我们可以使用枚举单位操作数据）：</li>
+</ol>
+<pre><code class="java">LocalDate previousMonthSameDay = LocalDate.now().minus(1, ChronoUnit.MONTHS);`</code></pre>
+<ol start="3">
+<li>解析日期“2021-06-11”，并获取周几（结果<code>DayOfWeek</code>是一个枚举类，设计很周到）：</li>
+</ol>
+<pre><code class="java">DayOfWeek friday = LocalDate.parse(&quot;2021-06-11&quot;).getDayOfWeek();</code></pre>
+<ol start="4">
+<li>解析日期“2021-06-11”，并获取几号：</li>
+</ol>
+<pre><code class="java">int eleven = LocalDate.parse(&quot;2021-06-11&quot;).getDayOfMonth();</code></pre>
+<ol start="5">
+<li>检查一个日期的年份是否是闰年：</li>
+</ol>
+<pre><code class="java">boolean leapYear = LocalDate.now().isLeapYear();</code></pre>
+<ol start="6">
+<li>判断一个日期是否在另外一个日期之前：</li>
+</ol>
+<pre><code class="java">boolean isBefore = LocalDate.parse(&quot;2021-06-11&quot;).isBefore(LocalDate.parse(&quot;2021-06-12&quot;));</code></pre>
+<ol start="7">
+<li>判断一个日期是否在另外一个日期之后：</li>
+</ol>
+<pre><code class="java">boolean isAfter = LocalDate.parse(&quot;2021-06-12&quot;).isAfter(LocalDate.parse(&quot;2021-06-11&quot;));</code></pre>
+<ol start="8">
+<li>获取给定日期的当天开始时间，比如给定“2021-06-11”，想要获取“2021-06-11T00:00”（也就是当天的 0 点时间）：</li>
+</ol>
+<pre><code class="java">LocalDateTime beginningOfDay = LocalDate.parse(&quot;2021-06-11&quot;).atStartOfDay();</code></pre>
+<ol start="9">
+<li>获取给定日期所在月份的的第一天，比如给定“2021-06-11”，想要获取“2021-06-01”：</li>
+</ol>
+<pre><code class="java">LocalDate firstDayOfMonth = LocalDate.parse(&quot;2021-06-11&quot;).with(TemporalAdjusters.firstDayOfMonth());</code></pre>
+<h3 id="LocalTime"><a href="#LocalTime" class="headerlink" title="LocalTime"></a>LocalTime</h3><p><code>LocalDate</code>是 ISO 格式（yyyy-MM-dd）的日期，没有时分秒的时间数据。我们可以用它表示生日、放假等只关心日期的数据。通过<code>now</code>方法创建当前日期实例：</p>
+<p><code>LocalTime</code>提供的是没有日期数据的时间，只有时分秒数据。这个类很多方法与<code>LocalDate</code>类似，所以我们快速过一下这些 API 方法。</p>
+<ol>
+<li>创建当前时间</li>
+</ol>
+<pre><code class="java">LocalTime now = LocalTime.now();</code></pre>
+<ol start="2">
+<li>解析给定的字符串时间，可以使用<code>of</code>和<code>parse</code>方法，比如下午 4:30：</li>
+</ol>
+<pre><code class="java">LocalTime sixty30 = LocalTime.parse(&quot;16:30&quot;);
+LocalTime sixty31 = LocalTime.of(16, 31);</code></pre>
+<ol start="3">
+<li>解析给定字符串时间，并获取一小时后的时间实例：</li>
+</ol>
+<pre><code class="java">LocalTime seventy30 = LocalTime.parse(&quot;16:30&quot;).plus(1, ChronoUnit.HOURS);</code></pre>
+<ol start="4">
+<li>获取给定字符串时间的小时数：</li>
+</ol>
+<pre><code class="java">int sixty = LocalTime.parse(&quot;16:30&quot;).getHour();</code></pre>
+<ol start="5">
+<li>判断一个时间是否在另外一个时间之前：</li>
+</ol>
+<pre><code class="java">boolean isBeforeTime = LocalTime.parse(&quot;16:30&quot;).isBefore(LocalTime.parse(&quot;17:30&quot;));</code></pre>
+<ol start="6">
+<li>判断一个时间是否在另外一个时间之后：</li>
+</ol>
+<pre><code class="java">boolean isAfterTime = LocalTime.parse(&quot;17:30&quot;).isAfter(LocalTime.parse(&quot;16:30&quot;));</code></pre>
+<ol start="7">
+<li>常用的时间常量：</li>
+</ol>
+<pre><code class="java">LocalTime.MIN;// 00:00
+LocalTime.NOON;// 12:00
+LocalTime.MAX;// 23:59:59.999999999
+LocalTime.MIDNIGHT;// 00:00</code></pre>
+<h3 id="LocalDateTime"><a href="#LocalDateTime" class="headerlink" title="LocalDateTime"></a>LocalDateTime</h3><p>顾名思义，<code>LocalDateTime</code>表示日期和时间的组合。有了前两个类做铺垫，这个类也是很类似的操作。</p>
+<ol>
+<li>创建当前时间</li>
+</ol>
+<pre><code class="java">LocalDateTime.now();</code></pre>
+<ol start="2">
+<li>解析给定的字符串时间，可以使用<code>of</code>和<code>parse</code>方法，比如 2021 年 6 月 11 日 16 点 30 分：</li>
+</ol>
+<pre><code class="java">LocalDateTime.of(2021, Month.JUNE, 11, 16, 30);
+LocalDateTime.parse(&quot;2021-06-11T16:30:00&quot;);// 注意这个时间格式，这种写法属于 UTC 时间格式，后续再开文说一下时间格式的话题。</code></pre>
+<p>其他与<code>LocalDate</code>和<code>LocalTime</code>类似的 API，比如<code>plusDays</code>、<code>MinsHours</code>、<code>getMonth</code>等。我们可以把<code>LocalDateTime</code>理解为<code>LocalDate</code>和<code>LocalTime</code>的合体。</p>
+<p><code>LocalDate</code>、<code>LocalTime</code>、<code>LocalDateTime</code>处理的都是当前系统所在时区的日期时间数据，有时候我们还需要处理特定时区的日期和时间，Java8 提供了<code>ZonedDateTime</code>，接下来我们说说这个类。</p>
+<h2 id="ZonedDateTime"><a href="#ZonedDateTime" class="headerlink" title="ZonedDateTime"></a>ZonedDateTime</h2><p><code>ZonedDateTime</code>的使用需要配合<code>ZoneId</code>，<code>ZoneId</code>表示不同区域的标识符，在<code>${JAVA_HOME}/lib/tzdb.dat</code>文件中存放了默认的区域标识符，如果没有特别定义，需要是文件中指定的数据才能获取到<code>ZoneId</code>实例。</p>
+<p>我们来创建我天朝的区域：<code>ZoneId zoneId = ZoneId.of(&quot;Asia/Shanghai&quot;);</code>。</p>
+<p>如果不知道有哪些区域，可以通过<code>Set&lt;String&gt; allZoneIds = ZoneId.getAvailableZoneIds();</code>获取，我当前 jdk 版本是 jdk1.8.0_202，一共有 599 个区域标识。</p>
+<p>我们对比我朝与漂亮国的时间，获取当前时间：</p>
+<pre><code class="java">ZonedDateTime.now();// 2021-06-11T17:49:53.400+08:00[Asia/Shanghai]
+ZonedDateTime.now(ZoneId.systemDefault());// 2021-06-11T17:49:53.400+08:00[Asia/Shanghai]
+ZonedDateTime.now(ZoneId.of(&quot;America/New_York&quot;));// 2021-06-11T05:49:53.400-04:00[America/New_York]</code></pre>
+<p>可以看到，<code>now</code>方法不传参数与使用当前时区参数结果一致，使用漂亮国时区时，在小时上有区别，但是两个时间，都是指当前时间。我们可以通过指定<code>ZoneId</code>获取不同时区的结果：</p>
+<pre><code class="java">final ZonedDateTime newyorkZonedDateTime = ZonedDateTime.now(ZoneId.of(&quot;America/New_York&quot;));// 2021-06-11T05:57:00.655-04:00[America/New_York]
+final ZonedDateTime shanghaiZonedDateTime = newyorkZonedDateTime.withZoneSameInstant(ZoneId.of(&quot;Asia/Shanghai&quot;));// 2021-06-11T17:57:00.655+08:00[Asia/Shanghai]
+final ZonedDateTime shanghaiZonedDateTime2 = ZonedDateTime.now(ZoneId.of(&quot;Asia/Shanghai&quot;));// 2021-06-11T17:58:34.221+08:00[Asia/Shanghai]</code></pre>
+<p>可以看到，我们直接获取北京时间与通过漂亮国时间转换为北京时间，结果是一样的。</p>
+<p>这里有一点需要提醒，这点是我朝程序员容易忽略的。那就是夏令时，我国没有夏令时，但是国外有些国家使用夏令时。所以在处理时间的时候，我们最好不要通过手动加减时区差来计算时间，这样很容易忽略夏令时。</p>
+<h2 id="Period、Duration"><a href="#Period、Duration" class="headerlink" title="Period、Duration"></a>Period、Duration</h2><p>这两个类都是表示时间量，也就是时间段。不过，<code>Period</code>类以年、月、日这种比较大的单位表示时间量，<code>Duration</code>类以秒、纳秒这种相对较小的单位表示时间量。</p>
+<h3 id="Period"><a href="#Period" class="headerlink" title="Period"></a>Period</h3><p><code>Period</code>表示的单位是年或月或日这种相对大一些的单位。我们可以用它来增减时间，或者计算两个时间间的时间差。</p>
+<p>比如，我们以 2021 年 6 月 15 日为基准，计算 5 天后的日期：</p>
+<pre><code class="java">LocalDate initialDate = LocalDate.parse(&quot;2021-06-15&quot;);
+LocalDate finalDate = initialDate.plus(Period.ofDays(5));// 2021-06-20</code></pre>
+<p><code>Period</code>提供了<code>ofYears</code>、<code>ofMonths</code>、<code>ofWeeks</code>、<code>ofDays</code>、<code>of</code>等方法，可以随情况处理时间。</p>
+<p>除了锚定的特定时间，<code>Period</code>还可以计算两个日期之间的时间差。比如：</p>
+<pre><code class="java">LocalDate initialDate = LocalDate.parse(&quot;2021-06-15&quot;);
+final LocalDate newDate = initialDate.plus(Period.of(1, 2, 3));
+final Period period = Period.between(initialDate, newDate);
+int years = period.getYears();// 1
+int months = period.getMonths();// 2
+int days = period.getDays();// 3</code></pre>
+<p>这里需要注意一下，这三个方法是两个单位同单位的差，不会进行换算。我们可以借助<code>ChronoUnit</code>实现单位换算状态下的结果：</p>
+<pre><code class="java">long allYears = ChronoUnit.YEARS.between(initialDate, newDate);// 1
+long allMonths = ChronoUnit.MONTHS.between(initialDate, newDate);// 14
+long allDays = ChronoUnit.DAYS.between(initialDate, newDate);// 429</code></pre>
+<p><code>ChronoUnit</code>是借助<code>Duration</code>实现的，所以最细粒度可以到纳秒。</p>
+<h3 id="Duration"><a href="#Duration" class="headerlink" title="Duration"></a>Duration</h3><p><code>Duration</code>可以表示的单位是天、小时、分、秒、毫秒、纳秒，其内部结果是通过秒、纳秒进行存储的，其他可表示的单位，都是通过这两个单位组合实现的。比如，一分钟等于 3600 秒，那内部存储就是 3600 秒 0 纳秒；1 毫秒等于 1000000 纳秒，内部存储就是 0 秒 1000000 纳秒。</p>
+<p><code>Duration</code>用法与<code>Period</code>类似。比如，我们给 21 点 03 分 15 秒加 30 秒：</p>
+<pre><code class="java">LocalTime initialTime = LocalTime.parse(&quot;21:02:15&quot;);
+LocalTime finalTime = initialTime.plus(Duration.ofSeconds(30));// 21:02:45</code></pre>
+<p><code>Duration</code>也可以计算两个时间之间的时间差，只是单位较小一些，比如：</p>
+<pre><code class="java">LocalTime initialTime = LocalTime.parse(&quot;21:02:15&quot;);
+LocalTime newTime = LocalTime.of(21, 02, 20);
+Duration duration = Duration.between(initialTime, newTime);
+long seconds = duration.getSeconds();// 5
+int nano = duration.getNano();// 0</code></pre>
+<p>同样的，我们可以借助<code>ChronoUnit</code>实现更多单位的时间差，这里不做赘述。</p>
+<h2 id="从老时间-API-创建"><a href="#从老时间-API-创建" class="headerlink" title="从老时间 API 创建"></a>从老时间 API 创建</h2><p>Java8 提供了<code>toInstant()</code>方法，可以将老时间 API 的<code>Date</code>和<code>Calendar</code>转换为新的对象：</p>
+<pre><code class="java">Date date = new Date();
+LocalDateTime localDateTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+Calendar calendar = GregorianCalendar.getInstance();
+LocalDateTime localDateTime1 = LocalDateTime.ofInstant(calendar.toInstant(), ZoneId.systemDefault());</code></pre>
+<h2 id="时间格式化"><a href="#时间格式化" class="headerlink" title="时间格式化"></a>时间格式化</h2><p>Java8 提供了易于使用的时间格式化 API，这里简单说下。比如：</p>
+<pre><code class="java">LocalDateTime localDateTime = LocalDateTime.of(2021, Month.JUNE, 15, 21, 23);
+String localDateString = localDateTime.format(DateTimeFormatter.ISO_DATE);// 2021-06-15</code></pre>
+<p>与老时间 API 一样，我们可以指定格式：</p>
+<pre><code class="java">localDateTime.format(DateTimeFormatter.ofPattern(&quot;yyyy/MM/dd&quot;));</code></pre>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>从 Java7 到 Java8，提供了很多特性，除了 Lambda 表达式，时间 API 绝对也是良心功能了。而且从发布到现在已经过去这么多年，我们还是要与时俱进，逐渐使用优秀的 API 替换老 API 了。如果还在用 Java7 或者 Java6，然后还想使用 Java8 这种时间 API，这里推荐两个第三方库：<code>threetenbp</code>和<code>joda-time</code>。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://github.com/eugenp/tutorials/tree/master/core-java-modules/core-java-8-datetime" target="_blank" rel="noopener">core-java-8-datetime</a></li>
+<li><a href="https://www.liaoxuefeng.com/wiki/1252599548343744/1303904694304801" target="_blank" rel="noopener">ZonedDateTime</a></li>
+</ul>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ol>
+<li><a href="https://www.howardliu.cn/java-date-and-time-intro/">Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API</a></li>
+<li>未完待续。..</li>
+</ol>
+<hr>
+<p>你好，我是看山，10 年老猿，开源贡献者。游于码界，戏享人生。关注公众号：<a href="http://static.howardliu.cn/about/kanshanshuo.png" target="_blank" rel="noopener">看山的小屋</a>，领取学习资料。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/java-date-and-time-intro/">Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API</a><br>CSDN 主页：<a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN 博文：<a href="https://blog.csdn.net/liuxinghao/article/details/117945803" target="_blank" rel="noopener">Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API</a></p>
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/Java/">Java</a>
+            
+            <a href="/tags/Date/">Date</a>
+            
+            <a href="/tags/Time/">Time</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/lists-book-recommendations-2021/">
+                <i class="icon-next">程序员进阶书单2021版</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/网络，概念，http/" style="font-size: 15px;">网络，概念，http</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Date/" style="font-size: 15px;">Date</a> <a href="/tags/Time/" style="font-size: 15px;">Time</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/jdk8/" style="font-size: 15px;">jdk8</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/java-date-and-time-intro/">Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API</a></li><li class="post-list-item"><a class="post-list-link" href="/lists-book-recommendations-2021/">程序员进阶书单2021版</a></li><li class="post-list-item"><a class="post-list-link" href="/geek-talk-20210523/">Geek 青年说北京沙龙分享</a></li><li class="post-list-item"><a class="post-list-link" href="/java-util-optional/">一文掌握 Java8 的 Optional 的 6 种操作</a></li><li class="post-list-item"><a class="post-list-link" href="/java-stream-collectors/">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a></li></ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2021</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
