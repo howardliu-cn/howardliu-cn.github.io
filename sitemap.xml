@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/the-introduction-of-http-status-codes/</loc>
+    
+    <lastmod>2021-06-19T06:33:05.242Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/sonarqube-jenkins-pipeline/</loc>
     
     <lastmod>2021-06-18T00:03:00.889Z</lastmod>
@@ -324,13 +331,6 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/the-introduction-of-http-status-codes/</loc>
-    
-    <lastmod>2020-08-25T07:45:31.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.howardliu.cn/singleton-pattern/</loc>
     
     <lastmod>2020-08-23T12:24:08.475Z</lastmod>
@@ -492,14 +492,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
+    <loc>https://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
+    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
