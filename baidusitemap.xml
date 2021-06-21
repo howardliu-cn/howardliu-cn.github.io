@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.howardliu.cn//the-eight-queens-puzzle/</loc>
+    <lastmod>2021-06-21</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/how-to-use-comment-in-java/</loc>
+    <lastmod>2021-06-21</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn//os/init-my-ubuntu/</loc>
+    <lastmod>2021-06-21</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/the-cost-to-change-phone/</loc>
+    <lastmod>2021-06-20</lastmod>
+  </url>  <url>
     <loc>https://www.howardliu.cn/the-introduction-of-http-status-codes/</loc>
     <lastmod>2021-06-19</lastmod>
   </url>  <url>
@@ -80,9 +92,6 @@
     <lastmod>2021-04-19</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/storm/trident-tutorial/</loc>
-    <lastmod>2021-04-19</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/os/init-my-ubuntu/</loc>
     <lastmod>2021-04-19</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
@@ -178,16 +187,16 @@
     <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
     <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
+    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/reprint-10-reasons-to-replace-your-jsps-with-freemarker-templates/</loc>
@@ -199,13 +208,13 @@
     <loc>https://www.howardliu.cn/hadoop-environment-cluster-setup/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
+    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>  <url>
     <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
@@ -235,14 +244,8 @@
     <loc>https://www.howardliu.cn/from-monolith-to-microservice/</loc>
     <lastmod>2020-03-08</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/the-cost-to-change-phone/</loc>
-    <lastmod>2020-02-23</lastmod>
-  </url>  <url>
     <loc>https://www.howardliu.cn/dont-let-irrational-thinking-ruin-your-lift/</loc>
     <lastmod>2020-02-23</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/how-to-use-comment-in-java/</loc>
-    <lastmod>2020-02-07</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/storm/storm-integration-with-kafka/</loc>
     <lastmod>2020-02-07</lastmod>
@@ -293,9 +296,6 @@
     <lastmod>2020-01-27</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/the-origin-of-matrix-multiplication/</loc>
-    <lastmod>2020-01-27</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/the-eight-queens-puzzle/</loc>
     <lastmod>2020-01-27</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/zookeeper/zookeeper-error-packet-lenX-is-out-of-range/</loc>
