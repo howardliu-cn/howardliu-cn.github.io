@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）">
+<meta name="keywords" content="java,JVM,ArrayList,volatile,CopyOnWriteArrayList,Collections.synchronizedList,线程安全">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）">
+<meta property="og:url" content="https://www.howardliu.cn/arraylist-is-not-thread-safe-2/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://static.howardliu.cn/cover/home-studios-5249651_1920.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/java/jmm.png">
+<meta property="og:image" content="http://static.howardliu.cn/java/arraylist-add.png">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-06-29T15:18:18.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）">
+<meta name="twitter:description" content="如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）">
+<meta name="twitter:image" content="http://static.howardliu.cn/cover/home-studios-5249651_1920.jpg">
+
+<meta name="keywords" content="java,JVM,ArrayList,volatile,CopyOnWriteArrayList,Collections.synchronizedList,线程安全">
+
+
+<meta name="description" content="如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/arraylist-is-not-thread-safe-2/">如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-06-29</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/arraylist-is-not-thread-safe-2/" class="leancloud_visitors" data-flag-title="如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#对比源码"><span class="toc-text">对比源码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#验证一下"><span class="toc-text">验证一下</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#换个角度想问题"><span class="toc-text">换个角度想问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="http://static.howardliu.cn/cover/home-studios-5249651_1920.jpg" alt="如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）"></p>
+<p>你好，我是看山。</p>
+<p>前面写过一篇文章 <a href="https://howardliu.cn/arraylist-is-not-thread-safe/" target="_blank" rel="noopener">《如果非要在多线程中使用 ArrayList 会发生什么？》</a>，有读者反馈，Java 11 代码已经修复，还会出现 null 元素。</p>
+<p>为了便于理解，当时只是通过代码执行顺序说明了异常原因。其实多线程中还会涉及 Java 内存模型，本文就从这方面说明一下。</p>
+<a id="more"></a>
+
+<h2 id="对比源码"><a href="#对比源码" class="headerlink" title="对比源码"></a>对比源码</h2><p>我们先来看看 Java 11 中，<code>add</code>方法做了什么调整。</p>
+<p>Java 8 中<code>add</code>方法的实现：</p>
+<pre><code class="java">public boolean add(E e) {
+    ensureCapacityInternal(size + 1);
+    elementData[size++] = e;
+    return true;
+}</code></pre>
+<p>Java 11 中<code>add</code>方法的实现：</p>
+<pre><code class="java">public boolean add(E e) {
+    modCount++;
+    add(e, elementData, size);
+    return true;
+}
+
+private void add(E e, Object[] elementData, int s) {
+    if (s == elementData.length)
+        elementData = grow();
+    elementData[s] = e;
+    size = s + 1;
+}</code></pre>
+<p>两段逻辑的差异在于数组下标是否确定：</p>
+<ul>
+<li><code>elementData[size++] = e;</code>，Java 8 中直接使用<code>size</code>定位并赋值，然后通过<code>size++</code>自增</li>
+<li><code>elementData[s] = e; size = s + 1;</code>，Java 11 借助临时变量<code>s</code>定位并赋值，然后通过<code>size = s + 1</code>给<code>size</code>赋新值</li>
+</ul>
+<p>Java 11 的优点在于，为数组指定元素赋值的时候，下标值是确定的。也就是说，只要进入<code>add(E e, Object[] elementData, int s)</code>方法中，就只会处理指定位置的数组元素。并且，<code>size</code>的值也是根据<code>s</code>增加。按照执行顺序推断，最终的结果可能会丢数，但是不会出现 null。（多个线程向同一个下标赋值，即<code>s</code>相等，那最终<code>size</code>也相等。）</p>
+<h2 id="验证一下"><a href="#验证一下" class="headerlink" title="验证一下"></a>验证一下</h2><p>让我们来验证下。</p>
+<pre><code class="java">package com.kuaishou.is.datamart;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+
+public class Main {
+    public static void main(String[] args) throws InterruptedException {
+        List&lt;String&gt; list = new ArrayList&lt;&gt;();
+        CountDownLatch latch = new CountDownLatch(1);
+        CountDownLatch waiting = new CountDownLatch(3);
+        Thread t1 = new Thread(() -&gt; {
+            try {
+                latch.await();
+                for (int i = 0; i &lt; 1000; i++) {
+                    list.add(&quot;1&quot;);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                waiting.countDown();
+            }
+        });
+        Thread t2 = new Thread(() -&gt; {
+            try {
+                latch.await();
+                for (int i = 0; i &lt; 1000; i++) {
+                    list.add(&quot;2&quot;);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                waiting.countDown();
+            }
+        });
+        Thread t2 = new Thread(() -&gt; {
+            try {
+                latch.await();
+                for (int i = 0; i &lt; 1000; i++) {
+                    list.add(&quot;2&quot;);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                waiting.countDown();
+            }
+        });
+        t1.start();
+        t2.start();
+        latch.countDown();
+        waiting.await();
+        System.out.println(list);
+    }
+}</code></pre>
+<p>在 Java 8 和 Java 11 中分别执行，果然，出现了<code>ArrayIndexOutOfBoundsException</code>和<code>null</code>的情况。如果没有出现，那就是姿势不对，需要多试几次或者多几个线程。</p>
+<h2 id="换个角度想问题"><a href="#换个角度想问题" class="headerlink" title="换个角度想问题"></a>换个角度想问题</h2><p>上一篇通过代码执行顺序解释了出现问题的原因，这次再看看 JMM 的原因。</p>
+<p><img src="http://static.howardliu.cn/java/jmm.png" alt="jmm"></p>
+<p>从上图我们可以看到，Java 为每个线程创建了一个本地内存区域，也就是说，代码运行过程中使用的数据，是线程本地缓存的数据。这份缓存的数据，会与主内存的数据做交换（更新主内存数据或更新本次缓存中的数据）。</p>
+<p>我们通过一个时序图看下为什么会出现 null（数组越界异常同理）：</p>
+<p><img src="http://static.howardliu.cn/java/arraylist-add.png" alt="多线程场景下 ArrayList#add 方法的时序图"></p>
+<p>从时序图我们可以看出现，在执行过程中，两个线程取的<code>size</code>值和<code>elementData</code>数组地址，大部分是操作自己本地缓存中的，执行一段时间后，会将本地缓存中的数据写回主内存数据，然后还会从主内存中读取最新数据更新本地缓存数据。异常就在这个交换过程中发生了。</p>
+<p>这个时候，可能有读者会想，是不是把<code>size</code>和<code>elementData</code>两个变量加上<code>volatile</code>就可以解决了。如果这样想，那你就想简单。线程安全是整个类设计实现时已经确定了，除了属性需要考虑多线程的影响，方法（主要是会修改属性元素的方法）也需要考虑。</p>
+<p><code>ArrayList</code>的定位是非线程安全的，其中的所有方法都没有考虑多线程下为共享资源加锁。即使<code>size</code>和<code>elementData</code>两个变量都是实时读写主内存，但是<code>add</code>和<code>grow</code>方法还是可能会覆盖另一个线程的数据。</p>
+<p>我们从<code>ArrayList</code>的<code>add</code>方法注释可以得知，方法拆分不是为了实现线程安全，而是为了执行效率和内存占用：</p>
+<blockquote>
+<p>This helper method split out from add(E) to keep method bytecode size under 35 (the -XX:MaxInlineSize default value), which helps when add(E) is called in a C1-compiled loop.</p>
+</blockquote>
+<p>所以说，在多线程场景下使用<code>ArrayList</code>，该出现的异常，一个也不会少。</p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ol>
+<li><a href="https://www.howardliu.cn/arraylist-is-not-thread-safe/">如果非要在多线程中使用 ArrayList 会发生什么？</a></li>
+<li><a href="https://www.howardliu.cn/arraylist-is-not-thread-safe-2/">如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）</a></li>
+</ol>
+<hr>
+<p>你好，我是看山，公众号：看山的小屋，10 年老猿，开源贡献者。游于码界，戏享人生。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/arraylist-is-not-thread-safe-2/">如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）</a><br>CSDN 主页：<a href="http://kanshan.csdn.net/" target="_blank" rel="noopener">http://kanshan.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.csdn.net/article/details/118346355" target="_blank" rel="noopener">如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）</a></p>
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/java/">java</a>
+            
+            <a href="/tags/ArrayList/">ArrayList</a>
+            
+            <a href="/tags/线程安全/">线程安全</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/java-date-to-localdate-and-localdatetime/">
+                <i class="icon-next">Java8 的时间库（2）：Date 与 LocalDate 或 LocalDateTime 互相转换</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://www.howardliu.cn/images/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络，概念，http/" style="font-size: 15px;">网络，概念，http</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/注释，开发，规范/" style="font-size: 15px;">注释，开发，规范</a> <a href="/tags/http-状态码/" style="font-size: 15px;">http 状态码</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Date/" style="font-size: 15px;">Date</a> <a href="/tags/Time/" style="font-size: 15px;">Time</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a> <a href="/tags/jdk8/" style="font-size: 15px;">jdk8</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a> <a href="/tags/中间件/" style="font-size: 15px;">中间件</a> <a href="/tags/消息队列/" style="font-size: 15px;">消息队列</a> <a href="/tags/选型/" style="font-size: 15px;">选型</a>
+    </div>
+</div>
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/arraylist-is-not-thread-safe-2/">如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）</a></li><li class="post-list-item"><a class="post-list-link" href="/java-date-to-localdate-and-localdatetime/">Java8 的时间库（2）：Date 与 LocalDate 或 LocalDateTime 互相转换</a></li><li class="post-list-item"><a class="post-list-link" href="/java-date-and-time-intro/">Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API</a></li><li class="post-list-item"><a class="post-list-link" href="/lists-book-recommendations-2021/">程序员进阶书单2021版</a></li><li class="post-list-item"><a class="post-list-link" href="/geek-talk-20210523/">Geek 青年说北京沙龙分享</a></li><li class="post-list-item"><a class="post-list-link" href="/java-util-optional/">一文掌握 Java8 的 Optional 的 6 种操作</a></li><li class="post-list-item"><a class="post-list-link" href="/java-stream-collectors/">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a></li><li class="post-list-item"><a class="post-list-link" href="/longest-substring-without-repeating-character/">面试真题：无重复字符的最长子串</a></li><li class="post-list-item"><a class="post-list-link" href="/spring-request-recorder/">Spring 实战：自定义 Filter 优雅获取请求参数和响应结果</a></li><li class="post-list-item"><a class="post-list-link" href="/spring-beanpostprocessor/">Spring 实战：通过 BeanPostProcessor 动态注入 ID 生成器</a></li></ul>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2021</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
