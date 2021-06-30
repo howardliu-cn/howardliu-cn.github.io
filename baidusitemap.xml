@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.howardliu.cn/the-introduction-of-http-status-codes/</loc>
+    <lastmod>2021-06-30</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/how-to-use-comment-in-java/</loc>
+    <lastmod>2021-06-30</lastmod>
+  </url>  <url>
     <loc>https://www.howardliu.cn/the-cost-to-change-phone/</loc>
     <lastmod>2021-06-29</lastmod>
   </url>  <url>
@@ -13,14 +19,8 @@
     <loc>https://www.howardliu.cn//the-eight-queens-puzzle/</loc>
     <lastmod>2021-06-21</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/how-to-use-comment-in-java/</loc>
-    <lastmod>2021-06-21</lastmod>
-  </url>  <url>
     <loc>https://www.howardliu.cn//os/init-my-ubuntu/</loc>
     <lastmod>2021-06-21</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/the-introduction-of-http-status-codes/</loc>
-    <lastmod>2021-06-19</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/sonarqube-jenkins-pipeline/</loc>
     <lastmod>2021-06-18</lastmod>
@@ -190,10 +190,10 @@
     <loc>https://www.howardliu.cn/deploy-ear-from-eos-to-weblogic/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
+    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
+    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
@@ -229,10 +229,10 @@
     <loc>https://www.howardliu.cn/storm/trident-state/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/logon-windows-automatic-uncheck-password/</loc>
+    <loc>https://www.howardliu.cn/disable-bps-in-eos-project/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/disable-bps-in-eos-project/</loc>
+    <loc>https://www.howardliu.cn/logon-windows-automatic-uncheck-password/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/java/gc-overhead-limit-exceeded/</loc>

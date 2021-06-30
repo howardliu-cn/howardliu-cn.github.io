@@ -276,9 +276,9 @@
       <category term="spring" scheme="https://www.howardliu.cn/categories/spring/"/>
     
     
-      <category term="BeanPostProcessor" scheme="https://www.howardliu.cn/tags/BeanPostProcessor/"/>
-    
       <category term="实战" scheme="https://www.howardliu.cn/tags/%E5%AE%9E%E6%88%98/"/>
+    
+      <category term="BeanPostProcessor" scheme="https://www.howardliu.cn/tags/BeanPostProcessor/"/>
     
   </entry>
   
