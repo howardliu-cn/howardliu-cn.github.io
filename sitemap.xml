@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/java-date-time-migrating-to-jsr310/</loc>
+    
+    <lastmod>2021-06-30T15:02:17.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/the-introduction-of-http-status-codes/</loc>
     
     <lastmod>2021-06-30T00:09:51.725Z</lastmod>
