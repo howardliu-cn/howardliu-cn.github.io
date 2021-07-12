@@ -23,7 +23,7 @@
     <published>2021-07-12T16:10:51.000Z</published>
     <updated>2021-07-12T16:10:51.000Z</updated>
     
-    <content type="html"><![CDATA[<p><img src="http://static.howardliu.cn/cover/bee-6354562_1920.jpg" alt="好书不是通过价格可以衡量的，比如这本"></p><p>你好，我是看山。</p><p>笔者主修Java，所以在<a href="https://www.howardliu.cn/lists-book-recommendations-2021/">《程序员进阶书单2021版》</a>主要推荐了一些Java工程师进阶必读书单。推荐原则是豆瓣的评分，结果，遗漏了一本开源书籍，甚是遗憾，今天补上。</p><a id="more"></a><p>推荐的书籍名为《凤凰架构》，开源地址是<a href="https://icyfenix.cn/" target="_blank" rel="noopener">https://icyfenix.cn/</a>。</p><p>看到凤凰，我们会想到凤凰涅槃、涅槃重生之类的词语。在作者看来，我们的系统不是一成不变的，只要在软件生命周期内，总会因为某些原因出现问题，或者是设计上的，或者是工程师代码问题，甚至最简单的网络问题。就像是凤凰浴火，经历考验，然后重生一般。</p><p>本书探讨的主题就是，如何构建一个可靠的分布式系统。这套方法论，可以让多人协作开发的系统，让一个大型的、分布式的系统，可靠的运行。这不是依赖团队成员个人能力，或者是研发质量管理就能够实现的，这是一个系统性的、架构层面的问题。想要实现这个目标，最终要依赖技术和架构。</p><p>全书主要分为5部分：</p><ul><li>演进中的架构：从历史演进过程，以全局视角，梳理微服务发展过程中出现的大量技术名词、概念。可以让我们了解技术的时代背景和探索过程。这里不得不推荐另外一本书《大型网站技术架构》，大家有时间可以看看。</li><li>架构师的视角：这一部分不是局限在某种架构的通用技巧，而是系统性地讲解做架构设计的时候，架构师都应该思考哪些问题、可以选择哪些主流的解决方案和行业标准做法，以及这些主流方案都有什么优缺点、会给架构设计带来什么影响，等等。这样一来，我们才可以把“架构设计”这样比较抽象的工作具体化、具象化。</li><li>分布式的基石：这一部分聚焦在分布式架构，探讨分布式带来的问题与应对策略。剖析分布式架构中出现的一系列问题，比如服务的注册发现、跟踪治理、负载均衡、故障隔离、认证授权、伸缩扩展、传输通讯、事务处理等，有哪些解决思路、方法和常见工具。</li><li>不可变基础设施：这一部分按照云原生时代“基础设施即代码”的新思路，深入理解基础设施不变性的目的、原理与实现途径，体会用代码和用基础设施，来解决分布式问题的差异，让我们更轻松的理解不可变基础设施的内涵，便于在实际工作中做运维、程序升级和部署等工作。</li><li>技术方法论：这一部分属于归纳总结的部分，前面都是从实践出发，让我们更加清楚如何是设计一个不断升级的系统。这一章讲述一些方法论，在我们有一定实践的基础上，构建可靠的理论体系，理论与实现相结合，相互螺旋上升。</li></ul><p>前面说了这么多，该介绍一下作者了，就是大名鼎鼎的周志明，<a href="https://book.douban.com/subject/34907497/" target="_blank" rel="noopener">《深入理解Java虚拟机》</a>作者。相信Java栈的开发者，即使没有读过这本书，也听过其名。就是这本书让笔者有爱有恨，爱的是提升了笔者对JVM的认识，恨的是提升了大家对JVM的认识。</p><p>再次附上开源地址<a href="https://icyfenix.cn/" target="_blank" rel="noopener">https://icyfenix.cn/</a>。</p><h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul><li><a href="https://www.howardliu.cn/lists-book-recommendations-2021/">程序员进阶书单2021版</a></li></ul><hr><p>你好，我是看山，公众号：看山的小屋，10 年老猿，开源贡献者。游于码界，戏享人生。</p><p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/about-the-fenix-project/"></a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/article/details/103794938" target="_blank" rel="noopener"></a></p><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
+    <content type="html"><![CDATA[<p><img src="http://static.howardliu.cn/cover/bee-6354562_1920.jpg" alt="好书不是通过价格可以衡量的，比如这本"></p><p>你好，我是看山。</p><p>笔者主修Java，所以在<a href="https://www.howardliu.cn/lists-book-recommendations-2021/">《程序员进阶书单2021版》</a>主要推荐了一些Java工程师进阶必读书单。推荐原则是豆瓣的评分，结果，遗漏了一本开源书籍，甚是遗憾，今天补上。</p><a id="more"></a><p>推荐的书籍名为《凤凰架构》，开源地址是<a href="https://icyfenix.cn/" target="_blank" rel="noopener">https://icyfenix.cn/</a>。</p><p>看到凤凰，我们会想到凤凰涅槃、涅槃重生之类的词语。在作者看来，我们的系统不是一成不变的，只要在软件生命周期内，总会因为某些原因出现问题，或者是设计上的，或者是工程师代码问题，甚至最简单的网络问题。就像是凤凰浴火，经历考验，然后重生一般。</p><p>本书探讨的主题就是，如何构建一个可靠的分布式系统。这套方法论，可以让多人协作开发的系统，让一个大型的、分布式的系统，可靠的运行。这不是依赖团队成员个人能力，或者是研发质量管理就能够实现的，这是一个系统性的、架构层面的问题。想要实现这个目标，最终要依赖技术和架构。</p><p>全书主要分为5部分：</p><ul><li>演进中的架构：从历史演进过程，以全局视角，梳理微服务发展过程中出现的大量技术名词、概念。可以让我们了解技术的时代背景和探索过程。这里不得不推荐另外一本书《大型网站技术架构》，大家有时间可以看看。</li><li>架构师的视角：这一部分不是局限在某种架构的通用技巧，而是系统性地讲解做架构设计的时候，架构师都应该思考哪些问题、可以选择哪些主流的解决方案和行业标准做法，以及这些主流方案都有什么优缺点、会给架构设计带来什么影响，等等。这样一来，我们才可以把“架构设计”这样比较抽象的工作具体化、具象化。</li><li>分布式的基石：这一部分聚焦在分布式架构，探讨分布式带来的问题与应对策略。剖析分布式架构中出现的一系列问题，比如服务的注册发现、跟踪治理、负载均衡、故障隔离、认证授权、伸缩扩展、传输通讯、事务处理等，有哪些解决思路、方法和常见工具。</li><li>不可变基础设施：这一部分按照云原生时代“基础设施即代码”的新思路，深入理解基础设施不变性的目的、原理与实现途径，体会用代码和用基础设施，来解决分布式问题的差异，让我们更轻松的理解不可变基础设施的内涵，便于在实际工作中做运维、程序升级和部署等工作。</li><li>技术方法论：这一部分属于归纳总结的部分，前面都是从实践出发，让我们更加清楚如何是设计一个不断升级的系统。这一章讲述一些方法论，在我们有一定实践的基础上，构建可靠的理论体系，理论与实现相结合，相互螺旋上升。</li></ul><p>前面说了这么多，该介绍一下作者了，就是大名鼎鼎的周志明，<a href="https://book.douban.com/subject/34907497/" target="_blank" rel="noopener">《深入理解Java虚拟机》</a>作者。相信Java栈的开发者，即使没有读过这本书，也听过其名。就是这本书让笔者有爱有恨，爱的是提升了笔者对JVM的认识，恨的是提升了大家对JVM的认识。</p><p>再次附上开源地址<a href="https://icyfenix.cn/" target="_blank" rel="noopener">https://icyfenix.cn/</a>。</p><h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul><li><a href="https://www.howardliu.cn/lists-book-recommendations-2021/">程序员进阶书单2021版</a></li></ul><hr><p>你好，我是看山，公众号：看山的小屋，10 年老猿，开源贡献者。游于码界，戏享人生。</p><p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/about-the-fenix-project/">好书不是通过价格可以衡量的，比如这本</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/article/details/103794938" target="_blank" rel="noopener">好书不是通过价格可以衡量的，比如这本</a></p><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
     
     <summary type="html">
     
@@ -249,9 +249,9 @@
     
       <category term="java" scheme="https://www.howardliu.cn/tags/java/"/>
     
-      <category term="jdk8" scheme="https://www.howardliu.cn/tags/jdk8/"/>
-    
       <category term="stream" scheme="https://www.howardliu.cn/tags/stream/"/>
+    
+      <category term="jdk8" scheme="https://www.howardliu.cn/tags/jdk8/"/>
     
       <category term="optional" scheme="https://www.howardliu.cn/tags/optional/"/>
     
@@ -278,9 +278,9 @@
     
       <category term="java" scheme="https://www.howardliu.cn/tags/java/"/>
     
-      <category term="stream" scheme="https://www.howardliu.cn/tags/stream/"/>
-    
       <category term="JDK8" scheme="https://www.howardliu.cn/tags/JDK8/"/>
+    
+      <category term="stream" scheme="https://www.howardliu.cn/tags/stream/"/>
     
       <category term="collectors" scheme="https://www.howardliu.cn/tags/collectors/"/>
     
