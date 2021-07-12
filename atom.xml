@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.howardliu.cn/"/>
-  <updated>2021-06-30T15:02:17.000Z</updated>
+  <updated>2021-07-12T16:10:51.000Z</updated>
   <id>https://www.howardliu.cn/</id>
   
   <author>
@@ -15,6 +15,60 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>好书不是通过价格可以衡量的，比如这本</title>
+    <link href="https://www.howardliu.cn/about-the-fenix-project/"/>
+    <id>https://www.howardliu.cn/about-the-fenix-project/</id>
+    <published>2021-07-12T16:10:51.000Z</published>
+    <updated>2021-07-12T16:10:51.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="http://static.howardliu.cn/cover/bee-6354562_1920.jpg" alt="好书不是通过价格可以衡量的，比如这本"></p><p>你好，我是看山。</p><p>笔者主修Java，所以在<a href="https://www.howardliu.cn/lists-book-recommendations-2021/">《程序员进阶书单2021版》</a>主要推荐了一些Java工程师进阶必读书单。推荐原则是豆瓣的评分，结果，遗漏了一本开源书籍，甚是遗憾，今天补上。</p><a id="more"></a><p>推荐的书籍名为《凤凰架构》，开源地址是<a href="https://icyfenix.cn/" target="_blank" rel="noopener">https://icyfenix.cn/</a>。</p><p>看到凤凰，我们会想到凤凰涅槃、涅槃重生之类的词语。在作者看来，我们的系统不是一成不变的，只要在软件生命周期内，总会因为某些原因出现问题，或者是设计上的，或者是工程师代码问题，甚至最简单的网络问题。就像是凤凰浴火，经历考验，然后重生一般。</p><p>本书探讨的主题就是，如何构建一个可靠的分布式系统。这套方法论，可以让多人协作开发的系统，让一个大型的、分布式的系统，可靠的运行。这不是依赖团队成员个人能力，或者是研发质量管理就能够实现的，这是一个系统性的、架构层面的问题。想要实现这个目标，最终要依赖技术和架构。</p><p>全书主要分为5部分：</p><ul><li>演进中的架构：从历史演进过程，以全局视角，梳理微服务发展过程中出现的大量技术名词、概念。可以让我们了解技术的时代背景和探索过程。这里不得不推荐另外一本书《大型网站技术架构》，大家有时间可以看看。</li><li>架构师的视角：这一部分不是局限在某种架构的通用技巧，而是系统性地讲解做架构设计的时候，架构师都应该思考哪些问题、可以选择哪些主流的解决方案和行业标准做法，以及这些主流方案都有什么优缺点、会给架构设计带来什么影响，等等。这样一来，我们才可以把“架构设计”这样比较抽象的工作具体化、具象化。</li><li>分布式的基石：这一部分聚焦在分布式架构，探讨分布式带来的问题与应对策略。剖析分布式架构中出现的一系列问题，比如服务的注册发现、跟踪治理、负载均衡、故障隔离、认证授权、伸缩扩展、传输通讯、事务处理等，有哪些解决思路、方法和常见工具。</li><li>不可变基础设施：这一部分按照云原生时代“基础设施即代码”的新思路，深入理解基础设施不变性的目的、原理与实现途径，体会用代码和用基础设施，来解决分布式问题的差异，让我们更轻松的理解不可变基础设施的内涵，便于在实际工作中做运维、程序升级和部署等工作。</li><li>技术方法论：这一部分属于归纳总结的部分，前面都是从实践出发，让我们更加清楚如何是设计一个不断升级的系统。这一章讲述一些方法论，在我们有一定实践的基础上，构建可靠的理论体系，理论与实现相结合，相互螺旋上升。</li></ul><p>前面说了这么多，该介绍一下作者了，就是大名鼎鼎的周志明，<a href="https://book.douban.com/subject/34907497/" target="_blank" rel="noopener">《深入理解Java虚拟机》</a>作者。相信Java栈的开发者，即使没有读过这本书，也听过其名。就是这本书让笔者有爱有恨，爱的是提升了笔者对JVM的认识，恨的是提升了大家对JVM的认识。</p><p>再次附上开源地址<a href="https://icyfenix.cn/" target="_blank" rel="noopener">https://icyfenix.cn/</a>。</p><h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul><li><a href="https://www.howardliu.cn/lists-book-recommendations-2021/">程序员进阶书单2021版</a></li></ul><hr><p>你好，我是看山，公众号：看山的小屋，10 年老猿，开源贡献者。游于码界，戏享人生。</p><p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/about-the-fenix-project/"></a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/article/details/103794938" target="_blank" rel="noopener"></a></p><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;img src=&quot;http://static.howardliu.cn/cover/bee-6354562_1920.jpg&quot; alt=&quot;好书不是通过价格可以衡量的，比如这本&quot;&gt;&lt;/p&gt;
+&lt;p&gt;你好，我是看山。&lt;/p&gt;
+&lt;p&gt;笔者主修Java，所以在&lt;a href=&quot;https://www.howardliu.cn/lists-book-recommendations-2021/&quot;&gt;《程序员进阶书单2021版》&lt;/a&gt;主要推荐了一些Java工程师进阶必读书单。推荐原则是豆瓣的评分，结果，遗漏了一本开源书籍，甚是遗憾，今天补上。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="闲聊" scheme="https://www.howardliu.cn/categories/%E9%97%B2%E8%81%8A/"/>
+    
+    
+      <category term="闲聊" scheme="https://www.howardliu.cn/tags/%E9%97%B2%E8%81%8A/"/>
+    
+      <category term="书单" scheme="https://www.howardliu.cn/tags/%E4%B9%A6%E5%8D%95/"/>
+    
+      <category term="技术成长" scheme="https://www.howardliu.cn/tags/%E6%8A%80%E6%9C%AF%E6%88%90%E9%95%BF/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>想躺平不是错</title>
+    <link href="https://www.howardliu.cn/relax-and-run/"/>
+    <id>https://www.howardliu.cn/relax-and-run/</id>
+    <published>2021-07-09T00:16:44.000Z</published>
+    <updated>2021-07-09T00:16:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="http://static.howardliu.cn/cover/caterpillar-6387049_1920.jpg" alt="想躺平不是错"></p><blockquote><p>该图片由<a href="https://pixabay.com/zh/users/jggrz-7998824/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6387049" target="_blank" rel="noopener">jggrz</a>在<a href="https://pixabay.com/zh/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6387049" target="_blank" rel="noopener">Pixabay</a>上发布</p></blockquote><p>你好，我是看山。</p><p>今天聊聊这段时间比较火的一个网络词：躺平。据说这个词还被某些网站屏蔽了，不知道这篇文章会不会也被屏蔽掉。</p><a id="more"></a><p>维基百科为<code>躺平</code>下了一个比较完善的定义：</p><blockquote><p>躺平或躺平主义是 2021 年开始在中华人民共和国流行的网络词语。指这一时期的年轻人在国内经济下滑、社会问题激化的大背景下，出于对现实环境的失望而做出的“与其跟随社会期望坚持奋斗，不如选择‘躺平’，无欲无求”的处事态度。被视为是对抗社会“内卷化”的一种方式。其具体内涵包括“不买房、不买车、不结婚、不生娃、不消费”及“维持最低生存标准，拒绝成为他人赚钱的机器和被剥削的奴隶”，是“低欲望青年”对于阶级固化的低移动性社会、中产阶级萎缩、在职贫穷、苛刻待遇、劳资关系失谐、以及不合理的社会经济结构等现况的回应。</p></blockquote><p>后面就是个人愚见了。</p><p>不禁有人会问，为什么现在年轻人要躺平呢？以前怎么没有？</p><p>怎么会没有？躺平这个词是新词，但这种想法却不是新的，新瓶装旧酒而已。</p><p>在更早的时候有一个词：三和大神。</p><p>维基百科依然可以找到解释：</p><blockquote><p>三和大神是指栖身在中国广东省深圳市龙华区景乐新村海新信人力资源市场附近的一群打工者，“三和”一词源自该区域最大的人力资源公司名称。他们居无定所，以日结薪资的临时工为生，号称“做一天可以玩三天”。这些打工者有的甚至没有身份证，身负债务，与家人鲜有来往。失去身份证无法购票，甚至无法离开三和地区。三和大神的定义同时有精神方面的因素，往往有着过一天算一天的豁达精神，不畏死，不惧穷、苦、脏。</p></blockquote><p>还有个词是“葛优躺”，2016 年的网络词，比喻自己的“颓废”的现状。</p><p><img src="http://static.howardliu.cn/raving/1f178a82b9014a90168ef327b977ad1ab21bee85.jpeg" alt="葛优躺"></p><p>再往前有个词是“佛系”，2014 年的网络词了，指无欲无求、不悲不喜、云淡风轻而追求内心平和的生活态度。</p><p>再往前，看看唐伯虎，躺的很潇洒。</p><blockquote><p>酒醒只在花前坐，酒醉还须花下眠。<br>花前花后日复日，酒醉酒醒年复年。<br>但愿老死花酒间，不愿鞠躬车马前。</p></blockquote><p>最后追上一句“世人笑我太疯癫，我笑世人看不穿。”简直是我躺平辈的真实心态。</p><p>再往前还有陶渊明，隐居山野间，“种豆南山下，草盛豆苗稀”，任由庄稼被杂草吞噬。</p><p>历史上的名人尚且如此，那些没有被历史记住的躺平青年，何其之多。躺平一词，只是给这种处事方式定了一个新说法而已。</p><p>从某度搜索这个词，结果有 1000 万条，可见热度如何。我天朝上国日益繁荣，怎么今年突然出来这么个词？</p><p>现在社会上工作的大部分人，是 80、90、00 这 30 年之间的人，正在接受生活工作的鞭挞。</p><p>改革开放 40 多年，经济迅速发展，几乎赶上欧美 200 多年的发展历程，甚至在某些领域已遥遥领先。</p><p>社会的发展不可能一蹴而就，必然是问题叠问题，不断解决问题。正在工作中努力拼搏的这批人，赶上了计划生育、90 年代的国企下岗、99 年的大学扩招、08 年的房价上涨、15 年二胎政策，以及今年的三胎政策、中考分流等。（中考分流和这批人没有直接关系，不过会跟这批人的子女有关系。）</p><p>能量守恒是自然规律。想要获得一些东西，必然需要通过等价的事物作为交换。社会发展也要遵循这个规律。</p><p>建国初期，百废待兴，需要发展。农业需要农民、工业需要工人、科研需要科学家、社会需要学者，各行各业都缺人，人多力量大。（不是说人多就有用，但是人多出现有用的人概率更大。）因此，人口数量稳步提升，但是国土面积就那么大，任由发展，就可能演变成“老鼠乌托邦”实验，所以必须刹车制动，于是有了计划生育。</p><p>后来，市场经济调控下，大锅饭不再能够保障大部分人的生活，国企经营能力赶不上社会发展，下岗成为了市场经济下的必然。但是下岗工人需要再就业、再创业。但是人口高速增长的那批正在读高中的学子马上也要毕业，怎么办？大学扩招，让这批即将毕业踏入社会的高中生，可以进入大学再学几年，大学成为分担就业压力的一个池子。</p><p>于是，本来大部分人上不了大学，变成了半数人有机会上大学。这样又造成了课外教培事业的繁荣，原本只有那些 90 分以上的孩子才能上大学。扩招之后，70 分以上都可以，那 60 分的就想往上提一下，70 分的怕被挤下来，也参加课外教培。学习上的内卷开始。也就是说，这批有躺平想法的年轻人，在学校读书的时候就被内卷过了。（这又是另外一个话题了，这里不做展开。）</p><p>等到这批扩招的大学生毕业，普通的流水线工厂肯定是不会去了，必然是要到大城市，进写字楼当白领。于是，当白领的人越来越多，但是资源就那么多，彼此竞争。白领人多了，蓝领就少了，也造成了各种用工荒。</p><p>大城市因其资源、人才、企业相互影响，产生人口聚集。人口多了，竞争压力大，教育资源紧缺，房价上涨，种种这些，压得这批年轻人喘不开气来。这些压力转变到生育上，就造成大家不愿生不敢生。人口增长缓慢，老龄化加剧，于是有了后来的鼓励生育，开放二胎三胎。</p><p>说了这么多，似乎和躺平没什么直接关系。仔细思考下，能够发现其中的必然联系。</p><p>目前 80、90、00 这群人，都是经历过社会高速发展的。到目前，我国经济水平已经赶上国际水平，跻身大国行列。后期就要更加良性的发展，不能以牺牲其他方面为代价的发展。所以，经济发展放缓必然是常态化。加上新冠疫情的出现，让这种常态化更快的到来。</p><p>总结下来，钱更难挣了。想要挣到相同的钱，需要我们的能力更强，付出更多的努力。对于这批人，车贷房贷教育费，赡养老人，抚育子女，各种事情都需要花钱。钱变得难挣，但是花钱并没有减少。</p><p>所以，想要躺会儿放松放松，把可能造成压力的事物都摒弃，让自己压力小一些。放松下来，什么也不管，无欲无求，简单度日即可。</p><p>但是，人毕竟是群居生物，有其社群关联。有父母、有妻儿，我朝亲情至上。所以上要孝敬父母，下要抚育子女，中间要与伴侣互相扶持。一时的放松可以，但是不能一直松下去。一时的放松是劳逸结合，一世的放松就是烂泥扶不上墙了。</p><p>推荐看看周董《稻香》的 MV，可以学学男主人公，当工作累了，可以回乡下老家，体验一下慢生活，给自己充充电。释放了压力，才能轻装前行。</p><hr><p>你好，我是看山，公众号：看山的小屋，10 年老猿，开源贡献者。游于码界，戏享人生。</p><p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/relax-and-run/">想躺平不是错</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/article/details/118686355" target="_blank" rel="noopener">想躺平不是错</a></p><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
+    
+    <summary type="html">
+    
+      今天聊聊这段时间比较火的一个网络词：躺平。
+    
+    </summary>
+    
+    
+      <category term="闲聊" scheme="https://www.howardliu.cn/categories/%E9%97%B2%E8%81%8A/"/>
+    
+    
+      <category term="闲聊" scheme="https://www.howardliu.cn/tags/%E9%97%B2%E8%81%8A/"/>
+    
+      <category term="躺平" scheme="https://www.howardliu.cn/tags/%E8%BA%BA%E5%B9%B3/"/>
+    
+  </entry>
   
   <entry>
     <title>Java8 的时间库（3）：开始使用 Java8 中的时间类</title>
@@ -195,9 +249,9 @@
     
       <category term="java" scheme="https://www.howardliu.cn/tags/java/"/>
     
-      <category term="stream" scheme="https://www.howardliu.cn/tags/stream/"/>
-    
       <category term="jdk8" scheme="https://www.howardliu.cn/tags/jdk8/"/>
+    
+      <category term="stream" scheme="https://www.howardliu.cn/tags/stream/"/>
     
       <category term="optional" scheme="https://www.howardliu.cn/tags/optional/"/>
     
@@ -224,9 +278,9 @@
     
       <category term="java" scheme="https://www.howardliu.cn/tags/java/"/>
     
-      <category term="JDK8" scheme="https://www.howardliu.cn/tags/JDK8/"/>
-    
       <category term="stream" scheme="https://www.howardliu.cn/tags/stream/"/>
+    
+      <category term="JDK8" scheme="https://www.howardliu.cn/tags/JDK8/"/>
     
       <category term="collectors" scheme="https://www.howardliu.cn/tags/collectors/"/>
     
@@ -487,60 +541,6 @@
       <category term="架构" scheme="https://www.howardliu.cn/tags/%E6%9E%B6%E6%9E%84/"/>
     
       <category term="事件驱动" scheme="https://www.howardliu.cn/tags/%E4%BA%8B%E4%BB%B6%E9%A9%B1%E5%8A%A8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList</title>
-    <link href="https://www.howardliu.cn/understanding-java-list/"/>
-    <id>https://www.howardliu.cn/understanding-java-list/</id>
-    <published>2021-02-09T06:18:59.000Z</published>
-    <updated>2021-02-09T06:18:59.000Z</updated>
-    
-    <content type="html"><![CDATA[<p><img src="http://static.howardliu.cn/java/sunset-5299957_1920.jpg" alt="认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList"></p><p>你好，我是看山。</p><p>书接上文，上次聊了聊 <a href="https://www.howardliu.cn/arraylist-is-not-thread-safe/">在多线程中使用 ArrayList 会发生什么</a>，这次我们说说平时常用的列表：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList。</p><a id="more"></a><h2 id="Vector"><a href="#Vector" class="headerlink" title="Vector"></a>Vector</h2><p><code>Vector</code>是在 JDK 1.0 提供的，虽然没有被标记<code>Deprecated</code>，但是事实上已经没人使用了。主要原因是性能差，且不符合需求。</p><p>从源码可以看出（这里不贴源码了），<code>Vector</code>是基于数组实现，几乎在所有操作方法上，都用<code>synchronized</code>关键字实现方法同步，这种同步方式可以对单一操作进行加锁，比如多个线程同时执行<code>add</code>会同步阻塞执行，但是多线程执行<code>add</code>和<code>remove</code>时，就不会阻塞了。</p><p>但是，大部分需要对队列加锁的场景，是想对整个队列加锁，而不仅仅是对单一操作加锁。也就是说，<code>Vector</code>和我们的期望不同，但是又额外增加了同步操作带来的性能开销。所以，不是必须使用的场景，都可以使用<code>ArrayList</code>代替，即使是多线程情况下需要同步队列，也可以使用<code>CopyOnWriteArrayList</code>和<code>SynchronizedList</code>代替。</p><h2 id="ArrayList"><a href="#ArrayList" class="headerlink" title="ArrayList"></a>ArrayList</h2><p><code>ArrayList</code>是在 JDK 1.1 提供的，作为<code>Vector</code>的继任者（<code>ArrayList</code>实现方式与<code>Vector</code>几乎完全相同），<code>ArrayList</code>把方法上的<code>synchronized</code>全部去掉了，完全没有实现同步，是非线程安全的。</p><p>它的非线程安全，还体现在迭代器的快速失败上。在使用方法<code>iterator</code>和<code>listIterator</code>创建迭代器之后，如果还对原来的<code>ArrayList</code>队列进行修改（add 或 remove），迭代器迭代的时候就会报<code>ConcurrentModificationException</code>异常。从源码可以看出，迭代器在迭代过程中，会检查队列中修改次数<code>modCount</code>与创建迭代器时落下的修改次数快照<code>expectedModCount</code>是否相等，相等表示没有修改过，代码如下：</p><pre><code class="java">private class Itr implements Iterator&lt;E&gt; {    // 这段代码是从 ArrayList 中摘取的    // 只留下检查方法，略过其他代码，有兴趣的可以从源码中查看    final void checkForComodification() {        if (modCount != expectedModCount)            throw new ConcurrentModificationException();    }}</code></pre><p>第三点是在多线程场景中，添加元素可能会丢失数据，或者发生数组越界异常，<a href="https://www.howardliu.cn/arraylist-is-not-thread-safe/">在多线程中使用 ArrayList 会发生什么</a> 有详细描述，这里就不赘述了。</p><h2 id="SynchronizedList"><a href="#SynchronizedList" class="headerlink" title="SynchronizedList"></a>SynchronizedList</h2><p><code>SynchronizedList</code>是<code>Collections</code>的静态内部类，使用<code>Collections.synchronizedList()</code>静态方法创建，是一个通过组合<code>List</code>类实现的封装实现。它的大多数方法通过<code>synchronized (mutex){...}</code>代码块同步方式，因为加锁对象<code>mutex</code>是队列对象中定义的相同对象，所以对<code>mutex</code>加锁时，可以在多线程之间实现阻塞。但是这种实现方式和<code>Vector</code>在方法上加锁没有本质的区别，所以<code>Vector</code>存在的困境，<code>SynchronizedList</code>依然存在。</p><p><code>ArrayList</code>中存在的迭代器快速失败情况，依然存在，正如下面源码中的注释：想要使用迭代器，需要用户手动实现同步。</p><pre><code class="java">static class SynchronizedList&lt;E&gt;    extends SynchronizedCollection&lt;E&gt;    implements List&lt;E&gt; {    // 代码摘自 Collections，省略很多代码    public void add(int index, E element) {        synchronized (mutex) {list.add(index, element);}    }    public ListIterator&lt;E&gt; listIterator() {        return list.listIterator(); // Must be manually synched by user    }    public ListIterator&lt;E&gt; listIterator(int index) {        return list.listIterator(index); // Must be manually synched by user    }}</code></pre><p>手动同步的时候需要注意，既然我们关注的全局同步，在迭代器设置同步的时候，要保证锁定对象与<code>add</code>等方法中对象相同。这个在后续补充说明，这里就不展开了。</p><h2 id="CopyOnWriteArrayList"><a href="#CopyOnWriteArrayList" class="headerlink" title="CopyOnWriteArrayList"></a>CopyOnWriteArrayList</h2><p><code>CopyOnWriteArrayList</code>是从 JDK 1.5 开始提供的，先看看<code>add</code>方法的源码：</p><pre><code class="java">public class CopyOnWriteArrayList&lt;E&gt;    implements List&lt;E&gt;, RandomAccess, Cloneable, java.io.Serializable {    /** The lock protecting all mutators */    final transient ReentrantLock lock = new ReentrantLock();    /** The array, accessed only via getArray/setArray. */    private transient volatile Object[] array;    // 代码摘自 CopyOnWriteArrayList，省略很多代码    public boolean add(E e) {        final ReentrantLock lock = this.lock;        lock.lock();        try {            Object[] elements = getArray();            int len = elements.length;            Object[] newElements = Arrays.copyOf(elements, len + 1);            newElements[len] = e;            setArray(newElements);            return true;        } finally {            lock.unlock();        }    }    public boolean addAll(Collection&lt;? extends E&gt; c) {        Object[] cs = (c.getClass() == CopyOnWriteArrayList.class) ?            ((CopyOnWriteArrayList&lt;?&gt;)c).getArray() : c.toArray();        if (cs.length == 0)            return false;        final ReentrantLock lock = this.lock;        lock.lock();        try {            Object[] elements = getArray();            int len = elements.length;            if (len == 0 &amp;&amp; cs.getClass() == Object[].class)                setArray(cs);            else {                Object[] newElements = Arrays.copyOf(elements, len + cs.length);                System.arraycopy(cs, 0, newElements, len, cs.length);                setArray(newElements);            }            return true;        } finally {            lock.unlock();        }    }    private E get(Object[] a, int index) {        return (E) a[index];    }    /**     * {@inheritDoc}     *     * @throws IndexOutOfBoundsException {@inheritDoc}     */    public E get(int index) {        return get(getArray(), index);    }}</code></pre><p>可以看到，<code>CopyOnWriteArrayList</code>借助<code>ReentrantLock</code>实现同步，在<code>synchronized</code>优化之前，<code>ReentrantLock</code>性能高于<code>synchronized</code>。<code>CopyOnWriteArrayList</code>也是通过数组实现的，但是在数组前面增加了<code>volatile</code>关键字，实现了多线程情况下数组的可见性，更加安全。更重要的一点是，<code>CopyOnWriteArrayList</code>在<code>add</code>添加元素的时候，实现方式是重建数组对象，替换原来的数组引用。与<code>ArrayList</code>的扩容方式相比，减少了空间，但是也增加了赋值数组的性能开销。在<code>get</code>获取元素的时候，没有任何锁，直接数据返回。</p><p><code>CopyOnWriteArrayList</code>的迭代器时通过<code>COWIterator</code>实现的，调用<code>iterator</code>方法时，将当前队列中数组的快照赋值到迭代器中的数组引用上。如果原来的队列发生修改，队列中数组会指向别的引用，而迭代器中的数组不会发生变化，所以在多线程执行过程中，通过迭代器遍历数组，也可以修改队列中的数据。这种方式保障线程安全的同时，也可能会出现数据不一致的情况，只能是使用的使用多注意了。</p><pre><code class="java">static final class COWIterator&lt;E&gt; implements ListIterator&lt;E&gt; {    /** Snapshot of the array */    private final Object[] snapshot;    /** Index of element to be returned by subsequent call to next.  */    private int cursor;    private COWIterator(Object[] elements, int initialCursor) {        cursor = initialCursor;        snapshot = elements;    }}</code></pre><h2 id="对比-CopyOnWriteArrayList-和-SynchronizedList"><a href="#对比-CopyOnWriteArrayList-和-SynchronizedList" class="headerlink" title="对比 CopyOnWriteArrayList 和 SynchronizedList"></a>对比 CopyOnWriteArrayList 和 SynchronizedList</h2><p><code>CopyOnWriteArrayList</code>和<code>SynchronizedList</code>都实现了同步，实现方式上采用的是不同策略，各自的侧重点不同。</p><p><code>CopyOnWriteArrayList</code>侧重于读写分离，发生数据写操作（<code>add</code>或<code>remove</code>）时，会加锁，各个线程阻塞执行，执行过程会创建数据副本，替换对象引用；如果同时有读操作（<code>get</code>或<code>iterator</code>），读操作读取的是老数据，或者成为历史数据快照，或者成为缓存数据。这会造成读写同时发生时，数据不一致的情况，但是数据最终会一致。这种方式与数据库读写分离模式几乎相同，很多特性可以类比。</p><p><code>SynchronizedList</code>侧重数据强一致，也就是说当发生数据写操作（<code>add</code>或<code>remove</code>）时，会加锁，各个线程阻塞执行，而且也会通过相同的锁阻塞<code>get</code>操作。</p><p>从<code>CopyOnWriteArrayList</code>和<code>SynchronizedList</code>两种不同事项方式，可以推断<code>CopyOnWriteArrayList</code>在写少读多的场景中执行效率高，<code>SynchronizedList</code>的读写操作效率很均衡，所以在写多读多、写多读少的场景执行效率都会高于<code>CopyOnWriteArrayList</code>。借用网上的测试结果：</p><p><img src="http://static.howardliu.cn/java/CopyOnWriteArrayList-SynchronizedList-Vector.jpg" alt="对比 CopyOnWriteArrayList 和 SynchronizedList"></p><h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><ol><li><code>synchronized</code>关键字在 JDK 8 之前性能比较差，可以看到 JDK1.5 之后实现的同步代码，很多是通过<code>ReentrantLock</code>实现的。</li><li>多线程场景中除了需要考虑同步外，还需要考虑数据可见性，可以通过<code>volatile</code>关键字实现。</li><li><code>ArrayList</code>完全没有同步操作，是非线程安全的</li><li><code>CopyOnWriteArrayList</code>和<code>SynchronizedList</code>属于线程安全队列</li><li><code>CopyOnWriteArrayList</code>实现读写分离，适合场景是写少读多的场景</li><li><code>SynchronizedList</code>要求数据强一致，是队列全局加锁方式，读操作也会加锁</li><li><code>Vector</code>只是在迭代器遍历性能很差，如果不考虑全局锁定队列，单纯读操作和单独写操作性能与<code>SynchronizedList</code>相差不大。</li></ol><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol><li><a href="https://stackoverflow.com/questions/1386275/why-is-java-vector-and-stack-class-considered-obsolete-or-deprecated" target="_blank" rel="noopener">Why is Java Vector (and Stack) class considered obsolete or deprecated?</a></li><li><a href="https://blog.csdn.net/yangzl2008/article/details/39456817" target="_blank" rel="noopener">CopyOnWriteArrayList 与 Collections.synchronizedList 的性能对比</a></li><li><a href="https://juejin.cn/post/6844904054745743367" target="_blank" rel="noopener">Collections.synchronizedList 、CopyOnWriteArrayList、Vector 介绍、源码浅析与性能对比</a></li></ol><h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ol><li><a href="https://www.howardliu.cn/arraylist-is-not-thread-safe/">如果非要在多线程中使用 ArrayList 会发生什么？</a></li></ol><hr><p>你好，我是看山，公众号：看山的小屋，10 年老猿，开源贡献者。游于码界，戏享人生。</p><p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/understanding-java-list/">认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList</a><br>CSDN 主页：<a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN 博文：<a href="https://blog.csdn.net/liuxinghao/article/details/113780875" target="_blank" rel="noopener">认识 Java 中的队列：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList</a></p><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
-    
-    <summary type="html">
-    
-      书接上文，上次聊了聊在多线程中使用 ArrayList 会发生什么，这次我们说说平时常用的列表：Vector、ArrayList、CopyOnWriteArrayList、SynchronizedList。
-    
-    </summary>
-    
-    
-      <category term="java" scheme="https://www.howardliu.cn/categories/java/"/>
-    
-    
-      <category term="java" scheme="https://www.howardliu.cn/tags/java/"/>
-    
-      <category term="线程安全" scheme="https://www.howardliu.cn/tags/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8/"/>
-    
-      <category term="队列" scheme="https://www.howardliu.cn/tags/%E9%98%9F%E5%88%97/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>如果非要在多线程中使用ArrayList会发生什么？</title>
-    <link href="https://www.howardliu.cn/arraylist-is-not-thread-safe/"/>
-    <id>https://www.howardliu.cn/arraylist-is-not-thread-safe/</id>
-    <published>2021-02-04T13:08:09.000Z</published>
-    <updated>2021-02-04T13:08:09.000Z</updated>
-    
-    <content type="html"><![CDATA[<p><img src="http://static.howardliu.cn/java/road-5837403_1920.jpg" alt="如果非要在多线程中使用ArrayList会发生什么？"></p><p>你好，我是看山。</p><p>我们都知道，Java中的ArrayList是非线程安全的，这个知识点太熟了，甚至面试的时候都很少问了。</p><p>但是我们真的清楚原理吗？或者知道多线程情况下使用ArrayList会发生什么？</p><p>前段时间，我们就踩坑了，而且直接踩了两个坑，今天就来扒一扒。</p><a id="more"></a><h2 id="翠花，上源码"><a href="#翠花，上源码" class="headerlink" title="翠花，上源码"></a>翠花，上源码</h2><p>上代码之前先说下<code>ArrayList</code>的<code>add</code>逻辑：</p><ol><li>检查队列中数组是否还没有添加过元素</li><li>如果是，设置当前需要长度为10，如果否，设置当前需要长度为当前队列长度+1</li><li>判断需要长度是否大于数组大小</li><li>如果是，需要扩容，将数组长度扩容1.5倍（第一次扩容会从0直接到10，后续会按照1.5倍的步幅增长）</li><li>数组中添加元素，队列长度+1</li></ol><p>附上代码，有兴趣的可以在看看源码。</p><pre><code class="java">/** * Appends the specified element to the end of this list. * * @param e element to be appended to this list * @return &lt;tt&gt;true&lt;/tt&gt; (as specified by {@link Collection#add}) */public boolean add(E e) {    // 判断数组容量是否足够，如果不足，增加1.5倍，size是当前队列长度    ensureCapacityInternal(size + 1);  // Increments modCount!!    // 给下标为size的赋值，同时队列长度+1，下标从0开始    elementData[size++] = e;    return true;}private void ensureCapacityInternal(int minCapacity) {    ensureExplicitCapacity(calculateCapacity(elementData, minCapacity));}private static int calculateCapacity(Object[] elementData, int minCapacity) {    // 判断是否首次添加元素，如果是，返回默认队列长度，现在是10    if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) {        return Math.max(DEFAULT_CAPACITY, minCapacity);    }    // 如果不是首次添加元素，就返回当前队列长度+1    return minCapacity;}private void ensureExplicitCapacity(int minCapacity) {    modCount++;    // overflow-conscious code    // 如果需要的长度大于队列中数组长度，扩容，如果可以满足需求，就不用扩容    if (minCapacity - elementData.length &gt; 0)        grow(minCapacity);}/** * Increases the capacity to ensure that it can hold at least the * number of elements specified by the minimum capacity argument. * * @param minCapacity the desired minimum capacity */private void grow(int minCapacity) {    // overflow-conscious code    int oldCapacity = elementData.length;    // 这里就是扩容1.5倍的代码    int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1);    if (newCapacity - minCapacity &lt; 0)        newCapacity = minCapacity;    if (newCapacity - MAX_ARRAY_SIZE &gt; 0)        newCapacity = hugeCapacity(minCapacity);    // minCapacity is usually close to size, so this is a win:    elementData = Arrays.copyOf(elementData, newCapacity);}</code></pre><h2 id="就是这么不安全"><a href="#就是这么不安全" class="headerlink" title="就是这么不安全"></a>就是这么不安全</h2><p>从上面代码可以看出，<code>ArrayList</code>中一丁点考虑多线程的元素都没有，完全的效率优先。</p><h3 id="奇怪的ArrayIndexOutOfBoundsException"><a href="#奇怪的ArrayIndexOutOfBoundsException" class="headerlink" title="奇怪的ArrayIndexOutOfBoundsException"></a>奇怪的ArrayIndexOutOfBoundsException</h3><p>先做一个假设，此时数组长度达到临界边缘，比如目前容量是10，现在已经有9个元素，也就是size=9，然后有两个线程同时向队列中增加元素：</p><ol><li>线程1开始进入<code>add</code>方法，获取size=9，调用<code>ensureCapacityInternal</code>方法进行容量判断，此时数组容量是10，不需要扩容</li><li>线程2也进入<code>add</code>方法，获取size=9，调用<code>ensureCapacityInternal</code>方法进行容量判断，此时数组容量还是10，也不需要扩容</li><li>线程1开始赋值值了，也就是<code>elementData[size++] = e</code>，此时size变成10，达到数组容量极限</li><li>线程2此次开始执行赋值操作，使用的size=10，也就是<code>elementData[10] = e</code>，因为下标从0开始，目前数组容量是10，直接报数组越界<code>ArrayIndexOutOfBoundsException</code>。</li></ol><p>仅仅差了一步，线程2就成为了抛异常的凶手。但是抛出异常还是好的，因为我们知道出错了，可以沿着异常</p><h3 id="诡异的null元素"><a href="#诡异的null元素" class="headerlink" title="诡异的null元素"></a>诡异的null元素</h3><p>这种情况不太容易从代码中发现，得对代码稍加改造，<code>elementData[size++] = e</code>这块代码其实执行了两步：</p><pre><code class="java">elementData[size] = e;size++;</code></pre><p>假设还是有两个线程要赋值，此时数组长度还比较富裕，比如数组长度是10，目前size=5：</p><ol><li>线程1开始进入<code>add</code>方法，获取size=5，调用<code>ensureCapacityInternal</code>方法进行容量判断，此时数组容量是10，不需要扩容</li><li>线程2也进入<code>add</code>方法，获取size=5，调用<code>ensureCapacityInternal</code>方法进行容量判断，此时数组容量还是10，也不需要扩容</li><li>线程1开始赋值，执行<code>elementData[size] = e</code>，此时size=5，在执行<code>size++</code>之前，线程2开始赋值了</li><li>线程2开始赋值，执行<code>elementData[size] = e</code>，此时size还是5，所以线程2把线程1赋的值覆盖了</li><li>线程1开始执行<code>size++</code>，此时size=6</li><li>线程2开始执行<code>size++</code>，此时size=7</li></ol><p>也就是说，添加了2个元素，队列长度+2，但是真正加入队列的元素只有1个，有一个被覆盖了。</p><p>这种情况不会立马报错，排查起来就很麻烦了。而且随着JDK 8的普及，可能随手使用filter过滤空元素，这样就不会立马出错，直到出现业务异常之后才能发现，到那时，错误现场已经不见了，排查起来一头雾水。</p><p>有同学会问，源码中是<code>elementData[size++] = e</code>，是一行操作，为什么会拆成两步执行呢？其实这得从JVM字节码说起了。</p><h3 id="通过JVM字节码说说第二种异常出现的原因"><a href="#通过JVM字节码说说第二种异常出现的原因" class="headerlink" title="通过JVM字节码说说第二种异常出现的原因"></a>通过JVM字节码说说第二种异常出现的原因</h3><p>先来一段简单的代码：</p><pre><code class="java">public class Main {    public static void main(String[] args) {        int[] nums = new int[3];        int index = 0;        nums[index++] = 5;    }}</code></pre><p>通过<code>javac Main.java</code>和<code>javap -v -l Main.class</code>组合操作得到字节码：</p><blockquote><p>下面那些中文是我后加的备注，备注中还列出了局部变量表和栈值的变化，需要有点耐心。</p></blockquote><pre><code class="class">public class Main  minor version: 0  major version: 52  flags: ACC_PUBLIC, ACC_SUPERConstant pool:   #1 = Methodref          #3.#12         // java/lang/Object.&quot;&lt;init&gt;&quot;:()V   #2 = Class              #13            // Main   #3 = Class              #14            // java/lang/Object   #4 = Utf8               &lt;init&gt;   #5 = Utf8               ()V   #6 = Utf8               Code   #7 = Utf8               LineNumberTable   #8 = Utf8               main   #9 = Utf8               ([Ljava/lang/String;)V  #10 = Utf8               SourceFile  #11 = Utf8               Main.java  #12 = NameAndType        #4:#5          // &quot;&lt;init&gt;&quot;:()V  #13 = Utf8               Main  #14 = Utf8               java/lang/Object{  public Main();    descriptor: ()V    flags: ACC_PUBLIC    Code:      stack=1, locals=1, args_size=1         0: aload_0         1: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V         4: return      LineNumberTable:        line 1: 0  public static void main(java.lang.String[]);    descriptor: ([Ljava/lang/String;)V    flags: ACC_PUBLIC, ACC_STATIC    Code:      stack=3, locals=3, args_size=1                                                                               局部变量表                             栈         0: iconst_3                     // 将int型(3)推送至栈顶                                                      args                                3         1: newarray       int           // 创建一个指定原始类型（如int, float, char…）的数组，并将其引用值压入栈顶          args                                数组引用         3: astore_1                     // 将栈顶引用型数值存入第二个本地变量                                            args, nums=数组引用                  null         4: iconst_0                     // 将int型(0)推送至栈顶                                                       args, nums=数组引用                  0         5: istore_2                     // 将栈顶int型数值存入第三个本地变量                                             args, nums=数组引用, index=0         null         6: aload_1                      // 将第二个引用类型本地变量推送至栈顶                                             args, nums=数组引用, index=0         数组引用         7: iload_2                      // 将第三个int型本地变量推送至栈顶                                               args, nums=数组引用, index=0         0, 数组引用         8: iinc          2, 1           // 将指定int型变量增加指定值（i++, i--, i+=2），也就是第三个本地变量增加1            args, nums=数组引用, index=1         0, 数组引用        11: iconst_5                     // 将int型(5)推送至栈顶                                                        args, nums=数组引用, index=1         5, 0, 数组引用        12: iastore                      // 将栈顶int型数值存入指定数组的指定索引位置                                       args, nums=数组引用, index=1         null        13: return                       // 从当前方法返回void      LineNumberTable:        line 3: 0                        // int[] nums = new int[3];        line 4: 4                        // int index = 0;        line 5: 6                        // nums[index++] = 5;        line 6: 13                       // 方法结尾默认的return}</code></pre><p>从上面的字节码可以看到，<code>nums[index++] = 5</code>这一句会被转为5个指令，是从6到12。大体操作如下：</p><ol><li>将数组、下标压入栈</li><li>给下标加值</li><li>将新值压入栈</li><li>取栈顶三个元素开始给元素指定下标赋值</li></ol><p>也即是说，错误出在数组赋值操作时先将数组引用和下标同时压入栈顶，与下标赋值是两步，在多线程环境中，就有可能出现上面说到的null值存在。</p><h2 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h2><p>其实解法也很简单，就是要意识到多线程环境，然后不使用ArrayList。可以使用<code>Collections.synchronizedList()</code>返回的同步队列，也可以使用<code>CopyOnWriteArrayList</code>这个队列，或者自己扩展<code>ArrayList</code>，将add方法做成同步方法。</p><h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p><code>ArrayList</code>整个类的操作都是非线程安全的，一旦在多线程环境中使用，就可能会出现问题。上面提到<code>add</code>操作就会有两种异常行为，一个是数组越界异常，一个是出现丢数且出现空值。这还只是最简单的<code>add</code>操作，如果<code>add</code>、<code>addAll</code>和<code>get</code>混合使用使用时，异常情况就更多了。所以，使用的时候一定要注意是不是单线程操作，如果不是，果断使用其他队列防雷。</p><h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ol><li><a href="https://www.howardliu.cn/arraylist-is-not-thread-safe/">如果非要在多线程中使用ArrayList会发生什么？</a></li><li><a href="https://www.howardliu.cn/arraylist-is-not-thread-safe-2/">如果非要在多线程中使用ArrayList会发生什么？(第二篇)</a></li></ol><hr><p>你好，我是看山，公众号：看山的小屋，10 年老猿，开源贡献者。游于码界，戏享人生。</p><p>个人主页: <a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文: <a href="https://www.howardliu.cn/arraylist-is-not-thread-safe/">如果非要在多线程中使用ArrayList会发生什么？</a><br>CSDN主页: <a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN博文: <a href="https://blog.csdn.net/liuxinghao/article/details/113666581" target="_blank" rel="noopener">如果非要在多线程中使用ArrayList会发生什么？</a></p><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
-    
-    <summary type="html">
-    
-      我们真的清楚多线程情况下使用ArrayList会发生什么吗？
-    
-    </summary>
-    
-    
-      <category term="java" scheme="https://www.howardliu.cn/categories/java/"/>
-    
-    
-      <category term="java" scheme="https://www.howardliu.cn/tags/java/"/>
-    
-      <category term="ArrayList" scheme="https://www.howardliu.cn/tags/ArrayList/"/>
-    
-      <category term="线程安全" scheme="https://www.howardliu.cn/tags/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8/"/>
     
   </entry>
   
