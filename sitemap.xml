@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/manage-install/</loc>
+    
+    <lastmod>2021-07-24T09:38:39.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/install-go/</loc>
+    
+    <lastmod>2021-07-24T09:21:23.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/about-the-fenix-project/</loc>
     
     <lastmod>2021-07-12T16:10:51.000Z</lastmod>
@@ -471,7 +485,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
+    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
@@ -485,7 +499,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
+    <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
@@ -520,14 +534,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop-environment-cluster-setup/</loc>
+    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
+    <loc>https://www.howardliu.cn/hadoop-environment-cluster-setup/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
