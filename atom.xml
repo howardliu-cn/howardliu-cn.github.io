@@ -220,11 +220,11 @@
       <category term="java" scheme="https://www.howardliu.cn/categories/java/"/>
     
     
+      <category term="Java" scheme="https://www.howardliu.cn/tags/Java/"/>
+    
       <category term="Date" scheme="https://www.howardliu.cn/tags/Date/"/>
     
       <category term="Time" scheme="https://www.howardliu.cn/tags/Time/"/>
-    
-      <category term="Java" scheme="https://www.howardliu.cn/tags/Java/"/>
     
   </entry>
   
@@ -299,9 +299,9 @@
     
       <category term="java" scheme="https://www.howardliu.cn/tags/java/"/>
     
-      <category term="jdk8" scheme="https://www.howardliu.cn/tags/jdk8/"/>
-    
       <category term="stream" scheme="https://www.howardliu.cn/tags/stream/"/>
+    
+      <category term="jdk8" scheme="https://www.howardliu.cn/tags/jdk8/"/>
     
       <category term="optional" scheme="https://www.howardliu.cn/tags/optional/"/>
     
@@ -328,9 +328,9 @@
     
       <category term="java" scheme="https://www.howardliu.cn/tags/java/"/>
     
-      <category term="stream" scheme="https://www.howardliu.cn/tags/stream/"/>
-    
       <category term="JDK8" scheme="https://www.howardliu.cn/tags/JDK8/"/>
+    
+      <category term="stream" scheme="https://www.howardliu.cn/tags/stream/"/>
     
       <category term="collectors" scheme="https://www.howardliu.cn/tags/collectors/"/>
     
