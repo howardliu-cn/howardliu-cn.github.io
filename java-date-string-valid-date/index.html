@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>看山聊 Java：检查日期字符串是否合法||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="这次说一下，怎样检查给出的字符串，是否是合法日期字符串。本文将从 Java 原生和第三方组件两种方式来说明。">
+<meta name="keywords" content="Java8,Date,Calendar,LocalDate,LocalTime,LocalDateTime,ZonedDateTime,Period,Duration">
+<meta property="og:type" content="article">
+<meta property="og:title" content="看山聊 Java：检查日期字符串是否合法">
+<meta property="og:url" content="https://www.howardliu.cn/java-date-string-valid-date/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="这次说一下，怎样检查给出的字符串，是否是合法日期字符串。本文将从 Java 原生和第三方组件两种方式来说明。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://static.howardliu.cn/cover/berries-6514669_1920.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-08-06T13:47:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="看山聊 Java：检查日期字符串是否合法">
+<meta name="twitter:description" content="这次说一下，怎样检查给出的字符串，是否是合法日期字符串。本文将从 Java 原生和第三方组件两种方式来说明。">
+<meta name="twitter:image" content="http://static.howardliu.cn/cover/berries-6514669_1920.jpg">
+
+<meta name="keywords" content="Java8,Date,Calendar,LocalDate,LocalTime,LocalDateTime,ZonedDateTime,Period,Duration">
+
+
+<meta name="description" content="这次说一下，怎样检查给出的字符串，是否是合法日期字符串。本文将从 Java 原生和第三方组件两种方式来说明。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/styles/vs2015.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/java-date-string-valid-date/">看山聊 Java：检查日期字符串是否合法</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-08-06</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/java-date-string-valid-date/" class="leancloud_visitors" data-flag-title="看山聊 Java：检查日期字符串是否合法">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#WHY"><span class="toc-text">WHY</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HOW"><span class="toc-text">HOW</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-DateFormat-检查"><span class="toc-text">使用 DateFormat 检查</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-LocalDate-检查"><span class="toc-text">使用 LocalDate 检查</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-DateTimeFormatter-检查"><span class="toc-text">使用 DateTimeFormatter 检查</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-Apache-出品的-commons-validator-检查"><span class="toc-text">使用 Apache 出品的 commons-validator 检查</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="http://static.howardliu.cn/cover/berries-6514669_1920.jpg" alt="看山聊 Java：检查日期字符串是否合法"></p>
+<blockquote>
+<p>该图片由<a href="https://pixabay.com/zh/users/nastasyaday-11197808/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6514669" target="_blank" rel="noopener">Анастасия Белоусова</a>在<a href="https://pixabay.com/zh/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6514669" target="_blank" rel="noopener">Pixabay</a>上发布</p>
+</blockquote>
+<p>你好，我是看山。</p>
+<a id="more"></a>
+
+<p>这次说一下，怎样检查给出的字符串，是否是合法日期字符串。本文将从 Java 原生和第三方组件两种方式来说明。</p>
+<h2 id="WHY"><a href="#WHY" class="headerlink" title="WHY"></a>WHY</h2><p>后端接口在接收数据的时候，都需要进行检查。检查全部通过后，才能够执行业务逻辑。对于时间格式，我们一般需要检查这么几方面：</p>
+<ol>
+<li>字符串格式是否正确，比如格式是不是<code>yyyy-MM-dd</code></li>
+<li>时间在合法范围内，比如我们需要限定在一个月内的时间</li>
+<li>字符串可以解析为正常的时间，比如 2 月 30 号就不是正常时间</li>
+</ol>
+<p>对于时间格式的判断，我们可以通过正则表达式来检查。不过考虑到正则表达式的性能、输入数据的复杂性，一般能用别的方式，就不选正则表达式。我们还是选择一种更加通用、更加高效的检查方式。</p>
+<p>首先，定义时间校验器的接口：</p>
+<pre><code class="java">public interface DateValidator {
+    boolean isValid(String dateStr);
+}</code></pre>
+<p>接口方法接收一个字符串，返回布尔类型，表示字符串是否是合法的时间格式。</p>
+<h2 id="HOW"><a href="#HOW" class="headerlink" title="HOW"></a>HOW</h2><p>接下来就是通过不同方式实现<code>DateValidator</code>。</p>
+<h3 id="使用-DateFormat-检查"><a href="#使用-DateFormat-检查" class="headerlink" title="使用 DateFormat 检查"></a>使用 DateFormat 检查</h3><p>Java 提供了格式化和解析时间的工具：<code>DateFormat</code>抽象类和<code>SimpleDataFormat</code>实现类。我们借此实现时间校验器：</p>
+<pre><code class="java">public class DateValidatorUsingDateFormat implements DateValidator {
+    private final String dateFormat;
+
+    public DateValidatorUsingDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+    @Override
+    public boolean isValid(String dateStr) {
+        final DateFormat sdf = new SimpleDateFormat(this.dateFormat);
+        sdf.setLenient(false);
+        try {
+            sdf.parse(dateStr);
+        } catch (ParseException e) {
+            return false;
+        }
+        return true;
+    }
+}</code></pre>
+<p>这里需要注意一下，<code>DateFormat</code>和<code>SimpleDataFormat</code>是非线程安全的，所以每次方法调用时，都需要新建实例。</p>
+<p>我们通过单元测试验证下：</p>
+<pre><code class="java">class DateValidatorUsingDateFormatTest {
+
+    @Test
+    void isValid() {
+        final DateValidator validator = new DateValidatorUsingDateFormat(&quot;yyyy-MM-dd&quot;);
+
+        Assertions.assertTrue(validator.isValid(&quot;2021-02-28&quot;));
+        Assertions.assertFalse(validator.isValid(&quot;2021-02-30&quot;));
+    }
+}</code></pre>
+<p>在 Java8 之前，一般都是用这种方式来验证。Java8 之后，我们有了更多的选择。</p>
+<h3 id="使用-LocalDate-检查"><a href="#使用-LocalDate-检查" class="headerlink" title="使用 LocalDate 检查"></a>使用 LocalDate 检查</h3><p>Java8 引入了更加好用日期和时间 API（想要了解更多内容，请移步参看 <a href="https://www.howardliu.cn/java-date-and-time-intro/">Java8 中的时间类及常用 API</a>）。其中包括<code>LocalDate</code>类，是一个不可变且线程安全的时间类。</p>
+<p><code>LocalDate</code>提供了两个静态方法，用来解析时间。这两个方法内部都是使用<code>java.time.format.DateTimeFormatter</code>来处理数据：</p>
+<pre><code class="java">// 使用 DateTimeFormatter.ISO_LOCAL_DATE 处理数据
+public static LocalDate parse(CharSequence text) {
+    return parse(text, DateTimeFormatter.ISO_LOCAL_DATE);
+}
+
+// 使用提供的 DateTimeFormatter 处理数据
+public static LocalDate parse(CharSequence text, DateTimeFormatter formatter) {
+        Objects.requireNonNull(formatter, &quot;formatter&quot;);
+    return formatter.parse(text, LocalDate::from);
+}</code></pre>
+<p>通过<code>LocalDate</code>的<code>parse</code>方法实现我们的校验器：</p>
+<pre><code class="java">public class DateValidatorUsingLocalDate implements DateValidator {
+    private final DateTimeFormatter dateFormatter;
+
+    public DateValidatorUsingLocalDate(DateTimeFormatter dateFormatter) {
+        this.dateFormatter = dateFormatter;
+    }
+
+    @Override
+    public boolean isValid(String dateStr) {
+        try {
+            LocalDate.parse(dateStr, this.dateFormatter);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+        return true;
+    }
+}</code></pre>
+<p><code>java.time.format.DateTimeFormatter</code>类是不可变的，也就是天然的线程安全，我们可以在不同线程使用同一个校验器实例。</p>
+<p>我们通过单元测试验证下：</p>
+<pre><code class="java">class DateValidatorUsingLocalDateTest {
+
+    @Test
+    void isValid() {
+        final DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        final DateValidator validator = new DateValidatorUsingLocalDate(dateFormatter);
+
+        Assertions.assertTrue(validator.isValid(&quot;2021-02-28&quot;));
+        Assertions.assertFalse(validator.isValid(&quot;2021-02-30&quot;));
+    }
+}</code></pre>
+<p>既然<code>LocalDate#parse</code>是通过<code>DateTimeFormatter</code>实现的，那我们也可以直接使用<code>DateTimeFormatter</code>。</p>
+<h3 id="使用-DateTimeFormatter-检查"><a href="#使用-DateTimeFormatter-检查" class="headerlink" title="使用 DateTimeFormatter 检查"></a>使用 DateTimeFormatter 检查</h3><p><code>DateTimeFormatter</code>解析文本总共分两步。第一步，根据配置将文本解析为日期和时间字段；第二步，用解析后的字段创建日期和时间对象。</p>
+<p>实现验证器：</p>
+<pre><code class="java">public class DateValidatorUsingDateTimeFormatter implements DateValidator {
+    private final DateTimeFormatter dateFormatter;
+
+    public DateValidatorUsingDateTimeFormatter(DateTimeFormatter dateFormatter) {
+        this.dateFormatter = dateFormatter;
+    }
+
+    @Override
+    public boolean isValid(String dateStr) {
+        try {
+            this.dateFormatter.parse(dateStr);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+        return true;
+    }
+}</code></pre>
+<p>通过单元测试验证：</p>
+<pre><code class="java">class DateValidatorUsingDateTimeFormatterTest {
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(&quot;uuuu-MM-dd&quot;, Locale.CHINA);
+
+    @Test
+    void isValid() {
+        final DateTimeFormatter dateFormatter = DATE_FORMATTER.withResolverStyle(ResolverStyle.STRICT);
+        final DateValidator validator = new DateValidatorUsingDateTimeFormatter(dateFormatter);
+
+        Assertions.assertTrue(validator.isValid(&quot;2021-02-28&quot;));
+        Assertions.assertFalse(validator.isValid(&quot;2021-02-30&quot;));
+    }
+}</code></pre>
+<p>可以看到，我们指定了转换模式是<code>ResolverStyle.STRICT</code>，这个类型是说明解析模式。共有三种：</p>
+<ul>
+<li>STRICT：严格模式，日期、时间必须完全正确。</li>
+<li>SMART：智能模式，针对日可以自动调整。月的范围在 1 到 12，日的范围在 1 到 31。比如输入是 2 月 30 号，当年 2 月只有 28 天，返回的日期就是 2 月 28 日。</li>
+<li>LENIENT：宽松模式，主要针对月和日，会自动后延。结果类似于<code>LocalData#plusDays</code>或者<code>LocalDate#plusMonths</code>。</li>
+</ul>
+<p>我们通过例子看下区别：</p>
+<pre><code class="java">class DateValidatorUsingDateTimeFormatterTest {
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(&quot;uuuu-MM-dd&quot;, Locale.CHINA);
+
+    @Test
+    void testResolverStyle() {
+        Assertions.assertEquals(LocalDate.of(2021, 2,28), parseDate(&quot;2021-02-28&quot;, ResolverStyle.STRICT));
+        Assertions.assertNull(parseDate(&quot;2021-02-29&quot;, ResolverStyle.STRICT));
+
+        Assertions.assertEquals(LocalDate.of(2021, 2,28), parseDate(&quot;2021-02-28&quot;, ResolverStyle.STRICT));
+        Assertions.assertNull(parseDate(&quot;2021-13-28&quot;, ResolverStyle.STRICT));
+
+        Assertions.assertEquals(LocalDate.of(2021, 2,28), parseDate(&quot;2021-02-28&quot;, ResolverStyle.SMART));
+        Assertions.assertEquals(LocalDate.of(2021, 2,28), parseDate(&quot;2021-02-29&quot;, ResolverStyle.SMART));
+
+        Assertions.assertNull(parseDate(&quot;2021-13-28&quot;, ResolverStyle.SMART));
+        Assertions.assertNull(parseDate(&quot;2021-13-29&quot;, ResolverStyle.SMART));
+
+        Assertions.assertEquals(LocalDate.of(2021, 2,28), parseDate(&quot;2021-02-28&quot;, ResolverStyle.LENIENT));
+        Assertions.assertEquals(LocalDate.of(2021, 3,1), parseDate(&quot;2021-02-29&quot;, ResolverStyle.LENIENT));
+
+        Assertions.assertEquals(LocalDate.of(2022, 1,28), parseDate(&quot;2021-13-28&quot;, ResolverStyle.LENIENT));
+        Assertions.assertEquals(LocalDate.of(2022, 2,2), parseDate(&quot;2021-13-33&quot;, ResolverStyle.LENIENT));
+    }
+
+    private static LocalDate parseDate(String dateString, ResolverStyle resolverStyle) {
+        try {
+            return LocalDate.parse(dateString, DATE_FORMATTER.withResolverStyle(resolverStyle));
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+    }
+}</code></pre>
+<p>从例子可以看出，<code>ResolverStyle.STRICT</code>是严格控制，用来做时间校验比较合适；<code>ResolverStyle.LENIENT</code>可以最大程度将字符串转化为时间对象，在合理范围内可以随便玩；<code>ResolverStyle.SMART</code>名为智能，但智力有限，两不沾边，优势不够明显。JDK 提供的<code>DateTimeFormatter</code>实现，都是<code>ResolverStyle.STRICT</code>模式。</p>
+<p>说了 JDK 自带的实现，接下来说说第三方组件的实现方式。</p>
+<h3 id="使用-Apache-出品的-commons-validator-检查"><a href="#使用-Apache-出品的-commons-validator-检查" class="headerlink" title="使用 Apache 出品的 commons-validator 检查"></a>使用 Apache 出品的 commons-validator 检查</h3><p>Apache Commons 项目提供了一个校验器框架，包含多种校验规则，包括日期、时间、数字、货币、IP 地址、邮箱、URL 地址等。本文主要说检查时间，所以重点看看<code>GenericValidator</code>类提供的<code>isDate</code>方法：</p>
+<pre><code class="java">public class GenericValidator implements Serializable {
+    // 其他方法
+
+    public static boolean isDate(String value, Locale locale) {
+        return DateValidator.getInstance().isValid(value, locale);
+    }
+
+    public static boolean isDate(String value, String datePattern, boolean strict) {
+        return org.apache.commons.validator.DateValidator.getInstance().isValid(value, datePattern, strict);
+    }
+}</code></pre>
+<p>先引入依赖：</p>
+<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;commons-validator&lt;/groupId&gt;
+    &lt;artifactId&gt;commons-validator&lt;/artifactId&gt;
+    &lt;version&gt;1.7&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+<p>实现验证器：</p>
+<pre><code class="java">public class DateValidatorUsingCommonsValidator implements DateValidator {
+    private final String dateFormat;
+
+    public DateValidatorUsingCommonsValidator(String dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+    @Override
+    public boolean isValid(String dateStr) {
+        return GenericValidator.isDate(dateStr, dateFormat, true);
+    }
+}</code></pre>
+<p>通过单元测试验证：</p>
+<pre><code class="java">class DateValidatorUsingCommonsValidatorTest {
+    @Test
+    void isValid() {
+        final DateValidator dateValidator = new DateValidatorUsingCommonsValidator(&quot;yyyy-MM-dd&quot;);
+
+        Assertions.assertTrue(dateValidator.isValid(&quot;2021-02-28&quot;));
+        Assertions.assertFalse(dateValidator.isValid(&quot;2021-02-30&quot;));
+    }
+}</code></pre>
+<p>看<code>org.apache.commons.validator.DateValidator#isValid</code>源码可以发现，内部是通过<code>DateFormat</code>和<code>SimpleDateFormat</code>实现的。</p>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>在本文中，我们通过四种方式实现了时间字符串校验逻辑。为了节省篇幅，文中代码只提供了核心内容。想要了解具体实现，可以关注公号「看山的小屋」，回复“date”获取源码。</p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ol>
+<li><a href="https://www.howardliu.cn/java-date-and-time-intro/">Java8 中的时间类及常用 API</a></li>
+<li><a href="https://www.howardliu.cn/java-date-to-localdate-and-localdatetime/">Date 与 LocalDate 或 LocalDateTime 互相转换</a></li>
+<li><a href="https://www.howardliu.cn/java-date-time-migrating-to-jsr310/">使用 Java8 中的时间类</a></li>
+<li><a href="https://www.howardliu.cn/java-date-string-valid-date/">检查日期字符串是否合法</a></li>
+</ol>
+<hr>
+<p>你好，我是看山，公众号：看山的小屋，10 年老猿，开源贡献者。游于码界，戏享人生。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/java-date-string-valid-date/">看山聊 Java：检查日期字符串是否合法</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/article/details/103794938" target="_blank" rel="noopener">看山聊 Java：检查日期字符串是否合法</a></p>
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/java/">java</a>
+            
+            <a href="/tags/Date/">Date</a>
+            
+            <a href="/tags/Time/">Time</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/manage-install/">
+                <i class="icon-next">《Go 开发指南》-管理 Go 环境</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://www.howardliu.cn/images/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/go/" style="font-size: 15px;">go</a> <a href="/tags/开发指南/" style="font-size: 15px;">开发指南</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络，概念，http/" style="font-size: 15px;">网络，概念，http</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/http-状态码/" style="font-size: 15px;">http 状态码</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Date/" style="font-size: 15px;">Date</a> <a href="/tags/Time/" style="font-size: 15px;">Time</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a> <a href="/tags/jdk8/" style="font-size: 15px;">jdk8</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a>
+    </div>
+</div>
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/java-date-string-valid-date/">看山聊 Java：检查日期字符串是否合法</a></li><li class="post-list-item"><a class="post-list-link" href="/manage-install/">《Go 开发指南》-管理 Go 环境</a></li><li class="post-list-item"><a class="post-list-link" href="/install-go/">《Go 开发指南》-快速安装 Go 环境</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-unit-test/">SpringBoot 实战：不再害怕需求变更</a></li><li class="post-list-item"><a class="post-list-link" href="/about-the-fenix-project/">好书不是通过价格可以衡量的，比如这本</a></li><li class="post-list-item"><a class="post-list-link" href="/relax-and-run/">想躺平不是错</a></li><li class="post-list-item"><a class="post-list-link" href="/java-date-time-migrating-to-jsr310/">看山聊 Java：使用 Java8 中的时间类</a></li><li class="post-list-item"><a class="post-list-link" href="/arraylist-is-not-thread-safe-2/">如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）</a></li><li class="post-list-item"><a class="post-list-link" href="/java-date-to-localdate-and-localdatetime/">看山聊 Java：Date 与 LocalDate 或 LocalDateTime 互相转换</a></li><li class="post-list-item"><a class="post-list-link" href="/java-date-and-time-intro/">看山聊 Java：Java8 中的时间类及常用 API</a></li></ul>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">2021年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">2021年07月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2021</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
