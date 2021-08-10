@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/spring-enum-params/</loc>
+    
+    <lastmod>2021-08-10T14:40:04.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/java-date-string-valid-date/</loc>
     
     <lastmod>2021-08-06T13:47:46.000Z</lastmod>

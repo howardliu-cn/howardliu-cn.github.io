@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Spring 实战：优雅的使用枚举参数||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="接口开发过程中不免有表示类型的参数，比如 0 表示未知，1 表示男，2 表示女。通常有两种做法，一种是用数字表示，另一种是使用枚举实现。">
+<meta name="keywords" content="spring,Converter,ConverterFactory">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring 实战：优雅的使用枚举参数">
+<meta property="og:url" content="https://www.howardliu.cn/spring-enum-params/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="接口开发过程中不免有表示类型的参数，比如 0 表示未知，1 表示男，2 表示女。通常有两种做法，一种是用数字表示，另一种是使用枚举实现。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://static.howardliu.cn/cover/scarlet-lily-beetle-6389888_1920.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-08-10T14:40:04.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring 实战：优雅的使用枚举参数">
+<meta name="twitter:description" content="接口开发过程中不免有表示类型的参数，比如 0 表示未知，1 表示男，2 表示女。通常有两种做法，一种是用数字表示，另一种是使用枚举实现。">
+<meta name="twitter:image" content="http://static.howardliu.cn/cover/scarlet-lily-beetle-6389888_1920.jpg">
+
+<meta name="keywords" content="spring,Converter,ConverterFactory">
+
+
+<meta name="description" content="接口开发过程中不免有表示类型的参数，比如 0 表示未知，1 表示男，2 表示女。通常有两种做法，一种是用数字表示，另一种是使用枚举实现。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/styles/vs2015.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/spring-enum-params/">Spring 实战：优雅的使用枚举参数</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-08-10</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/spring-enum-params/" class="leancloud_visitors" data-flag-title="Spring 实战：优雅的使用枚举参数">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#确认需求"><span class="toc-text">确认需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#定义枚举"><span class="toc-text">定义枚举</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Converter-和-ConverterFactory"><span class="toc-text">Converter 和 ConverterFactory</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#加载配置"><span class="toc-text">加载配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#测试"><span class="toc-text">测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="http://static.howardliu.cn/cover/scarlet-lily-beetle-6389888_1920.jpg" alt="Spring 实战：优雅的使用枚举参数"></p>
+<blockquote>
+<p>该图片由<a href="https://pixabay.com/zh/users/sinousxl-7554155/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6389888" target="_blank" rel="noopener">Sinousxl</a>在<a href="https://pixabay.com/zh/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6389888" target="_blank" rel="noopener">Pixabay</a>上发布</p>
+</blockquote>
+<p>你好，我是看山。</p>
+<p>接口开发过程中不免有表示类型的参数，比如 0 表示未知，1 表示男，2 表示女。通常有两种做法，一种是用数字表示，另一种是使用枚举实现。</p>
+<a id="more"></a>
+
+<p>使用数字表示就是通过契约形式，约定每个数字表示的含义，接口接收到参数，就按照约定对类型进行判断，接口维护成本比较大。</p>
+<p>在 Spring 体系中，使用枚举表示，是借助 Spring 的 Converter 机制，可以将数字或字符串对应到枚举的序号或者 name，然后将前端的输入转换为枚举类型。</p>
+<p>在场景不复杂的场景中，枚举可以轻松胜任。</p>
+<p>于是，迅速实现逻辑，准备提测。这个时候需求变了，不允许选择未知性别，只能选男或女，就没有 0 值。这样，因为取值是从 1 开始，而枚举的序号是从 0 开始，就会产生冲突。</p>
+<p>还有一些不太多的场景，就是前端不期望类型都是用数字，可能期望用一些有意义的字符串表示。但是按照前端规范，需要用小写或者驼峰命名。但是后端的规范中，枚举必须是大写，又是冲突。</p>
+<p>需求合不合理暂且不论，我们要保存对技术的探索精神。</p>
+<h2 id="确认需求"><a href="#确认需求" class="headerlink" title="确认需求"></a>确认需求</h2><p>首先确认需求。我们期望定义一个枚举类作为参数，接口访问的时候，可以是 int 类型的 id，id 取值不限于枚举的序号；也可以是 String 类型的 code，code 取值不限于枚举的 name。换句话说，这个枚举有个 id 和 code，随意定义，只要接口传过来匹配上，就能够自动转成枚举类型。</p>
+<p>既然这样，我们就规范下 id 和 code 取值。为了扩展，定义三个接口：IdBaseEnum、CodeBaseEnum 以及 IdCodeBaseEnum。</p>
+<pre><code class="java">public interface IdBaseEnum {
+    Integer getId();
+}
+
+public interface CodeBaseEnum {
+    String getCode();
+}
+
+public interface IdCodeBaseEnum extends IdBaseEnum, CodeBaseEnum {
+}</code></pre>
+<p>接下来就该定义我们的主角了。</p>
+<h2 id="定义枚举"><a href="#定义枚举" class="headerlink" title="定义枚举"></a>定义枚举</h2><p>前面定义了三个接口，分别是单独 id、单独 code，和有 id 和 code 的。这样，我们就可以定义三种枚举，分别对应三个接口。三种方式类似，所以就不在文中重复列举了。感兴趣的可以关注公众号「看山的小屋」回复 spring 获取源码。</p>
+<p>我们定义一个性别枚举，枚举包含 id 和 code 两个属性。</p>
+<pre><code class="java">public enum GenderIdCodeEnum implements IdCodeBaseEnum {
+    MALE(1, &quot;male&quot;),
+    FEMALE(2, &quot;female&quot;);
+
+    private final Integer id;
+    private final String code;
+
+    GenderIdCodeEnum(Integer id, String code) {
+        this.id = id;
+        this.code = code;
+    }
+
+    @Override
+    public String getCode() {
+        return code;
+    }
+
+    @Override
+    public Integer getId() {
+        return id;
+    }
+}</code></pre>
+<p>这里需要注意一点，id 和 code 不能重复。</p>
+<ol>
+<li>id 与 id、code 与 code 不能重复，比如 MAIL 定义 id 是 1，FAMLE 就不能定义 id 是 1 了。</li>
+<li>id 与 code 之间也不能重复，比如，MALE 定义 id 是 1001，FEMALE 定义 code 是 1001。</li>
+</ol>
+<p>这是由于 Spring 在转换参数的时候，将输入参数全部视为 String 类型。虽然我们定义 id 和 code 类型不同，但是在匹配的时候，都是按照字符串匹配的。如果存在相同值，就会产生歧义。</p>
+<h2 id="Converter-和-ConverterFactory"><a href="#Converter-和-ConverterFactory" class="headerlink" title="Converter 和 ConverterFactory"></a>Converter 和 ConverterFactory</h2><p>根据规范，接下来定义一下 Converter 和 ConverterFactory。这些是 Spring 留给我们的扩展口，按照规范定义即可。</p>
+<p>Converter 类：</p>
+<pre><code class="java">public class IdCodeToEnumConverter&lt;T extends IdCodeBaseEnum&gt; implements Converter&lt;String, T&gt; {
+    private final Map&lt;String, T&gt; idEnumMap = Maps.newHashMap();
+    private final Map&lt;String, T&gt; codeEnumMap = Maps.newHashMap();
+
+    public IdCodeToEnumConverter(Class&lt;T&gt; enumType) {
+        Arrays.stream(enumType.getEnumConstants())
+                .forEach(x -&gt; {
+                    idEnumMap.put(x.getId().toString(), x);
+                    codeEnumMap.put(x.getCode(), x);
+                });
+    }
+
+    @Override
+    public T convert(String source) {
+        return Optional.of(source)
+                .map(codeEnumMap::get)
+                .orElseGet(() -&gt; Optional.of(source)
+                        .map(idEnumMap::get)
+                        .orElseThrow(() -&gt; new CodeBaseException(ErrorResponseEnum.PARAMS_ENUM_NOT_MATCH)));
+    }
+}</code></pre>
+<p>ConverterFactory 类：</p>
+<pre><code class="java">public class IdCodeToEnumConverterFactory implements ConverterFactory&lt;String, IdCodeBaseEnum&gt; {
+    @SuppressWarnings(&quot;rawtypes&quot;)
+    private static final Map&lt;Class, Converter&gt; CONVERTERS = Maps.newHashMap();
+
+    @Override
+    public &lt;T extends IdCodeBaseEnum&gt; Converter&lt;String, T&gt; getConverter(Class&lt;T&gt; targetType) {
+        //noinspection unchecked
+        Converter&lt;String, T&gt; converter = CONVERTERS.get(targetType);
+        if (converter == null) {
+            converter = new IdCodeToEnumConverter&lt;&gt;(targetType);
+            CONVERTERS.put(targetType, converter);
+        }
+        return converter;
+    }
+}</code></pre>
+<p>这两个就是转换的核心了，我们只要将他们装配到 Spring 的类型转换器中，就能够实现枚举类型的自动转化了。</p>
+<h2 id="加载配置"><a href="#加载配置" class="headerlink" title="加载配置"></a>加载配置</h2><p>将我们定义的 Converter 和 ConverterFactory 注册到 Spring 的类型转换器中。</p>
+<pre><code class="java">@Configuration
+public class WebConfig implements WebMvcConfigurer {
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverterFactory(new IdCodeToEnumConverterFactory());
+        registry.addConverterFactory(new CodeToEnumConverterFactory());
+        registry.addConverterFactory(new IdToEnumConverterFactory());
+    }
+}</code></pre>
+<p>至此，核心定义全部结束。</p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>写一个 Controller 作为测试入口：</p>
+<pre><code class="java">@RestController
+@RequestMapping(&quot;echo&quot;)
+public class EchoController {
+    @GetMapping(&quot;gender-id-code&quot;)
+    public String genderIdCode(@RequestParam(&quot;gender&quot;) GenderIdCodeEnum gender) {
+        return gender.name();
+    }
+}</code></pre>
+<p>准备测试用例测试：</p>
+<pre><code class="java">@SpringBootTest(classes = SpringEnumParamApplication.class)
+@AutoConfigureMockMvc
+class EchoControllerTest {
+    @Autowired
+    private MockMvc mockMvc;
+
+    @ParameterizedTest
+    @ValueSource(strings = {&quot;MALE&quot;, &quot;male&quot;, &quot;1&quot;})
+    void genderIdCode(String gender) throws Exception {
+        final String result = mockMvc.perform(
+                MockMvcRequestBuilders.get(&quot;/echo/gender-id-code&quot;)
+                        .param(&quot;gender&quot;, gender)
+        )
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Assertions.assertEquals(&quot;MALE&quot;, result);
+    }
+}</code></pre>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>实现枚举参数并不难，只要按照 Spring 的扩展规范实现即可。需要注意的是，注意枚举类中唯一的 id 和 code。</p>
+<p>本文是应用，下篇说一下原理。以及 http body 形式请求的枚举转换逻辑。</p>
+<p>关注公众号「看山的小屋」回复 spring 获取源码。源码中完整定义了三种枚举形式。</p>
+<hr>
+<p>你好，我是看山，公众号：看山的小屋，10 年老猿，开源贡献者。游于码界，戏享人生。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/">Spring 实战：优雅的使用枚举参数</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/article/details/103794938" target="_blank" rel="noopener">Spring 实战：优雅的使用枚举参数</a></p>
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/spring/">spring</a>
+            
+            <a href="/tags/enum/">enum</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/java-date-string-valid-date/">
+                <i class="icon-next">看山聊 Java：检查日期字符串是否合法</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://www.howardliu.cn/images/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/go/" style="font-size: 15px;">go</a> <a href="/tags/开发指南/" style="font-size: 15px;">开发指南</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/网络，概念，http/" style="font-size: 15px;">网络，概念，http</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/http-状态码/" style="font-size: 15px;">http 状态码</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/Date/" style="font-size: 15px;">Date</a> <a href="/tags/Time/" style="font-size: 15px;">Time</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/jdk8/" style="font-size: 15px;">jdk8</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/范式/" style="font-size: 15px;">范式</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a>
+    </div>
+</div>
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/spring-enum-params/">Spring 实战：优雅的使用枚举参数</a></li><li class="post-list-item"><a class="post-list-link" href="/java-date-string-valid-date/">看山聊 Java：检查日期字符串是否合法</a></li><li class="post-list-item"><a class="post-list-link" href="/manage-install/">《Go 开发指南》-管理 Go 环境</a></li><li class="post-list-item"><a class="post-list-link" href="/install-go/">《Go 开发指南》-快速安装 Go 环境</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-unit-test/">SpringBoot 实战：不再害怕需求变更</a></li><li class="post-list-item"><a class="post-list-link" href="/about-the-fenix-project/">好书不是通过价格可以衡量的，比如这本</a></li><li class="post-list-item"><a class="post-list-link" href="/relax-and-run/">想躺平不是错</a></li><li class="post-list-item"><a class="post-list-link" href="/java-date-time-migrating-to-jsr310/">看山聊 Java：使用 Java8 中的时间类</a></li><li class="post-list-item"><a class="post-list-link" href="/arraylist-is-not-thread-safe-2/">如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）</a></li><li class="post-list-item"><a class="post-list-link" href="/java-date-to-localdate-and-localdatetime/">看山聊 Java：Date 与 LocalDate 或 LocalDateTime 互相转换</a></li></ul>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">2021年08月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">2021年07月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2021</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
