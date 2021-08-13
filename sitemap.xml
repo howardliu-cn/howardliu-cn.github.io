@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/springboot-enum-params-principle/</loc>
+    
+    <lastmod>2021-08-13T13:30:21.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/spring-enum-params/</loc>
     
     <lastmod>2021-08-10T14:40:04.000Z</lastmod>
