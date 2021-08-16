@@ -16,9 +16,6 @@
     <loc>https://www.howardliu.cn/install-go/</loc>
     <lastmod>2021-07-24</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/springboot-action-unit-test/</loc>
-    <lastmod>2021-07-22</lastmod>
-  </url>  <url>
     <loc>https://www.howardliu.cn/about-the-fenix-project/</loc>
     <lastmod>2021-07-12</lastmod>
   </url>  <url>
@@ -250,10 +247,10 @@
     <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
+    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
+    <loc>https://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/disable-bps-in-eos-project/</loc>

@@ -144,32 +144,6 @@
   </entry>
   
   <entry>
-    <title>SpringBoot 实战：不再害怕需求变更</title>
-    <link href="https://www.howardliu.cn/springboot-action-unit-test/"/>
-    <id>https://www.howardliu.cn/springboot-action-unit-test/</id>
-    <published>2021-07-22T14:30:27.000Z</published>
-    <updated>2021-07-22T14:30:27.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>你好，我是看山。</p><p>今天聊聊</p><a id="more"></a><h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><hr><p>你好，我是看山，公众号：看山的小屋，10 年老猿，开源贡献者。游于码界，戏享人生。</p><p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/"></a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/article/details/103794938" target="_blank" rel="noopener"></a></p><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;你好，我是看山。&lt;/p&gt;
-&lt;p&gt;今天聊聊&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="springboot" scheme="https://www.howardliu.cn/categories/springboot/"/>
-    
-    
-      <category term="实战" scheme="https://www.howardliu.cn/tags/%E5%AE%9E%E6%88%98/"/>
-    
-      <category term="SpringBoot" scheme="https://www.howardliu.cn/tags/SpringBoot/"/>
-    
-  </entry>
-  
-  <entry>
     <title>好书不是通过价格可以衡量的，比如这本</title>
     <link href="https://www.howardliu.cn/about-the-fenix-project/"/>
     <id>https://www.howardliu.cn/about-the-fenix-project/</id>
@@ -402,9 +376,9 @@
     
       <category term="java" scheme="https://www.howardliu.cn/tags/java/"/>
     
-      <category term="stream" scheme="https://www.howardliu.cn/tags/stream/"/>
-    
       <category term="jdk8" scheme="https://www.howardliu.cn/tags/jdk8/"/>
+    
+      <category term="stream" scheme="https://www.howardliu.cn/tags/stream/"/>
     
       <category term="optional" scheme="https://www.howardliu.cn/tags/optional/"/>
     
@@ -431,9 +405,9 @@
     
       <category term="java" scheme="https://www.howardliu.cn/tags/java/"/>
     
-      <category term="JDK8" scheme="https://www.howardliu.cn/tags/JDK8/"/>
-    
       <category term="stream" scheme="https://www.howardliu.cn/tags/stream/"/>
+    
+      <category term="JDK8" scheme="https://www.howardliu.cn/tags/JDK8/"/>
     
       <category term="collectors" scheme="https://www.howardliu.cn/tags/collectors/"/>
     
@@ -510,9 +484,9 @@
       <category term="spring" scheme="https://www.howardliu.cn/categories/spring/"/>
     
     
-      <category term="BeanPostProcessor" scheme="https://www.howardliu.cn/tags/BeanPostProcessor/"/>
-    
       <category term="实战" scheme="https://www.howardliu.cn/tags/%E5%AE%9E%E6%88%98/"/>
+    
+      <category term="BeanPostProcessor" scheme="https://www.howardliu.cn/tags/BeanPostProcessor/"/>
     
   </entry>
   
@@ -540,6 +514,33 @@
       <category term="concurrency" scheme="https://www.howardliu.cn/tags/concurrency/"/>
     
       <category term="thread" scheme="https://www.howardliu.cn/tags/thread/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java 并发基础（一）：synchronized 锁同步</title>
+    <link href="https://www.howardliu.cn/java-concurrency-synchronized/"/>
+    <id>https://www.howardliu.cn/java-concurrency-synchronized/</id>
+    <published>2021-03-28T07:55:40.000Z</published>
+    <updated>2021-03-28T07:55:40.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="http://static.howardliu.cn/java/seagull-5884998_1920.jpg" alt="Java 并发基础（一）：synchronized 锁同步"></p><p>你好，我是看山。</p><p>synchronized 是 java 内置的同步锁实现，一个关键字实现对共享资源的锁定。synchronized 有 3 种使用场景，场景不同，加锁对象也不同：</p><ol><li>普通方法：锁对象是当前实例对象</li><li>静态方法：锁对象是类的 Class 对象</li><li>方法块：锁对象是 synchronized 括号中的对象</li></ol><a id="more"></a><h2 id="synchronized-实现原理"><a href="#synchronized-实现原理" class="headerlink" title="synchronized 实现原理"></a>synchronized 实现原理</h2><p>synchronized 是通过进入和退出 Monitor 对象实现锁机制，代码块通过一对 monitorenter/monitorexit 指令实现。在编译后，monitorenter 指令插入到同步代码块的开始位置，monitorexit 指令插入到方法结束和异常处，JVM 要保证 monitorenter 和 monitorexit 成对出现。任何对象都有一个 Monitor 与之关联，当且仅当一个 Monitor 被持有后，它将处于锁状态。</p><p>在执行 monitorenter 时，首先尝试获取对象的锁，如果对象没有被锁定或者当前线程持有锁，锁的计数器加 1；相应的，在执行 monitorexit 指令时，将锁的计数器减 1。当计数器减到 0 时，锁释放。如果在 monitorenter 获取锁失败，当前线程会被阻塞，直到对象锁被释放。</p><p>在 JDK6 之前，Monitor 的实现是依靠操作系统内部的互斥锁实现（一般使用的是 Mutex Lock 实现），线程阻塞会进行用户态和内核态的切换，所以同步操作是一个无差别的重量级锁。</p><p>后来，JDK 对 synchronized 进行升级，为了避免线程阻塞时在用户态与内核态之间切换线程，会在操作系统阻塞线程前，加入自旋操作。然后还实现 3 种不同的 Monitor：偏向锁（Biased Locking）、轻量级锁（Lightweight Locking）、重量级锁。在 JDK6 之后，synchronized 的性能得到很大的提升，相比于 ReentrantLock 而言，性能并不差，只不过 ReentrantLock 使用起来更加灵活。</p><h2 id="适应性自旋（Adaptive-Spinning）"><a href="#适应性自旋（Adaptive-Spinning）" class="headerlink" title="适应性自旋（Adaptive Spinning）"></a>适应性自旋（Adaptive Spinning）</h2><p>synchronized 对性能影响最大的是阻塞的实现，挂起线程和恢复线程都需要操作系统帮助完成，需要从用户态转到内核态，状态转换需要耗费很多 CPU 时间。</p><p>在我们大多数的应用中，共享数据的锁定状态只会持续很短的一段时间，为了这段时间挂起和回复线程消耗的时间不值得。而且，现在大多数的处理器都是多核处理器，如果让后一个线程再等一会，不释放 CPU，等前一个释放锁，后一个线程立马获取锁执行任务就行。这就是所谓的自旋，让线程执行一个忙循环，自己在原地转一会，每转一圈看看锁释放没有，释放了直接获取锁，没有释放就再转一圈。</p><p>自旋锁是在 JDK 1.4.2 引入（使用<code>-XX:+UseSpinning</code>参数打开），JDK 1.6 默认打开。自旋锁不能代替阻塞，因为自旋等待虽然避免了线程切换的开销，但是它要占用 CPU 时间，如果锁占用时间短，自旋等待效果挺好，反之，则是性能浪费。所以在 JDK 1.6 中引入了自适应自旋锁：如果同一个锁对象，自旋等待刚成功，且持有锁的线程正在运行，那本次自旋很有可能成功，会允许自旋等待持续时间长一些。反之，如果对于某个锁，自旋很少成功，那之后很有可能直接省略自旋过程，避免浪费 CPU 资源。</p><h2 id="锁升级"><a href="#锁升级" class="headerlink" title="锁升级"></a>锁升级</h2><h3 id="Java-对象头"><a href="#Java-对象头" class="headerlink" title="Java 对象头"></a>Java 对象头</h3><p>synchronized 用的锁存在于 Java 对象头里，对象头里的 Mark Word 里存储的数据会随标志位的变化而变化，变化如下：</p><p><img src="http://static.howardliu.cn/java/F7DE8310-E000-4B64-A3AA-9463B483BDF1.jpg" alt="Java 对象头 Mark Word"></p><h3 id="偏向锁（Biased-Locking）"><a href="#偏向锁（Biased-Locking）" class="headerlink" title="偏向锁（Biased Locking）"></a>偏向锁（Biased Locking）</h3><p>大多数情况下，锁不仅不存在多线程竞争，而且总是由同一线程多次获得，为了让线程获得锁的代价更低，引入偏向锁。</p><p>当一个线程访问同步块并获取锁时，会在对象头和栈帧中的锁记录里存储锁偏向的线程 ID，以后该线程在进入和退出同步块时不需要进行 CAS 操作来加锁和解锁，只需简单地测试一下对象头的 Mark Word 里是否存储着指向当前线程的偏向锁。引入偏向锁是为了在无多线程竞争的情况下尽量减少不必要的轻量级锁执行路径，因为轻量级锁的获取及释放依赖多次 CAS 原子指令，而偏向锁只需要在置换 ThreadID 的时候依赖一次 CAS 原子指令（由于一旦出现多线程竞争的情况就必须撤销偏向锁，所以偏向锁的撤销操作的性能损耗必须小于节省下来的 CAS 原子指令的性能消耗）。</p><h4 id="偏向锁获取"><a href="#偏向锁获取" class="headerlink" title="偏向锁获取"></a>偏向锁获取</h4><ol><li>当锁对象第一次被线程获取时，对象头的标志位设为 01，偏向模式设为 1，表示进入偏向模式。</li><li>测试线程 ID 是否指向当前线程，如果是，执行同步代码块，如果否，进入 3</li><li>使用 CAS 操作把获得到的这个锁的线程 ID 记录在对象的 Mark Word 中。如果成功，执行同步代码块，如果失败，说明存在过其他线程持有锁对象的偏向锁，开始尝试当前线程获取偏向锁</li><li>当到达全局安全点时（没有字节码正在执行），会暂停拥有偏向锁的线程，检查线程状态。如果线程已经结束，则将对象头设置成无锁状态（标志位为“01”），然后重新偏向新的线程；如果线程仍然活着，撤销偏向锁后升级到轻量级锁状态（标志位为“00”），此时轻量级锁由原持有偏向锁的线程持有，继续执行其同步代码，而正在竞争的线程会进入自旋等待获得该轻量级锁。</li></ol><h4 id="偏向锁释放"><a href="#偏向锁释放" class="headerlink" title="偏向锁释放"></a>偏向锁释放</h4><p>偏向锁的释放采用的是惰性释放机制：只有等到竞争出现，才释放偏向锁。释放过程就是上面说的第 4 步，这里不再赘述。</p><h4 id="关闭偏向锁"><a href="#关闭偏向锁" class="headerlink" title="关闭偏向锁"></a>关闭偏向锁</h4><p>偏斜锁并不适合所有应用场景，撤销操作（revoke）是比较重的行为，只有当存在较多不会真正竞争的同步块时，才能体现出明显改善。实践中对于偏斜锁的一直是有争议的，有人甚至认为，当你需要大量使用并发类库时，往往意味着你不需要偏斜锁。</p><p>所以如果你确定应用程序里的锁通常情况下处于竞争状态，可以通过 JVM 参数关闭偏向锁：<code>-XX:-UseBiasedLocking=false</code>，那么程序默认会进入轻量级锁状态。</p><h3 id="轻量级锁（Lightweight-Locking）"><a href="#轻量级锁（Lightweight-Locking）" class="headerlink" title="轻量级锁（Lightweight Locking）"></a>轻量级锁（Lightweight Locking）</h3><p>轻量级锁不是用来代替重量级锁的，它的初衷是在没有多线程竞争的前提下，减少传统的重量级锁使用操作系统互斥量产生的性能损耗。</p><h4 id="轻量级锁获取"><a href="#轻量级锁获取" class="headerlink" title="轻量级锁获取"></a>轻量级锁获取</h4><ol><li>如果同步对象锁状态为无锁状态（锁标志位为“01”状态，是否为偏向锁为“0”），虚拟机首先将在当前线程的栈帧中建立一个名为锁记录（Lock Record）的空间，用于存储锁对象目前的 Mark Word 的拷贝，官方称之为 Displaced Mark Word。这时候线程堆栈与对象头的状态如下图所示：<br> <img src="http://static.howardliu.cn/java/C9DCD644-0694-4FF3-8E2E-0FCEA7C0CB5E.png" alt="Lock Record"></li><li>拷贝对象头中的 Mark Word 复制到锁记录（Lock Record）中。</li><li>拷贝成功后，虚拟机将使用 CAS 操作尝试将对象的 Mark Word 更新为指向 Lock Record 的指针，并将 Lock record 里的 owner 指针指向 object mark word。</li><li>如果成功，当前线程持有该对象锁，将对象头的 Mark Word 锁标志位设置为“00”，表示对象处于轻量级锁定状态，执行同步代码块。这时候线程堆栈与对象头的状态如下图所示：<br><img src="http://static.howardliu.cn/java/3F5C415F-2953-4987-A38E-BB4AB97600AB.png" alt="Lock Record"></li><li>如果更新失败，检查对象头的 Mark Word 是否指向当前线程的栈帧，如果是，说明当前线程拥有锁，直接执行同步代码块。</li><li>如果否，说明多个线程竞争锁，如果当前只有一个等待线程，通过自旋尝试获取锁。当自旋超过一定次数，或又来一个线程竞争锁，轻量级锁膨胀为重量级锁。重量级锁使除了拥有锁的线程以外的线程都阻塞，防止 CPU 空转，锁标志的状态值变为“10”，Mark Word 中存储的就是指向重量级锁（互斥量）的指针，后面等待锁的线程也要进入阻塞状态。</li></ol><h4 id="轻量级锁解锁"><a href="#轻量级锁解锁" class="headerlink" title="轻量级锁解锁"></a>轻量级锁解锁</h4><p>轻量级锁解锁的时机是，当前线程同步块执行完毕。</p><ol><li>通过 CAS 操作尝试把线程中复制的 Displaced Mark Word 对象替换当前的 Mark Word。</li><li>如果成功，整个同步过程完成</li><li>如果失败，说明存在竞争，且锁膨胀为重量级锁。释放锁的同时，会唤醒被挂起的线程。</li></ol><h3 id="重量级锁"><a href="#重量级锁" class="headerlink" title="重量级锁"></a>重量级锁</h3><p>轻量级锁适应的场景是线程近乎交替执行同步块的情况，如果存在同一时间访问相同锁对象时（第一个线程持有锁，第二个线程自旋超过一定次数），轻量级锁会膨胀为重量级锁，Mark Word 的锁标记位更新为 10，Mark Word 指向互斥量（重量级锁）。</p><p>重量级锁是通过对象内部的一个叫做监视器锁（monitor）来实现的，监视器锁本质又是依赖于底层的操作系统的 Mutex Lock（互斥锁）。操作系统实现线程之间的切换需要从用户态转换到核心态，这个成本非常高，状态之间的转换需要相对比较长的时间，这就是为什么 JDK 1.6 之前，synchronized 重量级锁效率低的原因。</p><p>下图是偏向锁、轻量级锁、重量级锁之间转换对象头 Mark Word 数据转变：</p><p><img src="http://static.howardliu.cn/java/640.png" alt="偏向锁、轻量级锁、重量级锁之间转换 "></p><p>网上有一个比较全的锁升级过程：</p><p><img src="http://static.howardliu.cn/java/synchronized.png" alt="锁升级过程"></p><h2 id="锁消除（Lock-Elimination）"><a href="#锁消除（Lock-Elimination）" class="headerlink" title="锁消除（Lock Elimination）"></a>锁消除（Lock Elimination）</h2><p>锁消除说的是虚拟机即时编译器在运行过程中，对于一些同步代码，如果检测到不可能存在共享数据竞争情况，就会删除锁。也就是说，即时编译器根据情况删除不必要的加锁操作。</p><p>锁消除的依据是逃逸分析。简单地说，逃逸分析就是分析对象的动态作用域。分三种情况：</p><ul><li>不逃逸：对象的作用域只在本线程本方法</li><li>方法逃逸：对象在方法内定义后，被外部方法所引用</li><li>线程逃逸：对象在方法内定义后，被外部线程所引用</li></ul><p>即时编译器会针对对象的不同情况进行优化处理：</p><ul><li>对象栈上分配（Stack Allocations，HotSpot 不支持）：直接在栈上创建对象。</li><li>标量替换（Scalar Replacement）：将对象拆散，直接创建被方法使用的成员变量。前提是对象不会逃逸出方法范围。</li><li>同步消除（Synchronization Elimination）：就是锁消除，前提是对象不会逃逸出线程。</li></ul><p>对于锁消除来说，就是逃逸分析中，那些不会逃出线程的加锁对象，就可以直接删除同步锁。</p><p>通过代码看一个例子：</p><pre><code class="java">public void elimination1() {    final Object lock = new Object();    synchronized (lock) {        System.out.println(&quot;lock 对象没有只会作用域本线程，所以会锁消除。&quot;);    }}public String elimination2() {    final StringBuffer sb = new StringBuffer();    sb.append(&quot;Hello, &quot;).append(&quot;World!&quot;);    return sb.toString();}public StringBuffer notElimination() {    final StringBuffer sb = new StringBuffer();    sb.append(&quot;Hello, &quot;).append(&quot;World!&quot;);    return sb;}</code></pre><p><code>elimination1()</code>中的锁对象<code>lock</code>作用域只是方法内，没有逃逸出线程，<code>elimination2()</code>中的<code>sb</code>也就这样，所以这两个方法的同步锁都会被消除。但是<code>notElimination()</code>方法中的<code>sb</code>是方法返回值，可能会被其他方法修改或者其他线程修改，所以，单看这个方法，不会消除锁，还得看调用方法。</p><h2 id="锁粗化（Lock-Coarsening）"><a href="#锁粗化（Lock-Coarsening）" class="headerlink" title="锁粗化（Lock Coarsening）"></a>锁粗化（Lock Coarsening）</h2><p>原则上，我们在编写代码的时候，要将同步块作用域的作用范围限制的尽量小。使得需要同步的操作数量尽量少，当存在锁竞争时，等待线程尽快获取锁。但是有时候，如果一系列的连续操作都对同一个对象反复加锁和解锁，甚至加锁操作是出现在循环体中的，那即使没有出现线程竞争，频繁地进行互斥同步操作也会导致不必要的性能损耗。如果虚拟机检测到有一串零碎的操作都是对同一对象的加锁，将会把加锁同步的范围扩展（粗化）到整个操作序列的外部。</p><p>比如上面例子中的<code>elimination2()</code>方法中，<code>StringBuffer</code>的<code>append</code>是同步方法，频繁操作时，会进行锁粗化，最后结果会类似于（只是类似，不是真实情况）：</p><pre><code class="java">public String elimination2() {    final StringBuilder sb = new StringBuilder();    synchronized (sb) {        sb.append(&quot;Hello, &quot;).append(&quot;World!&quot;);        return sb.toString();    }}</code></pre><p>或者</p><pre><code class="java">public synchronized String elimination3() {    final StringBuilder sb = new StringBuilder();    sb.append(&quot;Hello, &quot;).append(&quot;World!&quot;);    return sb.toString();}</code></pre><h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><ol><li>同步操作中影响性能的有两点：<ol><li>加锁解锁过程需要额外操作</li><li>用户态与内核态之间转换代价比较大</li></ol></li><li>synchronized 在 JDK 1.6 中有大量优化：分级锁（偏向锁、轻量级锁、重量级锁）、锁消除、锁粗化等。</li><li>synchronized 复用了对象头的 Mark Word 状态位，实现不同等级的锁实现。</li></ol><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul><li>《深入理解 Java 虚拟机》</li><li>《Java 并发编程的艺术》</li></ul><h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul><li><a href="https://www.howardliu.cn/java-concurrency-synchronized/">Java 并发基础（一）：synchronized 锁同步</a></li><li><a href="https://www.howardliu.cn/main-thread-waiting-for-the-end-of-subthread/">Java 并发基础（二）：主线程等待子线程结束</a></li><li><a href="https://www.howardliu.cn/talk-about-CountDownLatch-again/">Java 并发基础（三）：再谈 CountDownLatch</a></li><li><a href="https://www.howardliu.cn/talk-about-CyclicBarrier-again/">Java 并发基础（四）：再谈 CyclicBarrier</a></li><li><a href="https://www.howardliu.cn/java-concurrency-ordered-thread-print/">Java 并发基础（五）：面试实战之多线程顺序打印</a></li></ul><hr><p>你好，我是看山，公众号：看山的小屋，10 年老猿，开源贡献者。游于码界，戏享人生。</p><p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/java-concurrency-synchronized/">Java 并发基础（一）：synchronized 锁同步</a><br>CSDN 主页：<a href="http://blog.csdn.net/liuxinghao" target="_blank" rel="noopener">http://blog.csdn.net/liuxinghao</a><br>CSDN 博文：<a href="https://blog.csdn.net/liuxinghao/article/details/115286598" target="_blank" rel="noopener">Java 并发基础（一）：synchronized 锁同步</a></p><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
+    
+    <summary type="html">
+    
+      synchronized 是 java 内置的同步锁实现，一个关键字实现对共享资源的锁定。
+    
+    </summary>
+    
+    
+      <category term="java" scheme="https://www.howardliu.cn/categories/java/"/>
+    
+    
+      <category term="java" scheme="https://www.howardliu.cn/tags/java/"/>
+    
+      <category term="concurrency" scheme="https://www.howardliu.cn/tags/concurrency/"/>
+    
+      <category term="synchronized" scheme="https://www.howardliu.cn/tags/synchronized/"/>
     
   </entry>
   
