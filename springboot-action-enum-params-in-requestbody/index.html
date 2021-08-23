@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="该图片由Christian_Crowd在Pixabay上发布  你好，我是看山。 前文说到 优雅的使用枚举参数 和 实现原理，本文继续说一下如何在 RequestBody 中优雅使用枚举。 本文先上实战，说一下如何实现。在 优雅的使用枚举参数 代码的基础上，我们继续实现。如果想要获取源码，可以关注公号「看山的小屋」，回复 spring 即可。">
+<meta name="keywords" content="spring,Converter,ConverterFactory,RequestBody,Jackson,JsonCreator,Mode.DELEGATING,PROPERTIES,DISABLED,MappingJackson2HttpMessageConverter">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数">
+<meta property="og:url" content="https://www.howardliu.cn/springboot-action-enum-params-in-requestbody/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="该图片由Christian_Crowd在Pixabay上发布  你好，我是看山。 前文说到 优雅的使用枚举参数 和 实现原理，本文继续说一下如何在 RequestBody 中优雅使用枚举。 本文先上实战，说一下如何实现。在 优雅的使用枚举参数 代码的基础上，我们继续实现。如果想要获取源码，可以关注公号「看山的小屋」，回复 spring 即可。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://static.howardliu.cn/macroperspective-6558526_1920.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-08-22T07:45:44.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数">
+<meta name="twitter:description" content="该图片由Christian_Crowd在Pixabay上发布  你好，我是看山。 前文说到 优雅的使用枚举参数 和 实现原理，本文继续说一下如何在 RequestBody 中优雅使用枚举。 本文先上实战，说一下如何实现。在 优雅的使用枚举参数 代码的基础上，我们继续实现。如果想要获取源码，可以关注公号「看山的小屋」，回复 spring 即可。">
+<meta name="twitter:image" content="http://static.howardliu.cn/macroperspective-6558526_1920.jpg">
+
+<meta name="keywords" content="spring,Converter,ConverterFactory,RequestBody,Jackson,JsonCreator,Mode.DELEGATING,PROPERTIES,DISABLED,MappingJackson2HttpMessageConverter">
+
+
+<meta name="description" content="该图片由Christian_Crowd在Pixabay上发布
+
+你好，我是看山。
+前文说到 优雅的使用枚举参数 和 实现原理，本文继续说一下如何在 RequestBody 中优雅使用枚举。
+本文先上实战，说一下如何实现。在 优雅的使用枚举参数 代码的基础上，我们继续实现。如果想要获取源码，可以关注公">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/styles/vs2015.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/springboot-action-enum-params-in-requestbody/">SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-08-22</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/springboot-action-enum-params-in-requestbody/" class="leancloud_visitors" data-flag-title="SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#确认需求"><span class="toc-text">确认需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#定义枚举和对象"><span class="toc-text">定义枚举和对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现转换逻辑"><span class="toc-text">实现转换逻辑</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#方案一：精准攻击"><span class="toc-text">方案一：精准攻击</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方案二：全范围攻击"><span class="toc-text">方案二：全范围攻击</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#测试"><span class="toc-text">测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="http://static.howardliu.cn/macroperspective-6558526_1920.jpg" alt="SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数"></p>
+<blockquote>
+<p>该图片由<a href="https://pixabay.com/zh/users/christian_crowd-22911196/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6558526" target="_blank" rel="noopener">Christian_Crowd</a>在<a href="https://pixabay.com/zh/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6558526" target="_blank" rel="noopener">Pixabay</a>上发布</p>
+</blockquote>
+<p>你好，我是看山。</p>
+<p>前文说到 <a href="https://www.howardliu.cn/spring-enum-params/">优雅的使用枚举参数</a> 和 <a href="https://www.howardliu.cn/springboot-enum-params-principle/">实现原理</a>，本文继续说一下如何在 RequestBody 中优雅使用枚举。</p>
+<p>本文先上实战，说一下如何实现。在 <a href="https://www.howardliu.cn/spring-enum-params/">优雅的使用枚举参数</a> 代码的基础上，我们继续实现。如果想要获取源码，可以关注公号「看山的小屋」，回复 spring 即可。</p>
+<a id="more"></a>
+
+<h2 id="确认需求"><a href="#确认需求" class="headerlink" title="确认需求"></a>确认需求</h2><p>需求与前文类似，只不过这里需要是在 RequestBody 中使用。与前文不同的是，这种请求是通过 Http Body 的方式传输到后端，通常是 json 或 xml 格式，Spring 默认借助 Jackson 反序列化为对象。</p>
+<p>同样的，我们需要在枚举中定义 int 类型的 id、String 类型的 code，id 取值不限于序号（即从 0 开始的 orinal 数据），code 不限于 name。客户端请求过程中，可以传 id，可以传 code，也可以传 name。服务端只需要在对象中定义一个枚举参数，不需要额外的转换，即可得到枚举值。</p>
+<p>好了，接下来我们定义一下枚举对象。</p>
+<h2 id="定义枚举和对象"><a href="#定义枚举和对象" class="headerlink" title="定义枚举和对象"></a>定义枚举和对象</h2><p>先定义我们的枚举类<code>GenderIdCodeEnum</code>，包含 id 和 code 两个属性：</p>
+<pre><code class="java">public enum GenderIdCodeEnum implements IdCodeBaseEnum {
+    MALE(1, &quot;male&quot;),
+    FEMALE(2, &quot;female&quot;);
+
+    private final Integer id;
+    private final String code;
+
+    GenderIdCodeEnum(Integer id, String code) {
+        this.id = id;
+        this.code = code;
+    }
+
+    @Override
+    public String getCode() {
+        return code;
+    }
+
+    @Override
+    public Integer getId() {
+        return id;
+    }
+}</code></pre>
+<p>这个枚举类的要求与前文一致，不清楚的可以再去看一下。</p>
+<p>在定义一个包装类<code>GenderIdCodeRequestBody</code>，用于接收 json 数据的请求体：</p>
+<pre><code class="java">@Data
+public class GenderIdCodeRequestBody {
+    private String name;
+    private GenderIdCodeEnum gender;
+    private long timestamp;
+}</code></pre>
+<p>除了<code>GenderIdCodeEnum</code>参数外，其他都是示例，所以随便定义一下。</p>
+<h2 id="实现转换逻辑"><a href="#实现转换逻辑" class="headerlink" title="实现转换逻辑"></a>实现转换逻辑</h2><p>前奏铺垫好，接下来入正题了。Jackson 提供了两种方案：</p>
+<ul>
+<li>方案一：精准攻击，指定需要转换的字段，不影响其他类对象中的字段</li>
+<li>方案二：全范围攻击，所有借助 Jackson 反序列化的枚举字段，全部具备自动转换功能</li>
+</ul>
+<h3 id="方案一：精准攻击"><a href="#方案一：精准攻击" class="headerlink" title="方案一：精准攻击"></a>方案一：精准攻击</h3><p>这种方案中，我们首先需要实现<code>JsonDeserialize</code>抽象类：</p>
+<pre><code class="java">public class IdCodeToEnumDeserializer extends JsonDeserializer&lt;BaseEnum&gt; {
+    @Override
+    public BaseEnum deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
+            throws IOException {
+        final String param = jsonParser.getText();// 1
+        final JsonStreamContext parsingContext = jsonParser.getParsingContext();// 2
+        final String currentName = parsingContext.getCurrentName();// 3
+        final Object currentValue = parsingContext.getCurrentValue();// 4
+        try {
+            final Field declaredField = currentValue.getClass().getDeclaredField(currentName);// 5
+            final Class&lt;?&gt; targetType = declaredField.getType();// 6
+            final Method createMethod = targetType.getDeclaredMethod(&quot;create&quot;, Object.class);// 7
+            return (BaseEnum) createMethod.invoke(null, param);// 8
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | NoSuchFieldException e) {
+            throw new CodeBaseException(ErrorResponseEnum.PARAMS_ENUM_NOT_MATCH, new Object[] {param}, &quot;&quot;, e);
+        }
+    }
+}</code></pre>
+<p>然后在指定枚举字段上定义<code>@JsonDeserialize</code>注解，比如：</p>
+<pre><code class="java">@JsonDeserialize(using = IdCodeToEnumDeserializer.class)
+private GenderIdCodeEnum gender;</code></pre>
+<p>具体说一下每行的作用：</p>
+<ol>
+<li>获取参数值。根据需要，此处可能是 id、code 或 name，也就是源值，需要将其转换为枚举；</li>
+<li>获取转换上线文，这个是为 3、4 步做准备的；</li>
+<li>获取标记<code>@JsonDeserialize</code>注解的字段，此时<code>currentName</code>的值是<code>gender</code>；</li>
+<li>获取包装对象，也就是<code>GenderIdCodeRequestBody</code>对象；</li>
+<li>根据包装对象的<code>Class</code>对象，以及字段名<code>gender</code>获取<code>Field</code>对象，为第 5 步做准备；</li>
+<li>获取<code>gender</code>字段对应的枚举类型，也即是<code>GenderIdCodeEnum</code>。之所以这样做，是要实现一个通用的反序列化类；</li>
+<li>这里是写死的一种实现，就是在枚举类中，需要定义一个静态方法，方法名是<code>create</code>，请求参数是<code>Object</code>；</li>
+<li>通过反射调用<code>create</code>方法，将第一步获取的请求参数传入。</li>
+</ol>
+<p>我们来看一下枚举类中定义的<code>create</code>方法：</p>
+<pre><code class="java">public static GenderIdCodeEnum create(Object code) {
+    final String stringCode = code.toString();
+    final Integer intCode = BaseEnum.adapter(stringCode);
+    for (GenderIdCodeEnum item : values()) {
+        if (Objects.equals(stringCode, item.name())) {
+            return item;
+        }
+        if (Objects.equals(item.getCode(), stringCode)) {
+            return item;
+        }
+        if (Objects.equals(item.getId(), intCode)) {
+            return item;
+        }
+    }
+    return null;
+}</code></pre>
+<p>为了性能考虑，我们可以提前定义三组 map，分别以 id、code、name 为 key，以枚举值为 value，这样就可以通过 O(1) 的时间复杂度返回了。可以参考前文的<code>Converter</code>类的实现逻辑。</p>
+<p>这样，我们就可以实现精准转换了。</p>
+<h3 id="方案二：全范围攻击"><a href="#方案二：全范围攻击" class="headerlink" title="方案二：全范围攻击"></a>方案二：全范围攻击</h3><p>这种方案是全范围攻击了，只要是 Jackson 参与的反序列化，只要其中有目标枚举参数，就会受到这种进入这种方案的逻辑中。这种方案是在枚举类中定义一个静态转换方法，通过<code>@JsonCreator</code>注解注释，Jackson 就会自动转换了。</p>
+<p>这个方法的定义与方案一中的<code>create</code>方法完全一致，所以只需要在<code>create</code>方法上加上注解即可：</p>
+<pre><code class="java">@JsonCreator(mode = Mode.DELEGATING)
+public static GenderIdCodeEnum create(Object code) {
+    final String stringCode = code.toString();
+    final Integer intCode = BaseEnum.adapter(stringCode);
+    for (GenderIdCodeEnum item : values()) {
+        if (Objects.equals(stringCode, item.name())) {
+            return item;
+        }
+        if (Objects.equals(item.getCode(), stringCode)) {
+            return item;
+        }
+        if (Objects.equals(item.getId(), intCode)) {
+            return item;
+        }
+    }
+    return null;
+}</code></pre>
+<p>其中<code>Mode</code>类有四个值：<code>DEFAULT</code>、<code>DELEGATING</code>、<code>PROPERTIES</code>、<code>DISABLED</code>，这四种的差别会在原理篇中说明。还是那句话，对于应用类技术，我们可以先知其然，再知其所以然，也一定要知其所以然。</p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>先定义一个 controller 方法：</p>
+<pre><code class="java">@PostMapping(&quot;gender-id-code-request-body&quot;)
+public GenderIdCodeRequestBody bodyGenderIdCode(@RequestBody GenderIdCodeRequestBody genderRequest) {
+    genderRequest.setTimestamp(System.currentTimeMillis());
+    return genderRequest;
+}</code></pre>
+<p>然后定义测试用例，还是借助 JUnit5：</p>
+<pre><code class="java">@ParameterizedTest
+@ValueSource(strings = {&quot;\&quot;MALE\&quot;&quot;, &quot;\&quot;male\&quot;&quot;, &quot;\&quot;1\&quot;&quot;, &quot;1&quot;})
+void postGenderIdCode(String gender) throws Exception {
+    final String result = mockMvc.perform(
+            MockMvcRequestBuilders.post(&quot;/echo/gender-id-code-request-body&quot;)
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .accept(MediaType.APPLICATION_JSON_UTF8)
+                    .content(&quot;{\&quot;gender\&quot;: &quot; + gender + &quot;, \&quot;name\&quot;: \&quot;看山\&quot;}&quot;)
+    )
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andDo(MockMvcResultHandlers.print())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    final GenderIdCodeRequestBody genderRequest = objectMapper.readValue(result, GenderIdCodeRequestBody.class);
+    Assertions.assertEquals(GenderIdCodeEnum.MALE, genderRequest.getGender());
+    Assertions.assertEquals(&quot;看山&quot;, genderRequest.getName());
+    Assertions.assertTrue(genderRequest.getTimestamp() &gt; 0);
+}</code></pre>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>本文主要说明了如何在 RequestBody 中优雅的使用枚举参数，借助了 Jackson 的反序列化扩展，可以定制类型转换逻辑。碍于文章篇幅，没有罗列大段代码。关注公号「看山的小屋」回复 spring 可以获取源码。关注我，下一篇我们进入原理篇。</p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://www.howardliu.cn/springboot-action-gracefully-response/">SpringBoot 实战：一招实现结果的优雅响应</a></li>
+<li><a href="https://www.howardliu.cn/springboot-action-gracefully-response-exception/">SpringBoot 实战：如何优雅的处理异常</a></li>
+<li><a href="https://www.howardliu.cn/spring-beanpostprocessor/">SpringBoot 实战：通过 BeanPostProcessor 动态注入 ID 生成器</a></li>
+<li><a href="https://www.howardliu.cn/spring-request-recorder/">SpringBoot 实战：自定义 Filter 优雅获取请求参数和响应结果</a></li>
+<li><a href="https://www.howardliu.cn/spring-enum-params/">SpringBoot 实战：优雅的使用枚举参数</a></li>
+<li><a href="https://www.howardliu.cn/springboot-enum-params-principle/">SpringBoot 实战：优雅的使用枚举参数（原理篇）</a></li>
+<li><a href="https://www.howardliu.cn/springboot-action-enum-params-in-requestbody/">SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数</a></li>
+</ul>
+<hr>
+<p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/springboot-action-enum-params-in-requestbody/">SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数</a></p>
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/spring/">spring</a>
+            
+            <a href="/tags/enum/">enum</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/springboot-enum-params-principle/">
+                <i class="icon-next">SpringBoot 实战：优雅的使用枚举参数（原理篇）</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://www.howardliu.cn/images/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/实战/" style="font-size: 15px;">实战</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/go/" style="font-size: 15px;">go</a> <a href="/tags/开发指南/" style="font-size: 15px;">开发指南</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/网络，概念，http/" style="font-size: 15px;">网络，概念，http</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/http-状态码/" style="font-size: 15px;">http 状态码</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Date/" style="font-size: 15px;">Date</a> <a href="/tags/Time/" style="font-size: 15px;">Time</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jdk8/" style="font-size: 15px;">jdk8</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a>
+    </div>
+</div>
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/springboot-action-enum-params-in-requestbody/">SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-enum-params-principle/">SpringBoot 实战：优雅的使用枚举参数（原理篇）</a></li><li class="post-list-item"><a class="post-list-link" href="/spring-enum-params/">SpringBoot 实战：优雅的使用枚举参数</a></li><li class="post-list-item"><a class="post-list-link" href="/java-date-string-valid-date/">看山聊 Java：检查日期字符串是否合法</a></li><li class="post-list-item"><a class="post-list-link" href="/manage-install/">《Go 开发指南》-管理 Go 环境</a></li><li class="post-list-item"><a class="post-list-link" href="/install-go/">《Go 开发指南》-快速安装 Go 环境</a></li><li class="post-list-item"><a class="post-list-link" href="/about-the-fenix-project/">好书不是通过价格可以衡量的，比如这本</a></li><li class="post-list-item"><a class="post-list-link" href="/relax-and-run/">想躺平不是错</a></li><li class="post-list-item"><a class="post-list-link" href="/java-date-time-migrating-to-jsr310/">看山聊 Java：使用 Java8 中的时间类</a></li><li class="post-list-item"><a class="post-list-link" href="/arraylist-is-not-thread-safe-2/">如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）</a></li></ul>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">2021年08月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">2021年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2021</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

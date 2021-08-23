@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/springboot-action-enum-params-in-requestbody/</loc>
+    
+    <lastmod>2021-08-22T07:45:44.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/springboot-enum-params-principle/</loc>
     
     <lastmod>2021-08-13T13:30:21.000Z</lastmod>
@@ -562,14 +569,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
+    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
+    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
@@ -583,14 +590,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
+    <loc>https://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
+    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
