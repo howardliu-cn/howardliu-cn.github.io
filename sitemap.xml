@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/springboot-action-junit5-mockmvc-mockito/</loc>
+    
+    <lastmod>2021-09-11T14:30:27.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/springboot-action-enum-params-in-requestbody-principle/</loc>
     
     <lastmod>2021-08-28T08:39:56.000Z</lastmod>
@@ -247,14 +254,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/talk-about-CountDownLatch-again/</loc>
+    <loc>https://www.howardliu.cn/talk-about-CyclicBarrier-again/</loc>
     
     <lastmod>2021-05-12T08:25:28.027Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/talk-about-CyclicBarrier-again/</loc>
+    <loc>https://www.howardliu.cn/talk-about-CountDownLatch-again/</loc>
     
     <lastmod>2021-05-12T08:25:28.027Z</lastmod>
     
@@ -520,14 +527,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
+    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
+    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
@@ -576,14 +583,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
+    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
+    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
