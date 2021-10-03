@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>阿里开源的这个库，让 Excel 导出不再复杂（简简单单的写）||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="今天要说的EasyExcel阿里巴巴开源的Excel导出类库，是对POI的封装，实现了很多高级功能，并且留出扩展口，支持扩展定制化功能。打个比喻，POI相当于乐高积木，一个个的小积木可以自由组装，只能动手能力强，就可以随心所欲的组装。EasyExcel更像是把这些小积木提前组装好，想要搭建房子，就直接找组装好的屋顶、围墙就行。如果仅仅如此，那EasyExcel仅仅就是简单的工具包，其更加吸引人的地">
+<meta name="keywords" content="Effective Java,EasyExcel,EasyExcelFactory,ExcelWriter,WriteSheet,ExcelProperty">
+<meta property="og:type" content="article">
+<meta property="og:title" content="阿里开源的这个库，让 Excel 导出不再复杂（简简单单的写）">
+<meta property="og:url" content="https://www.howardliu.cn/effective-java-easyexcel-action-write/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="今天要说的EasyExcel阿里巴巴开源的Excel导出类库，是对POI的封装，实现了很多高级功能，并且留出扩展口，支持扩展定制化功能。打个比喻，POI相当于乐高积木，一个个的小积木可以自由组装，只能动手能力强，就可以随心所欲的组装。EasyExcel更像是把这些小积木提前组装好，想要搭建房子，就直接找组装好的屋顶、围墙就行。如果仅仅如此，那EasyExcel仅仅就是简单的工具包，其更加吸引人的地">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://static.howardliu.cn/20211004065308.jpeg">
+<meta property="og:image" content="https://static.howardliu.cn/20211004065644.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211004065724.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211004065753.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211004065816.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211004065847.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211004065911.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211004065935.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211004070011.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211004070036.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211004070102.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211004070128.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211004070152.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211004070212.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211004070229.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211004070246.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211004070309.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211004070331.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211004070353.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211004070420.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211004070440.png">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-10-03T22:40:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="阿里开源的这个库，让 Excel 导出不再复杂（简简单单的写）">
+<meta name="twitter:description" content="今天要说的EasyExcel阿里巴巴开源的Excel导出类库，是对POI的封装，实现了很多高级功能，并且留出扩展口，支持扩展定制化功能。打个比喻，POI相当于乐高积木，一个个的小积木可以自由组装，只能动手能力强，就可以随心所欲的组装。EasyExcel更像是把这些小积木提前组装好，想要搭建房子，就直接找组装好的屋顶、围墙就行。如果仅仅如此，那EasyExcel仅仅就是简单的工具包，其更加吸引人的地">
+<meta name="twitter:image" content="https://static.howardliu.cn/20211004065308.jpeg">
+
+<meta name="keywords" content="Effective Java,EasyExcel,EasyExcelFactory,ExcelWriter,WriteSheet,ExcelProperty">
+
+
+<meta name="description" content="今天要说的EasyExcel阿里巴巴开源的Excel导出类库，是对POI的封装，实现了很多高级功能，并且留出扩展口，支持扩展定制化功能。打个比喻，POI相当于乐高积木，一个个的小积木可以自由组装，只能动手能力强，就可以随心所欲的组装。EasyExcel更像是把这些小积木提前组装好，想要搭建房子，就直">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/styles/vs2015.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/effective-java-easyexcel-action-write/">阿里开源的这个库，让 Excel 导出不再复杂（简简单单的写）</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-10-04</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/effective-java-easyexcel-action-write/" class="leancloud_visitors" data-flag-title="阿里开源的这个库，让 Excel 导出不再复杂（简简单单的写）">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#最简单的写表格"><span class="toc-text">最简单的写表格</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#根据头对象和列表向一个工作表中写一个表格"><span class="toc-text">根据头对象和列表向一个工作表中写一个表格</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#根据头对象和列表向多个工作表中写数据"><span class="toc-text">根据头对象和列表向多个工作表中写数据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#按照定义指定导出列"><span class="toc-text">按照定义指定导出列</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#排除指定列"><span class="toc-text">排除指定列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#只导出指定列"><span class="toc-text">只导出指定列</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#表头"><span class="toc-text">表头</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#原始表头"><span class="toc-text">原始表头</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自定义表头"><span class="toc-text">自定义表头</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#动态表头、表体"><span class="toc-text">动态表头、表体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#表头国际化"><span class="toc-text">表头国际化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多次写入"><span class="toc-text">多次写入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#向同一个excel同一个sheet中多次写入"><span class="toc-text">向同一个excel同一个sheet中多次写入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#向同一个excel不同sheet中多次写入（表头相同）"><span class="toc-text">向同一个excel不同sheet中多次写入（表头相同）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#向同一个excel不同sheet中多次写入（表头不同）"><span class="toc-text">向同一个excel不同sheet中多次写入（表头不同）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现多表"><span class="toc-text">实现多表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#同一表单中创建表格"><span class="toc-text">同一表单中创建表格</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#同一表单中创建不同表格（相同表头）"><span class="toc-text">同一表单中创建不同表格（相同表头）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#同一表单中创建不同表格（不同表头）"><span class="toc-text">同一表单中创建不同表格（不同表头）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#写入模板文件（非填充）"><span class="toc-text">写入模板文件（非填充）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="https://static.howardliu.cn/20211004065308.jpeg" alt="阿里开源的这个库，让 Excel 导出不再复杂（简简单单的写）"></p>
+<blockquote>
+<p>该图片由<a href="https://pixabay.com/zh/users/kimdaejeung-7703165/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6549208" target="_blank" rel="noopener">dae jeung kim</a>在<a href="https://pixabay.com/zh/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6549208" target="_blank" rel="noopener">Pixabay</a>上发布</p>
+</blockquote>
+<p>你好，我是看山。</p>
+<p>导出是中后台常见的功能，Excel文件是常见的导出格式。</p>
+<a id="more"></a>
+
+<p>在Java栈中，常用的是<a href="https://sourceforge.net/projects/jexcelapi/" target="_blank" rel="noopener">JXL（目前改名为JExcel）</a>和<a href="http://poi.apache.org/" target="_blank" rel="noopener">Apache POI</a>。其中jxl最后的更新时间是2012，除了老系统中能看到影子，几乎见不到踪迹了。目前基本上是POI一统天下。</p>
+<p>今天要说的EasyExcel阿里巴巴开源的Excel导出类库，是对POI的封装，实现了很多高级功能，并且留出扩展口，支持扩展定制化功能。打个比喻，POI相当于乐高积木，一个个的小积木可以自由组装，只能动手能力强，就可以随心所欲的组装。EasyExcel更像是把这些小积木提前组装好，想要搭建房子，就直接找组装好的屋顶、围墙就行。如果仅仅如此，那EasyExcel仅仅就是简单的工具包，其更加吸引人的地方是对于内存的控制，它通过压缩文件、分批读取、抛弃不重要数据、文件缓存等多种方式，降低内存消耗。</p>
+<p>内容比较多，文内只会列出关键代码，想要完整源码，可以关注公号「看山的小屋」回复“easyexcel”获取。</p>
+<h2 id="最简单的写表格"><a href="#最简单的写表格" class="headerlink" title="最简单的写表格"></a>最简单的写表格</h2><p>开始之前，先定义一下基础类，这个类将贯穿全文，所有的功能都是在这个类的简单变形。</p>
+<pre><code class="java">@Data
+public class Item {
+    @ExcelProperty(&quot;字符串标题&quot;)
+    private String string;
+    @ExcelProperty(&quot;日期标题&quot;)
+    private Date date;
+    @ExcelProperty(&quot;数字标题&quot;)
+    private Double doubleData;
+    @ExcelIgnore
+    private String ignore;
+}</code></pre>
+<h3 id="根据头对象和列表向一个工作表中写一个表格"><a href="#根据头对象和列表向一个工作表中写一个表格" class="headerlink" title="根据头对象和列表向一个工作表中写一个表格"></a>根据头对象和列表向一个工作表中写一个表格</h3><p>这是最简单的一种实现，只需要定义一个对象类，然后读取数据列表即可。</p>
+<pre><code class="java">/**
+ * 借助{@link com.alibaba.excel.write.builder.ExcelWriterSheetBuilder}自动创建{@link com.alibaba.excel.ExcelWriter}写入数据。
+ * &lt;p&gt;
+ * 提供列表和函数作为数据源
+ */
+public static void writeAutoWriter() {
+    final String fileName = defaultFileName(&quot;writeAutoWriter&quot;);
+    EasyExcelFactory.write(fileName)
+            .head(Item.class)
+            .sheet(&quot;模板&quot;)
+            .doWrite(WriteSample::sampleItems);
+}</code></pre>
+<p>EasyExcel提供了<code>EasyExcelFactory</code>类，API方法也是fluent方式，可以如丝般顺滑的实现生成Excel文件。如果感觉<code>EasyExcelFactory</code>太长，还可以直接写作<code>EasyExcel</code>，这是<code>EasyExcelFactory</code>的子类，类似于别名。</p>
+<blockquote>
+<p>不过，这种别名定义方式，在有些规范中属于<code>smell code</code>，所以，根据自己或者公司规范选择吧。</p>
+</blockquote>
+<p><code>com.alibaba.excel.EasyExcelFactory#write(java.lang.String)</code>方法的参数传的是导出文件的文件名，如果并不需要生成文件，只需要创建文件流，也可以传入一个输出流<code>OutputStream</code>，这样就可以更加灵活的实现生成逻辑了。</p>
+<p><code>com.alibaba.excel.metadata.AbstractParameterBuilder#head()</code>方法是定义表头，只要传入一个类，就会读取这个类的所有字段作为表头。如果字段上<code>com.alibaba.excel.annotation.ExcelProperty</code>注解，定义了<code>value</code>，就会取<code>value</code>的值作为表头。此处还有很多操作，比如，<code>value</code>是数组，可以定义多个，如果是相邻字段定义了相同的表头，会合并单元格，表体内容会选择第一个单元格的内容。这个注解还可以定义<code>index</code>、<code>order</code>、<code>converter</code>等，后面会一一给出例子。</p>
+<p><code>com.alibaba.excel.write.builder.ExcelWriterBuilder#sheet()</code>方法定义工作表，有多个重载方法，可以定义<code>sheetNo</code>指明是第几个工作表，可以传入<code>sheetName</code>指明工作表名称。</p>
+<p><code>com.alibaba.excel.write.builder.ExcelWriterSheetBuilder#doWrite()</code>方法就是写Excel文件了，传入全部的列表数据，或者使用Java8+的<code>Supplier</code>函数。还可以实现分页写入，后面会给出例子。这个方法会自动关闭文件流，真是很贴心。</p>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211004065644.png" alt="根据头对象和列表向一个工作表中写一个表格"></p>
+<h3 id="根据头对象和列表向多个工作表中写数据"><a href="#根据头对象和列表向多个工作表中写数据" class="headerlink" title="根据头对象和列表向多个工作表中写数据"></a>根据头对象和列表向多个工作表中写数据</h3><p>上面是向一个工作表写数据，接下来我们向多个工作表写数据。</p>
+<blockquote>
+<p>这个例子会涉及更多的内部对象，比如：ExcelWriter、WriteSheet。</p>
+</blockquote>
+<pre><code class="java">/**
+ * 手动创建{@link com.alibaba.excel.ExcelWriter}，指定sheet写入数据。
+ * &lt;p&gt;
+ * 提供列表和函数作为数据源
+ */
+public static void writeManualWither() {
+    String fileName = defaultFileName(&quot;writeManualWriter&quot;);
+    ExcelWriter excelWriter = null;
+    try {
+        excelWriter = EasyExcelFactory.write(fileName)
+                .head(Item.class)
+                .build();
+        final WriteSheet writeSheet1 = EasyExcelFactory.writerSheet(&quot;模板1&quot;).build();
+        excelWriter.write(WriteSample::sampleItems, writeSheet1);
+
+        final WriteSheet writeSheet2 = EasyExcelFactory.writerSheet(&quot;模板2&quot;).build();
+        excelWriter.write(sampleItems(), writeSheet2);
+    } finally {
+        // 千万别忘记finish 会帮忙关闭流
+        if (excelWriter != null) {
+            excelWriter.finish();
+        }
+    }
+}</code></pre>
+<p>因为是想多个工作表中写数据，我们就不能直接使用<code>doWrite</code>方法了。</p>
+<p><code>com.alibaba.excel.ExcelWriter</code>类是Excel写对象，用来创建Excel工作簿的。<code>com.alibaba.excel.write.metadata.WriteSheet</code>类是Sheet写对象，用来创建Sheet工作表的。通过<code>com.alibaba.excel.ExcelWriter#write()</code>方法，指定写入数据和写入的目标工作表，就可以实现向多个工作表中写数据的功能。</p>
+<p>此处需要注意，我们在创建<code>ExcelWriter</code>对象时，调用了<code>head()</code>方法定义了表头，这是整个Excel的定义，sheet会继承这个定义。这样，整个Excel文件中的所有工作表，表头都是相同的。不要停，后面会给出不同工作表定义不同表头的示例。</p>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211004065724.png" alt="根据头对象和列表向多个工作表中写数据"></p>
+<h2 id="按照定义指定导出列"><a href="#按照定义指定导出列" class="headerlink" title="按照定义指定导出列"></a>按照定义指定导出列</h2><p>在后台系统中，会有行列权限的控制。行权限，通过数据行实现，只导出有权限的行数据即可。列权限，可以通过只导出有权限的列，排除没有权限的列（通常是分等级的敏感数据）。</p>
+<p>有时候需要定制化导出，导出所有列表格比较大，用户根据需要指定需要导出的列。</p>
+<h3 id="排除指定列"><a href="#排除指定列" class="headerlink" title="排除指定列"></a>排除指定列</h3><pre><code class="java">private static void writeExcludeColumn() {
+    String fileName = defaultFileName(&quot;writeExcludeColumn&quot;);
+    Set&lt;String&gt; excludeColumnFiledNames = new HashSet&lt;&gt;();
+    excludeColumnFiledNames.add(&quot;date&quot;);
+
+    EasyExcelFactory.write(fileName)
+            .head(Item.class)
+            .excludeColumnFiledNames(excludeColumnFiledNames)
+            .sheet(&quot;模板&quot;)
+            .doWrite(WriteSample::sampleItems);
+}</code></pre>
+<p>这个需求，需要借助<code>com.alibaba.excel.write.builder.AbstractExcelWriterParameterBuilder#excludeColumnFiledNames</code>方法。这个方法是在<code>ExcelWriterBuilder</code>、<code>ExcelWriterSheetBuilder</code>、<code>ExcelWriterTableBuilder</code>的父类中定义，也就是说，可以是整个Excel工作簿都排除指定字段，也可以是某个sheet工作表排除指定字段，还可以是table表格排除指定字段。</p>
+<p>除了<code>excludeColumnFiledNames</code>通过字段名排除字段，还可以使用<code>excludeColumnIndexes</code>指定字段下标排除列，如果需要控制下标，需要在字段上定义<code>ExcelProperty</code>指明index属性，这样也能够更好的固定字段下标。</p>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211004065753.png" alt="排除指定列"></p>
+<h3 id="只导出指定列"><a href="#只导出指定列" class="headerlink" title="只导出指定列"></a>只导出指定列</h3><pre><code class="java">private static void writeIncludeColumn() {
+    String fileName = defaultFileName(&quot;writeIncludeColumn&quot;);
+    Set&lt;String&gt; includeColumnFiledNames = new HashSet&lt;&gt;();
+    includeColumnFiledNames.add(&quot;date&quot;);
+    EasyExcelFactory.write(fileName)
+            .head(Item.class)
+            .includeColumnFiledNames(includeColumnFiledNames)
+            .sheet(&quot;模板&quot;)
+            .doWrite(WriteSample::sampleItems);
+}</code></pre>
+<p>这个需求，需要借助<code>com.alibaba.excel.write.builder.AbstractExcelWriterParameterBuilder#includeColumnFiledNames</code>方法。与<code>excludeColumnFiledNames</code>是相似，都是可以分级定义，用起来也是一样的，只不过功能相反而已。</p>
+<p>同样的，也可以使用<code>includeColumnIndexes</code>方法，通过指定字段下标指定列。</p>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211004065816.png" alt="只导出指定列"></p>
+<h2 id="表头"><a href="#表头" class="headerlink" title="表头"></a>表头</h2><p>表头的定义是比较关键的，会直接影响Excel文件的质量。所以，EasyExcel提供了比较丰富的表头定义方法。</p>
+<h3 id="原始表头"><a href="#原始表头" class="headerlink" title="原始表头"></a>原始表头</h3><p>这里定义了一个新的基础类：<code>EmptyItem</code>，与<code>Item</code>的区别是移除了<code>ExcelProperty</code>的定义。</p>
+<pre><code class="java">@Data
+public class EmptyItem {
+    private String string;
+    private Date date;
+    private Double doubleData;
+}</code></pre>
+<p>在这种情况下，会直接使用<code>EmptyItem</code>对象的字段作为表头名称。</p>
+<pre><code class="java">private static void writeNoAnnotation() {
+    final String fileName = defaultFileName(&quot;writeNoAnnotation&quot;);
+    EasyExcelFactory.write(fileName)
+            .head(EmptyItem.class)
+            .sheet(&quot;模板&quot;)
+            .doWrite(WriteSample::sampleItems);
+}</code></pre>
+<blockquote>
+<p>这里可以看到，EasyExcel对于表头对象、表体列表对象，没有强制要求必须是相同的对象，只要字段一致，就能够正常组装数据。</p>
+</blockquote>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211004065847.png" alt="原始表头"></p>
+<h3 id="自定义表头"><a href="#自定义表头" class="headerlink" title="自定义表头"></a>自定义表头</h3><p>使用字段作为表头显然不是我们想要的，EasyExcel提供了<code>ExcelProperty</code>注解，可以定义表头的名称。这个注解还提供了<code>index</code>、<code>order</code>两个属性，可以定义列的位置和顺序。</p>
+<pre><code class="java">@Data
+public class IndexItem {
+    @ExcelProperty(value = &quot;字符串标题&quot;, index = 1)
+    private String string;
+    @ExcelProperty(value = &quot;日期标题&quot;, index = 3)
+    private Date date;
+    @ExcelProperty(value = &quot;数字标题&quot;, index = 5)
+    private Double doubleData;
+}</code></pre>
+<p>使用起来也很简单：</p>
+<pre><code class="java">private static void writeWithIndex() {
+    final String fileName = defaultFileName(&quot;writeWithIndex&quot;);
+    EasyExcelFactory.write(fileName)
+            .head(IndexItem.class)
+            .sheet(&quot;模板&quot;)
+            .doWrite(WriteSample::sampleItems);
+}</code></pre>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211004065911.png" alt="自定义表头"></p>
+<p>这里需要注意一下，在使用<code>ExcelProperty</code>注解时，index表示字段放置第几列，order表示顺序。</p>
+<p>根据index和order的不同语义，对两者的控制不同。如果index相同，直接会抛出异常，因为程序无法判断这个列放那个字段。如果index值中间有空的数字，就会出现空列。如果order和index同时使用，index优先占据位置，order做排序。index=-1的话，使用java默认排序，order值越小，列越靠前。</p>
+<p><code>ExcelProperty</code>的value属性是字符串数组，相当于一个字段可以定义多个头，这样就可以实现多级表头。同时，如果位置相邻的列定义列明相同，还会合并列。比如：</p>
+<pre><code class="java">@Data
+public class ComplexHeadItem {
+    @ExcelProperty({&quot;大标题&quot;, &quot;字符串标题&quot;})
+    private String string;
+    @ExcelProperty(&quot;日期标题&quot;)
+    private Date date;
+    @ExcelProperty({&quot;大标题&quot;, &quot;数字标题0&quot;})
+    private Double doubleData;
+    @ExcelProperty({&quot;数字标题&quot;})
+    private Double doubleData1;
+    @ExcelProperty({&quot;数字标题&quot;})
+    private Double doubleData2 = 0.0;
+}</code></pre>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211004065935.png" alt="自定义表头-合并"></p>
+<h3 id="动态表头、表体"><a href="#动态表头、表体" class="headerlink" title="动态表头、表体"></a>动态表头、表体</h3><p>前面的例子中，表头定义都是传入一个对象，通过解析对象的属性字段，抽取表头定义。有的时候，我们没有办法提前定义表头对象，或者说，表头是根据条件、权限等因素动态变化的，这个时候，就可以使用EasyExcel提供的动态表头功能了。</p>
+<pre><code class="java">/**
+ * 动态表头，传入的是{@code List&lt;List&lt;String&gt;&gt;}格式数据。
+ * &lt;p&gt;
+ * 可以实现多层表头。
+ */
+private static void writeDynamicHead() {
+    String fileName = defaultFileName(&quot;writeDynamicHead&quot;);
+    EasyExcelFactory.write(fileName)
+            .head(dynamicHead())
+            .sheet()
+            .doWrite(sampleItems());
+}
+
+private static List&lt;List&lt;String&gt;&gt; dynamicHead() {
+    List&lt;List&lt;String&gt;&gt; heads = new ArrayList&lt;&gt;();
+    final List&lt;String&gt; head0 = new ArrayList&lt;&gt;(Arrays.asList(&quot;头0&quot;, &quot;字符串标题【动态】&quot;));
+    heads.add(head0);
+    final List&lt;String&gt; head1 = new ArrayList&lt;&gt;(Arrays.asList(&quot;头0&quot;, &quot;日期标题【动态】&quot;));
+    heads.add(head1);
+    final List&lt;String&gt; head2 = new ArrayList&lt;&gt;(Collections.singletonList(&quot;数字标题【动态】&quot;));
+    heads.add(head2);
+    return heads;
+}</code></pre>
+<p>使用<code>com.alibaba.excel.metadata.AbstractParameterBuilder#head(java.util.List&lt;java.util.List&lt;java.lang.String&gt;&gt;)</code>方法，传入<code>List&lt;List&lt;String&gt;&gt;</code>类型的数据即可。</p>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211004070011.png" alt="动态表头、表体"></p>
+<p>当然，这样做还不是彻底的动态。我们可以使用<code>com.alibaba.excel.write.builder.ExcelWriterSheetBuilder#doWrite(java.util.Collection&lt;?&gt;)</code>实现动态表体。代码如下：</p>
+<pre><code class="java">private static void writeDynamicData() {
+    String fileName = defaultFileName(&quot;writeDynamicData&quot;);
+    EasyExcelFactory.write(fileName)
+            .head(dynamicHead())
+            .sheet()
+            .doWrite(dynamicData());
+}
+
+private static List&lt;List&lt;Object&gt;&gt; dynamicData() {
+    List&lt;List&lt;Object&gt;&gt; list = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; 10; i++) {
+        List&lt;Object&gt; data = new ArrayList&lt;&gt;();
+        data.add(&quot;字符串&quot; + i);
+        data.add(new Date());
+        data.add((i + 1) * 0.1);
+        list.add(data);
+    }
+    return list;
+}</code></pre>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211004070036.png" alt="动态表头、表体"></p>
+<h3 id="表头国际化"><a href="#表头国际化" class="headerlink" title="表头国际化"></a>表头国际化</h3><p>互联网无国界，很多时候，我们需要实现国际化。这个时候，我们可以使用动态表头功能，传入不同的表头定义，生成不同的Excel文件。有时候，我们还需要提前定义表体的格式，使用动态表体可以实现。有没有更加简单方法呢？必须有。</p>
+<p>先定义格式化表头对象：</p>
+<pre><code class="java">@Data
+public class FormatContentItem {
+    @ExcelProperty(value = &quot;字符串标题&quot;, converter = TitleFormatConverter.class)
+    private String string;
+    @DateTimeFormat(&quot;yyyy年MM月dd日HH时mm分ss秒&quot;)
+    @ExcelProperty(value = &quot;日期标题&quot;)
+    private Date date;
+    @NumberFormat(&quot;0.000%&quot;)
+    @ExcelProperty(&quot;数字标题&quot;)
+    private Double doubleData;
+}</code></pre>
+<p>再实现国际化：</p>
+<pre><code class="java">/**
+ * 可以同时设置head参数：
+ * {@link AbstractParameterBuilder#head(java.util.List)}
+ * {@link AbstractParameterBuilder#head(java.lang.Class)}
+ * &lt;p&gt;
+ * 对于表头设置，最终起作用的是{@link AbstractParameterBuilder#head(java.util.List)}，这样的话，我们可以实现国际化的配置。
+ */
+private static void writeDynamicMultiHead() {
+    String fileName = defaultFileName(&quot;writeDynamicMultiHead&quot;);
+    EasyExcelFactory.write(fileName)
+            .head(dynamicHead())
+            .head(FormatContentItem.class)
+            .sheet()
+            .doWrite(sampleItems());
+}</code></pre>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211004070102.png" alt="表头国际化"></p>
+<h2 id="多次写入"><a href="#多次写入" class="headerlink" title="多次写入"></a>多次写入</h2><p>一般来说，中后台的数据量都不小，有时候需要一次导出几十万行数据，甚至更多，而这种操作并不是常态，如果内存配置比较大，那大多数时间内存都是闲置状态。此时，就可以借助EasyExcel的文件缓存能力，分批写入数据。</p>
+<h3 id="向同一个excel同一个sheet中多次写入"><a href="#向同一个excel同一个sheet中多次写入" class="headerlink" title="向同一个excel同一个sheet中多次写入"></a>向同一个excel同一个sheet中多次写入</h3><p>首先是比较常见的场景，向一个sheet工作表中分批写入数据。</p>
+<pre><code class="java">private static void writeOneSheet() {
+    String fileName = defaultFileName(&quot;writeOneSheet&quot;);
+    ExcelWriter excelWriter = null;
+    try {
+        excelWriter = EasyExcelFactory.write(fileName)
+                .head(Item.class)
+                .build();
+        final WriteSheet writeSheet = EasyExcelFactory.writerSheet(&quot;模板&quot;).build();
+        for (int i = 0; i &lt; 5; i++) {
+            excelWriter.write(sampleItems(), writeSheet);
+        }
+    } finally {
+        // 千万别忘记finish 会帮忙关闭流
+        if (excelWriter != null) {
+            excelWriter.finish();
+        }
+    }
+}</code></pre>
+<p>首先定义<code>ExcelWriter</code>可以操作整个Excel工作簿，然后定义<code>ExcelWriter</code>sheet工作表，接下来就是循环调用<code>com.alibaba.excel.ExcelWriter.write(java.util.Collection&lt;?&gt;, com.alibaba.excel.write.metadata.WriteSheet)</code>方法，将数据写入到指定的sheet工作表中。这里需要注意的是，最后一定要调用<code>com.alibaba.excel.ExcelWriter.finish</code>方法，表示停止写入并关闭流。</p>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211004070128.png" alt="向同一个excel同一个sheet中多次写入"></p>
+<h3 id="向同一个excel不同sheet中多次写入（表头相同）"><a href="#向同一个excel不同sheet中多次写入（表头相同）" class="headerlink" title="向同一个excel不同sheet中多次写入（表头相同）"></a>向同一个excel不同sheet中多次写入（表头相同）</h3><p>还有一种场景是按月导出全年的订单数据，每个月一个sheet工作表，这种导出的方式，表头都是相同的。根据上面的经验，我们需要定义多个<code>WriteSheet</code>工作表对象，然后向该对象中写数据。</p>
+<p>这里还可能有一种情况，就是我们需要在多个<code>WriteSheet</code>工作表对象之间切换写入，为了不会找错对象，可以指定<code>sheetNo</code>。</p>
+<p>代码如下：</p>
+<pre><code class="java">private static void writeDiffSheetWithSameHead() {
+    String fileName = defaultFileName(&quot;writeDiffSheetWithSameHead&quot;);
+    ExcelWriter excelWriter = null;
+    try {
+        excelWriter = EasyExcelFactory.write(fileName)
+                .head(Item.class)
+                .build();
+        for (int i = 0; i &lt; 5; i++) {
+            final WriteSheet writeSheet = EasyExcelFactory.writerSheet(i, &quot;模板&quot; + i)
+                    .build();
+            excelWriter.write(sampleItems(), writeSheet);
+        }
+    } finally {
+        // 千万别忘记finish 会帮忙关闭流
+        if (excelWriter != null) {
+            excelWriter.finish();
+        }
+    }
+}</code></pre>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211004070152.png" alt="向同一个excel不同sheet中多次写入（表头相同）"></p>
+<p><img src="https://static.howardliu.cn/20211004070212.png" alt="向同一个excel不同sheet中多次写入（表头相同）"></p>
+<h3 id="向同一个excel不同sheet中多次写入（表头不同）"><a href="#向同一个excel不同sheet中多次写入（表头不同）" class="headerlink" title="向同一个excel不同sheet中多次写入（表头不同）"></a>向同一个excel不同sheet中多次写入（表头不同）</h3><p>还有一种场景，导出指定时间范围的订单信息，一个sheet工作表放具体的商品信息，另一个sheet工作表放订单收货地址信息。这种场景就需要不同的表头，根据前面的讲解，我们知道，只需要在定义<code>WriteSheet</code>对象时指定不同的表头对象即可。</p>
+<p>代码如下：</p>
+<pre><code class="java">private static void writeDiffSheetWithDiffHead() {
+    String fileName = defaultFileName(&quot;writeDiffSheetWithDiffHead&quot;);
+    ExcelWriter excelWriter = null;
+    try {
+        excelWriter = EasyExcelFactory.write(fileName)
+                .build();
+
+        final WriteSheet writeSheet0 = EasyExcelFactory.writerSheet(0, &quot;模板1&quot;)
+                .head(Item.class)
+                .build();
+        excelWriter.write(sampleItems(), writeSheet0);
+
+        final WriteSheet writeSheet1 = EasyExcelFactory.writerSheet(1, &quot;模板2&quot;)
+                .head(ComplexHeadItem.class)
+                .build();
+        excelWriter.write(sampleItems(), writeSheet1);
+    } finally {
+        // 千万别忘记finish 会帮忙关闭流
+        if (excelWriter != null) {
+            excelWriter.finish();
+        }
+    }
+}</code></pre>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211004070229.png" alt="向同一个excel不同sheet中多次写入（表头不同）"></p>
+<p><img src="https://static.howardliu.cn/20211004070246.png" alt="向同一个excel不同sheet中多次写入（表头不同）"></p>
+<h2 id="实现多表"><a href="#实现多表" class="headerlink" title="实现多表"></a>实现多表</h2><p>EasyExcel对于Excel文件定义分成了三层，</p>
+<ol>
+<li>工作簿，也就是Excel文件</li>
+<li>工作表，对应是Excel文件中的Sheet</li>
+<li>表格，对应是Sheet中的有表头、表体的组合</li>
+</ol>
+<p>这里所说的功能就是在一个Sheet中创建多个表格。</p>
+<h3 id="同一表单中创建表格"><a href="#同一表单中创建表格" class="headerlink" title="同一表单中创建表格"></a>同一表单中创建表格</h3><p>这个是开胃菜，演示一下怎么单独指定表格。</p>
+<pre><code class="java">private static void writeTable() {
+    String fileName = defaultFileName(&quot;writeTable&quot;);
+    final ExcelWriter excelWriter = EasyExcelFactory.write(fileName)
+            .head(Item.class)
+            .build();
+    try {
+        // 把sheet设置为不需要头 不然会输出sheet的头 这样看起来第一个table 就有2个头了
+        WriteSheet writeSheet = EasyExcelFactory.writerSheet()
+                .needHead(Boolean.FALSE)
+                .build();
+
+        // 这里必须指定需要头，table 会继承sheet的配置，sheet配置了不需要，table 默认也是不需要
+        WriteTable writeTable0 = EasyExcelFactory.writerTable(0)
+                .needHead(Boolean.TRUE)
+                .build();
+
+        excelWriter.write(sampleItems(), writeSheet, writeTable0);
+    } finally {
+        if (excelWriter != null) {
+            excelWriter.finish();
+        }
+    }
+}</code></pre>
+<p>可以看到，除了前面提过的<code>ExcelWriter</code>和<code>WriteSheet</code>，这里还用到了<code>WriteTable</code>，这个就是表格的写对象。有了这个对象，我们只要多创建几个，就能够实现在一个Sheet工作表中，创建多个表格的功能。</p>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211004070309.png" alt="同一表单中创建表格"></p>
+<p>与前面的例子完全没有差别，条条大路通罗马。</p>
+<h3 id="同一表单中创建不同表格（相同表头）"><a href="#同一表单中创建不同表格（相同表头）" class="headerlink" title="同一表单中创建不同表格（相同表头）"></a>同一表单中创建不同表格（相同表头）</h3><p>有了上面的铺垫，我们直接上代码：</p>
+<pre><code class="java">private static void writeTables() {
+    String fileName = defaultFileName(&quot;writeTables&quot;);
+    final ExcelWriter excelWriter = EasyExcelFactory.write(fileName)
+            .build();
+    try {
+        // 把sheet设置为不需要头 不然会输出sheet的头 这样看起来第一个table 就有2个头了
+        WriteSheet writeSheet = EasyExcelFactory.writerSheet()
+                .head(Item.class)
+                .needHead(Boolean.FALSE)
+                .build();
+
+        // 这里必须指定需要头，table 会继承sheet的配置，sheet配置了不需要，table 默认也是不需要
+        WriteTable writeTable0 = EasyExcelFactory.writerTable(0)
+                .needHead(Boolean.TRUE)
+                .build();
+
+        WriteTable writeTable1 = EasyExcelFactory.writerTable(1)
+                .needHead(Boolean.TRUE)
+                .build();
+        // 第一次写入会创建头
+        excelWriter.write(sampleItems(), writeSheet, writeTable0);
+        // 第二次写如也会创建头，然后在第一次的后面写入数据
+        excelWriter.write(sampleItems(), writeSheet, writeTable1);
+    } finally {
+        if (excelWriter != null) {
+            excelWriter.finish();
+        }
+    }
+}</code></pre>
+<p>因为使用的是相同的表头，我们可以直接在<code>WriteSheet</code>中定义表头对象，通过继承的方式，实现两个表格的表头是相同的。这里需要注意一下，<code>WriteSheet</code>构建时，设置<code>needHead(Boolean.FALSE)</code>，如果不设置或者设置为true，那第一个表格就会有两个表头。</p>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211004070331.png" alt="同一表单中创建不同表格（相同表头）"></p>
+<h3 id="同一表单中创建不同表格（不同表头）"><a href="#同一表单中创建不同表格（不同表头）" class="headerlink" title="同一表单中创建不同表格（不同表头）"></a>同一表单中创建不同表格（不同表头）</h3><p>举一反三，对于不同表头，我们只需要为<code>WriteTable</code>对象设置不同表头即可：</p>
+<pre><code class="java">private static void writeTablesWithDiffHead() {
+    String fileName = defaultFileName(&quot;writeTablesWithDiffHead&quot;);
+    final ExcelWriter excelWriter = EasyExcelFactory.write(fileName)
+            .build();
+    try {
+        WriteSheet writeSheet = EasyExcelFactory.writerSheet()
+                .build();
+
+        WriteTable writeTable0 = EasyExcelFactory.writerTable(0)
+                .head(Item.class)
+                .build();
+        excelWriter.write(sampleItems(), writeSheet, writeTable0);
+
+        WriteTable writeTable1 = EasyExcelFactory.writerTable(1)
+                .head(ComplexHeadItem.class)
+                .build();
+        excelWriter.write(sampleItems(), writeSheet, writeTable1);
+    } finally {
+        if (excelWriter != null) {
+            excelWriter.finish();
+        }
+    }
+}</code></pre>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211004070353.png" alt="同一表单中创建不同表格（不同表头）"></p>
+<h2 id="写入模板文件（非填充）"><a href="#写入模板文件（非填充）" class="headerlink" title="写入模板文件（非填充）"></a>写入模板文件（非填充）</h2><p>有时候，我们需要按照某种模板导出数据，这类模板文件属于固定样式，没有动态数据。比如前面几行是标题、权限声明、责任声明之类的，紧跟着就是列表数据。如果全靠手工拼写数据比较繁琐，EasyExcel提供了写入模板文件的方式。先看代码：</p>
+<pre><code class="java">private static void writeByTemplate() {
+    String fileName = defaultFileName(&quot;writeByTemplate&quot;);
+    String templateFile = getPath() + File.separator + &quot;template_write_after_fill.xlsx&quot;;
+    EasyExcelFactory.write(fileName)
+            .withTemplate(templateFile)
+            .head(Item.class)
+            .sheet()
+            .doWrite(sampleItems());
+}</code></pre>
+<p>需要使用<code>com.alibaba.excel.write.builder.ExcelWriterBuilder#withTemplate(java.lang.String)</code>指定模板文件路径。withTemplate方法有几个重载实现：</p>
+<ol>
+<li>指定模板文件路径<code>ExcelWriterBuilder#withTemplate(java.lang.String)</code></li>
+<li>指定模板文件对象<code>ExcelWriterBuilder#withTemplate(java.io.File)</code></li>
+<li>指定模板文件输入流<code>ExcelWriterBuilder#withTemplate(java.io.InputStream)</code></li>
+</ol>
+<p>指定模板文件和模板文件对象都是操作文件的，需要有文件信息。</p>
+<p>指定模板文件输入流是只要文件流，这个可操作性空间就比较大了。比如，模板文件是可变的，我们可以基于一个带变量的模板文件，使用填充写入的方式初始化模板文件，然后再用模板写入的方式，写入列表。（这个会在技巧篇中详细说明）</p>
+<p>代码中的模板文件内容：</p>
+<p><img src="https://static.howardliu.cn/20211004070420.png" alt="写入模板文件（非填充）"></p>
+<p>导出文件的内容：</p>
+<p><img src="https://static.howardliu.cn/20211004070440.png" alt="写入模板文件（非填充）"></p>
+<p>可以看出，这种方式写入的列表是以追加的方式写入，原有的模板内容不会修改，会从第一行空白行开始写列表信息。</p>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>本文从实战角度说了一下 EasyExcel 如果实现写表格，接下来会讲解一下如何更好看的写。</p>
+<hr>
+<p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/effective-java-easyexcel-action-write/">阿里开源的这个库，让 Excel 导出不再复杂（简简单单的写）</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/article/details/120600688" target="_blank" rel="noopener">阿里开源的这个库，让 Excel 导出不再复杂（简简单单的写）</a></p>
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/Effective-Java/">Effective Java</a>
+            
+            <a href="/tags/EasyExcel/">EasyExcel</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/data-consistency-in-microservices/">
+                <i class="icon-next">关于微服务系统中数据一致性的总结</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://www.howardliu.cn/images/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/go/" style="font-size: 15px;">go</a> <a href="/tags/开发指南/" style="font-size: 15px;">开发指南</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络，概念，http/" style="font-size: 15px;">网络，概念，http</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/http-状态码/" style="font-size: 15px;">http 状态码</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/Effective-Java/" style="font-size: 15px;">Effective Java</a> <a href="/tags/EasyExcel/" style="font-size: 15px;">EasyExcel</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/Date/" style="font-size: 15px;">Date</a> <a href="/tags/Time/" style="font-size: 15px;">Time</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jdk8/" style="font-size: 15px;">jdk8</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a>
+    </div>
+</div>
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/effective-java-easyexcel-action-write/">阿里开源的这个库，让 Excel 导出不再复杂（简简单单的写）</a></li><li class="post-list-item"><a class="post-list-link" href="/data-consistency-in-microservices/">关于微服务系统中数据一致性的总结</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-junit5-mockmvc-mockito/">SpringBoot 实战：JUnit5+MockMvc+Mockito 做好单元测试</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-enum-params-in-requestbody-principle/">SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数（原理篇）</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-enum-params-in-requestbody/">SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-enum-params-principle/">SpringBoot 实战：优雅的使用枚举参数（原理篇）</a></li><li class="post-list-item"><a class="post-list-link" href="/spring-enum-params/">SpringBoot 实战：优雅的使用枚举参数</a></li><li class="post-list-item"><a class="post-list-link" href="/java-date-string-valid-date/">看山聊 Java：检查日期字符串是否合法</a></li><li class="post-list-item"><a class="post-list-link" href="/manage-install/">《Go 开发指南》-管理 Go 环境</a></li><li class="post-list-item"><a class="post-list-link" href="/install-go/">《Go 开发指南》-快速安装 Go 环境</a></li></ul>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">2021年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">2021年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">2021年08月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">2021年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2021</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
