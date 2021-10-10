@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>阿里开源的这个库，让 Excel 导出不再复杂（填充模板的使用指南）||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="在 EasyExcel 中，写操作可以完成大部分工作，填充的优势在于，可以实现自定义样式的，只要在模板中设置好样式，填充的数据就能够带着样式。">
+<meta name="keywords" content="Effective Java,EasyExcel,EasyExcelFactory,ExcelWriter,WriteSheet,ExcelProperty">
+<meta property="og:type" content="article">
+<meta property="og:title" content="阿里开源的这个库，让 Excel 导出不再复杂（填充模板的使用指南）">
+<meta property="og:url" content="https://www.howardliu.cn/effective-java-easyexcel-action-fill/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="在 EasyExcel 中，写操作可以完成大部分工作，填充的优势在于，可以实现自定义样式的，只要在模板中设置好样式，填充的数据就能够带着样式。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://static.howardliu.cn/20211010155846.jpeg">
+<meta property="og:image" content="https://static.howardliu.cn/20211010154155.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211010154224.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211010154251.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211010154354.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211010154428.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211010154502.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211010154533.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211010154632.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211010154712.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211010154752.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211010154823.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211010154844.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211010154911.png">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-10-10T07:38:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="阿里开源的这个库，让 Excel 导出不再复杂（填充模板的使用指南）">
+<meta name="twitter:description" content="在 EasyExcel 中，写操作可以完成大部分工作，填充的优势在于，可以实现自定义样式的，只要在模板中设置好样式，填充的数据就能够带着样式。">
+<meta name="twitter:image" content="https://static.howardliu.cn/20211010155846.jpeg">
+
+<meta name="keywords" content="Effective Java,EasyExcel,EasyExcelFactory,ExcelWriter,WriteSheet,ExcelProperty">
+
+
+<meta name="description" content="在 EasyExcel 中，写操作可以完成大部分工作，填充的优势在于，可以实现自定义样式的，只要在模板中设置好样式，填充的数据就能够带着样式。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/styles/vs2015.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/effective-java-easyexcel-action-fill/">阿里开源的这个库，让 Excel 导出不再复杂（填充模板的使用指南）</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-10-10</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/effective-java-easyexcel-action-fill/" class="leancloud_visitors" data-flag-title="阿里开源的这个库，让 Excel 导出不再复杂（填充模板的使用指南）">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#先写个表单"><span class="toc-text">先写个表单</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#写对象"><span class="toc-text">写对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#写-Map"><span class="toc-text">写 Map</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#再写个列表"><span class="toc-text">再写个列表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#少量写"><span class="toc-text">少量写</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#大量写"><span class="toc-text">大量写</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#最后写个表单-列表"><span class="toc-text">最后写个表单+列表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#填充对象-列表"><span class="toc-text">填充对象+列表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#填充对象-列表（大数据量）"><span class="toc-text">填充对象+列表（大数据量）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#横向填充数据"><span class="toc-text">横向填充数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#填充多个表格"><span class="toc-text">填充多个表格</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="https://static.howardliu.cn/20211010155846.jpeg" alt="阿里开源的这个库，让 Excel 导出不再复杂（填充模板的使用指南）"></p>
+<blockquote>
+<p>该图片由<a href="https://pixabay.com/zh/users/宅-ken-21259066/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6674689" target="_blank" rel="noopener">宅-KEN</a>在<a href="https://pixabay.com/zh/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6674689" target="_blank" rel="noopener">Pixabay</a>上发布</p>
+</blockquote>
+<p>你好，我是看山。</p>
+<p><a href="https://www.howardliu.cn/effective-java-easyexcel-action-write/">前文</a> 说了写操作，可以实现简单的列表导出，还能 <a href="https://www.howardliu.cn/effective-java-easyexcel-action-write-pretty/">定义样式</a>。有时候，我们还需要导出的一个大表单，或者是表单+列表的形式，这个时候，我们就需要填充功能。</p>
+<a id="more"></a>
+
+<p>内容比较多，文内只会列出关键代码，想要完整源码，可以关注公号「看山的小屋」回复“easyexcel”获取。</p>
+<p>在 EasyExcel 中，写操作可以完成大部分工作，填充的优势在于，可以实现自定义样式的，只要在模板中设置好样式，填充的数据就能够带着样式。</p>
+<h2 id="先写个表单"><a href="#先写个表单" class="headerlink" title="先写个表单"></a>先写个表单</h2><p>既然是使用模板，写来定义一个模板。</p>
+<p><img src="https://static.howardliu.cn/20211010154155.png" alt="先写个表单"></p>
+<p>在 EasyExcel 的模板填充定义中，使用<code>{}</code>来表示你要用的变量，如果本来就有”{“,”}”特殊字符，需要对其进行转义，用”{“,”}“代替。</p>
+<h3 id="写对象"><a href="#写对象" class="headerlink" title="写对象"></a>写对象</h3><p>既然是写对象，先定义一下对象结构。</p>
+<pre><code class="java">@Data
+public class Item {
+    private String name;
+    private double number;
+}</code></pre>
+<p>然后开始填充：</p>
+<pre><code class="java">private static void fillUseObject() {
+    String fileName = defaultFileName(&quot;fillUseObject&quot;);
+    String templateFile = getPath() + File.separator + &quot;template_fill_sample.xlsx&quot;;
+
+    Item item = new Item();
+    item.setName(&quot;法外狂徒张三&quot;);
+    item.setNumber(89757);
+    EasyExcelFactory.write(fileName)
+            .withTemplate(templateFile)
+            .sheet()
+            .doFill(item);
+}</code></pre>
+<p>在写操作中我们也使用过模板写列表，这里填充模板，使用的是同样的方法：<code>com.alibaba.excel.write.builder.ExcelWriterBuilder#withTemplate(java.lang.String)</code>指定模板文件路径，这里再重复一遍。withTemplate 方法有几个重载实现：</p>
+<ol>
+<li>指定模板文件路径<code>ExcelWriterBuilder#withTemplate(java.lang.String)</code></li>
+<li>指定模板文件对象<code>ExcelWriterBuilder#withTemplate(java.io.File)</code></li>
+<li>指定模板文件输入流<code>ExcelWriterBuilder#withTemplate(java.io.InputStream)</code></li>
+</ol>
+<p>指定模板文件和模板文件对象都是操作文件的，需要有文件信息。</p>
+<p>指定模板文件输入流是只要文件流，这个可操作性空间就比较大了。比如，模板文件是可变的，我们可以基于一个带变量的模板文件，使用填充写入的方式初始化模板文件，然后再用模板写入的方式，写入列表。</p>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211010154224.png" alt="写对象"></p>
+<h3 id="写-Map"><a href="#写-Map" class="headerlink" title="写 Map"></a>写 Map</h3><p>我们也可以不用非得创建类，用 Map 也能实现相同的功能。</p>
+<pre><code class="java">private static void fillUseMap() {
+    String fileName = defaultFileName(&quot;fillUseMap&quot;);
+    String templateFile = getPath() + File.separator + &quot;template_fill_sample.xlsx&quot;;
+
+    Map&lt;String, Object&gt; data = new HashMap&lt;&gt;();
+    data.put(&quot;name&quot;, &quot;法外狂徒张三&quot;);
+    data.put(&quot;number&quot;, 89757);
+    EasyExcelFactory.write(fileName)
+            .withTemplate(templateFile)
+            .sheet()
+            .doFill(data);
+}</code></pre>
+<p>虽然 Map 能够功能相同，不过还是建议定义具体的类。因为类是可校验的，Map 是弱检测机制，纯靠约定或者测试，不是很安全。</p>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211010154251.png" alt="写 Map"></p>
+<p>从效果上看，结果是相同的。</p>
+<h2 id="再写个列表"><a href="#再写个列表" class="headerlink" title="再写个列表"></a>再写个列表</h2><p>先定义模板：</p>
+<p><img src="https://static.howardliu.cn/20211010154354.png" alt="再写个列表"></p>
+<p>可以看到，填充列表的参数定义，与填充对象的有些差别，模板中<code>{.}</code>多了个点。</p>
+<p>对于表格的场景，从大体上会分为少量数据和大量数据。对于少量数据，直接在内存中操作即可。对于大量数据，可以使用分批写入，借助文件缓存的方式节省内存。</p>
+<h3 id="少量写"><a href="#少量写" class="headerlink" title="少量写"></a>少量写</h3><p>上代码：</p>
+<pre><code class="java">private static void fillListInMemory() {
+    String fileName = defaultFileName(&quot;fillListInMemory&quot;);
+    String templateFile = getPath() + File.separator + &quot;template_fill_list.xlsx&quot;;
+
+    EasyExcelFactory.write(fileName)
+            .withTemplate(templateFile)
+            .sheet()
+            .doFill(sampleItems());
+}</code></pre>
+<p>可以看到，填充列表与前文说到的写文件操作在代码实现上没有太大差异，这也是 EasyExcel 架构设计上的强悍。通过建造器模式的 fluent 写法，屏蔽啰嗦的写入，同时也屏蔽不同业务实现参数的差异，只在<code>doFill</code>的时候，根据不同参数实现不同逻辑。</p>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211010154428.png" alt="少量写"></p>
+<h3 id="大量写"><a href="#大量写" class="headerlink" title="大量写"></a>大量写</h3><p>接下来就是大量数据填充了。与上面的差异在于需要手动创建<code>ExcelWriter</code>和<code>WriteSheet</code>对象，然后使用<code>com.alibaba.excel.ExcelWriter.fill</code>方法多次写入数据。</p>
+<p><code>fill</code>方法支持直接写入列表和使用 lambda 函数方式，注意是<code>fill</code>，不是<code>doFill</code>。<code>doFill</code>会调用<code>finish</code>方法自动关闭流，<code>fill</code>方法只做数据填充，需要手动关闭流。</p>
+<p>代码为：</p>
+<pre><code class="java">private static void fillListSegment() {
+    String fileName = defaultFileName(&quot;fillListSegment&quot;);
+    String templateFile = getPath() + File.separator + &quot;template_fill_list.xlsx&quot;;
+
+    final ExcelWriter excelWriter = EasyExcelFactory.write(fileName).withTemplate(templateFile).build();
+    try {
+        final WriteSheet writeSheet = EasyExcelFactory.writerSheet().build();
+        excelWriter.fill(BaseFill::sampleItems, writeSheet);
+        excelWriter.fill(sampleItems(), writeSheet);
+    } finally {
+        if (excelWriter != null) {
+            excelWriter.finish();
+        }
+    }
+}</code></pre>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211010154502.png" alt="大量写"></p>
+<h2 id="最后写个表单-列表"><a href="#最后写个表单-列表" class="headerlink" title="最后写个表单+列表"></a>最后写个表单+列表</h2><p>最后来个表单与列表的形式。比如销售统计，表头需要填写参数信息，比如店铺信息、时间等，然后是销售记录，最后需要增加类似合计之类的信息。</p>
+<p>这种的话，可以实现的方式也挺多，这里介绍固定列表的实现，在技巧篇中会再介绍一种动态列表的实现。</p>
+<h3 id="填充对象-列表"><a href="#填充对象-列表" class="headerlink" title="填充对象+列表"></a>填充对象+列表</h3><p>先定义模板：</p>
+<p><img src="https://static.howardliu.cn/20211010154533.png" alt="填充对象+列表"></p>
+<p>从模板中可以看到，开头是时间信息，结尾有统计信息，中间是一个列表。</p>
+<p>上代码：</p>
+<pre><code class="java">/**
+ * 填充对象+列表，因为列表之后还有一个字段，所以需要将{@link FillConfigBuilder#forceNewRow(Boolean)}设置为 TRUE 才行。
+ * &lt;p&gt;
+ * 这样会有一个副作用：所有数据会在内存中，即数据量大的时候特别耗内存。
+ * &lt;p&gt;
+ * 想要解决有两种方式：
+ *
+ * &lt;ul&gt;
+ *     &lt;li&gt;list 之后没有数据了，{@link FillConfigBuilder#forceNewRow(Boolean)}设置为 FALSE&lt;/li&gt;
+ *     &lt;li&gt;list 写完之后，手动写后面的数据&lt;/li&gt;
+ * &lt;/ul&gt;
+ */
+private static void fillObjectAndListInMemory() {
+    String fileName = defaultFileName(&quot;fillObjectAndListInMemory&quot;);
+    String templateFile = getPath() + File.separator + &quot;template_fill_object_and_list.xlsx&quot;;
+
+    final ExcelWriter excelWriter = EasyExcelFactory.write(fileName).withTemplate(templateFile).build();
+    try {
+        final WriteSheet writeSheet = EasyExcelFactory.writerSheet().build();
+
+        Map&lt;String, Object&gt; map = new HashMap&lt;&gt;();
+        map.put(&quot;date&quot;, DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(LocalDateTime.now()));
+        map.put(&quot;total&quot;, System.currentTimeMillis());
+        excelWriter.fill(map, writeSheet);
+
+        FillConfig fillConfig = FillConfig.builder().forceNewRow(Boolean.TRUE).build();
+
+        excelWriter.fill(BaseFill::sampleItems, fillConfig, writeSheet);
+        excelWriter.fill(sampleItems(), fillConfig, writeSheet);
+    } finally {
+        if (excelWriter != null) {
+            excelWriter.finish();
+        }
+    }
+}</code></pre>
+<p>这里有一个新增的配置类：<code>FillConfig fillConfig = FillConfig.builder().forceNewRow(Boolean.TRUE).build()</code>，这个是用来定义写入时的配置信息。配置为 true，代表在写入列表的时候，不管下面有没有空行，都会创建一行，然后下面的数据往后移动。如果不定义或者设置为 false，最后那行的统计信息会被覆盖。</p>
+<p>但是只要设置为 true 了，整个填充操作将都在内存中操作，比较耗费内存。</p>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211010154632.png" alt="填充对象+列表"></p>
+<h3 id="填充对象-列表（大数据量）"><a href="#填充对象-列表（大数据量）" class="headerlink" title="填充对象+列表（大数据量）"></a>填充对象+列表（大数据量）</h3><p>如果列表数据比较大，还在内存中操作就比较容易内存溢出了。所以需要特殊的操作：</p>
+<ol>
+<li>列表之后没有表单填充了，这种最容易实现，一句话实现不了，改需求。</li>
+<li>只能在列表之后手动写数据</li>
+</ol>
+<p>代码如下：</p>
+<pre><code class="java">private static void fillObjectAndListManual() {
+    String fileName = defaultFileName(&quot;fillObjectAndListManual&quot;);
+    String templateFile = getPath() + File.separator + &quot;template_fill_object_and_list_manual.xlsx&quot;;
+
+    final ExcelWriter excelWriter = EasyExcelFactory.write(fileName).withTemplate(templateFile).build();
+    try {
+        final WriteSheet writeSheet = EasyExcelFactory.writerSheet().build();
+
+        Map&lt;String, Object&gt; map = new HashMap&lt;&gt;();
+        map.put(&quot;date&quot;, DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(LocalDateTime.now()));
+        excelWriter.fill(map, writeSheet);
+
+        FillConfig fillConfig = FillConfig.builder().forceNewRow(Boolean.TRUE).build();
+
+        excelWriter.fill(BaseFill::sampleItems, fillConfig, writeSheet);
+        excelWriter.fill(sampleItems(), fillConfig, writeSheet);
+
+        // 下面是纯手工写数据
+        List&lt;List&lt;String&gt;&gt; totalListList = new ArrayList&lt;&gt;();
+        List&lt;String&gt; totalList = new ArrayList&lt;&gt;();
+        totalListList.add(totalList);
+        totalList.add(null);
+        totalList.add(&quot;统计：1000&quot;);
+        excelWriter.write(totalListList, writeSheet);
+    } finally {
+        if (excelWriter != null) {
+            excelWriter.finish();
+        }
+    }
+}</code></pre>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211010154712.png" alt="填充对象+列表（大数据量）"></p>
+<h3 id="横向填充数据"><a href="#横向填充数据" class="headerlink" title="横向填充数据"></a>横向填充数据</h3><p>先定义模板：</p>
+<p><img src="https://static.howardliu.cn/20211010154752.png" alt="横向填充数据"></p>
+<pre><code class="java">private static void fillObjectAndListHorizontal() {
+    String fileName = defaultFileName(&quot;fillObjectAndListHorizontal&quot;);
+    String templateFile = getPath() + File.separator + &quot;template_fill_list_horizontal.xlsx&quot;;
+
+    final ExcelWriter excelWriter = EasyExcelFactory.write(fileName).withTemplate(templateFile).build();
+    try {
+        final WriteSheet writeSheet = EasyExcelFactory.writerSheet().build();
+
+        Map&lt;String, Object&gt; map = new HashMap&lt;&gt;();
+        map.put(&quot;date&quot;, DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(LocalDateTime.now()));
+        excelWriter.fill(map, writeSheet);
+
+        FillConfig fillConfig = FillConfig.builder().direction(WriteDirectionEnum.HORIZONTAL).build();
+
+        excelWriter.fill(BaseFill::sampleItems, fillConfig, writeSheet);
+        excelWriter.fill(sampleItems(), fillConfig, writeSheet);
+    } finally {
+        if (excelWriter != null) {
+            excelWriter.finish();
+        }
+    }
+}</code></pre>
+<p>这里配置<code>FillConfig fillConfig = FillConfig.builder().direction(WriteDirectionEnum.HORIZONTAL).build()</code>，用于定义写入方向。</p>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211010154823.png" alt="横向填充数据"></p>
+<h3 id="填充多个表格"><a href="#填充多个表格" class="headerlink" title="填充多个表格"></a>填充多个表格</h3><p>与写操作相同，填充操作也可以实现多表格的写入。</p>
+<p><img src="https://static.howardliu.cn/20211010154844.png" alt="填充多个表格"></p>
+<p>对于多表格写入，定义模板时，必须有<code>{前缀。}</code>。</p>
+<pre><code class="java">private static void fillMultiList() {
+    String fileName = defaultFileName(&quot;fillMultiList&quot;);
+    String templateFile = getPath() + File.separator + &quot;template_fill_multi_list.xlsx&quot;;
+
+    final ExcelWriter excelWriter = EasyExcelFactory.write(fileName).withTemplate(templateFile).build();
+    try {
+        final WriteSheet writeSheet = EasyExcelFactory.writerSheet().build();
+
+        Map&lt;String, Object&gt; map = new HashMap&lt;&gt;();
+        map.put(&quot;date&quot;, DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(LocalDateTime.now()));
+        excelWriter.fill(map, writeSheet);
+
+        FillConfig fillConfig = FillConfig.builder().direction(WriteDirectionEnum.HORIZONTAL).build();
+
+        excelWriter.fill(new FillWrapper(&quot;data1&quot;, sampleItems()), fillConfig, writeSheet);
+        // data2 分批写入
+        excelWriter.fill(new FillWrapper(&quot;data2&quot;, sampleItems()), writeSheet);
+        excelWriter.fill(new FillWrapper(&quot;data3&quot;, sampleItems()), writeSheet);
+    } finally {
+        if (excelWriter != null) {
+            excelWriter.finish();
+        }
+    }
+}</code></pre>
+<p>这里用到了<code>FillWrapper</code>，用来包装前缀。</p>
+<p>结果为：</p>
+<p><img src="https://static.howardliu.cn/20211010154911.png" alt="填充多个表格"></p>
+<p>至此，写操作和填充操作全部介绍完成。</p>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>本文从实战角度说了一下 EasyExcel 如果实现填充模板导出表格，有了模板填充逻辑，再加上写逻辑，我们会有更多的玩法，接下来就会说一下这些好玩的骚操作。</p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://www.howardliu.cn/effective-java-easyexcel-action-write/">阿里开源的这个库，让 Excel 导出不再复杂（简简单单的写）</a></li>
+<li><a href="https://www.howardliu.cn/effective-java-easyexcel-action-write-pretty/">阿里开源的这个库，让 Excel 导出不再复杂（既要能写，还要写的好看）</a></li>
+<li><a href="https://www.howardliu.cn/effective-java-easyexcel-action-fill/">阿里开源的这个库，让 Excel 导出不再复杂（填充模板的使用指南）</a></li>
+</ul>
+<hr>
+<p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/effective-java-easyexcel-action-fill/">阿里开源的这个库，让 Excel 导出不再复杂（填充模板的使用指南）</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/article/details/120687567" target="_blank" rel="noopener">阿里开源的这个库，让 Excel 导出不再复杂（填充模板的使用指南）</a></p>
+<center><b>👇🏻欢迎关注我的公众号「看山的小屋」，领取精选资料👇🏻</b></center>
+
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/Effective-Java/">Effective Java</a>
+            
+            <a href="/tags/EasyExcel/">EasyExcel</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/effective-java-easyexcel-action-write-pretty/">
+                <i class="icon-next">阿里开源的这个库，让 Excel 导出不再复杂（既要能写，还要写的好看）</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://www.howardliu.cn/images/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/go/" style="font-size: 15px;">go</a> <a href="/tags/开发指南/" style="font-size: 15px;">开发指南</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/网络，概念，http/" style="font-size: 15px;">网络，概念，http</a> <a href="/tags/http-状态码/" style="font-size: 15px;">http 状态码</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/Effective-Java/" style="font-size: 15px;">Effective Java</a> <a href="/tags/EasyExcel/" style="font-size: 15px;">EasyExcel</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Date/" style="font-size: 15px;">Date</a> <a href="/tags/Time/" style="font-size: 15px;">Time</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jdk8/" style="font-size: 15px;">jdk8</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a>
+    </div>
+</div>
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/effective-java-easyexcel-action-fill/">阿里开源的这个库，让 Excel 导出不再复杂（填充模板的使用指南）</a></li><li class="post-list-item"><a class="post-list-link" href="/effective-java-easyexcel-action-write-pretty/">阿里开源的这个库，让 Excel 导出不再复杂（既要能写，还要写的好看）</a></li><li class="post-list-item"><a class="post-list-link" href="/effective-java-easyexcel-action-write/">阿里开源的这个库，让 Excel 导出不再复杂（简简单单的写）</a></li><li class="post-list-item"><a class="post-list-link" href="/data-consistency-in-microservices/">关于微服务系统中数据一致性的总结</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-junit5-mockmvc-mockito/">SpringBoot 实战：JUnit5+MockMvc+Mockito 做好单元测试</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-enum-params-in-requestbody-principle/">SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数（原理篇）</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-enum-params-in-requestbody/">SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-enum-params-principle/">SpringBoot 实战：优雅的使用枚举参数（原理篇）</a></li><li class="post-list-item"><a class="post-list-link" href="/spring-enum-params/">SpringBoot 实战：优雅的使用枚举参数</a></li><li class="post-list-item"><a class="post-list-link" href="/java-date-string-valid-date/">看山聊 Java：检查日期字符串是否合法</a></li></ul>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">2021年10月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">2021年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">2021年08月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">2021年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2021</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
