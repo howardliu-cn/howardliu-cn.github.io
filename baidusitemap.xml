@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.howardliu.cn/spring-classpath-file-access/</loc>
+    <lastmod>2021-10-24</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
+    <lastmod>2021-10-24</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/get-chinese-length/</loc>
+    <lastmod>2021-10-23</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/zookeeper/zookeeper-error-packet-lenX-is-out-of-range/</loc>
+    <lastmod>2021-10-22</lastmod>
+  </url>  <url>
     <loc>https://www.howardliu.cn/sonarqube-jenkins-pipeline/</loc>
     <lastmod>2021-10-20</lastmod>
   </url>  <url>
@@ -247,9 +259,6 @@
     <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
     <loc>https://www.howardliu.cn/hadoop-environment/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
@@ -262,16 +271,16 @@
     <loc>https://www.howardliu.cn/zookeeper-environment/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
     <loc>https://www.howardliu.cn/hadoop-environment-cluster-setup/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
+    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
@@ -346,13 +355,7 @@
     <loc>https://www.howardliu.cn/build-nginx-from-sources/</loc>
     <lastmod>2020-01-27</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/get-chinese-length/</loc>
-    <lastmod>2020-01-27</lastmod>
-  </url>  <url>
     <loc>https://www.howardliu.cn/the-origin-of-matrix-multiplication/</loc>
-    <lastmod>2020-01-27</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/zookeeper/zookeeper-error-packet-lenX-is-out-of-range/</loc>
     <lastmod>2020-01-27</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/os/WindowsUpdate_800B0100-failed-to-updates/</loc>

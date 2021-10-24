@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SpringBoot 实战：加载和读取资源文件内容||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="本文聊一聊在 SpringBoot 应用中，访问加载类路径（classpath）中的文件内容的多种方法。">
+<meta name="keywords" content="Spring,SpringBoot,Resource,ClassPathResource,InputStream,File,ApplicationContext,加载classpath文件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot 实战：加载和读取资源文件内容">
+<meta property="og:url" content="https://www.howardliu.cn/spring-classpath-file-access/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="本文聊一聊在 SpringBoot 应用中，访问加载类路径（classpath）中的文件内容的多种方法。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://static.howardliu.cn/20211024104517.jpeg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-10-24T02:34:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringBoot 实战：加载和读取资源文件内容">
+<meta name="twitter:description" content="本文聊一聊在 SpringBoot 应用中，访问加载类路径（classpath）中的文件内容的多种方法。">
+<meta name="twitter:image" content="https://static.howardliu.cn/20211024104517.jpeg">
+
+<meta name="keywords" content="Spring,SpringBoot,Resource,ClassPathResource,InputStream,File,ApplicationContext,加载classpath文件">
+
+
+<meta name="description" content="本文聊一聊在 SpringBoot 应用中，访问加载类路径（classpath）中的文件内容的多种方法。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/styles/vs2015.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/spring-classpath-file-access/">SpringBoot 实战：加载和读取资源文件内容</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-10-24</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/spring-classpath-file-access/" class="leancloud_visitors" data-flag-title="SpringBoot 实战：加载和读取资源文件内容">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#通过Resource接口"><span class="toc-text">通过Resource接口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#手动加载"><span class="toc-text">手动加载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#通过-Value自动转换"><span class="toc-text">通过@Value自动转换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#通过ResourceLoader加载"><span class="toc-text">通过ResourceLoader加载</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用ResourceUtils加载资源"><span class="toc-text">使用ResourceUtils加载资源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#读取资源中的内容"><span class="toc-text">读取资源中的内容</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#通过File对象读取"><span class="toc-text">通过File对象读取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#通过InputStream对象读取"><span class="toc-text">通过InputStream对象读取</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="https://static.howardliu.cn/20211024104517.jpeg" alt="SpringBoot 实战：加载和读取资源文件内容"></p>
+<blockquote>
+<p>该图片由<a href="https://pixabay.com/zh/users/anramb-20789083/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6137612" target="_blank" rel="noopener">Marna Buys</a>在<a href="https://pixabay.com/zh/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6137612" target="_blank" rel="noopener">Pixabay</a>上发布</p>
+</blockquote>
+<p>你好，我是看山。</p>
+<p>本文聊一聊在 SpringBoot 应用中，访问加载类路径（classpath）中的文件内容的多种方法。</p>
+<a id="more"></a>
+
+<h2 id="通过Resource接口"><a href="#通过Resource接口" class="headerlink" title="通过Resource接口"></a>通过<code>Resource</code>接口</h2><p><code>Resource</code>接口抽象出一种更底层的方式管理资源，可以实现通过统一的方式处理各类文件资源。下面是几种获取资源实例的方法。</p>
+<h3 id="手动加载"><a href="#手动加载" class="headerlink" title="手动加载"></a>手动加载</h3><p>访问类路径中的文件，我们可以直接使用<code>ClassPathResource</code>加载内容，比如：</p>
+<pre><code class="java">new ClassPathResource(&quot;data/resource-data.txt&quot;);</code></pre>
+<p>默认情况下，<code>ClassPathResource</code>会在线程的上下文类加载器和默认系统类加载器之间进行选择，以删除样板文件。我们也可以直接指定类加载器，比如：</p>
+<pre><code class="java">new ClassPathResource(&quot;data/resource-data.txt&quot;, this.getClass().getClassLoader());</code></pre>
+<p>或者是通过指定类的类加载器：</p>
+<pre><code class="java">new ClassPathResource(&quot;data/resource-data.txt&quot;, Employee.class.getClassLoader());</code></pre>
+<p>从<code>Resource</code>对象，我们可以很容易的将其转换为<code>InputStream</code>或<code>File</code>对象。</p>
+<p>上面说的方式都是相对于类路径的地址。如果想要指定某个类的相对路径，我们和可以通过指定具体类来定义，比如：</p>
+<pre><code class="java">new ClassPathResource(&quot;../../../data/resource-data.txt&quot;, Example.class).getFile();</code></pre>
+<p>这样就是相对于<code>Example</code>的相对路径了。在实际使用中，不太建议通过类获取其相对路径的文件。这样会将类与文件的相对坐标绑定，如果修改了类的包路径，但是忘记修改文件位置，就会出现错误。而且，大家现在一般是使用 Maven 之类的包管理器管理，可以直接在<code>resources</code>目录中定义配置文件，使用类路径的相对地址加载文件即可。</p>
+<h3 id="通过-Value自动转换"><a href="#通过-Value自动转换" class="headerlink" title="通过@Value自动转换"></a>通过<code>@Value</code>自动转换</h3><p>我们还可以使用<code>@Value</code>直接注入<code>Resource</code>对象，比如：</p>
+<pre><code class="java">@Value(&quot;classpath:data/resource-data.txt&quot;)
+Resource resourceFile;</code></pre>
+<p><code>@Value</code>还能支持其他的加载协议，比如<code>file:</code>或<code>url:</code>。</p>
+<h3 id="通过ResourceLoader加载"><a href="#通过ResourceLoader加载" class="headerlink" title="通过ResourceLoader加载"></a>通过<code>ResourceLoader</code>加载</h3><p>我们还能使用注入<code>ResourceLoader</code>来实现资源的懒加载，比如，先注入<code>ResourceLoader</code>实例：</p>
+<pre><code class="java">@Autowired
+ResourceLoader resourceLoader;</code></pre>
+<p>然后在我们需要的地方，通过<code>ResourceLoader</code>实例加载资源：</p>
+<pre><code class="java">resourceLoader.getResource(&quot;classpath:data/resource-data.txt&quot;);</code></pre>
+<p>在 Spring 中，<code>ApplicationContext</code>实现了<code>ResourceLoader</code>，所以，我们也可以直接通过<code>ApplicationContext</code>实例加载资源，比如：</p>
+<pre><code class="java">ApplicationContext context;
+
+public Resource loadEmployeesWithApplicationContext() {
+    return context.getResource(&quot;classpath:data/resource-data.txt&quot;);
+}</code></pre>
+<h2 id="使用ResourceUtils加载资源"><a href="#使用ResourceUtils加载资源" class="headerlink" title="使用ResourceUtils加载资源"></a>使用<code>ResourceUtils</code>加载资源</h2><p>在 Spring 内部，还提供了一个工具类<code>ResourceUtils</code>，可以很方便的获取类路径中额资源。但是通过这个类的 Javadoc 可以看到，这个类主要是在 Spring 内部使用，也就是说，不太推荐这种用法。不过我们可以了解一下：</p>
+<pre><code class="java">public File loadEmployeesWithSpringInternalClass() 
+  throws FileNotFoundException {
+    return ResourceUtils.getFile(
+      &quot;classpath:data/resource-data.txt&quot;);
+}</code></pre>
+<p>我们可以了解其内部实现，但是还是建议使用其他更加标准的做法。</p>
+<h2 id="读取资源中的内容"><a href="#读取资源中的内容" class="headerlink" title="读取资源中的内容"></a>读取资源中的内容</h2><p>上面都是通过各种方式获取了<code>Resource</code>资源，接下来我们就聊聊如果获取资源对象的数据。</p>
+<p>比如，我们的资源文件内容如下：</p>
+<pre><code class="txt">站点：https://www.howardliu.cn
+作者：看山
+公号：看山的小屋 (kanshanshuo)
+关注公号得福利：不知道多少 G 的资料（电子书、视频等等）</code></pre>
+<h3 id="通过File对象读取"><a href="#通过File对象读取" class="headerlink" title="通过File对象读取"></a>通过<code>File</code>对象读取</h3><p>我们可以使用<code>getFile</code>方法得到<code>File</code>实例，就可以用读取<code>File</code>对象的方式读取文件了，比如：</p>
+<pre><code class="java">@Test
+File resource = new ClassPathResource(&quot;data/resource-data.txt&quot;).getFile();
+String content = new String(Files.readAllBytes(resource.toPath()));</code></pre>
+<p>但是这种方式不适用与读取 jar 包中的文件，鉴于现在很多应用都是通过 FatJar 方式部署，我们还需要找找其他方式。</p>
+<h3 id="通过InputStream对象读取"><a href="#通过InputStream对象读取" class="headerlink" title="通过InputStream对象读取"></a>通过<code>InputStream</code>对象读取</h3><p><code>File</code>对象不适合 jar 包中资源读取的原因在于文件路径格式不一样，所以我们可以直接将资源内容读取为流的形式，这样就没有文件路径的问题了。比如：</p>
+<pre><code class="java">InputStream resource = new ClassPathResource(&quot;data/resource-data.txt&quot;).getInputStream();
+try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource))) {
+    String content = reader.lines().collect(Collectors.joining(&quot;\n&quot;));
+}</code></pre>
+<p>读取完毕。</p>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>本文从加载资源、读取内容两个方法讲解，给出了多种读取方式。</p>
+<p>《SpringBoot 实战》是一个系列，我会通过实战+原理的方式完整整个专栏，可以关注公众号「看山的小屋」回复 spring 获取源码。</p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://www.howardliu.cn/springboot-action-gracefully-response/">SpringBoot 实战：一招实现结果的优雅响应</a></li>
+<li><a href="https://www.howardliu.cn/springboot-action-gracefully-response-exception/">SpringBoot 实战：如何优雅的处理异常</a></li>
+<li><a href="https://www.howardliu.cn/spring-beanpostprocessor/">SpringBoot 实战：通过 BeanPostProcessor 动态注入 ID 生成器</a></li>
+<li><a href="https://www.howardliu.cn/spring-request-recorder/">SpringBoot 实战：自定义 Filter 优雅获取请求参数和响应结果</a></li>
+<li><a href="https://www.howardliu.cn/spring-enum-params/">SpringBoot 实战：优雅的使用枚举参数</a></li>
+<li><a href="https://www.howardliu.cn/springboot-enum-params-principle/">SpringBoot 实战：优雅的使用枚举参数（原理篇）</a></li>
+<li><a href="https://www.howardliu.cn/springboot-action-enum-params-in-requestbody/">SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数</a></li>
+<li><a href="https://www.howardliu.cn/springboot-action-enum-params-in-requestbody-principle/">SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数（原理篇）</a></li>
+<li><a href="https://www.howardliu.cn/springboot-action-junit5-mockmvc-mockito/">SpringBoot 实战：JUnit5+MockMvc+Mockito 做好单元测试</a></li>
+<li><a href="https://www.howardliu.cn/spring-classpath-file-access/">SpringBoot 实战：加载和读取资源文件内容</a></li>
+</ul>
+<hr>
+<p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/spring-classpath-file-access/">SpringBoot 实战：加载和读取资源文件内容</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/article/details/120930968" target="_blank" rel="noopener">SpringBoot 实战：加载和读取资源文件内容</a></p>
+<center><b>👇🏻欢迎关注我的公众号「看山的小屋」，领取精选资料👇🏻</b></center>
+
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/Spring/">Spring</a>
+            
+            <a href="/tags/SpringBoot/">SpringBoot</a>
+            
+            <a href="/tags/Resource/">Resource</a>
+            
+            <a href="/tags/InputStream/">InputStream</a>
+            
+            <a href="/tags/File/">File</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/we-should-know-when-changing-job/">
+                <i class="icon-next">我们如何拿到自己满意的薪资呢？这些套路还是需要掌握的</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://www.howardliu.cn/images/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/go/" style="font-size: 15px;">go</a> <a href="/tags/开发指南/" style="font-size: 15px;">开发指南</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络，概念，http/" style="font-size: 15px;">网络，概念，http</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/http-状态码/" style="font-size: 15px;">http 状态码</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/Effective-Java/" style="font-size: 15px;">Effective Java</a> <a href="/tags/EasyExcel/" style="font-size: 15px;">EasyExcel</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/Date/" style="font-size: 15px;">Date</a> <a href="/tags/Time/" style="font-size: 15px;">Time</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/jdk8/" style="font-size: 15px;">jdk8</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a>
+    </div>
+</div>
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/spring-classpath-file-access/">SpringBoot 实战：加载和读取资源文件内容</a></li><li class="post-list-item"><a class="post-list-link" href="/we-should-know-when-changing-job/">我们如何拿到自己满意的薪资呢？这些套路还是需要掌握的</a></li><li class="post-list-item"><a class="post-list-link" href="/effective-java-easyexcel-action-fill/">阿里开源的这个库，让 Excel 导出不再复杂（填充模板的使用指南）</a></li><li class="post-list-item"><a class="post-list-link" href="/effective-java-easyexcel-action-write-pretty/">阿里开源的这个库，让 Excel 导出不再复杂（既要能写，还要写的好看）</a></li><li class="post-list-item"><a class="post-list-link" href="/effective-java-easyexcel-action-write/">阿里开源的这个库，让 Excel 导出不再复杂（简简单单的写）</a></li><li class="post-list-item"><a class="post-list-link" href="/data-consistency-in-microservices/">关于微服务系统中数据一致性的总结</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-junit5-mockmvc-mockito/">SpringBoot 实战：JUnit5+MockMvc+Mockito 做好单元测试</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-enum-params-in-requestbody-principle/">SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数（原理篇）</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-enum-params-in-requestbody/">SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-enum-params-principle/">SpringBoot 实战：优雅的使用枚举参数（原理篇）</a></li></ul>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">2021年10月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">2021年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">2021年08月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">2021年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2021</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
