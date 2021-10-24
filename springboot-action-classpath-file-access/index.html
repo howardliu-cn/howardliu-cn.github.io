@@ -7,22 +7,27 @@
 <meta http-equiv="Cache-Control" content="no-siteapp">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>沉潜飞动|君子藏器于身，待时而动。</title>
-<meta name="description" content="北冥有鱼，其名为鲲，鲲之背，不知其几千里也。化而为鸟，其名为鹏，鹏之背，不知其几千里也，怒而飞，其翼若垂天之云。">
-<meta property="og:type" content="website">
-<meta property="og:title" content="沉潜飞动">
-<meta property="og:url" content="https://www.howardliu.cn/categories/java/page/2/index.html">
+<title>SpringBoot 实战：加载和读取资源文件内容||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="本文聊一聊在 SpringBoot 应用中，访问加载类路径（classpath）中的文件内容的多种方法。">
+<meta name="keywords" content="Spring,SpringBoot,Resource,ClassPathResource,InputStream,File,ApplicationContext,加载classpath文件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot 实战：加载和读取资源文件内容">
+<meta property="og:url" content="https://www.howardliu.cn/springboot-action-classpath-file-access/index.html">
 <meta property="og:site_name" content="沉潜飞动">
-<meta property="og:description" content="北冥有鱼，其名为鲲，鲲之背，不知其几千里也。化而为鸟，其名为鹏，鹏之背，不知其几千里也，怒而飞，其翼若垂天之云。">
+<meta property="og:description" content="本文聊一聊在 SpringBoot 应用中，访问加载类路径（classpath）中的文件内容的多种方法。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://static.howardliu.cn/20211024104517.jpeg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-10-24T02:34:08.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="沉潜飞动">
-<meta name="twitter:description" content="北冥有鱼，其名为鲲，鲲之背，不知其几千里也。化而为鸟，其名为鹏，鹏之背，不知其几千里也，怒而飞，其翼若垂天之云。">
+<meta name="twitter:title" content="SpringBoot 实战：加载和读取资源文件内容">
+<meta name="twitter:description" content="本文聊一聊在 SpringBoot 应用中，访问加载类路径（classpath）中的文件内容的多种方法。">
+<meta name="twitter:image" content="https://static.howardliu.cn/20211024104517.jpeg">
 
-<meta name="keywords" content="云计算,概念,iaas,paas,saas,线性代数,矩阵,矩阵乘法,数据挖掘,机器学习,深度学习,redis,翻译,分布式锁,mongodb,两阶段提交,2PC,translation,two phase commit,算法,双指针,滑动窗口,无重复字符的最长子串,八皇后问题,数据结构,java,design patterns,设计模式,singleton pattern,单例模式,effective java,枚举,枚举实现单例模式,中文,字符,长度,bug,builder pattern,建造者模式,生成器模式,系统运维,部署,DevOps,微服务,蓝绿部署,AB测试,金丝雀发布,灰度发布,Nginx,pcre,zlib,http_ssl_module,openssl,upstreams,vhosts,weblogic,weblogic dev,weblogic开发版,ModuleException,ear,EOS Platform,deploy,EOS,BPS,weblogic plugin,eclipse,操作技巧,windows,自动登录,系统运维，weblogic,weblogic 开发版，内存溢出，OutOfMemoryError,PermGen space,系统运维，MQ,RabbitMQ,集群,ssh,免密码登录,CD,代码质量管理，SonarQube,Jenkins,Jenkins Pipeline,ubuntu,ufw,iptable,DevOps实战,三步工作法,凤凰项目,IT运维,提升开发效能,流动原则,反馈原则,持续学习与实验原则,mysql,user,authority,password,Git,GitFlow,TrunkBased,AoneFlow,Devops,Docker,build,images,run,ps,Docker 命令,Dockerfile,开源,大数据,hadoop,yarn,hdfs,HA,QJM,NameNode,DataNode,JournalNode,ResourceManager,Secondary NameNode,mapreduce,ApplicationMaster,NodeManager,Container,go,开发指南,安装 Go,hbase,伪分布式模式,开发指南，安装 Go,安装多版本 Go,单机模式,网络，概念，http,http 长连接，http 短连接,网络,http,http服务,http响应头,vary,http 服务,jvm,垃圾收集算法,分代收集理论,标记-清除算法,标记-复制算法,标记-整理算法,JVM,ArrayList,volatile,CopyOnWriteArrayList,Collections.synchronizedList,线程安全,方法论,模式,常量,接口,类,Effective Java,EasyExcel,EasyExcelFactory,ExcelWriter,WriteSheet,ExcelProperty,注释,javadoc,开发,规范,内存溢出,ipv4,int,concurrency,condition,thread,synchronized,Java8,Date,Calendar,LocalDate,LocalTime,LocalDateTime,ZonedDateTime,Period,Duration,import,单类型导入,按需类型导入,single-type-import,type-import-on-demand,jdk8,stream,optional,map,flatmap,isPresent,ifPresent,filter,orElse,orElseGet,orElseThrow,appletviewer,extcheck,jar,javac,javah,javap,jdb,jdeps,keytool,jarsigner,policytool,kinit,klist,ktab,native2ascii,rmic,rmiregistry,rmid,serialver,tnameserv,idlj,orbd,servertool,javapackager,pack200,unpack200,javaws,jcmd,jconsole,jmc,jvisualvm,schemagen,wsgen,wsimport,xjc,jps,jstat,jstatd,jinfo,jhat,jmap,jsadebugd,jstack,jjs,jrunscript,collectors,Collectors.toMap,Collectors.groupingBy,Collectors.collectingAndThen,Function.identity,Xms,Xmx,Xmn1g,MetaspaceSize,SurvivorRatio,Xss,MaxDirectMemorySize,ReservedCodeCacheSize,gc,cms,PrintGCDetails,loggc,UseThreadPriorities,HeapDumpOnOutOfMemoryError,StringTableSize,AlwaysPreTouch,AutoBoxCacheMax,join,CountDownLatch,CyclicBarrier,多线程,freemarker,jsp,Vector,Collections,synchronizedList,List,SynchronizedList,数据一致性,事务,本地事务,全局事务,柔性事务,TCC,可靠事件,SAGA,业务补偿模式,服务注册,服务发现,microservice,service registry,service discovery,服务注册可行性方案,服务发现可行性方案,微服务可行性方案,单体架构,架构,重构,monilith,refactor,devops,architecture,网关,认证授权,集中配置,日志聚合,监控告警,范式,编程范式,架构师,micro service,data consistency,transaction,微服务元年,中间件,消息队列,选型,ActiveMQ,ZeroMQ,Kafka,MetaMQ,RocketMQ,os,操作系统,win7,系统更新,WindowsUpdate_800B0100,操作系统，Linux,swap,交换空间,闲聊,书单,技术成长,凤凰架构,周志明,操作系统，linux,乌班图，工作环境,非理性,认知偏差,自控术,拖延症,焦虑,布里丹之驴,怪诞脑科学,盖瑞·马库斯,战胜焦虑、混乱、拖延的自控术,怪诞脑科学:战胜焦虑、混乱、拖延的自控术,闲聊，写作之路，收益，技术成长，优秀程序员，大佬,辞职,2020年辞职,2020年经历了什么,学非探其花,要自拔其根,闲聊，瞎想，瞎说八道，成本，生活，OpenTracing,Zipkin,TraceView,SkyWalking,DataDog,Jaeger,躺平,原因,三和大神,唐伯虎,陶渊明,葛优瘫,人月神话,编程,乐趣,苦恼,管理,情感,程序员,IT,薪资,换工作,套路,升职加薪,我不是教你诈,面试套路,面试技巧,http 状态码,程序员，辞职，时机,随笔，心灵鸡汤，高薪，学习，文凭,软件架构,缓存,memcached,ehcache,事件驱动,event,event-driven,solr,查询参数,局部参数,层面分析,DisMax查询解析器,标准查询解析器,eDisMax查询解析器,BeanPostProcessor,实战,spring-cloud,spring-cloud-config,micro-service,keystore,非对称加密,Spring,SpringBoot,Resource,ClassPathResource,InputStream,File,ApplicationContext,加载classpath文件,spring,springboot,Converter,ConverterFactory,RequestParamMethodArgumentResolver,ModelAttributeMethodProcessor,RequestResponseBodyMethodProcessor,MappingJackson2HttpMessageConverter,RequestBody,Jackson,JsonCreator,Mode.DELEGATING,PROPERTIES,DISABLED,SpringBoot实战,统一的结果响应,ResponseBodyAdvice,RequestBodyAdvice,StringHttpMessageConverter,SpringBoot 实战，单元测试，JUnit,Mockito,MockMvc,Hamcrest,Jupiter,Vintage,spring-boot-starter-test,OncePerRequestFilter,storm,转帖,storm集群,cluster,实时计算模式,实时计算,kafka,Trident,topology,spout,bolt,stream group,reliability,task,worker,任务,任务队列,解决方案,分布式,架构设计,短链服务,如何设计短链服务,zookeeper,异常处理,Packet len is out of range">
+<meta name="keywords" content="Spring,SpringBoot,Resource,ClassPathResource,InputStream,File,ApplicationContext,加载classpath文件">
 
 
-<meta name="description" content="北冥有鱼，其名为鲲，鲲之背，不知其几千里也。化而为鸟，其名为鹏，鹏之背，不知其几千里也，怒而飞，其翼若垂天之云。">
+<meta name="description" content="本文聊一聊在 SpringBoot 应用中，访问加载类路径（classpath）中的文件内容的多种方法。">
 
 <meta name="author" content="Howard Liu,howardliu1988@163.com">
 
@@ -64,7 +69,7 @@
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 
-                <li><a href="/."><i class="icon-home"> 首页</i></a></li>
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
                 
                 <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
                 
@@ -81,15 +86,169 @@
         <div class="container container-center">
             <div class="row">
                 <div class="col-md-8">
-                    <div class="well">
-    <div class="page-content wc-container">
-        <h1>归档</h1>
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/springboot-action-classpath-file-access/">SpringBoot 实战：加载和读取资源文件内容</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-10-24</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/springboot-action-classpath-file-access/" class="leancloud_visitors" data-flag-title="SpringBoot 实战：加载和读取资源文件内容">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#通过Resource接口"><span class="toc-text">通过Resource接口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#手动加载"><span class="toc-text">手动加载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#通过-Value自动转换"><span class="toc-text">通过@Value自动转换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#通过ResourceLoader加载"><span class="toc-text">通过ResourceLoader加载</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用ResourceUtils加载资源"><span class="toc-text">使用ResourceUtils加载资源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#读取资源中的内容"><span class="toc-text">读取资源中的内容</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#通过File对象读取"><span class="toc-text">通过File对象读取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#通过InputStream对象读取"><span class="toc-text">通过InputStream对象读取</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="https://static.howardliu.cn/20211024104517.jpeg" alt="SpringBoot 实战：加载和读取资源文件内容"></p>
+<blockquote>
+<p>该图片由<a href="https://pixabay.com/zh/users/anramb-20789083/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6137612" target="_blank" rel="noopener">Marna Buys</a>在<a href="https://pixabay.com/zh/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6137612" target="_blank" rel="noopener">Pixabay</a>上发布</p>
+</blockquote>
+<p>你好，我是看山。</p>
+<p>本文聊一聊在 SpringBoot 应用中，访问加载类路径（classpath）中的文件内容的多种方法。</p>
+<a id="more"></a>
 
-        <div class="post">
+<h2 id="通过Resource接口"><a href="#通过Resource接口" class="headerlink" title="通过Resource接口"></a>通过<code>Resource</code>接口</h2><p><code>Resource</code>接口抽象出一种更底层的方式管理资源，可以实现通过统一的方式处理各类文件资源。下面是几种获取资源实例的方法。</p>
+<h3 id="手动加载"><a href="#手动加载" class="headerlink" title="手动加载"></a>手动加载</h3><p>访问类路径中的文件，我们可以直接使用<code>ClassPathResource</code>加载内容，比如：</p>
+<pre><code class="java">new ClassPathResource(&quot;data/resource-data.txt&quot;);</code></pre>
+<p>默认情况下，<code>ClassPathResource</code>会在线程的上下文类加载器和默认系统类加载器之间进行选择，以删除样板文件。我们也可以直接指定类加载器，比如：</p>
+<pre><code class="java">new ClassPathResource(&quot;data/resource-data.txt&quot;, this.getClass().getClassLoader());</code></pre>
+<p>或者是通过指定类的类加载器：</p>
+<pre><code class="java">new ClassPathResource(&quot;data/resource-data.txt&quot;, Employee.class.getClassLoader());</code></pre>
+<p>从<code>Resource</code>对象，我们可以很容易的将其转换为<code>InputStream</code>或<code>File</code>对象。</p>
+<p>上面说的方式都是相对于类路径的地址。如果想要指定某个类的相对路径，我们和可以通过指定具体类来定义，比如：</p>
+<pre><code class="java">new ClassPathResource(&quot;../../../data/resource-data.txt&quot;, Example.class).getFile();</code></pre>
+<p>这样就是相对于<code>Example</code>的相对路径了。在实际使用中，不太建议通过类获取其相对路径的文件。这样会将类与文件的相对坐标绑定，如果修改了类的包路径，但是忘记修改文件位置，就会出现错误。而且，大家现在一般是使用 Maven 之类的包管理器管理，可以直接在<code>resources</code>目录中定义配置文件，使用类路径的相对地址加载文件即可。</p>
+<h3 id="通过-Value自动转换"><a href="#通过-Value自动转换" class="headerlink" title="通过@Value自动转换"></a>通过<code>@Value</code>自动转换</h3><p>我们还可以使用<code>@Value</code>直接注入<code>Resource</code>对象，比如：</p>
+<pre><code class="java">@Value(&quot;classpath:data/resource-data.txt&quot;)
+Resource resourceFile;</code></pre>
+<p><code>@Value</code>还能支持其他的加载协议，比如<code>file:</code>或<code>url:</code>。</p>
+<h3 id="通过ResourceLoader加载"><a href="#通过ResourceLoader加载" class="headerlink" title="通过ResourceLoader加载"></a>通过<code>ResourceLoader</code>加载</h3><p>我们还能使用注入<code>ResourceLoader</code>来实现资源的懒加载，比如，先注入<code>ResourceLoader</code>实例：</p>
+<pre><code class="java">@Autowired
+ResourceLoader resourceLoader;</code></pre>
+<p>然后在我们需要的地方，通过<code>ResourceLoader</code>实例加载资源：</p>
+<pre><code class="java">resourceLoader.getResource(&quot;classpath:data/resource-data.txt&quot;);</code></pre>
+<p>在 Spring 中，<code>ApplicationContext</code>实现了<code>ResourceLoader</code>，所以，我们也可以直接通过<code>ApplicationContext</code>实例加载资源，比如：</p>
+<pre><code class="java">ApplicationContext context;
+
+public Resource loadEmployeesWithApplicationContext() {
+    return context.getResource(&quot;classpath:data/resource-data.txt&quot;);
+}</code></pre>
+<h2 id="使用ResourceUtils加载资源"><a href="#使用ResourceUtils加载资源" class="headerlink" title="使用ResourceUtils加载资源"></a>使用<code>ResourceUtils</code>加载资源</h2><p>在 Spring 内部，还提供了一个工具类<code>ResourceUtils</code>，可以很方便的获取类路径中额资源。但是通过这个类的 Javadoc 可以看到，这个类主要是在 Spring 内部使用，也就是说，不太推荐这种用法。不过我们可以了解一下：</p>
+<pre><code class="java">public File loadEmployeesWithSpringInternalClass() 
+  throws FileNotFoundException {
+    return ResourceUtils.getFile(
+      &quot;classpath:data/resource-data.txt&quot;);
+}</code></pre>
+<p>我们可以了解其内部实现，但是还是建议使用其他更加标准的做法。</p>
+<h2 id="读取资源中的内容"><a href="#读取资源中的内容" class="headerlink" title="读取资源中的内容"></a>读取资源中的内容</h2><p>上面都是通过各种方式获取了<code>Resource</code>资源，接下来我们就聊聊如果获取资源对象的数据。</p>
+<p>比如，我们的资源文件内容如下：</p>
+<pre><code class="txt">站点：https://www.howardliu.cn
+作者：看山
+公号：看山的小屋 (kanshanshuo)
+关注公号得福利：不知道多少 G 的资料（电子书、视频等等）</code></pre>
+<h3 id="通过File对象读取"><a href="#通过File对象读取" class="headerlink" title="通过File对象读取"></a>通过<code>File</code>对象读取</h3><p>我们可以使用<code>getFile</code>方法得到<code>File</code>实例，就可以用读取<code>File</code>对象的方式读取文件了，比如：</p>
+<pre><code class="java">@Test
+File resource = new ClassPathResource(&quot;data/resource-data.txt&quot;).getFile();
+String content = new String(Files.readAllBytes(resource.toPath()));</code></pre>
+<p>但是这种方式不适用于读取 jar 包中的文件，鉴于现在很多应用都是通过 FatJar 方式部署，我们还需要找找其他方式。</p>
+<h3 id="通过InputStream对象读取"><a href="#通过InputStream对象读取" class="headerlink" title="通过InputStream对象读取"></a>通过<code>InputStream</code>对象读取</h3><p><code>File</code>对象不适合 jar 包中资源读取的原因在于文件路径格式不一样，所以我们可以直接将资源内容读取为流的形式，这样就没有文件路径的问题了。比如：</p>
+<pre><code class="java">InputStream resource = new ClassPathResource(&quot;data/resource-data.txt&quot;).getInputStream();
+try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource))) {
+    String content = reader.lines().collect(Collectors.joining(&quot;\n&quot;));
+}</code></pre>
+<p>读取完毕。</p>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>本文从加载资源、读取内容两个方法讲解，给出了多种读取方式。</p>
+<p>《SpringBoot 实战》是一个系列，我会通过实战+原理的方式完整整个专栏，可以关注公众号「看山的小屋」回复 spring 获取源码。</p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://www.howardliu.cn/springboot-action-gracefully-response/">SpringBoot 实战：一招实现结果的优雅响应</a></li>
+<li><a href="https://www.howardliu.cn/springboot-action-gracefully-response-exception/">SpringBoot 实战：如何优雅的处理异常</a></li>
+<li><a href="https://www.howardliu.cn/spring-beanpostprocessor/">SpringBoot 实战：通过 BeanPostProcessor 动态注入 ID 生成器</a></li>
+<li><a href="https://www.howardliu.cn/spring-request-recorder/">SpringBoot 实战：自定义 Filter 优雅获取请求参数和响应结果</a></li>
+<li><a href="https://www.howardliu.cn/spring-enum-params/">SpringBoot 实战：优雅的使用枚举参数</a></li>
+<li><a href="https://www.howardliu.cn/springboot-enum-params-principle/">SpringBoot 实战：优雅的使用枚举参数（原理篇）</a></li>
+<li><a href="https://www.howardliu.cn/springboot-action-enum-params-in-requestbody/">SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数</a></li>
+<li><a href="https://www.howardliu.cn/springboot-action-enum-params-in-requestbody-principle/">SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数（原理篇）</a></li>
+<li><a href="https://www.howardliu.cn/springboot-action-junit5-mockmvc-mockito/">SpringBoot 实战：JUnit5+MockMvc+Mockito 做好单元测试</a></li>
+<li><a href="https://www.howardliu.cn/springboot-action-classpath-file-access/">SpringBoot 实战：加载和读取资源文件内容</a></li>
+</ul>
+<hr>
+<p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/springboot-action-classpath-file-access/">SpringBoot 实战：加载和读取资源文件内容</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/article/details/120930968" target="_blank" rel="noopener">SpringBoot 实战：加载和读取资源文件内容</a></p>
+<center><b>👇🏻欢迎关注我的公众号「看山的小屋」，领取精选资料👇🏻</b></center>
+
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/Spring/">Spring</a>
+            
+            <a href="/tags/SpringBoot/">SpringBoot</a>
+            
+            <a href="/tags/Resource/">Resource</a>
+            
+            <a href="/tags/InputStream/">InputStream</a>
+            
+            <a href="/tags/File/">File</a>
             
         </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/we-should-know-when-changing-job/">
+                <i class="icon-next">我们如何拿到自己满意的薪资呢？这些套路还是需要掌握的</i>
+            </a>
+            
+        </div>
+        
     </div>
 </div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://www.howardliu.cn/images/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
                 </div>
                 <div class="col-md-4 hidden-xs">
                     
