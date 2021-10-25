@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>看山聊 Java：从零实现“百度网盘批量重命名”工具||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="工具的发明能够节省体力，同时也可以减少重复劳动，软件也是工具的一种。今天要说的是，引用 IT 技术，减少大量文件重命名这种重复的劳动。">
+<meta name="keywords" content="百度网盘批量重命名,工具,从零实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="看山聊 Java：从零实现“百度网盘批量重命名”工具">
+<meta property="og:url" content="https://www.howardliu.cn/effective-java-tools-batch-rename-baiduwangpan/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="工具的发明能够节省体力，同时也可以减少重复劳动，软件也是工具的一种。今天要说的是，引用 IT 技术，减少大量文件重命名这种重复的劳动。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://static.howardliu.cn/20211025231948.jpeg">
+<meta property="og:image" content="https://static.howardliu.cn/20211024165119.png">
+<meta property="og:image" content="https://static.howardliu.cn/20211024165729.png">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-10-25T15:16:13.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="看山聊 Java：从零实现“百度网盘批量重命名”工具">
+<meta name="twitter:description" content="工具的发明能够节省体力，同时也可以减少重复劳动，软件也是工具的一种。今天要说的是，引用 IT 技术，减少大量文件重命名这种重复的劳动。">
+<meta name="twitter:image" content="https://static.howardliu.cn/20211025231948.jpeg">
+
+<meta name="keywords" content="百度网盘批量重命名,工具,从零实现">
+
+
+<meta name="description" content="工具的发明能够节省体力，同时也可以减少重复劳动，软件也是工具的一种。今天要说的是，引用 IT 技术，减少大量文件重命名这种重复的劳动。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/styles/vs2015.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/effective-java-tools-batch-rename-baiduwangpan/">看山聊 Java：从零实现“百度网盘批量重命名”工具</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-10-25</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/effective-java-tools-batch-rename-baiduwangpan/" class="leancloud_visitors" data-flag-title="看山聊 Java：从零实现“百度网盘批量重命名”工具">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#提出需求"><span class="toc-text">提出需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设计方案"><span class="toc-text">设计方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#找到关键接口"><span class="toc-text">找到关键接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#导出导入文件"><span class="toc-text">导出导入文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#开始编码"><span class="toc-text">开始编码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#定义基础类"><span class="toc-text">定义基础类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#定义请求类"><span class="toc-text">定义请求类</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#体验升级"><span class="toc-text">体验升级</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="https://static.howardliu.cn/20211025231948.jpeg" alt="看山聊 Java：从零实现“百度网盘批量重命名”工具"></p>
+<blockquote>
+<p>该图片由<a href="https://pixabay.com/zh/users/roshan_bhatia-17147583/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6693577" target="_blank" rel="noopener">Roshan Bhatia</a>在<a href="https://pixabay.com/zh/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6693577" target="_blank" rel="noopener">Pixabay</a>上发布</p>
+</blockquote>
+<p>你好，我是看山。</p>
+<p>工具的发明能够节省体力，同时也可以减少重复劳动，软件也是工具的一种。今天要说的是，引用 IT 技术，减少大量文件重命名这种重复的劳动。</p>
+<a id="more"></a>
+
+<p>一直在用的存储云盘是百度网盘，里面收集了大量文件。各种资料、电子书，使用空间达到了 2500G。之前还清理过一些低质的书籍，结果使用工具导出发现，在待整理目录中，居然有 1942 条电子书的记录。如果有小伙伴想要什么书，可以从公号留言，只要不是商用，无私共享。</p>
+<h2 id="提出需求"><a href="#提出需求" class="headerlink" title="提出需求"></a>提出需求</h2><p>书归正传，这么多的文件，命名格式千奇百怪，因为有一些资料是从别人的分享中保存的，有的还会带网址的，可见网站运营也是无所不用其极了。从网上找到一些批量改名的工具，大多是 Windows 版本的，而且是加前缀或者后缀之类的，不太适用。</p>
+<p>我想要的是，自己指定文件名，然后批量执行。就相当于有一双手，帮我在百度网盘中执行官方提供的重命名。之所以不用官方的重命名，是因为太难用，而且浪费时间（后面会具体说一下百度网盘的这个设计，也是可以借鉴的）。</p>
+<p>想要实现自己的想法，需要有两步：</p>
+<ol>
+<li>以 Excel 格式导出所有文件名</li>
+<li>在导出的 Excel 文件中，定义目标名称，不需要改名的可以不用修改</li>
+<li>导入整理后的文件，检查是否重命名成功</li>
+</ol>
+<h2 id="设计方案"><a href="#设计方案" class="headerlink" title="设计方案"></a>设计方案</h2><p>根据需求，我们来设计方案。</p>
+<h3 id="找到关键接口"><a href="#找到关键接口" class="headerlink" title="找到关键接口"></a>找到关键接口</h3><p>首先，我们需要能够导出所有的文件名。</p>
+<p>百度网盘提供了网页版、客户端版，为了省时省事，我们使用网页版检查逻辑。打开控制台，发现进入目录时会有一个<code>/api/list</code>的请求，如下图：</p>
+<p><img src="https://static.howardliu.cn/20211024165119.png" alt="查询目录中文件列表"></p>
+<p>根据响应内容，我们可以看出来，这个接口可以获取指定目录的文件列表。这个请求是 Get 请求，包含了好几个参数，还不太请求参数的作用，先放过。</p>
+<p>通常来说，简单的网络请求是通过 Cookie 鉴权，所以我们就无脑使用 Cookie 了。</p>
+<p>接下来需要找到重命名的请求，同样的，执行百度网盘提供的重命名即可，新增了哪些请求。如下图：</p>
+<p><img src="https://static.howardliu.cn/20211024165729.png" alt="重命名并查询结果"></p>
+<p>可以看到，这里的重命名分为了两步：</p>
+<ol>
+<li>提交重命名任务，返回任务 id</li>
+<li>使用任务 id 查询任务执行情况</li>
+</ol>
+<p>这就是前面说的可借鉴的地方。对于百度网盘这种应用，虽然下载限速被各种诟病，还有阿里云盘的强势追击，但是不得不说，百度网盘还是现在用的比较多的云存储工具。必须有针对性的优化，将某些二级功能异步任务化，比如重命名。</p>
+<ol>
+<li>先通过一个请求创建重命名任务，任务创建成功返回任务 ID。这个时候，百度网盘后端服务监听新任务，如果后端压力大，任务可以缓慢执行或不执行；</li>
+<li>既然是异步任务化，客户端（包括网页或客户端）需要检查任务执行情况。任务执行情况根据约定可以有进行中或者完成，还可以有拒绝、失败、过期等其他情况。</li>
+</ol>
+<h3 id="导出导入文件"><a href="#导出导入文件" class="headerlink" title="导出导入文件"></a>导出导入文件</h3><p>我们可以借助阿里开源的 EasyExcel 导出 Excel 文件（具体操作，可以查看 <a href="https://mp.weixin.qq.com/s/CYiY7wNuOnhVk4Mw5L8Wrw" target="_blank" rel="noopener">写文件</a>、<a href="https://mp.weixin.qq.com/s/edCvwrP1NYd8ryBHcp35fA" target="_blank" rel="noopener">写的好看</a>、<a href="https://mp.weixin.qq.com/s/4QGSjKUSm_KAF009grd4hw" target="_blank" rel="noopener">填充文件</a> 三篇）。</p>
+<p>这个时候需要定义导出文件的内容，根据重命名的请求我们可以知道，我们需要文件路径、文件的新名字，为了操作简单，我们可以直接把原名也导出来。为了检查网盘文件是否有重复的，最好把文件的摘要码也导出来。</p>
+<p>至此，我们的需求和方案都设计好了，下面就开始编码。</p>
+<h2 id="开始编码"><a href="#开始编码" class="headerlink" title="开始编码"></a>开始编码</h2><p>开始编码前，我们需要定义一下鉴权参数：cookie、bdstoken，再定义一个扩展参数 path，我们只导出指定目录的文件列表。</p>
+<h3 id="定义基础类"><a href="#定义基础类" class="headerlink" title="定义基础类"></a>定义基础类</h3><p>根据设计方案中的定义，我们先创建导出文件的基础类：</p>
+<pre><code class="java">@Data
+public class FileName {
+    @ExcelProperty(&quot;路径&quot;)
+    private String path;
+    @ExcelProperty(&quot;MD5&quot;)
+    private String md5;
+    @ExcelProperty(&quot;原名称&quot;)
+    private String originName;
+    @ExcelProperty(&quot;新名称&quot;)
+    private String newName;
+}</code></pre>
+<p>因为涉及到网络请求，我们需要定义请求参数。请求有一些共同参数：</p>
+<pre><code class="java">@Data
+public abstract class BaseRequest {
+    protected String channel = &quot;chunlei&quot;;
+    protected String web = &quot;1&quot;;
+    protected String appId = &quot;250528&quot;;
+    protected String bdstoken = &quot;&quot;;
+    protected String logid = &quot;&quot;;
+    protected String clienttype = &quot;0&quot;;
+}</code></pre>
+<p>文件列表参数为：</p>
+<pre><code class="java">@EqualsAndHashCode(callSuper = true)
+@Data
+public class FileListRequest extends BaseRequest {
+    private String order = &quot;name&quot;;
+    private String desc = &quot;0&quot;;
+    private String showempty = &quot;0&quot;;
+    private int page = 1;
+    private int num = 100;
+    private String dir = &quot;/&quot;;
+    private String t = &quot;&quot;;
+}</code></pre>
+<p>重命名参数为：</p>
+<pre><code class="java">@EqualsAndHashCode(callSuper = true)
+@Data
+public class FileRenameRequest extends BaseRequest {
+    private String opera = &quot;rename&quot;;
+    private String async = &quot;2&quot;;
+    private String onnest = &quot;fail&quot;;
+}</code></pre>
+<p>我们还需要一个查询任务状态的参数：</p>
+<pre><code class="java">@EqualsAndHashCode(callSuper = true)
+@Data
+public class TaskStatusRequest extends BaseRequest {
+    private Long taskid;
+}</code></pre>
+<h3 id="定义请求类"><a href="#定义请求类" class="headerlink" title="定义请求类"></a>定义请求类</h3><p>前面有了基础类和请求类，接下来我们定义请求接口，这些类就是模板化的方法了，我们简单看一下。如果想要获取源码，关注公号「看山的小屋」回复“java”获取源码。</p>
+<p>先定义文件列表请求方法：</p>
+<pre><code class="java">private List&lt;FileListItem&gt; listFileCurrentPath(FileListRequest fileListRequest) {
+    final String body = HttpRequest.get(&quot;https://pan.baidu.com/api/list&quot;)
+            .form(fileListRequest.paramMap())
+            .header(this.headers)
+            .cookie(this.cookie)
+            .execute()
+            .body();
+    final FileListResponse response = JSONUtil.toBean(body, FileListResponse.class);
+    if (response.getErrno() == 0) {
+        return response.getList();
+    }
+    return Collections.emptyList();
+}</code></pre>
+<p>在定义文件重命名请求方法：</p>
+<pre><code class="java">private Long rename(FileRenameRequest fileRenameRequest, String params) {
+    final String queryParam = HttpUtil.toParams(fileRenameRequest.paramMap());
+    final HttpRequest httpRequest = HttpRequest.post(&quot;https://pan.baidu.com/api/filemanager?&quot; + queryParam)
+            .header(this.headers)
+            .cookie(this.cookie)
+            .body(params);
+    final String body = httpRequest.execute().body();
+    final FileRenameResponse response = JSONUtil.toBean(body, FileRenameResponse.class);
+    if (response.getErrno() == 0) {
+        return response.getTaskid();
+    }
+    return -1L;
+}</code></pre>
+<p>最后定义检查任务状态请求方法：</p>
+<pre><code class="java">private TaskStatusResponse queryTaskStatus(TaskStatusRequest taskStatusRequest, String params) {
+    TaskStatusResponse response;
+    final String queryParam = HttpUtil.toParams(taskStatusRequest.paramMap());
+    do {
+        final String body = HttpRequest.post(&quot;https://pan.baidu.com/share/taskquery?&quot; + queryParam)
+                .header(this.headers)
+                .cookie(this.cookie)
+                .body(params)
+                .execute()
+                .body();
+
+        response = JSONUtil.toBean(body, TaskStatusResponse.class);
+    } while (response.getErrno() != 0 || StringUtils.equalsAny(response.getStatus(), &quot;running&quot;, &quot;pending&quot;));
+    return response;
+}</code></pre>
+<h2 id="体验升级"><a href="#体验升级" class="headerlink" title="体验升级"></a>体验升级</h2><p>全部类定义完成后，我们可以直接在 IDE 中运行。但是，既然是工具，每次使用还得打开 IDE，是不是有些 low 了。为了升级体验，我们可以打成 jar 包，使用的时候直接运行 jar 包就行了。可以借助 maven 插件<code>maven-assembly-plugin</code>实现，这个插件能够把我们的源码和三方库都打在一个 jar 包中，这样就是一个 FatJar 走天下了。</p>
+<pre><code class="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-assembly-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.3&lt;/version&gt;
+    &lt;configuration&gt;
+        &lt;appendAssemblyId&gt;false&lt;/appendAssemblyId&gt;
+        &lt;descriptorRefs&gt;
+            &lt;descriptorRef&gt;jar-with-dependencies&lt;/descriptorRef&gt;
+        &lt;/descriptorRefs&gt;
+        &lt;archive&gt;
+            &lt;manifest&gt;
+                &lt;addClasspath&gt;true&lt;/addClasspath&gt;
+                &lt;classpathPrefix&gt;lib/&lt;/classpathPrefix&gt;
+                &lt;mainClass&gt;cn.howardliu.effectjava.rename.TaskRunner&lt;/mainClass&gt;
+            &lt;/manifest&gt;
+        &lt;/archive&gt;
+    &lt;/configuration&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+            &lt;id&gt;make-assembly&lt;/id&gt;
+            &lt;phase&gt;package&lt;/phase&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;assembly&lt;/goal&gt;
+            &lt;/goals&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+&lt;/plugin&gt;</code></pre>
+<p>干完，手工。</p>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>本文从零开始实现制作一个网络小工具，实现百度网盘文件的批量重命名。这个工具是这类工具的一个代表，只要是网络应用，存在 http 请求，我们都可以通过这类方式实现网络小工具。</p>
+<p>如果想要获取源码，关注公号「看山的小屋」回复“java”获取源码。</p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1841595569366974465#wechat_redirect" target="_blank" rel="noopener">SpringBoot 实战系列</a></li>
+<li><a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378#wechat_redirect" target="_blank" rel="noopener">Java 进阶系列</a></li>
+<li><a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=2051833877391818754#wechat_redirect" target="_blank" rel="noopener">微服务架构设计</a></li>
+<li><a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1750195552933199874#wechat_redirect" target="_blank" rel="noopener">一个架构师的素养修炼</a></li>
+</ul>
+<hr>
+<p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/effective-java-tools-batch-rename-baiduwangpan/">看山聊 Java：从零实现“百度网盘批量重命名”工具</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">看山聊 Java：从零实现“百度网盘批量重命名”工具</a></p>
+<center><b>👇🏻欢迎关注我的公众号「看山的小屋」，领取精选资料👇🏻</b></center>
+
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/Effective-Java/">Effective Java</a>
+            
+            <a href="/tags/工具/">工具</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/springboot-action-classpath-file-access/">
+                <i class="icon-next">SpringBoot 实战：加载和读取资源文件</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://www.howardliu.cn/images/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/go/" style="font-size: 15px;">go</a> <a href="/tags/开发指南/" style="font-size: 15px;">开发指南</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/http-状态码/" style="font-size: 15px;">http 状态码</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/Effective-Java/" style="font-size: 15px;">Effective Java</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/EasyExcel/" style="font-size: 15px;">EasyExcel</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/Date/" style="font-size: 15px;">Date</a> <a href="/tags/Time/" style="font-size: 15px;">Time</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/jdk8/" style="font-size: 15px;">jdk8</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/数据一致性/" style="font-size: 15px;">数据一致性</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/可靠事件/" style="font-size: 15px;">可靠事件</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a>
+    </div>
+</div>
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/effective-java-tools-batch-rename-baiduwangpan/">看山聊 Java：从零实现“百度网盘批量重命名”工具</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-classpath-file-access/">SpringBoot 实战：加载和读取资源文件</a></li><li class="post-list-item"><a class="post-list-link" href="/we-should-know-when-changing-job/">我们如何拿到自己满意的薪资呢？这些套路还是需要掌握的</a></li><li class="post-list-item"><a class="post-list-link" href="/effective-java-easyexcel-action-fill/">阿里开源的这个库，让 Excel 导出不再复杂（填充模板的使用指南）</a></li><li class="post-list-item"><a class="post-list-link" href="/effective-java-easyexcel-action-write-pretty/">阿里开源的这个库，让 Excel 导出不再复杂（既要能写，还要写的好看）</a></li><li class="post-list-item"><a class="post-list-link" href="/effective-java-easyexcel-action-write/">阿里开源的这个库，让 Excel 导出不再复杂（简简单单的写）</a></li><li class="post-list-item"><a class="post-list-link" href="/data-consistency-in-microservices/">关于微服务系统中数据一致性的总结</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-junit5-mockmvc-mockito/">SpringBoot 实战：JUnit5+MockMvc+Mockito 做好单元测试</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-enum-params-in-requestbody-principle/">SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数（原理篇）</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-enum-params-in-requestbody/">SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数</a></li></ul>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">2021年10月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">2021年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">2021年08月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">2021年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2021</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
