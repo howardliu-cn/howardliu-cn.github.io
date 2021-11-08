@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Java 进阶：使用 Lambda 表达式实现超强的排序功能||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="本文演示了使用 Java8 中使用 Lambda 表达式实现各种排序逻辑，新增的语法糖真香。">
+<meta name="keywords" content="java,jdk8,stream,collectors,Comparator,comparing,compareTo,NullComparator,nullsLast,nullsFirst">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 进阶：使用 Lambda 表达式实现超强的排序功能">
+<meta property="og:url" content="https://www.howardliu.cn/java-lambda-powerful-comparation/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="本文演示了使用 Java8 中使用 Lambda 表达式实现各种排序逻辑，新增的语法糖真香。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://static.howardliu.cn/cairn-g9fca0fd5f_1920.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-11-07T12:32:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java 进阶：使用 Lambda 表达式实现超强的排序功能">
+<meta name="twitter:description" content="本文演示了使用 Java8 中使用 Lambda 表达式实现各种排序逻辑，新增的语法糖真香。">
+<meta name="twitter:image" content="https://static.howardliu.cn/cairn-g9fca0fd5f_1920.jpg">
+
+<meta name="keywords" content="java,jdk8,stream,collectors,Comparator,comparing,compareTo,NullComparator,nullsLast,nullsFirst">
+
+
+<meta name="description" content="本文演示了使用 Java8 中使用 Lambda 表达式实现各种排序逻辑，新增的语法糖真香。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/styles/vs2015.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/java-lambda-powerful-comparation/">Java 进阶：使用 Lambda 表达式实现超强的排序功能</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-11-07</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/java-lambda-powerful-comparation/" class="leancloud_visitors" data-flag-title="Java 进阶：使用 Lambda 表达式实现超强的排序功能">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#基于Comparator排序"><span class="toc-text">基于Comparator排序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用-Lambda-表达式替换Comparator匿名内部类"><span class="toc-text">使用 Lambda 表达式替换Comparator匿名内部类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#通过静态方法抽取公共的-Lambda-表达式"><span class="toc-text">通过静态方法抽取公共的 Lambda 表达式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#借助Comparator的comparing方法"><span class="toc-text">借助Comparator的comparing方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多条件排序"><span class="toc-text">多条件排序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#在Stream中进行排序"><span class="toc-text">在Stream中进行排序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#倒序排列"><span class="toc-text">倒序排列</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#调转排序判断"><span class="toc-text">调转排序判断</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#借助Comparator的reversed方法倒序"><span class="toc-text">借助Comparator的reversed方法倒序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在Comparator-comparing中定义排序反转"><span class="toc-text">在Comparator.comparing中定义排序反转</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在Stream中定义排序反转"><span class="toc-text">在Stream中定义排序反转</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#null-值的判断"><span class="toc-text">null 值的判断</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#元素是-null-的笨拙实现"><span class="toc-text">元素是 null 的笨拙实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用Comparator-nullsLast和Comparator-nullsFirst"><span class="toc-text">使用Comparator.nullsLast和Comparator.nullsFirst</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#排序条件的字段是-null"><span class="toc-text">排序条件的字段是 null</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="https://static.howardliu.cn/cairn-g9fca0fd5f_1920.jpg" alt="Java 进阶：使用 Lambda 表达式实现超强的排序功能"></p>
+<blockquote>
+<p>该图片由<a href="https://pixabay.com/zh/users/mike_68-10359383/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6754295" target="_blank" rel="noopener">Michael Kleinsasser</a>在<a href="https://pixabay.com/zh/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6754295" target="_blank" rel="noopener">Pixabay</a>上发布</p>
+</blockquote>
+<p>你好，我是看山。</p>
+<blockquote>
+<p>本文被<a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378&scene=126&devicetype=iOS15.0.2&version=18000f2a&lang=zh_CN&nettype=WIFI&ascene=59&session_us=gh_9bcfdc303e2f&fontScale=100&wx_header=1" target="_blank" rel="noopener">《Java 进阶》</a>专栏收录，在公众号「看山的小屋」，回复“java”可获取源码。</p>
+</blockquote>
+<p>我们在系统开发过程中，对数据排序是很常见的场景。一般来说，我们可以采用两种方式：</p>
+<a id="more"></a>
+
+<ol>
+<li>借助存储系统（SQL、NoSQL、NewSQL 都支持）的排序功能，查询的结果即是排好序的结果</li>
+<li>查询结果为无序数据，在内存中排序。</li>
+</ol>
+<p>今天要说的是第二种排序方式，在内存中实现数据排序。</p>
+<p>首先，我们定义一个基础类，后面我们将根据这个基础类演示如何在内存中排序。</p>
+<pre><code class="java">@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Student {
+    private String name;
+    private int age;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Student student = (Student) o;
+        return age == student.age &amp;&amp; Objects.equals(name, student.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age);
+    }
+}</code></pre>
+<h2 id="基于Comparator排序"><a href="#基于Comparator排序" class="headerlink" title="基于Comparator排序"></a>基于<code>Comparator</code>排序</h2><p>在 Java8 之前，我们都是通过实现<code>Comparator</code>接口完成排序，比如：</p>
+<pre><code class="java">new Comparator&lt;Student&gt;() {
+    @Override
+    public int compare(Student h1, Student h2) {
+        return h1.getName().compareTo(h2.getName());
+    }
+};</code></pre>
+<p>这里展示的是匿名内部类的定义，如果是通用的对比逻辑，可以直接定义一个实现类。使用起来也比较简单，如下就是应用：</p>
+<pre><code class="java">@Test
+void baseSortedOrigin() {
+    final List&lt;Student&gt; students = Lists.newArrayList(
+            new Student(&quot;Tom&quot;, 10),
+            new Student(&quot;Jerry&quot;, 12)
+    );
+    Collections.sort(students, new Comparator&lt;Student&gt;() {
+        @Override
+        public int compare(Student h1, Student h2) {
+            return h1.getName().compareTo(h2.getName());
+        }
+    });
+    Assertions.assertEquals(students.get(0), new Student(&quot;Jerry&quot;, 12));
+}</code></pre>
+<blockquote>
+<p>这里使用了 Junit5 实现单元测试，用来验证逻辑非常适合。</p>
+</blockquote>
+<p>因为定义的<code>Comparator</code>是使用<code>name</code>字段排序，在 Java 中，<code>String</code>类型的排序是通过单字符的 ASCII 码顺序判断的，<code>J</code>排在<code>T</code>的前面，所以<code>Jerry</code>排在第一个。</p>
+<h2 id="使用-Lambda-表达式替换Comparator匿名内部类"><a href="#使用-Lambda-表达式替换Comparator匿名内部类" class="headerlink" title="使用 Lambda 表达式替换Comparator匿名内部类"></a>使用 Lambda 表达式替换<code>Comparator</code>匿名内部类</h2><p>使用过 Java8 的 Lamdba 的应该知道，匿名内部类可以简化为 Lambda 表达式为：</p>
+<pre><code class="java">Collections.sort(students, (Student h1, Student h2) -&gt; h1.getName().compareTo(h2.getName()));</code></pre>
+<p>在 Java8 中，<code>List</code>类中增加了<code>sort</code>方法，所以<code>Collections.sort</code>可以直接替换为：</p>
+<pre><code class="java">students.sort((Student h1, Student h2) -&gt; h1.getName().compareTo(h2.getName()));</code></pre>
+<p>根据 Java8 中 Lambda 的类型推断，我们可以将指定的<code>Student</code>类型简写：</p>
+<pre><code class="java">students.sort((h1, h2) -&gt; h1.getName().compareTo(h2.getName()));</code></pre>
+<p>至此，我们整段排序逻辑可以简化为：</p>
+<pre><code class="java">@Test
+void baseSortedLambdaWithInferring() {
+    final List&lt;Student&gt; students = Lists.newArrayList(
+            new Student(&quot;Tom&quot;, 10),
+            new Student(&quot;Jerry&quot;, 12)
+    );
+    students.sort((h1, h2) -&gt; h1.getName().compareTo(h2.getName()));
+    Assertions.assertEquals(students.get(0), new Student(&quot;Jerry&quot;, 12));
+}</code></pre>
+<h2 id="通过静态方法抽取公共的-Lambda-表达式"><a href="#通过静态方法抽取公共的-Lambda-表达式" class="headerlink" title="通过静态方法抽取公共的 Lambda 表达式"></a>通过静态方法抽取公共的 Lambda 表达式</h2><p>我们可以在<code>Student</code>中定义一个静态方法：</p>
+<pre><code class="java">public static int compareByNameThenAge(Student s1, Student s2) {
+    if (s1.name.equals(s2.name)) {
+        return Integer.compare(s1.age, s2.age);
+    } else {
+        return s1.name.compareTo(s2.name);
+    }
+}</code></pre>
+<p>这个方法需要返回一个<code>int</code>类型参数，在 Java8 中，我们可以在 Lambda 中使用该方法：</p>
+<pre><code class="java">@Test
+void sortedUsingStaticMethod() {
+    final List&lt;Student&gt; students = Lists.newArrayList(
+            new Student(&quot;Tom&quot;, 10),
+            new Student(&quot;Jerry&quot;, 12)
+    );
+    students.sort(Student::compareByNameThenAge);
+    Assertions.assertEquals(students.get(0), new Student(&quot;Jerry&quot;, 12));
+}</code></pre>
+<h2 id="借助Comparator的comparing方法"><a href="#借助Comparator的comparing方法" class="headerlink" title="借助Comparator的comparing方法"></a>借助<code>Comparator</code>的<code>comparing</code>方法</h2><p>在 Java8 中，<code>Comparator</code>类新增了<code>comparing</code>方法，可以将传递的<code>Function</code>参数作为比较元素，比如：</p>
+<pre><code class="java">@Test
+void sortedUsingComparator() {
+    final List&lt;Student&gt; students = Lists.newArrayList(
+            new Student(&quot;Tom&quot;, 10),
+            new Student(&quot;Jerry&quot;, 12)
+    );
+    students.sort(Comparator.comparing(Student::getName));
+    Assertions.assertEquals(students.get(0), new Student(&quot;Jerry&quot;, 12));
+}</code></pre>
+<h2 id="多条件排序"><a href="#多条件排序" class="headerlink" title="多条件排序"></a>多条件排序</h2><p>我们在静态方法一节中展示了多条件排序，还可以在<code>Comparator</code>匿名内部类中实现多条件逻辑：</p>
+<pre><code class="java">@Test
+void sortedMultiCondition() {
+    final List&lt;Student&gt; students = Lists.newArrayList(
+            new Student(&quot;Tom&quot;, 10),
+            new Student(&quot;Jerry&quot;, 12),
+            new Student(&quot;Jerry&quot;, 13)
+    );
+    students.sort((s1, s2) -&gt; {
+        if (s1.getName().equals(s2.getName())) {
+            return Integer.compare(s1.getAge(), s2.getAge());
+        } else {
+            return s1.getName().compareTo(s2.getName());
+        }
+    });
+    Assertions.assertEquals(students.get(0), new Student(&quot;Jerry&quot;, 12));
+}</code></pre>
+<p>从逻辑来看，多条件排序就是先判断第一级条件，如果相等，再判断第二级条件，依次类推。在 Java8 中可以使用<code>comparing</code>和一系列<code>thenComparing</code>表示多级条件判断，上面的逻辑可以简化为：</p>
+<pre><code class="java">@Test
+void sortedMultiConditionUsingComparator() {
+    final List&lt;Student&gt; students = Lists.newArrayList(
+            new Student(&quot;Tom&quot;, 10),
+            new Student(&quot;Jerry&quot;, 12),
+            new Student(&quot;Jerry&quot;, 13)
+    );
+    students.sort(Comparator.comparing(Student::getName).thenComparing(Student::getAge));
+    Assertions.assertEquals(students.get(0), new Student(&quot;Jerry&quot;, 12));
+}</code></pre>
+<p>这里的<code>thenComparing</code>方法是可以有多个的，用于表示多级条件判断，这也是函数式编程的方便之处。</p>
+<h2 id="在Stream中进行排序"><a href="#在Stream中进行排序" class="headerlink" title="在Stream中进行排序"></a>在<code>Stream</code>中进行排序</h2><p>Java8 中，不但引入了 Lambda 表达式，还引入了一个全新的流式 API：Stream API，其中也有<code>sorted</code>方法用于流式计算时排序元素，可以传入<code>Comparator</code>实现排序逻辑：</p>
+<pre><code class="java">@Test
+void streamSorted() {
+    final List&lt;Student&gt; students = Lists.newArrayList(
+            new Student(&quot;Tom&quot;, 10),
+            new Student(&quot;Jerry&quot;, 12)
+    );
+    final Comparator&lt;Student&gt; comparator = (h1, h2) -&gt; h1.getName().compareTo(h2.getName());
+    final List&lt;Student&gt; sortedStudents = students.stream()
+            .sorted(comparator)
+            .collect(Collectors.toList());
+    Assertions.assertEquals(sortedStudents.get(0), new Student(&quot;Jerry&quot;, 12));
+}</code></pre>
+<p>同样的，我们可以通过 Lambda 简化书写：</p>
+<pre><code class="java">@Test
+void streamSortedUsingComparator() {
+    final List&lt;Student&gt; students = Lists.newArrayList(
+            new Student(&quot;Tom&quot;, 10),
+            new Student(&quot;Jerry&quot;, 12)
+    );
+    final Comparator&lt;Student&gt; comparator = Comparator.comparing(Student::getName);
+    final List&lt;Student&gt; sortedStudents = students.stream()
+            .sorted(comparator)
+            .collect(Collectors.toList());
+    Assertions.assertEquals(sortedStudents.get(0), new Student(&quot;Jerry&quot;, 12));
+}</code></pre>
+<h2 id="倒序排列"><a href="#倒序排列" class="headerlink" title="倒序排列"></a>倒序排列</h2><h3 id="调转排序判断"><a href="#调转排序判断" class="headerlink" title="调转排序判断"></a>调转排序判断</h3><p>排序就是根据<code>compareTo</code>方法返回的值判断顺序，如果想要倒序排列，只要将返回值取返即可：</p>
+<pre><code class="java">@Test
+void sortedReverseUsingComparator2() {
+    final List&lt;Student&gt; students = Lists.newArrayList(
+            new Student(&quot;Tom&quot;, 10),
+            new Student(&quot;Jerry&quot;, 12)
+    );
+    final Comparator&lt;Student&gt; comparator = (h1, h2) -&gt; h2.getName().compareTo(h1.getName());
+    students.sort(comparator);
+    Assertions.assertEquals(students.get(0), new Student(&quot;Tom&quot;, 10));
+}</code></pre>
+<p>可以看到，正序排列的时候，我们是<code>h1.getName().compareTo(h2.getName())</code>，这里我们直接倒转过来，使用的是<code>h2.getName().compareTo(h1.getName())</code>，也就达到了取反的效果。在 Java 的<code>Collections</code>中定义了一个<code>java.util.Collections.ReverseComparator</code>内部私有类，就是通过这种方式实现元素反转。</p>
+<h3 id="借助Comparator的reversed方法倒序"><a href="#借助Comparator的reversed方法倒序" class="headerlink" title="借助Comparator的reversed方法倒序"></a>借助<code>Comparator</code>的<code>reversed</code>方法倒序</h3><p>在 Java8 中新增了<code>reversed</code>方法实现倒序排列，用起来也是很简单：</p>
+<pre><code class="java">@Test
+void sortedReverseUsingComparator() {
+    final List&lt;Student&gt; students = Lists.newArrayList(
+            new Student(&quot;Tom&quot;, 10),
+            new Student(&quot;Jerry&quot;, 12)
+    );
+    final Comparator&lt;Student&gt; comparator = (h1, h2) -&gt; h1.getName().compareTo(h2.getName());
+    students.sort(comparator.reversed());
+    Assertions.assertEquals(students.get(0), new Student(&quot;Tom&quot;, 10));
+}</code></pre>
+<h3 id="在Comparator-comparing中定义排序反转"><a href="#在Comparator-comparing中定义排序反转" class="headerlink" title="在Comparator.comparing中定义排序反转"></a>在<code>Comparator.comparing</code>中定义排序反转</h3><p><code>comparing</code>方法还有一个重载方法，<code>java.util.Comparator#comparing(java.util.function.Function&lt;? super T,? extends U&gt;, java.util.Comparator&lt;? super U&gt;)</code>，第二个参数就可以传入<code>Comparator.reverseOrder()</code>，可以实现倒序：</p>
+<pre><code class="java">@Test
+void sortedUsingComparatorReverse() {
+    final List&lt;Student&gt; students = Lists.newArrayList(
+            new Student(&quot;Tom&quot;, 10),
+            new Student(&quot;Jerry&quot;, 12)
+    );
+    students.sort(Comparator.comparing(Student::getName, Comparator.reverseOrder()));
+    Assertions.assertEquals(students.get(0), new Student(&quot;Jerry&quot;, 12));
+}</code></pre>
+<h3 id="在Stream中定义排序反转"><a href="#在Stream中定义排序反转" class="headerlink" title="在Stream中定义排序反转"></a>在<code>Stream</code>中定义排序反转</h3><p>在<code>Stream</code>中的操作与直接列表排序类似，可以反转<code>Comparator</code>定义，也可以使用<code>Comparator.reverseOrder()</code>反转。实现如下：</p>
+<pre><code class="java">@Test
+void streamReverseSorted() {
+    final List&lt;Student&gt; students = Lists.newArrayList(
+            new Student(&quot;Tom&quot;, 10),
+            new Student(&quot;Jerry&quot;, 12)
+    );
+    final Comparator&lt;Student&gt; comparator = (h1, h2) -&gt; h2.getName().compareTo(h1.getName());
+    final List&lt;Student&gt; sortedStudents = students.stream()
+            .sorted(comparator)
+            .collect(Collectors.toList());
+    Assertions.assertEquals(sortedStudents.get(0), new Student(&quot;Tom&quot;, 10));
+}
+
+@Test
+void streamReverseSortedUsingComparator() {
+    final List&lt;Student&gt; students = Lists.newArrayList(
+            new Student(&quot;Tom&quot;, 10),
+            new Student(&quot;Jerry&quot;, 12)
+    );
+    final List&lt;Student&gt; sortedStudents = students.stream()
+            .sorted(Comparator.comparing(Student::getName, Comparator.reverseOrder()))
+            .collect(Collectors.toList());
+    Assertions.assertEquals(sortedStudents.get(0), new Student(&quot;Tom&quot;, 10));
+}</code></pre>
+<h2 id="null-值的判断"><a href="#null-值的判断" class="headerlink" title="null 值的判断"></a>null 值的判断</h2><p>前面的例子中都是有值元素排序，能够覆盖大部分场景，但有时候我们还是会碰到元素中存在<code>null</code>的情况：</p>
+<ol>
+<li>列表中的元素是 null</li>
+<li>列表中的元素参与排序条件的字段是 null</li>
+</ol>
+<p>如果还是使用前面的那些实现，我们会碰到<code>NullPointException</code>异常，即 NPE，简单演示一下：</p>
+<pre><code class="java">@Test
+void sortedNullGotNPE() {
+    final List&lt;Student&gt; students = Lists.newArrayList(
+            null,
+            new Student(&quot;Snoopy&quot;, 12),
+            null
+    );
+    Assertions.assertThrows(NullPointerException.class,
+            () -&gt; students.sort(Comparator.comparing(Student::getName)));
+}</code></pre>
+<p>所以，我们需要考虑这些场景。</p>
+<h3 id="元素是-null-的笨拙实现"><a href="#元素是-null-的笨拙实现" class="headerlink" title="元素是 null 的笨拙实现"></a>元素是 null 的笨拙实现</h3><p>最先想到的就是判空：</p>
+<pre><code class="java">@Test
+void sortedNullNoNPE() {
+    final List&lt;Student&gt; students = Lists.newArrayList(
+            null,
+            new Student(&quot;Snoopy&quot;, 12),
+            null
+    );
+    students.sort((s1, s2) -&gt; {
+        if (s1 == null) {
+            return s2 == null ? 0 : 1;
+        } else if (s2 == null) {
+            return -1;
+        }
+        return s1.getName().compareTo(s2.getName());
+    });
+
+    Assertions.assertNotNull(students.get(0));
+    Assertions.assertNull(students.get(1));
+    Assertions.assertNull(students.get(2));
+}</code></pre>
+<p>我们可以将判空的逻辑抽取出一个<code>Comparator</code>，通过组合方式实现：</p>
+<pre><code class="java">class NullComparator&lt;T&gt; implements Comparator&lt;T&gt; {
+    private final Comparator&lt;T&gt; real;
+
+    NullComparator(Comparator&lt;? super T&gt; real) {
+        this.real = (Comparator&lt;T&gt;) real;
+    }
+
+    @Override
+    public int compare(T a, T b) {
+        if (a == null) {
+            return (b == null) ? 0 : 1;
+        } else if (b == null) {
+            return -1;
+        } else {
+            return (real == null) ? 0 : real.compare(a, b);
+        }
+    }
+}</code></pre>
+<p>在 Java8 中已经为我们准备了这个实现。</p>
+<h3 id="使用Comparator-nullsLast和Comparator-nullsFirst"><a href="#使用Comparator-nullsLast和Comparator-nullsFirst" class="headerlink" title="使用Comparator.nullsLast和Comparator.nullsFirst"></a>使用<code>Comparator.nullsLast</code>和<code>Comparator.nullsFirst</code></h3><p>使用<code>Comparator.nullsLast</code>实现<code>null</code>在结尾：</p>
+<pre><code class="java">@Test
+void sortedNullLast() {
+    final List&lt;Student&gt; students = Lists.newArrayList(
+            null,
+            new Student(&quot;Snoopy&quot;, 12),
+            null
+    );
+    students.sort(Comparator.nullsLast(Comparator.comparing(Student::getName)));
+    Assertions.assertNotNull(students.get(0));
+    Assertions.assertNull(students.get(1));
+    Assertions.assertNull(students.get(2));
+}</code></pre>
+<p>使用<code>Comparator.nullsFirst</code>实现<code>null</code>在开头：</p>
+<pre><code class="java">@Test
+void sortedNullFirst() {
+    final List&lt;Student&gt; students = Lists.newArrayList(
+            null,
+            new Student(&quot;Snoopy&quot;, 12),
+            null
+    );
+    students.sort(Comparator.nullsFirst(Comparator.comparing(Student::getName)));
+    Assertions.assertNull(students.get(0));
+    Assertions.assertNull(students.get(1));
+    Assertions.assertNotNull(students.get(2));
+}</code></pre>
+<p>是不是很简单，接下来我们看下如何实现排序条件的字段是 null 的逻辑。</p>
+<h3 id="排序条件的字段是-null"><a href="#排序条件的字段是-null" class="headerlink" title="排序条件的字段是 null"></a>排序条件的字段是 null</h3><p>这个就是借助<code>Comparator</code>的组合了，就像是套娃实现了，需要使用两次<code>Comparator.nullsLast</code>，这里列出实现：</p>
+<pre><code class="java">@Test
+void sortedNullFieldLast() {
+    final List&lt;Student&gt; students = Lists.newArrayList(
+            new Student(null, 10),
+            new Student(&quot;Snoopy&quot;, 12),
+            null
+    );
+    final Comparator&lt;Student&gt; nullsLast = Comparator.nullsLast(
+            Comparator.nullsLast( // 1
+                    Comparator.comparing(
+                            Student::getName,
+                            Comparator.nullsLast( // 2
+                                    Comparator.naturalOrder() // 3
+                            )
+                    )
+            )
+    );
+    students.sort(nullsLast);
+    Assertions.assertEquals(students.get(0), new Student(&quot;Snoopy&quot;, 12));
+    Assertions.assertEquals(students.get(1), new Student(null, 10));
+    Assertions.assertNull(students.get(2));
+}</code></pre>
+<p>代码逻辑如下：</p>
+<ol>
+<li>代码 1 是第一层 null-safe 逻辑，用于判断元素是否为 null；</li>
+<li>代码 2 是第二层 null-safe 逻辑，用于判断元素的条件字段是否为 null；</li>
+<li>代码 3 是条件<code>Comparator</code>，这里使用了<code>Comparator.naturalOrder()</code>，是因为使用了<code>String</code>排序，也可以写为<code>String::compareTo</code>。如果是复杂判断，可以定义一个更加复杂的<code>Comparator</code>，组合模式就是这么好用，一层不够再套一层。</li>
+</ol>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>本文演示了使用 Java8 中使用 Lambda 表达式实现各种排序逻辑，新增的语法糖真香。</p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://mp.weixin.qq.com/s/7f5dcjjKLdBYpzS5p7_v7Q" target="_blank" rel="noopener">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/JOLrw7cbVh8z2czePEfLjw" target="_blank" rel="noopener">一文掌握 Java8 的 Optional 的 6 种操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Srv6733byTYDg7hTrW_tdw" target="_blank" rel="noopener">Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API</a></li>
+<li><a href="https://mp.weixin.qq.com/s/LRydpL89GsjOeTrLrihyYQ" target="_blank" rel="noopener">Java8 的时间库（2）：Date 与 LocalDate 或 LocalDateTime 互相转换</a></li>
+<li><a href="https://mp.weixin.qq.com/s/KmBMLG1y73IUwFuSfUKaEQ" target="_blank" rel="noopener">Java8 的时间库（3）：开始使用 Java8 中的时间类</a></li>
+<li><a href="https://mp.weixin.qq.com/s/PxC0WQMReIeG0Tyl5WiK1Q" target="_blank" rel="noopener">Java8 的时间库（4）：检查日期字符串是否合法</a></li>
+<li><a href="https://mp.weixin.qq.com/s/4jVPnaOr-rve3GQdukDFmA" target="_blank" rel="noopener">JDK 中居然也有反模式接口常量</a></li>
+</ul>
+<hr>
+<p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/java-lambda-powerful-comparation/">Java 进阶：使用 Lambda 表达式实现超强的排序功能</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">Java 进阶：使用 Lambda 表达式实现超强的排序功能</a></p>
+<center><b>👇🏻欢迎关注我的公众号「看山的小屋」，领取精选资料👇🏻</b></center>
+
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/java/">java</a>
+            
+            <a href="/tags/JDK8/">JDK8</a>
+            
+            <a href="/tags/Comparator/">Comparator</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/effective-java-tools-batch-rename-baiduwangpan/">
+                <i class="icon-next">看山聊 Java：从零实现“百度网盘批量重命名”工具</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://www.howardliu.cn/images/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/分布式锁/" style="font-size: 15px;">分布式锁</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/go/" style="font-size: 15px;">go</a> <a href="/tags/开发指南/" style="font-size: 15px;">开发指南</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/http-状态码/" style="font-size: 15px;">http 状态码</a> <a href="/tags/Effective-Java/" style="font-size: 15px;">Effective Java</a> <a href="/tags/EasyExcel/" style="font-size: 15px;">EasyExcel</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/Date/" style="font-size: 15px;">Date</a> <a href="/tags/Time/" style="font-size: 15px;">Time</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/Comparator/" style="font-size: 15px;">Comparator</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a> <a href="/tags/jdk8/" style="font-size: 15px;">jdk8</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a> <a href="/tags/单体架构/" style="font-size: 15px;">单体架构</a> <a href="/tags/重构/" style="font-size: 15px;">重构</a>
+    </div>
+</div>
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/java-lambda-powerful-comparation/">Java 进阶：使用 Lambda 表达式实现超强的排序功能</a></li><li class="post-list-item"><a class="post-list-link" href="/effective-java-tools-batch-rename-baiduwangpan/">看山聊 Java：从零实现“百度网盘批量重命名”工具</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-classpath-file-access/">SpringBoot 实战：加载和读取资源文件</a></li><li class="post-list-item"><a class="post-list-link" href="/we-should-know-when-changing-job/">我们如何拿到自己满意的薪资呢？这些套路还是需要掌握的</a></li><li class="post-list-item"><a class="post-list-link" href="/effective-java-easyexcel-action-fill/">阿里开源的这个库，让 Excel 导出不再复杂（填充模板的使用指南）</a></li><li class="post-list-item"><a class="post-list-link" href="/effective-java-easyexcel-action-write-pretty/">阿里开源的这个库，让 Excel 导出不再复杂（既要能写，还要写的好看）</a></li><li class="post-list-item"><a class="post-list-link" href="/effective-java-easyexcel-action-write/">阿里开源的这个库，让 Excel 导出不再复杂（简简单单的写）</a></li><li class="post-list-item"><a class="post-list-link" href="/data-consistency-in-microservices/">关于微服务系统中数据一致性的总结</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-junit5-mockmvc-mockito/">SpringBoot 实战：JUnit5+MockMvc+Mockito 做好单元测试</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-enum-params-in-requestbody-principle/">SpringBoot 实战：在 RequestBody 中优雅的使用枚举参数（原理篇）</a></li></ul>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">2021年11月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">2021年10月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">2021年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">2021年08月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">2021年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2021</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

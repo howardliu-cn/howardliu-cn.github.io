@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/java-lambda-powerful-comparation/</loc>
+    
+    <lastmod>2021-11-07T12:32:59.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/java/jvm-tuning-basic/</loc>
+    
+    <lastmod>2021-11-05T00:14:30.799Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/the-paradigm-of-microservice/</loc>
+    
+    <lastmod>2021-11-04T23:52:18.698Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/effective-java-tools-batch-rename-baiduwangpan/</loc>
     
     <lastmod>2021-10-25T15:16:13.000Z</lastmod>
@@ -236,13 +257,6 @@
     <loc>https://www.howardliu.cn/the-eight-queens-puzzle/</loc>
     
     <lastmod>2021-06-21T23:23:30.083Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/java/jvm-tuning-basic/</loc>
-    
-    <lastmod>2021-06-18T00:02:59.343Z</lastmod>
     
   </url>
   
@@ -513,13 +527,6 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/the-paradigm-of-microservice/</loc>
-    
-    <lastmod>2020-08-25T13:42:18.168Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.howardliu.cn/singleton-pattern/</loc>
     
     <lastmod>2020-08-23T12:24:08.475Z</lastmod>
@@ -604,14 +611,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
+    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
+    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
@@ -660,14 +667,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
+    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
+    <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
