@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/strategy-pattern/</loc>
+    
+    <lastmod>2021-11-15T15:05:51.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/constant-interface-anti-pattern/</loc>
+    
+    <lastmod>2021-11-10T23:49:15.990Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/java-lambda-powerful-comparation/</loc>
     
     <lastmod>2021-11-07T12:32:59.000Z</lastmod>
@@ -548,13 +562,6 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/constant-interface-anti-pattern/</loc>
-    
-    <lastmod>2020-08-16T08:24:50.882Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.howardliu.cn/springboot-action-gracefully-response/</loc>
     
     <lastmod>2020-08-12T12:26:56.000Z</lastmod>
@@ -611,14 +618,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
+    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
+    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
@@ -660,14 +667,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
+    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
+    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     

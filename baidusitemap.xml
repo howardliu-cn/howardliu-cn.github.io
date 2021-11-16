@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.howardliu.cn/strategy-pattern/</loc>
+    <lastmod>2021-11-15</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/constant-interface-anti-pattern/</loc>
+    <lastmod>2021-11-10</lastmod>
+  </url>  <url>
     <loc>https://www.howardliu.cn/java-lambda-powerful-comparation/</loc>
     <lastmod>2021-11-07</lastmod>
   </url>  <url>
@@ -232,9 +238,6 @@
     <loc>https://www.howardliu.cn/zookeeper-s-function/</loc>
     <lastmod>2020-08-16</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/constant-interface-anti-pattern/</loc>
-    <lastmod>2020-08-16</lastmod>
-  </url>  <url>
     <loc>https://www.howardliu.cn/springboot-action-gracefully-response/</loc>
     <lastmod>2020-08-12</lastmod>
   </url>  <url>
@@ -259,10 +262,10 @@
     <loc>https://www.howardliu.cn/deploy-ear-from-eos-to-weblogic/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
+    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
+    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/hadoop-environment/</loc>
@@ -280,10 +283,10 @@
     <loc>https://www.howardliu.cn/hadoop-environment-cluster-setup/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
+    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
+    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>

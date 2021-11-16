@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.howardliu.cn/"/>
-  <updated>2021-11-07T12:32:59.000Z</updated>
+  <updated>2021-11-15T15:05:51.000Z</updated>
   <id>https://www.howardliu.cn/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>人人都会设计模式：策略模式</title>
+    <link href="https://www.howardliu.cn/strategy-pattern/"/>
+    <id>https://www.howardliu.cn/strategy-pattern/</id>
+    <published>2021-11-15T15:05:51.000Z</published>
+    <updated>2021-11-15T15:05:51.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="https://static.howardliu.cn/autumn-6752841_1920.jpg" alt="人人都会设计模式：策略模式"></p><blockquote><p>该图片由<a href="https://pixabay.com/zh/users/daschorsch-1537217/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6752841" target="_blank" rel="noopener">daschorsch</a>在<a href="https://pixabay.com/zh/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6752841" target="_blank" rel="noopener">Pixabay</a>上发布</p></blockquote><p>你好，我是看山。</p><blockquote><p>本文收录在<a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1750195552933199874&scene=126&devicetype=iOS15.0.2&version=18000f2a&lang=zh_CN&nettype=WIFI&ascene=59&session_us=gh_9bcfdc303e2f&fontScale=100&wx_header=1" target="_blank" rel="noopener">《一个架构师的职业素养》</a>专栏，日拱一卒，功不唐捐。</p></blockquote><a id="more"></a><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>策略模式，英文全称是 Strategy Design Pattern。在 GoF 的《设计模式》一书中，它是这样定义的：</p><blockquote><p>Define a family of algorithms, encapsulate each one, and make them interchangeable. Strategy lets the algorithm vary independently from clients that use it.</p></blockquote><p>翻译成中文就是：定义一族算法类，将每个算法分别封装起来，让它们可以互相替换。策略模式可以使算法的变化独立于使用它们的客户端。</p><p>这里所说的客户端代指使用算法的代码。</p><p>根据使用场景分类，策略模式是一种行为型模式，用于运行时控制类的行为或算法。</p><p>使用上的直观感受是，策略模式可以减少了 if-else/switch 分支代码。那减少分支代码有什么好处呢？</p><ol><li>解耦代码，策略模式就是解耦不同算法实现；</li><li>减少 bug 产生概率，减少分支，就是减少 bug 发生概率。</li></ol><p>有编程经验的都知道，很多 bug 都是从分支逻辑产生的。我刚开始工作时晚上 12 点开始抓虫，一直抓到凌晨 2 点多，最后发现是有一个 if-else 分支中，在某个 if 前面少写了一个 else。下面是示例，实际代码比这个复杂很多：</p><pre><code class="java">if (a &lt; 1) {} else if (a &lt; 2) {} else if (a &lt; 3) {}</code></pre><p>结果写成了：</p><pre><code class="java">if (a &lt; 1) {} else if (a &lt; 2) {} if (a &lt; 3) {}</code></pre><p>代码编译不会错，但是在执行时，某些 case 会不符合预期。</p><h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>我们来看看策略模式出现的场景。</p><p>以电商系统的支付功能为例，最早的时候，我们可能为了更快上线，选择一个较多人使用的支付方式，比如微信支付（也有可能是支付宝支付，根据售卖场景不同区分）。这个时候，我们只需要判断用户是从 PC 页面进入还是 H5 进入即可。</p><p>后来，业务发展比较好，涉及人群更多了，于是需要对接支付宝支付。支付宝支付也分为了多种的支付场景，对接接口变多了，但是也在可控范围内。</p><p>再后来，我们需要对接银联支付、对接各银行接口，等等，支付接口变得越来越臃肿。于是，每对接一种支付方式，支付相关接口就会增加一倍。此时，这坨臃肿的代码，无论是修复简单的 bug，还是微调传输参数，都会影响整个支付逻辑，从而增加了在已有正常运行代码中引入错误的风险。</p><p><img src="https://static.howardliu.cn/20211116075137.jpeg" alt="越来越臃肿的系统"></p><p>如果是多人协作开发，我们还会陷入代码合并时应付各种冲突的情况。终于，在某一时刻，我们看着这一坨代码，已经无从下手维护了。</p><h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>首先，我们来分析一下上面的场景，不变的是系统内部的支付业务逻辑，变化的是支付方式。</p><p>支付方式的可变性在于，可能会与多种支付方式对接，对接参数、协议、地址等都会不同。根据设计模式的整体思想，我们将变化的单独出去，将不变的稳定下来。</p><p>这种处理方式就是策略模式建议的：找出负责用许多不同方式完成特定任务的类，然后将其中的算法抽取到一族被称为策略的独立类中。</p><p>调用这些策略类的是调用上下文，它持有对所有策略类的引用。上下文不执行任务，它是任务的指挥者，将工作委派给已连接的策略对象。关系如下：</p><p><img src="https://static.howardliu.cn/20211116075124.png" alt="策略模式类图"></p><p>很多教程到这里就结束了，如果你能够看到这里，而且还用心看了，你就会发现一丝丝的不一样。</p><p>根据迪米特法则（LOD，Law of Demeter），上下文不需要知道具体策略类的功能，只需要通过特定的接口，用于触发选中策略即可。也就是说，完整的策略模式，应该有具体的策略判断是否由该策略执行，上下文只需要知道有哪些策略就行了。这样改动之后，上下文还能够与工厂模式结合。如果策略是无状态策略，还可以在上下文中引入单例模式。</p><h2 id="适用与不适用"><a href="#适用与不适用" class="headerlink" title="适用与不适用"></a>适用与不适用</h2><p>根据上面的定义，策略模式是围绕可以互换的算法来创建业务的。简单的说就是，分支逻辑隔离。</p><ol><li>当你想使用各种不同算法变体，且能够在运行时切换算法。策略模式可以将对象关联到不同实现方式的不同子任务中，可以间接的修改对象；</li><li>只有在执行时有些许不同的相似算法。可以将不同的行为抽象到独立的类中，在原来的类中调用这些独立的算法；</li><li>算法在业务逻辑中不是特别重要。我们可以通过策略模式将算法、数据、依赖等抽离出来，在运行时调用即可。</li></ol><p>设计模式只是解决问题的优雅实现，并不一定适用所有情况，比如下面这几种，就可以不用非得实现策略模式：</p><ol><li>如果算法极少变化，就没有任何理由引入新的类和接口。</li><li>如果使用了 Java8 之后的版本，可以使用函数式编程，有时候就使用 Lambda 表达式或者匿名内部类的方式实现具体算法即可。</li></ol><h2 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h2><p>还是以支付为例，因为都是演示，一切从简。我曾经主导过支付中台，如果想要具体实现，可以具体聊一下。</p><p>首先定义支付策略接口：</p><pre><code class="java">public interface PayStrategy {    String payType();    void callPay(BigDecimal amount);}</code></pre><p><code>payType()</code>是在具体的策略实现中定义策略可执行的支付方式，也可以通过传参数的方式返回<code>boolean</code>类型用于判断是否可执行。</p><p>然后是微信支付和支付宝支付分别实现支付策略接口：</p><pre><code class="java">public class WxpayPayStrategy implements PayStrategy {    @Override    public String payType() {        return &quot;WXPAY&quot;;    }    @Override    public void callPay(BigDecimal amount) {        // 微信支付接口        // 这里只是演示，即使都是微信支付，也会分不同的接口        System.out.println(&quot;调用微信支付接口&quot;);    }}public class AlipayPayStrategy implements PayStrategy {    @Override    public String payType() {        return &quot;ALIPAY&quot;;    }    @Override    public void callPay(BigDecimal amount) {        // 调用支付宝支付接口        // 这里只是演示，即使都是支付宝支付，也会分不同的接口        System.out.println(&quot;调用支付宝支付接口&quot;);    }}</code></pre><p>我们再来看看持有策略算法的上下文：</p><pre><code class="java">public class StrategyContext {    private static final Map&lt;String, PayStrategy&gt; PAY_STRATEGY_MAP = new HashMap&lt;&gt;();    static {        final AlipayPayStrategy alipayPayStrategy = new AlipayPayStrategy();        final WxpayPayStrategy wxpayPayStrategy = new WxpayPayStrategy();        PAY_STRATEGY_MAP.put(alipayPayStrategy.payType(), alipayPayStrategy);        PAY_STRATEGY_MAP.put(wxpayPayStrategy.payType(), wxpayPayStrategy);    }    public void pay(String payType, BigDecimal amount) {        final PayStrategy payStrategy = PAY_STRATEGY_MAP.get(payType);        payStrategy.callPay(amount);    }}</code></pre><p>可以看到，上下文只需要知道策略算法的存在，至于算法是否符合要求，由算法自己判断。</p><p>调用就比较简单了：</p><pre><code class="java">public class Main {    public static void main(String[] args) {        final StrategyContext strategyContext = new StrategyContext();        strategyContext.pay(&quot;ALIPAY&quot;, BigDecimal.TEN);        strategyContext.pay(&quot;WXPAY&quot;, BigDecimal.ONE);    }}</code></pre><h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>策略模式可能用来减少分支逻辑，将不同的算法分离开来。如果配合工厂模式、单例模式，可以更加灵活的使用。如果是在 Spring 当中，借助自动注入，上下文甚至可以不知道具体策略实现。</p><p>最近刚看到一句话，“日拱一卒，功不唐捐”。坚持下去，每天学点新东西，给生活加点色彩。</p><h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul><li><a href="https://mp.weixin.qq.com/s/Bpblou6RkZua4jE4gaZylA" target="_blank" rel="noopener">Java 中的单例模式（完整篇）</a></li><li><a href="https://mp.weixin.qq.com/s/ynajBpu0xJYGzcgqaIDjMg" target="_blank" rel="noopener">设计模式：建造者模式</a></li></ul><hr><p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p><p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/strategy-pattern/">人人都会设计模式：策略模式</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">人人都会设计模式：策略模式</a></p><center><b>👇🏻欢迎关注我的公众号「看山的小屋」，领取精选资料👇🏻</b></center><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
+    
+    <summary type="html">
+    
+      定义一族算法类，将每个算法分别封装起来，让它们可以互相替换。策略模式可以使算法的变化独立于使用它们的客户端。
+    
+    </summary>
+    
+    
+      <category term="design pattern" scheme="https://www.howardliu.cn/categories/design-pattern/"/>
+    
+    
+      <category term="设计模式" scheme="https://www.howardliu.cn/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
   
   <entry>
     <title>Java 进阶：使用 Lambda 表达式实现超强的排序功能</title>
@@ -522,33 +545,6 @@
       <category term="Date" scheme="https://www.howardliu.cn/tags/Date/"/>
     
       <category term="Time" scheme="https://www.howardliu.cn/tags/Time/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）</title>
-    <link href="https://www.howardliu.cn/arraylist-is-not-thread-safe-2/"/>
-    <id>https://www.howardliu.cn/arraylist-is-not-thread-safe-2/</id>
-    <published>2021-06-29T15:18:18.000Z</published>
-    <updated>2021-06-29T15:18:18.000Z</updated>
-    
-    <content type="html"><![CDATA[<p><img src="http://static.howardliu.cn/cover/home-studios-5249651_1920.jpg" alt="如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）"></p><p>你好，我是看山。</p><p>前面写过一篇文章 <a href="https://howardliu.cn/arraylist-is-not-thread-safe/" target="_blank" rel="noopener">《如果非要在多线程中使用 ArrayList 会发生什么？》</a>，有读者反馈，Java 11 代码已经修复，还会出现 null 元素。</p><p>为了便于理解，当时只是通过代码执行顺序说明了异常原因。其实多线程中还会涉及 Java 内存模型，本文就从这方面说明一下。</p><a id="more"></a><h2 id="对比源码"><a href="#对比源码" class="headerlink" title="对比源码"></a>对比源码</h2><p>我们先来看看 Java 11 中，<code>add</code>方法做了什么调整。</p><p>Java 8 中<code>add</code>方法的实现：</p><pre><code class="java">public boolean add(E e) {    ensureCapacityInternal(size + 1);    elementData[size++] = e;    return true;}</code></pre><p>Java 11 中<code>add</code>方法的实现：</p><pre><code class="java">public boolean add(E e) {    modCount++;    add(e, elementData, size);    return true;}private void add(E e, Object[] elementData, int s) {    if (s == elementData.length)        elementData = grow();    elementData[s] = e;    size = s + 1;}</code></pre><p>两段逻辑的差异在于数组下标是否确定：</p><ul><li><code>elementData[size++] = e;</code>，Java 8 中直接使用<code>size</code>定位并赋值，然后通过<code>size++</code>自增</li><li><code>elementData[s] = e; size = s + 1;</code>，Java 11 借助临时变量<code>s</code>定位并赋值，然后通过<code>size = s + 1</code>给<code>size</code>赋新值</li></ul><p>Java 11 的优点在于，为数组指定元素赋值的时候，下标值是确定的。也就是说，只要进入<code>add(E e, Object[] elementData, int s)</code>方法中，就只会处理指定位置的数组元素。并且，<code>size</code>的值也是根据<code>s</code>增加。按照执行顺序推断，最终的结果可能会丢数，但是不会出现 null。（多个线程向同一个下标赋值，即<code>s</code>相等，那最终<code>size</code>也相等。）</p><h2 id="验证一下"><a href="#验证一下" class="headerlink" title="验证一下"></a>验证一下</h2><p>让我们来验证下。</p><pre><code class="java">package com.kuaishou.is.datamart;import java.util.ArrayList;import java.util.List;import java.util.concurrent.CountDownLatch;public class Main {    public static void main(String[] args) throws InterruptedException {        List&lt;String&gt; list = new ArrayList&lt;&gt;();        CountDownLatch latch = new CountDownLatch(1);        CountDownLatch waiting = new CountDownLatch(3);        Thread t1 = new Thread(() -&gt; {            try {                latch.await();                for (int i = 0; i &lt; 1000; i++) {                    list.add(&quot;1&quot;);                }            } catch (InterruptedException e) {                e.printStackTrace();            } finally {                waiting.countDown();            }        });        Thread t2 = new Thread(() -&gt; {            try {                latch.await();                for (int i = 0; i &lt; 1000; i++) {                    list.add(&quot;2&quot;);                }            } catch (InterruptedException e) {                e.printStackTrace();            } finally {                waiting.countDown();            }        });        Thread t2 = new Thread(() -&gt; {            try {                latch.await();                for (int i = 0; i &lt; 1000; i++) {                    list.add(&quot;2&quot;);                }            } catch (InterruptedException e) {                e.printStackTrace();            } finally {                waiting.countDown();            }        });        t1.start();        t2.start();        latch.countDown();        waiting.await();        System.out.println(list);    }}</code></pre><p>在 Java 8 和 Java 11 中分别执行，果然，出现了<code>ArrayIndexOutOfBoundsException</code>和<code>null</code>的情况。如果没有出现，那就是姿势不对，需要多试几次或者多几个线程。</p><h2 id="换个角度想问题"><a href="#换个角度想问题" class="headerlink" title="换个角度想问题"></a>换个角度想问题</h2><p>上一篇通过代码执行顺序解释了出现问题的原因，这次再看看 JMM 的原因。</p><p><img src="http://static.howardliu.cn/java/jmm.png" alt="jmm"></p><p>从上图我们可以看到，Java 为每个线程创建了一个本地内存区域，也就是说，代码运行过程中使用的数据，是线程本地缓存的数据。这份缓存的数据，会与主内存的数据做交换（更新主内存数据或更新本次缓存中的数据）。</p><p>我们通过一个时序图看下为什么会出现 null（数组越界异常同理）：</p><p><img src="http://static.howardliu.cn/java/arraylist-add.png" alt="多线程场景下 ArrayList#add 方法的时序图"></p><p>从时序图我们可以看出现，在执行过程中，两个线程取的<code>size</code>值和<code>elementData</code>数组地址，大部分是操作自己本地缓存中的，执行一段时间后，会将本地缓存中的数据写回主内存数据，然后还会从主内存中读取最新数据更新本地缓存数据。异常就在这个交换过程中发生了。</p><p>这个时候，可能有读者会想，是不是把<code>size</code>和<code>elementData</code>两个变量加上<code>volatile</code>就可以解决了。如果这样想，那你就想简单。线程安全是整个类设计实现时已经确定了，除了属性需要考虑多线程的影响，方法（主要是会修改属性元素的方法）也需要考虑。</p><p><code>ArrayList</code>的定位是非线程安全的，其中的所有方法都没有考虑多线程下为共享资源加锁。即使<code>size</code>和<code>elementData</code>两个变量都是实时读写主内存，但是<code>add</code>和<code>grow</code>方法还是可能会覆盖另一个线程的数据。</p><p>我们从<code>ArrayList</code>的<code>add</code>方法注释可以得知，方法拆分不是为了实现线程安全，而是为了执行效率和内存占用：</p><blockquote><p>This helper method split out from add(E) to keep method bytecode size under 35 (the -XX:MaxInlineSize default value), which helps when add(E) is called in a C1-compiled loop.</p></blockquote><p>所以说，在多线程场景下使用<code>ArrayList</code>，该出现的异常，一个也不会少。</p><h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ol><li><a href="https://www.howardliu.cn/arraylist-is-not-thread-safe/">如果非要在多线程中使用 ArrayList 会发生什么？</a></li><li><a href="https://www.howardliu.cn/arraylist-is-not-thread-safe-2/">如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）</a></li></ol><hr><p>你好，我是看山，公众号：看山的小屋，10 年老猿，开源贡献者。游于码界，戏享人生。</p><p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/arraylist-is-not-thread-safe-2/">如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）</a><br>CSDN 主页：<a href="http://kanshan.csdn.net/" target="_blank" rel="noopener">http://kanshan.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.csdn.net/article/details/118346355" target="_blank" rel="noopener">如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）</a></p><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
-    
-    <summary type="html">
-    
-      如果非要在多线程中使用 ArrayList 会发生什么？（第二篇）
-    
-    </summary>
-    
-    
-      <category term="java" scheme="https://www.howardliu.cn/categories/java/"/>
-    
-    
-      <category term="java" scheme="https://www.howardliu.cn/tags/java/"/>
-    
-      <category term="ArrayList" scheme="https://www.howardliu.cn/tags/ArrayList/"/>
-    
-      <category term="线程安全" scheme="https://www.howardliu.cn/tags/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8/"/>
     
   </entry>
   
