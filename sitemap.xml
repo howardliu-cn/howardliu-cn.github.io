@@ -2,6 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/java-8-features/</loc>
+    
+    <lastmod>2021-11-24T23:53:04.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/translation-perform-two-phase-commits-in-mongodb/</loc>
+    
+    <lastmod>2021-11-24T23:51:24.422Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/translation-distributed-locks-with-redis/</loc>
+    
+    <lastmod>2021-11-24T23:50:49.812Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/thinking/the-solution-about-job-queue/</loc>
+    
+    <lastmod>2021-11-17T23:50:02.703Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/strategy-pattern/</loc>
     
     <lastmod>2021-11-15T15:05:51.000Z</lastmod>
@@ -296,13 +324,6 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/thinking/the-solution-about-job-queue/</loc>
-    
-    <lastmod>2021-06-13T23:54:52.429Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.howardliu.cn/rabbitmq-operation/</loc>
     
     <lastmod>2021-06-11T15:21:05.203Z</lastmod>
@@ -366,14 +387,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/talk-about-CyclicBarrier-again/</loc>
+    <loc>https://www.howardliu.cn/talk-about-CountDownLatch-again/</loc>
     
     <lastmod>2021-05-12T08:25:28.027Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/talk-about-CountDownLatch-again/</loc>
+    <loc>https://www.howardliu.cn/talk-about-CyclicBarrier-again/</loc>
     
     <lastmod>2021-05-12T08:25:28.027Z</lastmod>
     
@@ -632,14 +653,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
+    <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
+    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
@@ -674,14 +695,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
+    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
+    <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
@@ -775,20 +796,6 @@
     <loc>https://www.howardliu.cn/translation-faceting/</loc>
     
     <lastmod>2020-01-27T10:07:23.035Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/translation-perform-two-phase-commits-in-mongodb/</loc>
-    
-    <lastmod>2020-01-27T10:06:22.738Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/translation-distributed-locks-with-redis/</loc>
-    
-    <lastmod>2020-01-27T10:06:14.931Z</lastmod>
     
   </url>
   

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>JDK 每半年就会更新一次新特性，再不掌握就要落伍了：JDK8 的新特性||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="JDK8 从 2014 年问世，到现在已是数个年头。这个版本新增了 Stream API、Lambda 表达式、新时间 API 等各种新特性，相比很多新兴语言也不遑多让。今天就来聊聊 JDK8 中好玩好使的特性功能">
+<meta name="keywords" content="java8,jdk8,optional,Java8新特性,JDK8新特性,Lambda,Stream">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JDK 每半年就会更新一次新特性，再不掌握就要落伍了：JDK8 的新特性">
+<meta property="og:url" content="https://www.howardliu.cn/java-8-features/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="JDK8 从 2014 年问世，到现在已是数个年头。这个版本新增了 Stream API、Lambda 表达式、新时间 API 等各种新特性，相比很多新兴语言也不遑多让。今天就来聊聊 JDK8 中好玩好使的特性功能">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://static.howardliu.cn/fruits-6786607_1920.jpg">
+<meta property="og:image" content="https://static.howardliu.cn/20211124232900.jpeg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-11-24T23:53:04.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JDK 每半年就会更新一次新特性，再不掌握就要落伍了：JDK8 的新特性">
+<meta name="twitter:description" content="JDK8 从 2014 年问世，到现在已是数个年头。这个版本新增了 Stream API、Lambda 表达式、新时间 API 等各种新特性，相比很多新兴语言也不遑多让。今天就来聊聊 JDK8 中好玩好使的特性功能">
+<meta name="twitter:image" content="https://static.howardliu.cn/fruits-6786607_1920.jpg">
+
+<meta name="keywords" content="java8,jdk8,optional,Java8新特性,JDK8新特性,Lambda,Stream">
+
+
+<meta name="description" content="JDK8 从 2014 年问世，到现在已是数个年头。这个版本新增了 Stream API、Lambda 表达式、新时间 API 等各种新特性，相比很多新兴语言也不遑多让。今天就来聊聊 JDK8 中好玩好使的特性功能">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/styles/vs2015.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/java-8-features/">JDK 每半年就会更新一次新特性，再不掌握就要落伍了：JDK8 的新特性</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-11-25</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/java-8-features/" class="leancloud_visitors" data-flag-title="JDK 每半年就会更新一次新特性，再不掌握就要落伍了：JDK8 的新特性">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#概览"><span class="toc-text">概览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#接口方法"><span class="toc-text">接口方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#静态方法"><span class="toc-text">静态方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#默认方法"><span class="toc-text">默认方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#方法引用"><span class="toc-text">方法引用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#静态方法引用"><span class="toc-text">静态方法引用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实例方法引用"><span class="toc-text">实例方法引用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#特定类型的实例方法引用"><span class="toc-text">特定类型的实例方法引用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#构造方法引用"><span class="toc-text">构造方法引用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Optional-神器"><span class="toc-text">Optional 神器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建-Optional"><span class="toc-text">创建 Optional</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-Optional"><span class="toc-text">使用 Optional</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="https://static.howardliu.cn/fruits-6786607_1920.jpg" alt="JDK 每半年就会更新一次新特性，再不掌握就要落伍了：JDK8 的新特性"></p>
+<blockquote>
+<p>该图片由<a href="https://pixabay.com/zh/users/visionpics-4638469/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6786607" target="_blank" rel="noopener">Alexandr Podvalny</a>在<a href="https://pixabay.com/zh/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6786607" target="_blank" rel="noopener">Pixabay</a>上发布</p>
+</blockquote>
+<p>你好，我是看山。</p>
+<blockquote>
+<p>本文收录在 <a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378#wechat_redirect" target="_blank" rel="noopener">《Java 进阶》</a> 系列专栏中。</p>
+</blockquote>
+<p>从 2017 年开始，JDK 版本更新策略从原来的每两年一个新版本，改为每六个月一个新版本，以快速验证新特性，推动 Java 的发展。从 <a href="https://res.cloudinary.com/snyk/image/upload/v1623860216/reports/jvm-ecosystem-report-2021.pdf" target="_blank" rel="noopener">《JVM Ecosystem Report 2021》</a> 中可以看出，目前开发环境中仍有近半的环境使用 JDK8，有近半的人转移到了 JDK11，随着 JDK17 的发布，相信比例会有所变化。</p>
+<p>因此，准备出一个系列，配合示例讲解，阐述从 JDK8 开始各个版本的新特性。</p>
+<h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>JDK8 从 2014 年问世，到现在已是数个年头。这个版本新增了 Stream API、Lambda 表达式、新时间 API 等各种新特性，相比很多新兴语言也不遑多让。今天就来聊聊 JDK8 中好玩好使的特性功能（完整特性请参见 <a href="https://openjdk.java.net/projects/jdk8/features" target="_blank" rel="noopener">这里</a>）。</p>
+<h2 id="接口方法"><a href="#接口方法" class="headerlink" title="接口方法"></a>接口方法</h2><p>在 JDK8 之前，接口只能够定义<code>public abstract</code>方法，默认可以不写修饰符。当在接口中新增方法定义，该接口的所有实现类都需要新增这个方法的实现，这样对于升级扩展很不友好。</p>
+<p>从 JDK8 开始，我们可以在接口中定义静态方法和默认方法了，也就是我们可以在接口中定义具有具体操作行为的方法定义，这样接口的实现类可以有选择的实现接口方法。</p>
+<h3 id="静态方法"><a href="#静态方法" class="headerlink" title="静态方法"></a>静态方法</h3><p>JDK8 之前，静态方法是类的专属技能，这样会引起概念上的一些歧义。比如，我们定义一个生产者<code>Producer</code>接口，所有生产者都继承该接口，这个时候，我们需要一个静态方法提供<code>Producer</code>的名字。这个时候，在单独定义一个类提供一个静态方法提供名字，可以实现功能，但是略显复杂。</p>
+<p>现在我们直接在<code>Producer</code>生产者接口中定义静态方法即可：</p>
+<pre><code class="java">static String producer() {
+    return &quot;target: &quot; + System.currentTimeMillis();
+}</code></pre>
+<p>沿用约定的限定范围，我们不需要在方法前面加<code>public</code>。这个静态方法只能通过接口调用，或者在接口内部直接引用。比如：</p>
+<pre><code class="java">final String target = Producer.producer();</code></pre>
+<h3 id="默认方法"><a href="#默认方法" class="headerlink" title="默认方法"></a>默认方法</h3><p>接口的默认方法定义需要使用<code>default</code>关键字，接口中定义的默认方法可以在实现类中重写。</p>
+<p>比如，我们的生产者<code>Producer</code>需要生产东西，我们可以在接口中定义一个默认方法：</p>
+<pre><code class="java">default String produce() {
+    return &quot;NULL&quot;;
+}</code></pre>
+<p>我们可以定义<code>Producer</code>的实现类是<code>Hamburger</code>，可以选择重写接口的默认方法，也可以不用重写。比如：</p>
+<pre><code class="java">public class Hamburger implements Producer {
+}</code></pre>
+<p>使用的时候直接调用：</p>
+<pre><code class="java">final Producer producer = new Hamburger();
+System.out.println(producer.produce());</code></pre>
+<p>这个时候会打印“NULL”。我们还可以在<code>Hamburger</code>中重写<code>produce</code>方法：</p>
+<pre><code class="java">@Override
+public String produce() {
+    return &quot;HAMBURGER&quot;;
+}</code></pre>
+<p>这个时候会打印“HAMBURGER”。</p>
+<h2 id="方法引用"><a href="#方法引用" class="headerlink" title="方法引用"></a>方法引用</h2><p>我们在使用 Lambda 表达式时，可以使用方法引用，使表达式更短、更易读。方法引用有四种表达形式：</p>
+<ul>
+<li>静态方法引用</li>
+<li>实例方法引用</li>
+<li>特定类型的实例方法引用</li>
+<li>构造方法引用</li>
+</ul>
+<p>下面我们分别说一下。</p>
+<h3 id="静态方法引用"><a href="#静态方法引用" class="headerlink" title="静态方法引用"></a>静态方法引用</h3><p>静态方法引用语法是：<code>类名：: 方法名</code>。假设我们需要判断一个<code>List&lt;String&gt;</code>队列中所有元素是否为空，通过 Stream API 我们可以这样判断：</p>
+<pre><code class="java">final List&lt;String&gt; list = Lists.newArrayList(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, null, &quot;4&quot;);
+final boolean hasNullElement = list.stream()
+        .anyMatch(x -&gt; Objects.isNull(x));
+System.out.println(hasNullElement);</code></pre>
+<p>可以看到，<code>anyMath</code>方法中只调用了<code>Objects.isNull</code>方法，而且方法的入参直接是列表中的元素，此时，我们可以直接使用静态方法引用，将代码改写一下：</p>
+<pre><code class="java">final boolean hasNullElementAlso = list.stream().anyMatch(Objects::isNull);</code></pre>
+<p>这样看起来清爽多了。</p>
+<h3 id="实例方法引用"><a href="#实例方法引用" class="headerlink" title="实例方法引用"></a>实例方法引用</h3><p>实例方法引用语法是：<code>实例：: 方法名</code>。比如，我们有一个列表中全是<code>LocalDate</code>类型数据，现在需要对其进行格式化，返回一个字符串列表。我们可以这样使用：</p>
+<pre><code class="java">final DateTimeFormatter fmt = DateTimeFormatter.ISO_LOCAL_DATE;
+final List&lt;LocalDate&gt; dates = Lists.newArrayList(
+        LocalDate.MIN,
+        LocalDate.now(),
+        LocalDate.MAX
+);
+final List&lt;String&gt; dateStrs = dates.stream()
+        .map(d -&gt; fmt.format(d))
+        .collect(Collectors.toList());</code></pre>
+<p><code>map</code>方法中通过<code>DateTimeFormatter</code>的实例对象调用了<code>format</code>方法，入参也是 Lambda 表达式中的元素，这样就可以使用实例方法引用，代码可以改写为：</p>
+<pre><code class="java">final List&lt;String&gt; dateStrList = dates.stream()
+        .map(fmt::format)
+        .collect(Collectors.toList());</code></pre>
+<p>这样写起来顺手多了。</p>
+<h3 id="特定类型的实例方法引用"><a href="#特定类型的实例方法引用" class="headerlink" title="特定类型的实例方法引用"></a>特定类型的实例方法引用</h3><p>这种方法引用有一个前提条件，就是必须是 Lambda 表达式元素类型对应的方法。语法是：<code>特定类型：: 方法名</code>。比如，我们需要判断一个全都不为<code>null</code>的字符串列表中，空字符的数量，我们可以这样写：</p>
+<pre><code class="java">final List&lt;String&gt; nonNullList = Lists.newArrayList(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;&quot;, &quot;4&quot;, &quot;&quot;);
+final long emptyCount = nonNullList.stream()
+        .filter(x -&gt; x.isEmpty())
+        .count();</code></pre>
+<p>我们可以看到，<code>filter</code>方法中引用的函数是利用 Lambda 表达式元素对象的方法，这个时候我们可以将代码改写为：</p>
+<pre><code class="java">final long emptyElementCount = nonNullList.stream()
+        .filter(String::isEmpty)
+        .count();</code></pre>
+<p>这样能够清晰的看出是哪个类的方法了。</p>
+<h3 id="构造方法引用"><a href="#构造方法引用" class="headerlink" title="构造方法引用"></a>构造方法引用</h3><p>构造方法引用的语法是：<code>类名：:new</code>。在 Java 中，构造方法是一种特殊的方法，所以构造方法的引用与上面几种方法类似。比如，想要将字符串列表中的元素全部转换为<code>Integer</code>格式：</p>
+<pre><code class="java">final List&lt;String&gt; allIntList = Lists.newArrayList(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;);
+final List&lt;Integer&gt; ints = allIntList.stream()
+        .map(x -&gt; new Integer(x))
+        .collect(Collectors.toList());</code></pre>
+<p>我们可以改写为：</p>
+<pre><code class="java">final List&lt;Integer&gt; intList = allIntList.stream()
+        .map(Integer::new)
+        .collect(Collectors.toList());</code></pre>
+<h2 id="Optional-神器"><a href="#Optional-神器" class="headerlink" title="Optional 神器"></a>Optional 神器</h2><p>空指针异常（NullPointException，NPE）是特别低级但又很难避免的异常，说他低级是因为只要看到这个异常，就能够很容易的修复，但是我们很难百分之百的避免这个异常的存在。在 JDK8 之前，我们只能通过类似<code>obj != null</code>这种模板式方法判断。在 JDK8 新增的神器<code>Optional</code>可以更加优雅的解决这个问题。</p>
+<h3 id="创建-Optional"><a href="#创建-Optional" class="headerlink" title="创建 Optional"></a>创建 Optional</h3><p><code>Optional</code>的构造方法是使用<code>private</code>修饰的，其提供了三个静态方法，用于创建<code>Optional</code>实例，分别是<code>empty</code>、<code>of</code>、<code>ofNullable</code>，创建之后，<code>Optional</code>是不可变的。</p>
+<p>我们可以使用<code>empty</code>定义一个具有空值的<code>Optional</code>对象：</p>
+<pre><code class="java">final Optional&lt;String&gt; optional = Optional.empty();</code></pre>
+<p>使用<code>of</code>定义一个不为空的对象：</p>
+<pre><code class="java">final String str = &quot;value&quot;;
+final Optional&lt;String&gt; optional = Optional.of(str);</code></pre>
+<p>这里需要注意一下，<code>of</code>方法赋值时，使用<code>Objects.requireNonNull</code>验证参数是否为空，为空就会抛出<code>NullPointerException</code>异常。</p>
+<p>如果不太确定是否为空，可以使用<code>ofNullable</code>创建对象：</p>
+<pre><code class="java">final String str = getSomeStr();
+final Optional&lt;String&gt; optional = Optional.ofNullable(str);</code></pre>
+<h3 id="使用-Optional"><a href="#使用-Optional" class="headerlink" title="使用 Optional"></a>使用 Optional</h3><p>比如，我们需要返回一个字符串列表<code>List&lt;String&gt;</code>，当结果是<code>null</code>的时候，我们返回返回<code>new ArrayList&lt;&gt;()</code>。如果是在 JDK8 之前，我们得这样写：</p>
+<pre><code class="java">List&lt;String&gt; list = getList();
+List&lt;String&gt; listOpt = list != null ? list : new ArrayList&lt;&gt;();</code></pre>
+<p>现在，我们可以借助<code>Optional</code>的能力：</p>
+<pre><code class="java">List&lt;String&gt; listOpt = Optional.ofNullable(getList())
+        .orElse(new ArrayList&lt;&gt;());</code></pre>
+<p>小试牛刀，还不错，下面放大招。</p>
+<p><img src="https://static.howardliu.cn/20211124232900.jpeg" alt="前方高能，请注意"></p>
+<p>假设，我们有一个<code>User</code>类，内部有个<code>Address</code>类，在内部有个<code>street</code>属性，我们现在想要获取一个<code>User</code>对象的<code>street</code>值。如果是以前，我们需要各种判断是否是<code>null</code>，代码会写成这样：</p>
+<pre><code class="java">User user = getUser();
+if (user != null) {
+    Address address = user.getAddress();
+    if (address != null) {
+        String street = address.getStreet();
+        if (street != null) {
+            return street;
+        }
+    }
+}
+return &quot;not specified&quot;;</code></pre>
+<p>是不是似曾相识，或者以前亲手写过。现在有了<code>Optional</code>，我们就不需要这么麻烦了：</p>
+<pre><code class="java">String result = Optional.ofNullable(getUser())
+        .map(User::getAddress)
+        .map(Address::getStreet)
+        .orElse(&quot;not specified&quot;);</code></pre>
+<p>是不是相当的优雅，<code>map</code>方法返回的也是<code>Optional</code>对象，所以我们可以无限处理下去。</p>
+<p>如果<code>User</code>类中的<code>getAddress</code>方法返回的本身就是<code>Optional</code>对象，我们可以使用<code>flatMap</code>替换<code>map</code>。</p>
+<p>还有一种情况是我们需要捕捉 NPE 的情况，但是需要包装为其他自定义异常，这个时候可以使用<code>orElseThrow</code>方法：</p>
+<pre><code class="java">String value = null;
+Optional&lt;String&gt; valueOpt = Optional.ofNullable(value);
+String result = valueOpt.orElseThrow(CustomException::new).toUpperCase();</code></pre>
+<p>这里只是简单给出几个例子，更多功能可以参见 <a href="https://mp.weixin.qq.com/s/JOLrw7cbVh8z2czePEfLjw" target="_blank" rel="noopener">《一文掌握 Java8 的 Optional 的 6 种操作》</a>。</p>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>本文给出了 JDK8 中几个比较有意思的特性，完整的特性清单可以从<a href="https://openjdk.java.net/projects/jdk8/features" target="_blank" rel="noopener">https://openjdk.java.net/projects/jdk8/features</a>查看。</p>
+<p>本文所有代码都可以通过在公众号「看山的小屋」回复“java”获取。</p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://mp.weixin.qq.com/s/7f5dcjjKLdBYpzS5p7_v7Q" target="_blank" rel="noopener">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/JOLrw7cbVh8z2czePEfLjw" target="_blank" rel="noopener">一文掌握 Java8 的 Optional 的 6 种操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Srv6733byTYDg7hTrW_tdw" target="_blank" rel="noopener">Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API</a></li>
+<li><a href="https://mp.weixin.qq.com/s/LRydpL89GsjOeTrLrihyYQ" target="_blank" rel="noopener">Java8 的时间库（2）：Date 与 LocalDate 或 LocalDateTime 互相转换</a></li>
+<li><a href="https://mp.weixin.qq.com/s/KmBMLG1y73IUwFuSfUKaEQ" target="_blank" rel="noopener">Java8 的时间库（3）：开始使用 Java8 中的时间类</a></li>
+<li><a href="https://mp.weixin.qq.com/s/PxC0WQMReIeG0Tyl5WiK1Q" target="_blank" rel="noopener">Java8 的时间库（4）：检查日期字符串是否合法</a></li>
+</ul>
+<hr>
+<p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/java-8-features/">JDK 每半年就会更新一次新特性，再不掌握就要落伍了：JDK8 的新特性</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/article/details/121529334" target="_blank" rel="noopener">JDK 每半年就会更新一次新特性，再不掌握就要落伍了：JDK8 的新特性</a></p>
+<center><b>👇🏻欢迎关注我的公众号「看山的小屋」，领取精选资料👇🏻</b></center>
+
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/java8/">java8</a>
+            
+            <a href="/tags/jdk8/">jdk8</a>
+            
+            <a href="/tags/optional/">optional</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/strategy-pattern/">
+                <i class="icon-next">人人都会设计模式：策略模式</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://www.howardliu.cn/images/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/解决方案/" style="font-size: 15px;">解决方案</a> <a href="/tags/任务队列/" style="font-size: 15px;">任务队列</a> <a href="/tags/任务/" style="font-size: 15px;">任务</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/缓存/" style="font-size: 15px;">缓存</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/事件驱动/" style="font-size: 15px;">事件驱动</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/分布式/" style="font-size: 15px;">分布式</a> <a href="/tags/架构设计/" style="font-size: 15px;">架构设计</a> <a href="/tags/短链服务/" style="font-size: 15px;">短链服务</a> <a href="/tags/go/" style="font-size: 15px;">go</a> <a href="/tags/开发指南/" style="font-size: 15px;">开发指南</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/Effective-Java/" style="font-size: 15px;">Effective Java</a> <a href="/tags/EasyExcel/" style="font-size: 15px;">EasyExcel</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/java8/" style="font-size: 15px;">java8</a> <a href="/tags/jdk8/" style="font-size: 15px;">jdk8</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Date/" style="font-size: 15px;">Date</a> <a href="/tags/Time/" style="font-size: 15px;">Time</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/Comparator/" style="font-size: 15px;">Comparator</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a>
+    </div>
+</div>
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/java-8-features/">JDK 每半年就会更新一次新特性，再不掌握就要落伍了：JDK8 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/strategy-pattern/">人人都会设计模式：策略模式</a></li><li class="post-list-item"><a class="post-list-link" href="/java-lambda-powerful-comparation/">Java 进阶：使用 Lambda 表达式实现超强的排序功能</a></li><li class="post-list-item"><a class="post-list-link" href="/effective-java-tools-batch-rename-baiduwangpan/">看山聊 Java：从零实现“百度网盘批量重命名”工具</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-classpath-file-access/">SpringBoot 实战：加载和读取资源文件</a></li><li class="post-list-item"><a class="post-list-link" href="/we-should-know-when-changing-job/">我们如何拿到自己满意的薪资呢？这些套路还是需要掌握的</a></li><li class="post-list-item"><a class="post-list-link" href="/effective-java-easyexcel-action-fill/">阿里开源的这个库，让 Excel 导出不再复杂（填充模板的使用指南）</a></li><li class="post-list-item"><a class="post-list-link" href="/effective-java-easyexcel-action-write-pretty/">阿里开源的这个库，让 Excel 导出不再复杂（既要能写，还要写的好看）</a></li><li class="post-list-item"><a class="post-list-link" href="/effective-java-easyexcel-action-write/">阿里开源的这个库，让 Excel 导出不再复杂（简简单单的写）</a></li><li class="post-list-item"><a class="post-list-link" href="/data-consistency-in-microservices/">关于微服务系统中数据一致性的总结</a></li></ul>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">2021年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">2021年10月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">2021年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">2021年08月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">2021年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2021</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
