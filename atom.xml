@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.howardliu.cn/"/>
-  <updated>2021-11-24T23:53:04.000Z</updated>
+  <updated>2021-12-05T14:40:49.000Z</updated>
   <id>https://www.howardliu.cn/</id>
   
   <author>
@@ -15,6 +15,58 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>如何实现单体架构到微服务架构的蜕变？</title>
+    <link href="https://www.howardliu.cn/from-monolith-to-microservices-2/"/>
+    <id>https://www.howardliu.cn/from-monolith-to-microservices-2/</id>
+    <published>2021-12-05T14:40:49.000Z</published>
+    <updated>2021-12-05T14:40:49.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="https://static.howardliu.cn/cover/rose-leaf-6831355_1920.jpg" alt="如何实现单体架构到微服务架构的蜕变？" title="如何实现单体架构到微服务架构的蜕变？"></p><p>你好，我是看山。</p><p>前文我们聊了介绍了单体架构、SOA 架构、微服务架构、无服务架构。如果原来是单体架构，想要切换到微服务架构，该怎么解决呢？本文来聊聊这个话题，解决“什么时候（WHEN）、怎样做（HOW）”。</p><a id="more"></a><h2 id="什么时候"><a href="#什么时候" class="headerlink" title="什么时候"></a>什么时候</h2><p>微服务架构是一种架构风格，专注于软件研发效能，主要包括单位时间内实现更多功能，或者软件从想法到上线的整个持续交付的过程。在当前的互联网环境中，业务变化迅速，使用微服务架构，可以让团队迅速反应，快速实施，在方案没有过期之前已经上线运行，经受市场考察和考验。</p><p>目前国内大多数公司正在运行的系统都是单体架构系统，不可否认，这些系统在公司发展过程中，发挥了不可替代的作用，保障了公司正常运行，创造了很多价值。但是，随着系统的日渐膨胀，集成的功能越来越多，开发效率变得越来越低，一个功能从想法到实现，需要花费越来越长的时间。更严重的是，由于代码模块纠结在一起，很多已经老化的架构或者废弃的功能，已经成为新功能的阻碍。</p><p><img src="https://static.howardliu.cn/microservice/737565-20181016193114922-488026211.png" alt="单体架构与微服务架构的成本" title="单体架构与微服务架构的成本"></p><p>上图中，X 轴是业务复杂度，Y 轴是单位效益。绿色线条代表单体架构，蓝色线条代表微服务架构。</p><p>可以看到，在业务发展初期，系统复杂度不高，业务不够成熟，我们主要经历在于业务试错。如果采用单体架构，可以将所有的功能、模块放在一个进程；如果此时采用微服务架构，我们就需要考虑进程间通信、不可靠网络故障等，还需要实现微服务的基础组件。这个时候，单体架构的单位效益是高于微服务架构的。</p><p>随着业务发展，系统承载的功能越来越多，单体架构的劣势凸显，比如：</p><ol><li>硬件能力难以跟上急速发展的业务；</li><li>系统隔离性差，所有功能都在一个进程中，一个功能的异常可能影响其他功能；</li><li>代码复杂度提升，团队合作越来越难，代码冲突的可能性越来越高；</li><li>庞大的代码量，在日常开发、测试时，IDE 难以支持；</li><li>系统构建、部署时间延长；</li><li>技术绑定，没有办法根据系统功能需要灵活使用不同技术；</li><li>……</li></ol><p>总而言之，单体架构随着功能增多，不可避免的是研发效能的降低：研发周期变长、研发资源占用增多。从而引发的情况是：新员工培训时间增多、员工加班时间变长、员工要求涨薪或者跳槽。</p><p>当达到图中的交叉点时，说明单体架构已经不能够满足企业发展需要，这个时候，需要升级架构来提升研发效能，比如微服务架构。</p><p>有人会问，这个时间点不太好把握。我们只需要考虑三个问题即可：</p><ol><li>产品是否已经经过市场考验？</li><li>是否需要超过一个团队来保证产品发布？</li><li>系统是否对可靠性、可伸缩性有较高要求？</li></ol><p>如果都是肯定回答，那就该着手准备将单体架构切换为微服务架构了。</p><h2 id="怎样做"><a href="#怎样做" class="headerlink" title="怎样做"></a>怎样做</h2><p>从单体架构到微服务架构，从一个大一统的系统，拆分成一个一个单独的小服务，我们需要投入精力，做基础的准备：</p><ol><li>先要了解什么是服务、该怎么拆分；</li><li>然后需要搭建基础设施，为拆分出来的服务做好后勤保障；</li><li>最后才是一步一步完成架构切换。</li></ol><h3 id="认识服务"><a href="#认识服务" class="headerlink" title="认识服务"></a>认识服务</h3><p>首先，什么是微服务架构呢？通俗的定义是：“一组围绕业务领域建模的、小而自治的、彼此协同工作的服务。”</p><p>微服务架构中的服务，是根据业务能力抽取的业务模块，独立开发和部署，但是需要彼此配合完成整个业务功能。服务不是单纯的数据存储组件，也不是单纯的逻辑函单元。只有同时包括数据+逻辑，才是真正意义上的服务。</p><p>服务拆解过程中，DDD（领域驱动设计）可以作为微服务架构的指导方针。因为微服务是围绕业务功能定义服务，根据服务定义团队，这与 DDD 将业务域拆解为业务子域、定义限定上下文的方法论如出一辙，于是 DDD 作为微服务的指导方针，快速定义各个服务组件，完成从单体架构到微服务架构的迁移。</p><p><img src="https://static.howardliu.cn/microservice/121148382613129.jpg" alt="领域驱动设计" title="领域驱动设计"></p><p>Alberto Brandolini 提出识别服务上下文的方式叫做“Event Storming”。第一步是识别业务域中发生的事件，也就是说，我们的关注点是行为，不是数据结构。这样做的好处是，系统中不同服务之间是松散耦合关系，而且单个服务能够自治。</p><p>定义好了服务边界，还需要定义事务边界。过去，我们的服务在一个进程中，后面挂着一个数据库，事务可以选择强一致性事务，也就是 ACID。当服务增多，彼此配合，这个时候可以使用最终一致性事务，也就是 BASE。不同于 ACID，BASE 更加灵活，只要数据在最终能够保持一致就可以了。这个最终的时间范围，根据不同的业务场景不同，可能是分钟、小时、天，甚至是周或者月。</p><h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>微服务架构愿景美好，属于重型武器，优点众多，缺点也很明显。服务增多，运维难度增大，错误调试难度增大。所以需要自动化构建、配置、测试和部署，需要日志收集、指标监控、调用链监控等工具，也就是需要 DevOps 实践。<a href="https://www.howardliu.cn/the-three-ways-principles-underpinning-devops/">实现 DevOps 的三步工作法</a> 中说明了实现 DevOps 文化的三个步骤。</p><p>除了上面提到的基础，还需要在早期确定服务之间如何集成和彼此调用方式，还需要确定数据体系，包括事务一致性和数据可靠性方法。随着服务增多，还需要配置管理、服务发现等众多组件。具体需要的基础组件可以参考 <a href="https://www.howardliu.cn/the-base-of-microservice/">微服务的基建工作</a>。</p><p><img src="https://static.howardliu.cn/microservice/microservice-architecture.png" alt="微服务架构中的基础组件" title="微服务架构中的基础组件"></p><p>这些基础的服务和设计，最好在早期定义，否则，后期需要花费更多的资源才能够完善架构。如果前期缺失，后期也没有补足，造成的后果就是微服务架构迁移失败，最后的系统也只是披着微服务外衣的单体架构。</p><h3 id="开始动手"><a href="#开始动手" class="headerlink" title="开始动手"></a>开始动手</h3><p>当我们确定开始使用微服务架构时，接下来的问题就是应该怎么做？是逐步进化更新系统、还是破釜沉舟重构整个系统。</p><p>第二种方式很诱人，比较符合大多数技术人的思维，系统不行，推倒重来，名为重构。但是在大多数情况下，这种方式不能被允许，因为市场变化迅速、竞争激烈，大多数公司不会停止业务，去等待重构一个能够运行、只是有些缺点的系统。所以，逐步替换更新系统才是王道，大多数公司也能接受。这种方式又被称为绞杀模式。</p><p>该如何逐步过渡到微服务架构？下面一步步进行展示：</p><p><img src="https://static.howardliu.cn/microservice/from_monolith_to_microservice_0.jpg" alt="实现单体架构到微服务架构：单体架构" title="实现单体架构到微服务架构：单体架构"></p><p>第一步，将视图层与服务层部分逻辑进行分离。业务逻辑委托给服务层，支持页面展示的查询定向到数据库。这个阶段，我们不修改数据库本身。</p><p><img src="https://static.howardliu.cn/microservice/from_monolith_to_microservice_1.jpg" alt="实现单体架构到微服务架构：部分拆分视图和业务逻辑" title="实现单体架构到微服务架构：部分拆分视图和业务逻辑"></p><p>第二步，用户视图层与数据库完全分离，依赖于服务层操作数据库。</p><p><img src="https://static.howardliu.cn/microservice/from_monolith_to_microservice_2.jpg" alt="实现单体架构到微服务架构：完全拆分视图和业务逻辑" title="实现单体架构到微服务架构：完全拆分视图和业务逻辑"></p><p>第三步，将用户视图层与服务层拆分为不同服务，并在服务层创建一个 API 层，用于视图层与服务层之间通信。</p><p><img src="https://static.howardliu.cn/microservice/from_monolith_to_microservice_3.jpg" alt="实现单体架构到微服务架构：物理拆分视图和业务逻辑" title="实现单体架构到微服务架构：物理拆分视图和业务逻辑"></p><p>第四步，拆分数据库，将不同业务数据拆分到不同的数据库中，同时对应业务服务层拆分到不同的服务。用户视图层通过 API 网关与不同业务服务层的 API 组件通信。这个时候需要注意，如果团队没有微服务开发经验，可以在这一步基础使用绞杀方式，先抽取简单业务域服务，因为业务简单，实现简单，可以练手，积累经验。</p><p><img src="https://static.howardliu.cn/microservice/from_monolith_to_microservice_4.jpg" alt="实现单体架构到微服务架构：业务服务层拆分、垂直拆分数据库" title="实现单体架构到微服务架构：业务服务层拆分、垂直拆分数据库"></p><p>最后一步，拆分用户视图层。</p><p><img src="https://static.howardliu.cn/microservice/from_monolith_to_microservice_5.jpg" alt="实现单体架构到微服务架构：拆分用户视图层" title="实现单体架构到微服务架构：拆分用户视图层"></p><p>绞杀模式的优势就在于，我们可以随着业务变化随时调整方案，不会造成整个业务进化过程的停摆。</p><h2 id="成功标准"><a href="#成功标准" class="headerlink" title="成功标准"></a>成功标准</h2><p><img src="https://static.howardliu.cn/Illustration/measuring-success-with-guavabox.jpg" alt="If you cannot measure it, you cannot manage it!" title="If you cannot measure it, you cannot manage it!"></p><p><strong>If you cannot measure it, you cannot manage it!</strong></p><p>引入微服务的目的首先是改善开发流程，我们可以通过简单的指标来衡量：</p><ul><li>开发周期：从概念到上线持续的时间</li><li>开发效能：单位时间内团队或个人完成的功能或用户故事</li><li>系统可伸缩性：系统的水平、垂直扩展能力</li><li>平均维修时间：查找和排除故障所需时间</li></ul><p>通过对比老架构和新架构的这些特性值，可以评估升级过程取得的效果。我们要时刻关注这些指标，只有一个个小阶段的胜利，才能组成最终完整的胜利。如果再某个阶段失败了，可能达不到我们最终的目的，或者埋下技术债务，后期不得不花更大的代价补偿。</p><h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>想要说明微服务架构的好处，可以来一个比喻。我们建了一个空间站，为此，我们需要将人、货物和设备运输到空间站中，这个时候，运载火箭是比较好的选择，尽管运载火箭造价也比较高，但是几个月发射一次，也能够满足需求。随着空间站的扩大，火箭发射的间隔变短，运输成本高的离谱，而且越来越没法满足空间站运转需求。这个时候，可以尝试另外一种方式，比如，太空电梯。当然太空电梯的造价成本高于一次飞行的费用，但是只要建成，以后的成本就降低了很多。</p><p>这个比喻也是说明了微服务带来的美好期望，同时也说明一个问题，实施微服务架构会带来巨大的投资。所以，我们在建造太空电梯之前需要想好，我们真的需要这种投入，否则只能是一种浪费。</p><p>作为攻城狮，我们为能够解决或改善周围世界而自豪，着迷于提供解决方案。同时，我们也要意识到，我们付出的每一份努力，都要有回报。如果不能带来任何回报的重构升级，都是浪费时间。</p><hr><p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p><p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/from-monolith-to-microservices-2/">如何实现单体架构到微服务架构的蜕变？</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">如何实现单体架构到微服务架构的蜕变？</a></p><center><b>👇🏻欢迎关注我的公众号「看山的小屋」，领取精选资料👇🏻</b></center><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
+    
+    <summary type="html">
+    
+      如果原来是单体架构，想要切换到微服务架构，该怎么解决呢？本文来聊聊这个话题，解决“什么时候（WHEN）、怎样做（HOW）”。
+    
+    </summary>
+    
+    
+      <category term="microservice" scheme="https://www.howardliu.cn/categories/microservice/"/>
+    
+    
+      <category term="微服务" scheme="https://www.howardliu.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/"/>
+    
+      <category term="单体架构" scheme="https://www.howardliu.cn/tags/%E5%8D%95%E4%BD%93%E6%9E%B6%E6%9E%84/"/>
+    
+      <category term="重构" scheme="https://www.howardliu.cn/tags/%E9%87%8D%E6%9E%84/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>除了微服务，我们还有其他选择吗？</title>
+    <link href="https://www.howardliu.cn/do-we-have-any-other-options-besides-microservices/"/>
+    <id>https://www.howardliu.cn/do-we-have-any-other-options-besides-microservices/</id>
+    <published>2021-12-05T14:25:56.000Z</published>
+    <updated>2021-12-05T14:25:56.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="https://static.howardliu.cn/cover/bird-6720306_1920.jpg" alt="除了微服务，我们还有其他选择吗？" title="除了微服务，我们还有其他选择吗？"></p><p>你好，我是看山。</p><p>前面我们聊了微服务的话题，现在微服务已经是业内通识。但凡系统开发、系统设计，必然采用微服务架构，或者宣称是微服务架构。</p><p>但大家有没有想过，微服务架构不是一开始就有的。如果追溯历史，微服务最早在 2005 的云计算博览会，由 Peter Rodgers 博士提出（那时候称为微 Web 服务（Micro-Web-Service））。到了 2014 年，Martin Fowler 与 James Lewis 共同提出微服务（Micron-Service）的概念，算是对概念归纳总结，天下一统。这一年也被称为微服务元年。</p><p><img src="https://static.howardliu.cn/Illustration/1565046133.jpg" alt="看山的小屋" title="看山的小屋"></p><p>那就要问了，在 2014 年之前呢？大家用啥架构？再往前呢？上次互联网大潮的时候，大家又是用啥？我们今天来聊聊这段历史，可能你会对现在习以为常的架构，产生一些新的看法。在架构上，可以有更多的选择。</p><a id="more"></a><h2 id="人人喊打的单体架构"><a href="#人人喊打的单体架构" class="headerlink" title="人人喊打的单体架构"></a>人人喊打的单体架构</h2><blockquote><p>单体架构，人人都说这种架构不好，为什么不好呢？真的不好吗？可能真相并不是你认为的那样简单。</p></blockquote><p>当前来说，如果有人说某个系统是单体架构，一定会有人投来怀疑的眼神，有的会带着些许不可思议，甚至带有一丝鄙夷。但是不得不说，单体架构（又称巨石系统，Monolithic）是整个软件发展过程中，出现时间最早、应用范围最广的一种架构风格。从另一个方面，原来本没有单体架构这个称呼，只是后来有了微服务架构，为了区分，才把所有“自包含”的系统称为单体架构。</p><p><img src="https://static.howardliu.cn/microservice/699473-20171125103303375-138169041.png" alt="人人喊打的单体架构构" title="人人喊打的单体架构"></p><p>上面这个图就是单体架构，所谓“自包含”，简单说就是自给自足，所有业务功能靠自己，不依赖其他业务系统。其优点有下面这些：</p><ul><li>不涉及进程间通信，效率可控；</li><li>不依赖网络通讯，可以规避不可靠的网络通讯带来难以预知的故障；</li><li>开发生态良好，目前的 IDE 对单体架构的支持更好；</li><li>编码重构容易，单体架构完全的自控制，只要修改自己即可，不需要上下游支持；</li><li>端到端测试简单，因为没有上下游依赖，测试起来更加方便，部署一套环境，就可以实现当前功能的完全测试；</li><li>部署简单，只要打包成 EAR、WAR、JAR 等需要的运行包，扔进服务器就能跑；</li><li>运维简单，一个进程运行的服务，无论是日志还是运行态，都能够很简单的监控；</li><li>横向扩展容易，前面一个负载均衡器做代理，后面可以无限扩展。</li></ul><p>从这个角度，只要单机优势明显，就不该把单体架构视为地狱。</p><p>所谓“成也萧何败也萧何”，统一“集中”成就了单体架构，难以“隔离”也称为了单体架构最大的弊端。这里将隔离简单分为开发期隔离和运行期隔离。</p><p>单体架构省去了进程间通信、性能损失这些麻烦事，但因为在一个进程中执行，如果内部的某处逻辑异常，可能会造成整个系统的崩溃。最常见的内存溢出，可能仅仅是一个不相干的功能查了全表，整个系统都都会宕掉。</p><p><img src="https://static.howardliu.cn/Illustration/300.jpeg" alt="系统崩溃"></p><p>运行期没有办法隔离，升级的时候也没有办法隔离。想要对某些模块功能升级，只能重启整个服务。还要担心会不会有没有覆盖测试的点，提前做好预案，挂好停机维护页。</p><p>因此，一个成功的单体架构系统隐含了一个要求，需要一个对系统完全了解的大脑（一个人或一组人），大脑可以总控系统的开发、升级、运行，把控这个系统的每个细节，实现系统中的各个组件、模块有很高的品质，从而保障系统可在其生命周期内可以稳定的运行。</p><p>比如，SAP 和 Hyperion，妥妥的单体架构，作为国际化的软件公司，为什么不对它们升级改造？是能力不行，还是技术不行？是没有必要。所以，单体架构也不是一无是处，一切都要在合适的前提下评价。</p><h2 id="开疆拓土的-SOA-架构"><a href="#开疆拓土的-SOA-架构" class="headerlink" title="开疆拓土的 SOA 架构"></a>开疆拓土的 SOA 架构</h2><blockquote><p>都说 SOA 架构太重，但他是开创服务化江山的鼻祖。</p></blockquote><p><img src="https://static.howardliu.cn/microservice/Enterprise-service-bus-architecture.png" alt="开疆拓土的 SOA 架构" title="开疆拓土的 SOA 架构"></p><p>单体架构对团队的要求较高，随着团队的扩大，必然会有短板或薄弱的环节，或者是组织、或者是个人，这样就会给系统代理风险。于是，很多前辈就开始思考，一个庞然大物难以维护，那就分为治之，拆分成多个规模小一些的单体架构，彼此之间通过某种方式交互。这种方案被称为面向服务架构（SOA，Service-Oriented Architecture）。</p><p>SOA 在 1994 年就被提出，这种架构风格是自然演化来的。只不过当时没有足够的条件支持，一直只能处于理论阶段。后来随着 webservice 等技术的提出，才有了技术支撑。到 2006 年，OSOA 成立，共同指定 SOA 架构相关行业标准，这套架构有了理论、技术、规范等一系列约定，从而真正落地。</p><p>SOA 架构开疆拓土，开创了很多目前也在使用的概念，比如服务注册/发现、服务治理、系统隔离、服务编排等。是不是觉得这些概念很熟悉，是的，在微服务架构中，同样有这些概念的身影。SOA 架构又自己的一套风格，使用下面一些组件实现普适的方法论：</p><ol><li>采用 SOAP 作为远程调用的协议；</li><li>利用 ESB（Enterprise Service Bus，企业服务总线）实现各个子系统之间的通信交互；</li><li>使用 BPM（Business Process Management，业务流程管理系统）实现业务流程编排；</li><li>使用 SDO（Service Data Object，服务数据对象）来访问和表示数据；</li><li>使用 SCA（Service Component Architecture，服务组件架构）来定义服务封装的形式和服务运行的容器；</li><li>……</li></ol><p>SOA 架构是各大软件服务商共同愿景下的产物，总结出了一套自上而下的软件研发方法论，期望能够解决软件开发过程中的所有问题。有些类似于八股文，规定好起承转合，只要按照要求来，系统就不会出现太多问题。</p><p>愿景虽好，但是却忽略了一点，一套大而全的架构体系，不是所有公司都能够支撑起来的。有时候，大而全不如小而美。但是，我们不能否认 SOA 架构对于面向服务理论的贡献，在某些场景下的企业内部，SOA 是能够快速打破信息孤岛的重要手段。</p><h2 id="另立门户的微服务架构"><a href="#另立门户的微服务架构" class="headerlink" title="另立门户的微服务架构"></a>另立门户的微服务架构</h2><blockquote><p>本来是作为 SOA 的一种简化方案，结果直接发动宣武门之变，逼着 SAO 禅让。</p></blockquote><p><img src="https://static.howardliu.cn/microservice/microservice-architecture.png" alt="另立门户的微服务架构" title="另立门户的微服务架构"></p><p>如开篇所说，微服务架构是在 2005 年提出，在 2014 年崛起。经历了将近 10 年的时间，之所以没有得到太多重视，是因为 2014 年之前，微服务只是在作为 SOA 架构的简化版出现。直到 2014 年才作为独立的架构风格，与 SOA 架构划清界限。</p><p>Martin Fowler 与 James Lewis 在合写的 <a href="https://martinfowler.com/articles/microservices.html" target="_blank" rel="noopener">《Microservices》</a> 对微服务下了定义：“微服务是一种通过多个小型服务组合来构建单个应用的架构风格，这些服务围绕业务能力而非特定的技术标准来构建。各个服务可以采用不同的编程语言，不同的数据存储技术，运行在不同的进程之中。服务采取轻量级的通信机制和自动化的部署机制实现通信与运维。”</p><p>文中还提出了微服务架构的 9 个核心特征：</p><ol><li>通过服务来实现独立自治的组件（Componentization via Services）</li><li>围绕业务能力构建（Organized around Business Capability）</li><li>产品化思维（Products not Projects）</li><li>强终端弱管道（Smart Endpoint and Dumb Pipe）</li><li>分散治理（Decentralized Governance）</li><li>数据去中心化（Decentralized Data Management）</li><li>基础设施自动化（Infrastructure Automation）</li><li>容错性设计（Design for Failure）</li><li>演进式设计（Evolutionary Design）</li></ol><p>由于微服务架构是从 SOA 架构中演化而来，所以很多的表现形式都是一致的。从《Microservices》对微服务架构全面细致阐述之后，也算是将微服务架构与 SOA 架构彻底划清界限。</p><p>在笔者看来，微服务架构与 SOA 架构最大的不同在于对于实现的约束，SOA 架构有一套完整的规约，微服务架构只有建议，追求的是根据实际情况自由变化，简单的理解就是“想怎么玩就怎么玩”。比如通信协议，SOA 架构明确要求使用 SOAP 通信协议；微服务架构只要求使用轻量级的 RPC 协议，这个选择就比较宽泛了，常见的就有 HTTP（一般采用 Restful 风格）、gRPC、Dubbo、Thrift、Motan2 等等。</p><p>自由意味着可以根据实际情况变化，需要什么引入什么，哪种技术能更好的解决问题就使用哪种技术。在 Java 栈中，也出现了 SpringCloud Netflix 和 SpringCloud Alibaba 之类的全家桶组件，作为开发者，只需要在需要的时候添加依赖即可。</p><p>从架构师的角度，自由带来的是约束力的下降，同时也缺少了规约的指导性。我们需要更加了解系统本身，也要更加了解各种技术的优缺点，才能够在架构设计时，更好的权衡利弊，做好取舍。加油，少年。</p><p><img src="https://static.howardliu.cn/Illustration/jiayou.jpg" alt="架构师养成计划" title="架构师的基本素养"></p><p>我们来看下微服务中的基础组件：弹性伸缩、服务发现、配置中心、服务网关、负载均衡、服务安全、跟踪监控、降级熔断等等，其实从本质来说，这些组件都是业务无关的。实现软件开发过程中，可以将这些与业务隔离开，也就是所谓的“透明化”。</p><p>比如服务发现，可选的方案包括 Nginx、HAProxy、DNS、Eureka、Nacos、KubeDNS，但是我们真的关心吗？不需要，只需要知道我们要进行网络调用，有一个目标即可，至于这个目标是通过哪种方式发现、传输、寻址，都与我们要实现的功能无关。那就将服务发现与业务剥离，通过承载服务的运行环境处理。这就是所谓的边车模型。</p><p><img src="https://static.howardliu.cn/microservice/service-mesh-with-side-car.png" alt="边车模型" title="边车模型"></p><p>微服务之所以应用普及，不仅仅在于其独特优势，还与容器化技术的普及有密切关系。微服务与 Docker 虚拟化的高效结合，相当于给了微服务二次加速的动力，资源调度 Kubernetes 的成功，可以认为是直接实现了曲速推进。先进的理念还需要先进的技术实现。</p><h2 id="有待成熟的无服务架构"><a href="#有待成熟的无服务架构" class="headerlink" title="有待成熟的无服务架构"></a>有待成熟的无服务架构</h2><blockquote><p>有想要快，还想要简单。那就不要服务了，随便写个函数跑跑得了。</p></blockquote><p><img src="https://static.howardliu.cn/microservice/Serverless_Architecture.png" alt="有待成熟的无服务架构" title="有待成熟的无服务架构"></p><p>就目前而言，绝大部分的系统开发都是为了解决业务问题。在这个过程中，我们需要选择一些业务无关的技术组件。有时候，我们受限于研发环境，需要的某种技术组价不存在时，需要采购部署，或者使用替代方案。这就会分散我们的注意力。</p><p>于是，很多云服务商提出了无服务架构。无服务架构将系统开发涉及的资源分为两部分：后端设施（Backend）、函数（Function），对应的就是 BaaS（Backend as a Service，后端即服务）和 FaaS（Function as a Service，函数即服务）。</p><p>这种不能算是架构风格，只能算是一种系统开发过程中的美好愿景。让开发者只需要关注业务，需要的基础设施全部由云服务提供，不需要考虑运行容器、基础设施的部署、服务器运行能力等。只要将开发好的代码上传，就可以拥有一个可运行的系统。</p><p>但是愿景虽好，但是与自己掌控部署的区别仅在于对于基础设施的管控程度上。除非出现重大变革，否则这种架构很难像微服务架构一样普适。但是对于小程序、小型 web 网站、咨询平台等模板化的小型系统，采用这种架构还是有很大优势的。</p><h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>本文从架构演进的角度分析了单体架构、SOA 架构、微服务架构、无服务架构的适用场景，作为架构师，我们在选择架构师，不应该一味追求主流，也不能盲从大厂的思路。我们要根据自身情况权衡利弊，找到适合的架构风格。</p><hr><p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p><p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/do-we-have-any-other-options-besides-microservices/">除了微服务，我们还有其他选择吗？</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">除了微服务，我们还有其他选择吗？</a></p><center><b>👇🏻欢迎关注我的公众号「看山的小屋」，领取精选资料👇🏻</b></center><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
+    
+    <summary type="html">
+    
+      从单体架构、SOA架构，到微服务架构，再到容器化、无服务架构，我们的选择很多，没有必要非在一棵树上吊死。
+    
+    </summary>
+    
+    
+      <category term="microservice" scheme="https://www.howardliu.cn/categories/microservice/"/>
+    
+    
+      <category term="微服务" scheme="https://www.howardliu.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/"/>
+    
+      <category term="架构" scheme="https://www.howardliu.cn/tags/%E6%9E%B6%E6%9E%84/"/>
+    
+  </entry>
   
   <entry>
     <title>JDK 每半年就会更新一次新特性，再不掌握就要落伍了：JDK8 的新特性</title>
@@ -303,9 +355,9 @@
     
       <category term="SpringBoot 实战" scheme="https://www.howardliu.cn/tags/SpringBoot-%E5%AE%9E%E6%88%98/"/>
     
-      <category term="实战" scheme="https://www.howardliu.cn/tags/%E5%AE%9E%E6%88%98/"/>
-    
       <category term="SpringBoot" scheme="https://www.howardliu.cn/tags/SpringBoot/"/>
+    
+      <category term="实战" scheme="https://www.howardliu.cn/tags/%E5%AE%9E%E6%88%98/"/>
     
   </entry>
   
@@ -491,60 +543,6 @@
       <category term="go" scheme="https://www.howardliu.cn/tags/go/"/>
     
       <category term="开发指南" scheme="https://www.howardliu.cn/tags/%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>好书不是通过价格可以衡量的，比如这本</title>
-    <link href="https://www.howardliu.cn/about-the-fenix-project/"/>
-    <id>https://www.howardliu.cn/about-the-fenix-project/</id>
-    <published>2021-07-12T16:10:51.000Z</published>
-    <updated>2021-07-12T16:10:51.000Z</updated>
-    
-    <content type="html"><![CDATA[<p><img src="http://static.howardliu.cn/cover/bee-6354562_1920.jpg" alt="好书不是通过价格可以衡量的，比如这本"></p><p>你好，我是看山。</p><p>笔者主修Java，所以在<a href="https://www.howardliu.cn/lists-book-recommendations-2021/">《程序员进阶书单2021版》</a>主要推荐了一些Java工程师进阶必读书单。推荐原则是豆瓣的评分，结果，遗漏了一本开源书籍，甚是遗憾，今天补上。</p><a id="more"></a><p>推荐的书籍名为《凤凰架构》，开源地址是<a href="https://icyfenix.cn/" target="_blank" rel="noopener">https://icyfenix.cn/</a>。</p><p>看到凤凰，我们会想到凤凰涅槃、涅槃重生之类的词语。在作者看来，我们的系统不是一成不变的，只要在软件生命周期内，总会因为某些原因出现问题，或者是设计上的，或者是工程师代码问题，甚至最简单的网络问题。就像是凤凰浴火，经历考验，然后重生一般。</p><p>本书探讨的主题就是，如何构建一个可靠的分布式系统。这套方法论，可以让多人协作开发的系统，让一个大型的、分布式的系统，可靠的运行。这不是依赖团队成员个人能力，或者是研发质量管理就能够实现的，这是一个系统性的、架构层面的问题。想要实现这个目标，最终要依赖技术和架构。</p><p>全书主要分为5部分：</p><ul><li>演进中的架构：从历史演进过程，以全局视角，梳理微服务发展过程中出现的大量技术名词、概念。可以让我们了解技术的时代背景和探索过程。这里不得不推荐另外一本书《大型网站技术架构》，大家有时间可以看看。</li><li>架构师的视角：这一部分不是局限在某种架构的通用技巧，而是系统性地讲解做架构设计的时候，架构师都应该思考哪些问题、可以选择哪些主流的解决方案和行业标准做法，以及这些主流方案都有什么优缺点、会给架构设计带来什么影响，等等。这样一来，我们才可以把“架构设计”这样比较抽象的工作具体化、具象化。</li><li>分布式的基石：这一部分聚焦在分布式架构，探讨分布式带来的问题与应对策略。剖析分布式架构中出现的一系列问题，比如服务的注册发现、跟踪治理、负载均衡、故障隔离、认证授权、伸缩扩展、传输通讯、事务处理等，有哪些解决思路、方法和常见工具。</li><li>不可变基础设施：这一部分按照云原生时代“基础设施即代码”的新思路，深入理解基础设施不变性的目的、原理与实现途径，体会用代码和用基础设施，来解决分布式问题的差异，让我们更轻松的理解不可变基础设施的内涵，便于在实际工作中做运维、程序升级和部署等工作。</li><li>技术方法论：这一部分属于归纳总结的部分，前面都是从实践出发，让我们更加清楚如何是设计一个不断升级的系统。这一章讲述一些方法论，在我们有一定实践的基础上，构建可靠的理论体系，理论与实现相结合，相互螺旋上升。</li></ul><p>前面说了这么多，该介绍一下作者了，就是大名鼎鼎的周志明，<a href="https://book.douban.com/subject/34907497/" target="_blank" rel="noopener">《深入理解Java虚拟机》</a>作者。相信Java栈的开发者，即使没有读过这本书，也听过其名。就是这本书让笔者有爱有恨，爱的是提升了笔者对JVM的认识，恨的是提升了大家对JVM的认识。</p><p>再次附上开源地址<a href="https://icyfenix.cn/" target="_blank" rel="noopener">https://icyfenix.cn/</a>。</p><h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul><li><a href="https://www.howardliu.cn/lists-book-recommendations-2021/">程序员进阶书单2021版</a></li></ul><hr><p>你好，我是看山，公众号：看山的小屋，10 年老猿，开源贡献者。游于码界，戏享人生。</p><p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/about-the-fenix-project/">好书不是通过价格可以衡量的，比如这本</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/article/details/103794938" target="_blank" rel="noopener">好书不是通过价格可以衡量的，比如这本</a></p><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;&lt;img src=&quot;http://static.howardliu.cn/cover/bee-6354562_1920.jpg&quot; alt=&quot;好书不是通过价格可以衡量的，比如这本&quot;&gt;&lt;/p&gt;
-&lt;p&gt;你好，我是看山。&lt;/p&gt;
-&lt;p&gt;笔者主修Java，所以在&lt;a href=&quot;https://www.howardliu.cn/lists-book-recommendations-2021/&quot;&gt;《程序员进阶书单2021版》&lt;/a&gt;主要推荐了一些Java工程师进阶必读书单。推荐原则是豆瓣的评分，结果，遗漏了一本开源书籍，甚是遗憾，今天补上。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="闲聊" scheme="https://www.howardliu.cn/categories/%E9%97%B2%E8%81%8A/"/>
-    
-    
-      <category term="闲聊" scheme="https://www.howardliu.cn/tags/%E9%97%B2%E8%81%8A/"/>
-    
-      <category term="书单" scheme="https://www.howardliu.cn/tags/%E4%B9%A6%E5%8D%95/"/>
-    
-      <category term="技术成长" scheme="https://www.howardliu.cn/tags/%E6%8A%80%E6%9C%AF%E6%88%90%E9%95%BF/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>想躺平不是错</title>
-    <link href="https://www.howardliu.cn/relax-and-run/"/>
-    <id>https://www.howardliu.cn/relax-and-run/</id>
-    <published>2021-07-09T00:16:44.000Z</published>
-    <updated>2021-07-09T00:16:44.000Z</updated>
-    
-    <content type="html"><![CDATA[<p><img src="http://static.howardliu.cn/cover/caterpillar-6387049_1920.jpg" alt="想躺平不是错"></p><blockquote><p>该图片由<a href="https://pixabay.com/zh/users/jggrz-7998824/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6387049" target="_blank" rel="noopener">jggrz</a>在<a href="https://pixabay.com/zh/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6387049" target="_blank" rel="noopener">Pixabay</a>上发布</p></blockquote><p>你好，我是看山。</p><p>今天聊聊这段时间比较火的一个网络词：躺平。据说这个词还被某些网站屏蔽了，不知道这篇文章会不会也被屏蔽掉。</p><a id="more"></a><p>维基百科为<code>躺平</code>下了一个比较完善的定义：</p><blockquote><p>躺平或躺平主义是 2021 年开始在中华人民共和国流行的网络词语。指这一时期的年轻人在国内经济下滑、社会问题激化的大背景下，出于对现实环境的失望而做出的“与其跟随社会期望坚持奋斗，不如选择‘躺平’，无欲无求”的处事态度。被视为是对抗社会“内卷化”的一种方式。其具体内涵包括“不买房、不买车、不结婚、不生娃、不消费”及“维持最低生存标准，拒绝成为他人赚钱的机器和被剥削的奴隶”，是“低欲望青年”对于阶级固化的低移动性社会、中产阶级萎缩、在职贫穷、苛刻待遇、劳资关系失谐、以及不合理的社会经济结构等现况的回应。</p></blockquote><p>后面就是个人愚见了。</p><p>不禁有人会问，为什么现在年轻人要躺平呢？以前怎么没有？</p><p>怎么会没有？躺平这个词是新词，但这种想法却不是新的，新瓶装旧酒而已。</p><p>在更早的时候有一个词：三和大神。</p><p>维基百科依然可以找到解释：</p><blockquote><p>三和大神是指栖身在中国广东省深圳市龙华区景乐新村海新信人力资源市场附近的一群打工者，“三和”一词源自该区域最大的人力资源公司名称。他们居无定所，以日结薪资的临时工为生，号称“做一天可以玩三天”。这些打工者有的甚至没有身份证，身负债务，与家人鲜有来往。失去身份证无法购票，甚至无法离开三和地区。三和大神的定义同时有精神方面的因素，往往有着过一天算一天的豁达精神，不畏死，不惧穷、苦、脏。</p></blockquote><p>还有个词是“葛优躺”，2016 年的网络词，比喻自己的“颓废”的现状。</p><p><img src="http://static.howardliu.cn/raving/1f178a82b9014a90168ef327b977ad1ab21bee85.jpeg" alt="葛优躺"></p><p>再往前有个词是“佛系”，2014 年的网络词了，指无欲无求、不悲不喜、云淡风轻而追求内心平和的生活态度。</p><p>再往前，看看唐伯虎，躺的很潇洒。</p><blockquote><p>酒醒只在花前坐，酒醉还须花下眠。<br>花前花后日复日，酒醉酒醒年复年。<br>但愿老死花酒间，不愿鞠躬车马前。</p></blockquote><p>最后追上一句“世人笑我太疯癫，我笑世人看不穿。”简直是我躺平辈的真实心态。</p><p>再往前还有陶渊明，隐居山野间，“种豆南山下，草盛豆苗稀”，任由庄稼被杂草吞噬。</p><p>历史上的名人尚且如此，那些没有被历史记住的躺平青年，何其之多。躺平一词，只是给这种处事方式定了一个新说法而已。</p><p>从某度搜索这个词，结果有 1000 万条，可见热度如何。我天朝上国日益繁荣，怎么今年突然出来这么个词？</p><p>现在社会上工作的大部分人，是 80、90、00 这 30 年之间的人，正在接受生活工作的鞭挞。</p><p>改革开放 40 多年，经济迅速发展，几乎赶上欧美 200 多年的发展历程，甚至在某些领域已遥遥领先。</p><p>社会的发展不可能一蹴而就，必然是问题叠问题，不断解决问题。正在工作中努力拼搏的这批人，赶上了计划生育、90 年代的国企下岗、99 年的大学扩招、08 年的房价上涨、15 年二胎政策，以及今年的三胎政策、中考分流等。（中考分流和这批人没有直接关系，不过会跟这批人的子女有关系。）</p><p>能量守恒是自然规律。想要获得一些东西，必然需要通过等价的事物作为交换。社会发展也要遵循这个规律。</p><p>建国初期，百废待兴，需要发展。农业需要农民、工业需要工人、科研需要科学家、社会需要学者，各行各业都缺人，人多力量大。（不是说人多就有用，但是人多出现有用的人概率更大。）因此，人口数量稳步提升，但是国土面积就那么大，任由发展，就可能演变成“老鼠乌托邦”实验，所以必须刹车制动，于是有了计划生育。</p><p>后来，市场经济调控下，大锅饭不再能够保障大部分人的生活，国企经营能力赶不上社会发展，下岗成为了市场经济下的必然。但是下岗工人需要再就业、再创业。但是人口高速增长的那批正在读高中的学子马上也要毕业，怎么办？大学扩招，让这批即将毕业踏入社会的高中生，可以进入大学再学几年，大学成为分担就业压力的一个池子。</p><p>于是，本来大部分人上不了大学，变成了半数人有机会上大学。这样又造成了课外教培事业的繁荣，原本只有那些 90 分以上的孩子才能上大学。扩招之后，70 分以上都可以，那 60 分的就想往上提一下，70 分的怕被挤下来，也参加课外教培。学习上的内卷开始。也就是说，这批有躺平想法的年轻人，在学校读书的时候就被内卷过了。（这又是另外一个话题了，这里不做展开。）</p><p>等到这批扩招的大学生毕业，普通的流水线工厂肯定是不会去了，必然是要到大城市，进写字楼当白领。于是，当白领的人越来越多，但是资源就那么多，彼此竞争。白领人多了，蓝领就少了，也造成了各种用工荒。</p><p>大城市因其资源、人才、企业相互影响，产生人口聚集。人口多了，竞争压力大，教育资源紧缺，房价上涨，种种这些，压得这批年轻人喘不开气来。这些压力转变到生育上，就造成大家不愿生不敢生。人口增长缓慢，老龄化加剧，于是有了后来的鼓励生育，开放二胎三胎。</p><p>说了这么多，似乎和躺平没什么直接关系。仔细思考下，能够发现其中的必然联系。</p><p>目前 80、90、00 这群人，都是经历过社会高速发展的。到目前，我国经济水平已经赶上国际水平，跻身大国行列。后期就要更加良性的发展，不能以牺牲其他方面为代价的发展。所以，经济发展放缓必然是常态化。加上新冠疫情的出现，让这种常态化更快的到来。</p><p>总结下来，钱更难挣了。想要挣到相同的钱，需要我们的能力更强，付出更多的努力。对于这批人，车贷房贷教育费，赡养老人，抚育子女，各种事情都需要花钱。钱变得难挣，但是花钱并没有减少。</p><p>所以，想要躺会儿放松放松，把可能造成压力的事物都摒弃，让自己压力小一些。放松下来，什么也不管，无欲无求，简单度日即可。</p><p>但是，人毕竟是群居生物，有其社群关联。有父母、有妻儿，我朝亲情至上。所以上要孝敬父母，下要抚育子女，中间要与伴侣互相扶持。一时的放松可以，但是不能一直松下去。一时的放松是劳逸结合，一世的放松就是烂泥扶不上墙了。</p><p>推荐看看周董《稻香》的 MV，可以学学男主人公，当工作累了，可以回乡下老家，体验一下慢生活，给自己充充电。释放了压力，才能轻装前行。</p><hr><p>你好，我是看山，公众号：看山的小屋，10 年老猿，开源贡献者。游于码界，戏享人生。</p><p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/relax-and-run/">想躺平不是错</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/article/details/118686355" target="_blank" rel="noopener">想躺平不是错</a></p><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
-    
-    <summary type="html">
-    
-      今天聊聊这段时间比较火的一个网络词：躺平。
-    
-    </summary>
-    
-    
-      <category term="闲聊" scheme="https://www.howardliu.cn/categories/%E9%97%B2%E8%81%8A/"/>
-    
-    
-      <category term="闲聊" scheme="https://www.howardliu.cn/tags/%E9%97%B2%E8%81%8A/"/>
-    
-      <category term="躺平" scheme="https://www.howardliu.cn/tags/%E8%BA%BA%E5%B9%B3/"/>
     
   </entry>
   

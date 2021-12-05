@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.howardliu.cn/from-monolith-to-microservices-2/</loc>
+    <lastmod>2021-12-05</lastmod>
+  </url>  <url>
+    <loc>https://www.howardliu.cn/do-we-have-any-other-options-besides-microservices/</loc>
+    <lastmod>2021-12-05</lastmod>
+  </url>  <url>
     <loc>https://www.howardliu.cn/java-8-features/</loc>
     <lastmod>2021-11-24</lastmod>
   </url>  <url>
