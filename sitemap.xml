@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/the-base-of-microservice/</loc>
+    
+    <lastmod>2021-12-06T23:50:18.226Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/the-paradigm-of-microservice/</loc>
+    
+    <lastmod>2021-12-06T23:48:36.666Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/from-monolith-to-microservices-2/</loc>
     
     <lastmod>2021-12-05T14:40:49.000Z</lastmod>
@@ -68,13 +82,6 @@
     <loc>https://www.howardliu.cn/java/jvm-tuning-basic/</loc>
     
     <lastmod>2021-11-05T00:14:30.799Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.howardliu.cn/the-paradigm-of-microservice/</loc>
-    
-    <lastmod>2021-11-04T23:52:18.698Z</lastmod>
     
   </url>
   
@@ -569,13 +576,6 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/the-base-of-microservice/</loc>
-    
-    <lastmod>2020-08-25T13:44:51.109Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.howardliu.cn/singleton-pattern/</loc>
     
     <lastmod>2020-08-23T12:24:08.475Z</lastmod>
@@ -653,13 +653,6 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
-    
-    <lastmod>2020-07-28T05:48:04.719Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
@@ -667,7 +660,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
+    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
@@ -675,6 +668,13 @@
   
   <url>
     <loc>https://www.howardliu.cn/hadoop-environment/</loc>
+    
+    <lastmod>2020-07-28T05:48:04.719Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
@@ -702,14 +702,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
+    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
+    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
