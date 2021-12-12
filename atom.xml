@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.howardliu.cn/"/>
-  <updated>2021-12-05T14:40:49.000Z</updated>
+  <updated>2021-12-12T14:32:20.000Z</updated>
   <id>https://www.howardliu.cn/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>微服务架构的陷阱：从单体到分布式单体</title>
+    <link href="https://www.howardliu.cn/avoid-the-distributed-monolith/"/>
+    <id>https://www.howardliu.cn/avoid-the-distributed-monolith/</id>
+    <published>2021-12-12T14:32:20.000Z</published>
+    <updated>2021-12-12T14:32:20.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="https://static.howardliu.cn/cover/squirrel-6846096_1920.jpg" alt="微服务架构的陷阱：从单体到分布式单体"></p><p>你好，我是看山。</p><p>前面咱们聊了架构的演进过程，提到单体架构、SOA 架构、微服务架构、无服务架构。整个过程如下图：</p><p><img src="https://static.howardliu.cn/microservice/architect-gogogo.jpg" alt="架构演进过程：单体架构、早期服务化、SOA 架构、微服务架构"></p><p>目前无服务架构还未成熟，只能满足一些简单场景。所以大家在设计软件架构时，首选还是微服务架构。然后我们又聊了聊如何把单体架构改造为微服务架构，推荐采用绞杀模式，一步一步的实现系统微服务化。</p><p>在这个过程中，我们会碰到微服务架构的一个大坑：分布式错觉，即将分布式当成了微服务的全部（充要条件）。</p><a id="more"></a><h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>出现分布式单体的主要原因在于，只是用进程间的远程调用替换进程内的方法调用。</p><p><img src="https://static.howardliu.cn/microservice/monolitic-microservice-call.jpg" alt="模块 A 与模块 B 之间的通信方式"></p><p>从上图可以看出，单体架构在模块 A 与模块 B 之间的请求是通过进程内通信（通常是方法调用）实现的；在微服务架构中，两者之间是通过 REST 或 RPC 调用。抛开进程和消息通知机制的差异，两种架构中模块 A 与模块 B 之间的通信形式完全一致：</p><p><img src="https://static.howardliu.cn/microservice/monolitic-microservice-call2.jpg" alt="单体/微服务架构中模块间通信方式"></p><p>在这种情况下，模块 A 与模块 B 耦合在一起，任何一方变更请求契约（方法签名或接口参数），另外一个都必须同步修改。更糟糕的是，由于微服务架构服务之间是通过网络通信，由于其不可靠性和不稳定性，大大增加了出错的概率，使模块之间的调用关系更加脆弱。</p><p>模块 A 与模块 B 之间的网络请求是同步调用，请求过程中会占用一个网络连接和至少一个线程，如果模块 A 与模块 B 所在的服务的承压能力不同，很有可能模块 B 所在服务被打满，后续模块 A 的请求会阻塞等待，知道请求超时。</p><p>那又是什么原因让大家没有意识到这种方式不妥呢？原因有两个：</p><ol><li>想要在微服务架构中实现单体架构中模块间的关系；</li><li>想要在分布式应用中实现数据的强一致性。</li></ol><p>针对于微服务架构中的数据一致性问题，可以参考 <a href="https://mp.weixin.qq.com/s?__biz=MzI4OTU5NTA1Ng==&mid=2247484752&idx=1&sn=38e19e269e6609ab14b69d68d5e77529" target="_blank" rel="noopener">关于微服务系统中数据一致性的总结</a>。</p><p>下面我们重点说说如果解决第一个问题。</p><h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><p>对于模块之间的关系，主要在于通信模式，对于查询请求，由于数据依赖，模块之间的耦合是天然的，我们这里要解耦的是数据变更（增、删、改）时的模块调用。</p><p>类比一下现实，我们如果想要通知某些人一个消息，会怎么处理？一般来说，有两种方式：</p><ol><li>点对点主动通知，直接找到这个人，给这个人打电话，不通继续打，保证对方能够收到消息；</li><li>点对面广播通知，比如，群里发给公告、公司的告示栏等，这种方式需要消息接受者主动查看公告信息。</li></ol><p>这两种方式对应了我们系统设计中消息传递的两个模式：指令（Command）、事件（Event）。</p><h3 id="指令（Command）和事件（Event）"><a href="#指令（Command）和事件（Event）" class="headerlink" title="指令（Command）和事件（Event）"></a>指令（Command）和事件（Event）</h3><p><img src="https://static.howardliu.cn/microservice/command_event.jpg" alt="command 与 event，指令与事件"></p><p>指令（Command）是表示从发起者（source）向执行者（destination）传递（send）一个必须执行某个动作（action）的请求（request）。这个模式有如下特点：</p><ul><li>明确的知道发起者和执行者，发起者依赖执行者；</li><li>请求发送方式一般是点对点同步请求，一般是 RPC 请求；</li><li>动作已发生或即将发生，有可能由于执行者拒绝执行而取消；</li><li>执行者有可能拒绝执行；</li><li>执行者会很明确的告知发起者指令执行情况：拒绝、成功、失败等。</li><li>为了保证指令的有效触达，发起者在网络超时时会重复调用执行者，所以执行者需要实现请求幂等；</li><li>执行者可能会称为下一个指令的发起者。</li></ul><p>事件（event）是表示由生产者（producer）发布（public）一个已经发生的事情，表示行为（action）已经发生，某些状态（status）发生了改变，消费者（consumer）订阅这些事件，然后做出响应。这个模式有如下特点：</p><ul><li>事件有明确的生产者，但是消费者不明确，甚至可能不存在；</li><li>一般借助消息中间件实现事件发送、存储、传递等；</li><li>行为已经发生，不可改变，不可逆，事件是对已经发生事情的客观描述；</li><li>消费者根据消息选择处理方式：执行、抛弃等；</li><li>消费者处理完成后，不需要回复生产者；</li><li>一般消息中间件采用“至少一次”通知机制，所以消费者需要实现消息处理的幂等；</li><li>消费者可能会成为下一个事件的生产者。</li></ul><p><img src="https://static.howardliu.cn/microservice/command-and-event.jpg" alt="指令与事件之间的区别"></p><p>由于请求模式的不同，在依赖关系上就会发生改变：</p><p>在指令模式中，模块 A 调用模块 B，属于直接调用，模块 A 需要依赖模块 B；在事件模式中，模块 A 把事件发送给消息中间件，其他需要订阅事件的服务，直接从消息中间件获取，这种会产生依赖倒置，模块 B 依赖模块 A。这是解耦模块 A 与模块 B 很好的方式。</p><h3 id="重新定义微服务"><a href="#重新定义微服务" class="headerlink" title="重新定义微服务"></a>重新定义微服务</h3><p>我们在回过头来看看我们的问题：</p><p><img src="https://static.howardliu.cn/microservice/monolitic-microservice-call2.jpg" alt="单体/微服务架构中模块间通信方式"></p><p>此时我们会比较清晰，由于全系统中使用了指令模式，上次调用者依赖下层，由于是同步请求，依赖会发生传递，这种依赖传递，将整个系统耦合在一起，一处修改，处处变动，也就是我们在抨击单体架构时常说的牵一发而动全身。</p><p>此时，我们就可以借助事件模式，将依赖链条打断。但是需要注意，不要矫枉过正的全部改为事件模式，那将会是另一个火坑。一般我们会将系统改造成下面的样子：</p><p><img src="https://static.howardliu.cn/microservice/refactor-monolitic.jpg" alt="重新定义微服务"></p><p>根据业务具体情况，我们可以归纳一下改造结果：</p><ol><li>服务 A 接到的请求可能是事件或指令；</li><li>服务 A 会向服务 B 发送指令，也会向消息中间件发送事件；</li><li>服务 B 接到指令后开始执行，执行完毕后，可能会向消息中间件发送事件；</li><li>服务 C 定于事件，从消息中间件接到消息后处理，它可能发送事件或指令。</li></ol><p>需要注意的是，每个服务内部还有有一些操作。抽象一下，整个系统中的指令、事件、操作如下图：</p><p><img src="https://static.howardliu.cn/microservice/command-event-definition.jpg" alt="指令和事件的定义"></p><ul><li>输入：以一个指令或事件作为输入，开始整个业务执行；</li><li>服务内部操作：服务内部会有执行逻辑，比如操作数据库、访问缓存服务等。可选，0-N 个；</li><li>指令调用：同步调用依赖服务，发送指令，获得结果。可选，0-N 个；</li><li>发布事件：以消息形式发布事件，一般发布到消息中间件，其他发布订阅消息中间件，执行事件需要的行为。可选，事件一般是 0-1 个。</li></ul><p>架构设计的过程不是非此即彼，全部指令会造成耦合，全部事件会致使开发难度提升以及边界不清。我们需要理性的看待两种模式，做到不偏不倚。</p><h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>本文从分布式单体陷阱展开，讲述了分布式错觉带来的问题，然后通过事件、指令两种模式相结合的方式解决问题。微服务是目前比较完善的架构风格，从单体到微服务架构，是要实现架构的升级，所以调用模式不会一成不变。这个陷阱，也是我们在做新系统时需要避免的。</p><h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul><li><a href="https://mp.weixin.qq.com/s/09ILTzijUr3knHBj13t_kQ" target="_blank" rel="noopener">什么是微服务？</a></li><li><a href="https://mp.weixin.qq.com/s/n1eKTlLP_BbyBkKG4OyLSw" target="_blank" rel="noopener">微服务编程范式</a></li><li><a href="https://mp.weixin.qq.com/s/sRkYdrAwvn8UrGSraAURpA" target="_blank" rel="noopener">微服务的基建工作</a></li><li><a href="https://mp.weixin.qq.com/s/sRX04UhPiFWSDOazTSXuXw" target="_blank" rel="noopener">微服务中服务注册和发现的可行性方案</a></li><li><a href="https://mp.weixin.qq.com/s/NcftJ1jNAd-DHpzBXKk8RA" target="_blank" rel="noopener">从单体架构到微服务架构</a></li><li><a href="https://mp.weixin.qq.com/s/gSWFUsFnaqRKyGXVgdUqew" target="_blank" rel="noopener">除了微服务，我们还有其他选择吗？</a></li><li><a href="https://mp.weixin.qq.com/s/M0sla4LVvp2lEiFpzwyVrA" target="_blank" rel="noopener">如何在微服务团队中高效使用 Git 管理代码？</a></li><li><a href="https://mp.weixin.qq.com/s/apHFXB2cUqDALpJJebNp9A" target="_blank" rel="noopener">关于微服务系统中数据一致性的总结</a></li><li><a href="https://mp.weixin.qq.com/s/AE0n4d_zRZOEeYEQt-rSKw" target="_blank" rel="noopener">实现 DevOps 的三步工作法</a></li><li><a href="https://mp.weixin.qq.com/s/mMjbafRIhia3u9DmXPSfPQ" target="_blank" rel="noopener">系统设计系列之如何设计一个短链服务</a></li><li><a href="https://mp.weixin.qq.com/s/mtt_wsUChGIwnR-Nz5BE4g" target="_blank" rel="noopener">系统设计系列之任务队列</a></li><li><a href="https://mp.weixin.qq.com/s/_PI5jRP99ktPs3lxCbBLSg" target="_blank" rel="noopener">软件架构-缓存技术</a></li><li><a href="https://mp.weixin.qq.com/s/668L2NK7LWo3c8U8ZI_1ng" target="_blank" rel="noopener">软件架构-事件驱动架构</a></li></ul><hr><p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p><p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/avoid-the-distributed-monolith/">微服务架构的陷阱：从单体到分布式单体</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">微服务架构的陷阱：从单体到分布式单体</a></p><center><b>👇🏻欢迎关注我的公众号「看山的小屋」，领取精选资料👇🏻</b></center><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
+    
+    <summary type="html">
+    
+      目前无服务架构还未成熟，只能满足一些简单场景。所以大家在设计软件架构时，首选还是微服务架构。然后我们又聊了聊如何把单体架构改造为微服务架构，推荐采用绞杀模式，一步一步的实现系统微服务化。在这个过程中，我们会碰到微服务架构的一个大坑：分布式错觉，即将分布式当成了微服务的全部（充要条件）。
+    
+    </summary>
+    
+    
+      <category term="microservice" scheme="https://www.howardliu.cn/categories/microservice/"/>
+    
+    
+      <category term="微服务" scheme="https://www.howardliu.cn/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/"/>
+    
+      <category term="架构" scheme="https://www.howardliu.cn/tags/%E6%9E%B6%E6%9E%84/"/>
+    
+  </entry>
   
   <entry>
     <title>如何实现单体架构到微服务架构的蜕变？</title>
@@ -355,9 +380,9 @@
     
       <category term="SpringBoot 实战" scheme="https://www.howardliu.cn/tags/SpringBoot-%E5%AE%9E%E6%88%98/"/>
     
-      <category term="实战" scheme="https://www.howardliu.cn/tags/%E5%AE%9E%E6%88%98/"/>
-    
       <category term="SpringBoot" scheme="https://www.howardliu.cn/tags/SpringBoot/"/>
+    
+      <category term="实战" scheme="https://www.howardliu.cn/tags/%E5%AE%9E%E6%88%98/"/>
     
   </entry>
   
@@ -508,31 +533,6 @@
     <summary type="html">
     
       如何在同一台机器上安装多个版本 Go 环境，再描述一下如何卸载 Go 环境。
-    
-    </summary>
-    
-    
-      <category term="go" scheme="https://www.howardliu.cn/categories/go/"/>
-    
-    
-      <category term="go" scheme="https://www.howardliu.cn/tags/go/"/>
-    
-      <category term="开发指南" scheme="https://www.howardliu.cn/tags/%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《Go 开发指南》-快速安装 Go 环境</title>
-    <link href="https://www.howardliu.cn/install-go/"/>
-    <id>https://www.howardliu.cn/install-go/</id>
-    <published>2021-07-24T09:21:23.000Z</published>
-    <updated>2021-07-24T09:21:23.000Z</updated>
-    
-    <content type="html"><![CDATA[<p><img src="http://static.howardliu.cn/cover/travel-6470467_1920.jpg" alt="《Go 开发指南》-快速安装 Go 环境"></p><blockquote><p>该图片由<a href="https://pixabay.com/zh/users/jpdvg-11163235/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6470467" target="_blank" rel="noopener">JPierre Desvigne</a>在<a href="https://pixabay.com/zh/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6470467" target="_blank" rel="noopener">Pixabay</a>上发布</p></blockquote><p>你好，我是看山。</p><blockquote><p>本文源自并发编程网的翻译邀请，文章来自 Go 官方网站。</p></blockquote><a id="more"></a><p>按照下面的步骤，你可以实现快速安装。</p><p>如果想要通过源码安装，可以访问：<a href="https://golang.google.cn/doc/install/source" target="_blank" rel="noopener">从源码安装 Go 环境</a>。</p><p>如果想要安装多个版本的 Go 或者卸载，可以访问：<a href="https://www.howardliu.cn/manage-install/">管理 Go 环境</a>。</p><h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p>下面提供了 Linux、Mac、Windows 三种系统 Go 语言安装包的下载路径：</p><ul><li>Linux：<a href="https://golang.org/dl/go1.16.5.linux-amd64.tar.gz" target="_blank" rel="noopener">https://golang.org/dl/go1.16.5.linux-amd64.tar.gz</a></li><li>Mac：<a href="https://golang.org/dl/go1.16.5.darwin-amd64.pkg" target="_blank" rel="noopener">https://golang.org/dl/go1.16.5.darwin-amd64.pkg</a></li><li>Windows：<a href="https://golang.org/dl/go1.16.5.windows-amd64.msi" target="_blank" rel="noopener">https://golang.org/dl/go1.16.5.windows-amd64.msi</a></li></ul><p>如果想要获取其他操作系统或者其他版本的，可以访问<a href="https://golang.org/dl/" target="_blank" rel="noopener">https://golang.org/dl/</a>。</p><p>默认情况下，go 命令默认下载和验证模块时，使用的是 Google 提供的模块镜像服务和 checksum 验证。我们可以从<a href="https://golang.org/cmd/go/" target="_blank" rel="noopener">https://golang.org/cmd/go/</a>获取全面的 go 命令和配置。</p><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h3><ol><li><p>将下载的压缩包解压到<code>/usr/local</code>目录中，可以执行下面这条命令（需要切换到 root 用户或者使用 sudo）：</p><pre><code class="bash"> rm -rf /usr/local/go tar -C /usr/local -xzf go1.16.5.linux-amd64.tar.gz</code></pre><blockquote><p>注意：提供的这条命令会删除之前安装的 go 环境，在执行之前最好做下备份。</p></blockquote></li><li><p>将<code>/usr/local/go/bin</code>添加到<code>PATH</code>环境变量中，可以在<code>$HOME/.profile</code>或者<code>/etc/profile</code>中添加下面这条命令：</p><pre><code class="bash"> export PATH=$PATH:/usr/local/go/bin</code></pre><blockquote><p>注意：对配置文件的修改，需要等到下次登录计算机的时候才会生效。如果想要立即生效，可以直接运行 shell 命令，或者使用命令<code>source $HOME/.profile</code>重新执行一下配置内容。</p></blockquote></li><li><p>打开终端，输入下面的命令，验证下是否按照成功：</p><pre><code class="bash"> go version</code></pre></li><li><p>确认一下打印的版本号，与下载的版本号是否一致。如果一致，说明按照成功，如果说命令找不到或者版本不一致，那就是安装有问题。【译者注：如果条件允许，最好重启系统，然后在验证一次，避免环境变量配置错误。】</p></li></ol><h3 id="Mac"><a href="#Mac" class="headerlink" title="Mac"></a>Mac</h3><ol><li><p>双击打开下载的安装包，按照提示安装。<br>这个安装包会直接将 Go 安装在<code>/usr/local/go</code>目录中，并将<code>/usr/local/go/bin</code>添加到<code>PATH</code>环境变量中。可能需要重启终端才能使环境变量生效。</p></li><li><p>打开终端，输入下面的命令，验证下是否按照成功：</p><pre><code class="bash"> go version</code></pre></li><li><p>确认一下打印的版本号</p></li></ol><h3 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h3><ol><li><p>双击打开下载的安装包，按照提示安装。<br>默认情况下，会安装在<code>Program Files</code>或者<code>Program Files (x86)</code>目录中，也可以根据自己的习惯修改。安装完成后，需要重启终端使环境变量生效。</p></li><li><p>验证安装是否成功</p><ol><li><p>在 Windows 系统中，打开菜单</p></li><li><p>搜索框中键入<code>cmd</code>然后回车，打开终端</p></li><li><p>在终端中，输入下面命令</p><pre><code class="bash"> go version</code></pre></li><li><p>确认一下打印的版本号</p></li></ol></li></ol><h2 id="开始-coding"><a href="#开始-coding" class="headerlink" title="开始 coding"></a>开始 coding</h2><p>经过上面步骤，你已经成功安装了 Go 环境，访问 <a href="https://golang.google.cn/doc/tutorial/getting-started.html" target="_blank" rel="noopener">Getting Started tutorial</a> 开始 Coding 之旅吧。</p><h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul><li><a href="https://www.howardliu.cn/install-go/">《Go 开发指南》-快速安装 Go 环境</a></li><li><a href="https://www.howardliu.cn/manage-install/">《Go 开发指南》-管理 Go 环境</a></li></ul><hr><p>你好，我是看山，公众号：看山的小屋，10 年老猿，开源贡献者。游于码界，戏享人生。</p><p>原文链接：<a href="https://golang.google.cn/doc/install" target="_blank" rel="noopener">Download and install</a><br>翻译：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>译文链接：<a href="https://www.howardliu.cn/install-go/">《Go 开发指南》-快速安装 Go 环境</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://blog.csdn.net/liuxinghao/article/details/119061721" target="_blank" rel="noopener">《Go 开发指南》-快速安装 Go 环境</a></p><p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>]]></content>
-    
-    <summary type="html">
-    
-      快速安装 Go 环境
     
     </summary>
     

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>微服务架构的陷阱：从单体到分布式单体||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="目前无服务架构还未成熟，只能满足一些简单场景。所以大家在设计软件架构时，首选还是微服务架构。然后我们又聊了聊如何把单体架构改造为微服务架构，推荐采用绞杀模式，一步一步的实现系统微服务化。在这个过程中，我们会碰到微服务架构的一个大坑：分布式错觉，即将分布式当成了微服务的全部（充要条件）。">
+<meta name="keywords" content="单体架构,微服务架构,分布式单体,事件,指令,消息中间件,the distributed monolith,monolith,microservice">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微服务架构的陷阱：从单体到分布式单体">
+<meta property="og:url" content="https://www.howardliu.cn/avoid-the-distributed-monolith/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="目前无服务架构还未成熟，只能满足一些简单场景。所以大家在设计软件架构时，首选还是微服务架构。然后我们又聊了聊如何把单体架构改造为微服务架构，推荐采用绞杀模式，一步一步的实现系统微服务化。在这个过程中，我们会碰到微服务架构的一个大坑：分布式错觉，即将分布式当成了微服务的全部（充要条件）。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://static.howardliu.cn/cover/squirrel-6846096_1920.jpg">
+<meta property="og:image" content="https://static.howardliu.cn/microservice/architect-gogogo.jpg">
+<meta property="og:image" content="https://static.howardliu.cn/microservice/monolitic-microservice-call.jpg">
+<meta property="og:image" content="https://static.howardliu.cn/microservice/monolitic-microservice-call2.jpg">
+<meta property="og:image" content="https://static.howardliu.cn/microservice/command_event.jpg">
+<meta property="og:image" content="https://static.howardliu.cn/microservice/command-and-event.jpg">
+<meta property="og:image" content="https://static.howardliu.cn/microservice/monolitic-microservice-call2.jpg">
+<meta property="og:image" content="https://static.howardliu.cn/microservice/refactor-monolitic.jpg">
+<meta property="og:image" content="https://static.howardliu.cn/microservice/command-event-definition.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-12-12T14:32:20.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="微服务架构的陷阱：从单体到分布式单体">
+<meta name="twitter:description" content="目前无服务架构还未成熟，只能满足一些简单场景。所以大家在设计软件架构时，首选还是微服务架构。然后我们又聊了聊如何把单体架构改造为微服务架构，推荐采用绞杀模式，一步一步的实现系统微服务化。在这个过程中，我们会碰到微服务架构的一个大坑：分布式错觉，即将分布式当成了微服务的全部（充要条件）。">
+<meta name="twitter:image" content="https://static.howardliu.cn/cover/squirrel-6846096_1920.jpg">
+
+<meta name="keywords" content="单体架构,微服务架构,分布式单体,事件,指令,消息中间件,the distributed monolith,monolith,microservice">
+
+
+<meta name="description" content="目前无服务架构还未成熟，只能满足一些简单场景。所以大家在设计软件架构时，首选还是微服务架构。然后我们又聊了聊如何把单体架构改造为微服务架构，推荐采用绞杀模式，一步一步的实现系统微服务化。在这个过程中，我们会碰到微服务架构的一个大坑：分布式错觉，即将分布式当成了微服务的全部（充要条件）。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/styles/vs2015.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/avoid-the-distributed-monolith/">微服务架构的陷阱：从单体到分布式单体</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-12-12</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/avoid-the-distributed-monolith/" class="leancloud_visitors" data-flag-title="微服务架构的陷阱：从单体到分布式单体">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#原因"><span class="toc-text">原因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#方法"><span class="toc-text">方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#指令（Command）和事件（Event）"><span class="toc-text">指令（Command）和事件（Event）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重新定义微服务"><span class="toc-text">重新定义微服务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="https://static.howardliu.cn/cover/squirrel-6846096_1920.jpg" alt="微服务架构的陷阱：从单体到分布式单体"></p>
+<p>你好，我是看山。</p>
+<p>前面咱们聊了架构的演进过程，提到单体架构、SOA 架构、微服务架构、无服务架构。整个过程如下图：</p>
+<p><img src="https://static.howardliu.cn/microservice/architect-gogogo.jpg" alt="架构演进过程：单体架构、早期服务化、SOA 架构、微服务架构"></p>
+<p>目前无服务架构还未成熟，只能满足一些简单场景。所以大家在设计软件架构时，首选还是微服务架构。然后我们又聊了聊如何把单体架构改造为微服务架构，推荐采用绞杀模式，一步一步的实现系统微服务化。</p>
+<p>在这个过程中，我们会碰到微服务架构的一个大坑：分布式错觉，即将分布式当成了微服务的全部（充要条件）。</p>
+<a id="more"></a>
+
+<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>出现分布式单体的主要原因在于，只是用进程间的远程调用替换进程内的方法调用。</p>
+<p><img src="https://static.howardliu.cn/microservice/monolitic-microservice-call.jpg" alt="模块 A 与模块 B 之间的通信方式"></p>
+<p>从上图可以看出，单体架构在模块 A 与模块 B 之间的请求是通过进程内通信（通常是方法调用）实现的；在微服务架构中，两者之间是通过 REST 或 RPC 调用。抛开进程和消息通知机制的差异，两种架构中模块 A 与模块 B 之间的通信形式完全一致：</p>
+<p><img src="https://static.howardliu.cn/microservice/monolitic-microservice-call2.jpg" alt="单体/微服务架构中模块间通信方式"></p>
+<p>在这种情况下，模块 A 与模块 B 耦合在一起，任何一方变更请求契约（方法签名或接口参数），另外一个都必须同步修改。更糟糕的是，由于微服务架构服务之间是通过网络通信，由于其不可靠性和不稳定性，大大增加了出错的概率，使模块之间的调用关系更加脆弱。</p>
+<p>模块 A 与模块 B 之间的网络请求是同步调用，请求过程中会占用一个网络连接和至少一个线程，如果模块 A 与模块 B 所在的服务的承压能力不同，很有可能模块 B 所在服务被打满，后续模块 A 的请求会阻塞等待，知道请求超时。</p>
+<p>那又是什么原因让大家没有意识到这种方式不妥呢？原因有两个：</p>
+<ol>
+<li>想要在微服务架构中实现单体架构中模块间的关系；</li>
+<li>想要在分布式应用中实现数据的强一致性。</li>
+</ol>
+<p>针对于微服务架构中的数据一致性问题，可以参考 <a href="https://mp.weixin.qq.com/s?__biz=MzI4OTU5NTA1Ng==&mid=2247484752&idx=1&sn=38e19e269e6609ab14b69d68d5e77529" target="_blank" rel="noopener">关于微服务系统中数据一致性的总结</a>。</p>
+<p>下面我们重点说说如果解决第一个问题。</p>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><p>对于模块之间的关系，主要在于通信模式，对于查询请求，由于数据依赖，模块之间的耦合是天然的，我们这里要解耦的是数据变更（增、删、改）时的模块调用。</p>
+<p>类比一下现实，我们如果想要通知某些人一个消息，会怎么处理？一般来说，有两种方式：</p>
+<ol>
+<li>点对点主动通知，直接找到这个人，给这个人打电话，不通继续打，保证对方能够收到消息；</li>
+<li>点对面广播通知，比如，群里发给公告、公司的告示栏等，这种方式需要消息接受者主动查看公告信息。</li>
+</ol>
+<p>这两种方式对应了我们系统设计中消息传递的两个模式：指令（Command）、事件（Event）。</p>
+<h3 id="指令（Command）和事件（Event）"><a href="#指令（Command）和事件（Event）" class="headerlink" title="指令（Command）和事件（Event）"></a>指令（Command）和事件（Event）</h3><p><img src="https://static.howardliu.cn/microservice/command_event.jpg" alt="command 与 event，指令与事件"></p>
+<p>指令（Command）是表示从发起者（source）向执行者（destination）传递（send）一个必须执行某个动作（action）的请求（request）。这个模式有如下特点：</p>
+<ul>
+<li>明确的知道发起者和执行者，发起者依赖执行者；</li>
+<li>请求发送方式一般是点对点同步请求，一般是 RPC 请求；</li>
+<li>动作已发生或即将发生，有可能由于执行者拒绝执行而取消；</li>
+<li>执行者有可能拒绝执行；</li>
+<li>执行者会很明确的告知发起者指令执行情况：拒绝、成功、失败等。</li>
+<li>为了保证指令的有效触达，发起者在网络超时时会重复调用执行者，所以执行者需要实现请求幂等；</li>
+<li>执行者可能会称为下一个指令的发起者。</li>
+</ul>
+<p>事件（event）是表示由生产者（producer）发布（public）一个已经发生的事情，表示行为（action）已经发生，某些状态（status）发生了改变，消费者（consumer）订阅这些事件，然后做出响应。这个模式有如下特点：</p>
+<ul>
+<li>事件有明确的生产者，但是消费者不明确，甚至可能不存在；</li>
+<li>一般借助消息中间件实现事件发送、存储、传递等；</li>
+<li>行为已经发生，不可改变，不可逆，事件是对已经发生事情的客观描述；</li>
+<li>消费者根据消息选择处理方式：执行、抛弃等；</li>
+<li>消费者处理完成后，不需要回复生产者；</li>
+<li>一般消息中间件采用“至少一次”通知机制，所以消费者需要实现消息处理的幂等；</li>
+<li>消费者可能会成为下一个事件的生产者。</li>
+</ul>
+<p><img src="https://static.howardliu.cn/microservice/command-and-event.jpg" alt="指令与事件之间的区别"></p>
+<p>由于请求模式的不同，在依赖关系上就会发生改变：</p>
+<p>在指令模式中，模块 A 调用模块 B，属于直接调用，模块 A 需要依赖模块 B；在事件模式中，模块 A 把事件发送给消息中间件，其他需要订阅事件的服务，直接从消息中间件获取，这种会产生依赖倒置，模块 B 依赖模块 A。这是解耦模块 A 与模块 B 很好的方式。</p>
+<h3 id="重新定义微服务"><a href="#重新定义微服务" class="headerlink" title="重新定义微服务"></a>重新定义微服务</h3><p>我们在回过头来看看我们的问题：</p>
+<p><img src="https://static.howardliu.cn/microservice/monolitic-microservice-call2.jpg" alt="单体/微服务架构中模块间通信方式"></p>
+<p>此时我们会比较清晰，由于全系统中使用了指令模式，上次调用者依赖下层，由于是同步请求，依赖会发生传递，这种依赖传递，将整个系统耦合在一起，一处修改，处处变动，也就是我们在抨击单体架构时常说的牵一发而动全身。</p>
+<p>此时，我们就可以借助事件模式，将依赖链条打断。但是需要注意，不要矫枉过正的全部改为事件模式，那将会是另一个火坑。一般我们会将系统改造成下面的样子：</p>
+<p><img src="https://static.howardliu.cn/microservice/refactor-monolitic.jpg" alt="重新定义微服务"></p>
+<p>根据业务具体情况，我们可以归纳一下改造结果：</p>
+<ol>
+<li>服务 A 接到的请求可能是事件或指令；</li>
+<li>服务 A 会向服务 B 发送指令，也会向消息中间件发送事件；</li>
+<li>服务 B 接到指令后开始执行，执行完毕后，可能会向消息中间件发送事件；</li>
+<li>服务 C 定于事件，从消息中间件接到消息后处理，它可能发送事件或指令。</li>
+</ol>
+<p>需要注意的是，每个服务内部还有有一些操作。抽象一下，整个系统中的指令、事件、操作如下图：</p>
+<p><img src="https://static.howardliu.cn/microservice/command-event-definition.jpg" alt="指令和事件的定义"></p>
+<ul>
+<li>输入：以一个指令或事件作为输入，开始整个业务执行；</li>
+<li>服务内部操作：服务内部会有执行逻辑，比如操作数据库、访问缓存服务等。可选，0-N 个；</li>
+<li>指令调用：同步调用依赖服务，发送指令，获得结果。可选，0-N 个；</li>
+<li>发布事件：以消息形式发布事件，一般发布到消息中间件，其他发布订阅消息中间件，执行事件需要的行为。可选，事件一般是 0-1 个。</li>
+</ul>
+<p>架构设计的过程不是非此即彼，全部指令会造成耦合，全部事件会致使开发难度提升以及边界不清。我们需要理性的看待两种模式，做到不偏不倚。</p>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>本文从分布式单体陷阱展开，讲述了分布式错觉带来的问题，然后通过事件、指令两种模式相结合的方式解决问题。微服务是目前比较完善的架构风格，从单体到微服务架构，是要实现架构的升级，所以调用模式不会一成不变。这个陷阱，也是我们在做新系统时需要避免的。</p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://mp.weixin.qq.com/s/09ILTzijUr3knHBj13t_kQ" target="_blank" rel="noopener">什么是微服务？</a></li>
+<li><a href="https://mp.weixin.qq.com/s/n1eKTlLP_BbyBkKG4OyLSw" target="_blank" rel="noopener">微服务编程范式</a></li>
+<li><a href="https://mp.weixin.qq.com/s/sRkYdrAwvn8UrGSraAURpA" target="_blank" rel="noopener">微服务的基建工作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/sRX04UhPiFWSDOazTSXuXw" target="_blank" rel="noopener">微服务中服务注册和发现的可行性方案</a></li>
+<li><a href="https://mp.weixin.qq.com/s/NcftJ1jNAd-DHpzBXKk8RA" target="_blank" rel="noopener">从单体架构到微服务架构</a></li>
+<li><a href="https://mp.weixin.qq.com/s/gSWFUsFnaqRKyGXVgdUqew" target="_blank" rel="noopener">除了微服务，我们还有其他选择吗？</a></li>
+<li><a href="https://mp.weixin.qq.com/s/M0sla4LVvp2lEiFpzwyVrA" target="_blank" rel="noopener">如何在微服务团队中高效使用 Git 管理代码？</a></li>
+<li><a href="https://mp.weixin.qq.com/s/apHFXB2cUqDALpJJebNp9A" target="_blank" rel="noopener">关于微服务系统中数据一致性的总结</a></li>
+<li><a href="https://mp.weixin.qq.com/s/AE0n4d_zRZOEeYEQt-rSKw" target="_blank" rel="noopener">实现 DevOps 的三步工作法</a></li>
+<li><a href="https://mp.weixin.qq.com/s/mMjbafRIhia3u9DmXPSfPQ" target="_blank" rel="noopener">系统设计系列之如何设计一个短链服务</a></li>
+<li><a href="https://mp.weixin.qq.com/s/mtt_wsUChGIwnR-Nz5BE4g" target="_blank" rel="noopener">系统设计系列之任务队列</a></li>
+<li><a href="https://mp.weixin.qq.com/s/_PI5jRP99ktPs3lxCbBLSg" target="_blank" rel="noopener">软件架构-缓存技术</a></li>
+<li><a href="https://mp.weixin.qq.com/s/668L2NK7LWo3c8U8ZI_1ng" target="_blank" rel="noopener">软件架构-事件驱动架构</a></li>
+</ul>
+<hr>
+<p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/avoid-the-distributed-monolith/">微服务架构的陷阱：从单体到分布式单体</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">微服务架构的陷阱：从单体到分布式单体</a></p>
+<center><b>👇🏻欢迎关注我的公众号「看山的小屋」，领取精选资料👇🏻</b></center>
+
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/微服务/">微服务</a>
+            
+            <a href="/tags/架构/">架构</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/from-monolith-to-microservices-2/">
+                <i class="icon-next">如何实现单体架构到微服务架构的蜕变？</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://www.howardliu.cn/images/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/缓存/" style="font-size: 15px;">缓存</a> <a href="/tags/分布式/" style="font-size: 15px;">分布式</a> <a href="/tags/架构设计/" style="font-size: 15px;">架构设计</a> <a href="/tags/短链服务/" style="font-size: 15px;">短链服务</a> <a href="/tags/解决方案/" style="font-size: 15px;">解决方案</a> <a href="/tags/任务队列/" style="font-size: 15px;">任务队列</a> <a href="/tags/任务/" style="font-size: 15px;">任务</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/事件驱动/" style="font-size: 15px;">事件驱动</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/go/" style="font-size: 15px;">go</a> <a href="/tags/开发指南/" style="font-size: 15px;">开发指南</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/http-状态码/" style="font-size: 15px;">http 状态码</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/Effective-Java/" style="font-size: 15px;">Effective Java</a> <a href="/tags/EasyExcel/" style="font-size: 15px;">EasyExcel</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/java8/" style="font-size: 15px;">java8</a> <a href="/tags/jdk8/" style="font-size: 15px;">jdk8</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Date/" style="font-size: 15px;">Date</a> <a href="/tags/Time/" style="font-size: 15px;">Time</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/Comparator/" style="font-size: 15px;">Comparator</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a>
+    </div>
+</div>
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/avoid-the-distributed-monolith/">微服务架构的陷阱：从单体到分布式单体</a></li><li class="post-list-item"><a class="post-list-link" href="/from-monolith-to-microservices-2/">如何实现单体架构到微服务架构的蜕变？</a></li><li class="post-list-item"><a class="post-list-link" href="/do-we-have-any-other-options-besides-microservices/">除了微服务，我们还有其他选择吗？</a></li><li class="post-list-item"><a class="post-list-link" href="/java-8-features/">JDK 每半年就会更新一次新特性，再不掌握就要落伍了：JDK8 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/strategy-pattern/">人人都会设计模式：策略模式</a></li><li class="post-list-item"><a class="post-list-link" href="/java-lambda-powerful-comparation/">Java 进阶：使用 Lambda 表达式实现超强的排序功能</a></li><li class="post-list-item"><a class="post-list-link" href="/effective-java-tools-batch-rename-baiduwangpan/">看山聊 Java：从零实现“百度网盘批量重命名”工具</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-classpath-file-access/">SpringBoot 实战：加载和读取资源文件</a></li><li class="post-list-item"><a class="post-list-link" href="/we-should-know-when-changing-job/">我们如何拿到自己满意的薪资呢？这些套路还是需要掌握的</a></li><li class="post-list-item"><a class="post-list-link" href="/effective-java-easyexcel-action-fill/">阿里开源的这个库，让 Excel 导出不再复杂（填充模板的使用指南）</a></li></ul>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">2021年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">2021年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">2021年10月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">2021年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">2021年08月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">2021年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2021</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
