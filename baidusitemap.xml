@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.howardliu.cn/java-9-features/</loc>
+    <lastmod>2021-12-19</lastmod>
+  </url>  <url>
     <loc>https://www.howardliu.cn/avoid-the-distributed-monolith/</loc>
     <lastmod>2021-12-12</lastmod>
   </url>  <url>
@@ -268,10 +271,10 @@
     <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eclipse/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
+    <loc>https://www.howardliu.cn/hbase-environment-standalone-model/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/hbase-environment-standalone-model/</loc>
+    <loc>https://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/the-introduction-of-iaas-paas-saas/</loc>
@@ -280,13 +283,10 @@
     <loc>https://www.howardliu.cn/deploy-ear-from-eos-to-weblogic/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
     <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/reprint-10-reasons-to-replace-your-jsps-with-freemarker-templates/</loc>
+    <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/hadoop-environment/</loc>
@@ -295,16 +295,19 @@
     <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
+    <loc>https://www.howardliu.cn/reprint-10-reasons-to-replace-your-jsps-with-freemarker-templates/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>  <url>
     <loc>https://www.howardliu.cn/zookeeper-environment/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/hadoop-environment-cluster-setup/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
+    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
+    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
