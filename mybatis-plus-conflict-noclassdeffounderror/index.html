@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Mybatis-Plus 版本冲突触发“Could not convert argument value of type [java.lang.String] to required type [java.lang.Class]”的 java.lang.NoClassDefFoundError 异常||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="今天项目依赖了一个基础组件之后，启动失败，排查过程走了一些弯路，最终确认是因为依赖组件版本冲突造成了`java.lang.NoClassDefFoundError`异常。下面是排查过程，希望可以给你提供一些思路。">
+<meta name="keywords" content="Java,NoClassDefFoundError,Mybatis-Plus,Could not convert argument value of type java.lang.String to required type java.lang.Class">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mybatis-Plus 版本冲突触发“Could not convert argument value of type [java.lang.String] to required type [java.lang.Class]”的 java.lang.NoClassDefFoundError 异常">
+<meta property="og:url" content="https://www.howardliu.cn/mybatis-plus-conflict-noclassdeffounderror/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="今天项目依赖了一个基础组件之后，启动失败，排查过程走了一些弯路，最终确认是因为依赖组件版本冲突造成了`java.lang.NoClassDefFoundError`异常。下面是排查过程，希望可以给你提供一些思路。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://static.howardliu.cn/cover/dog-2963062_1920.jpg">
+<meta property="og:image" content="https://static.howardliu.cn/java/EF543BDC-9C35-43CF-A181_20211225114104.png">
+<meta property="og:image" content="https://static.howardliu.cn/java/F0C16C09-7C27-4D34-99F9-B73B665EF0A3_20211225114132.png">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2021-12-25T03:51:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mybatis-Plus 版本冲突触发“Could not convert argument value of type [java.lang.String] to required type [java.lang.Class]”的 java.lang.NoClassDefFoundError 异常">
+<meta name="twitter:description" content="今天项目依赖了一个基础组件之后，启动失败，排查过程走了一些弯路，最终确认是因为依赖组件版本冲突造成了`java.lang.NoClassDefFoundError`异常。下面是排查过程，希望可以给你提供一些思路。">
+<meta name="twitter:image" content="https://static.howardliu.cn/cover/dog-2963062_1920.jpg">
+
+<meta name="keywords" content="Java,NoClassDefFoundError,Mybatis-Plus,Could not convert argument value of type java.lang.String to required type java.lang.Class">
+
+
+<meta name="description" content="今天项目依赖了一个基础组件之后，启动失败，排查过程走了一些弯路，最终确认是因为依赖组件版本冲突造成了`java.lang.NoClassDefFoundError`异常。下面是排查过程，希望可以给你提供一些思路。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/styles/vs2015.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/mybatis-plus-conflict-noclassdeffounderror/">Mybatis-Plus 版本冲突触发“Could not convert argument value of type [java.lang.String] to required type [java.lang.Class]”的 java.lang.NoClassDefFoundError 异常</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2021-12-25</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/mybatis-plus-conflict-noclassdeffounderror/" class="leancloud_visitors" data-flag-title="Mybatis-Plus 版本冲突触发“Could not convert argument value of type [java.lang.String] to required type [java.lang.Class]”的 java.lang.NoClassDefFoundError 异常">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#观察异常栈"><span class="toc-text">观察异常栈</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#定位问题"><span class="toc-text">定位问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解决问题"><span class="toc-text">解决问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#复盘问题"><span class="toc-text">复盘问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#mybatis-plus-的版本问题"><span class="toc-text">mybatis-plus 的版本问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#真实异常被隐藏问题"><span class="toc-text">真实异常被隐藏问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="https://static.howardliu.cn/cover/dog-2963062_1920.jpg" alt="Mybatis-Plus 版本冲突触发“Could not convert argument value of type [java.lang.String] to required type [java.lang.Class]”的 java.lang.NoClassDefFoundError 异常"></p>
+<p>你好，我是看山。</p>
+<p>今天项目依赖了一个基础组件之后，启动失败，排查过程走了一些弯路，最终确认是因为依赖组件版本冲突造成了<code>java.lang.NoClassDefFoundError</code>异常。下面是排查过程，希望可以给你提供一些思路。</p>
+<a id="more"></a>
+
+<h2 id="观察异常栈"><a href="#观察异常栈" class="headerlink" title="观察异常栈"></a>观察异常栈</h2><p>下面是打印的异常栈信息，从其中提炼可能的关键信息，能够找到“Could not convert argument value of type [java.lang.String] to required type [java.lang.Class]”，还有“Unresolvable class definition for class [cn.howardliu.demo.AddressMapper]”。继续从异常栈中找一下发生的时机，可以发现是调用<code>AbstractAutowireCapableBeanFactory.createBeanInstance</code>时，这个方法是创建 Bean 实例。</p>
+<pre><code class="log">这块是异常信息（getMessage 的内容，横向太长，手动换行了）：
+
+org.springframework.beans.factory.UnsatisfiedDependencyException:
+    Error creating bean with name &#39;methodValidationPostProcessor&#39; defined in class path resource [org/springframework/boot/autoconfigure/validation/ValidationAutoConfiguration.class]:
+    Unsatisfied dependency expressed through method &#39;methodValidationPostProcessor&#39; parameter 0;
+    nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException:
+    Error creating bean with name &#39;addressMapper&#39; defined in file [/Users/liuxinghao/Documents/work/code/cn.howardliu/effective-spring/target/classes/cn/howardliu/demo/AddressMapper.class]:
+    Unsatisfied dependency expressed through constructor parameter 0:
+    Could not convert argument value of type [java.lang.String] to required type [java.lang.Class]:
+    Failed to convert value of type &#39;java.lang.String&#39; to required type &#39;java.lang.Class&#39;;
+    nested exception is java.lang.IllegalArgumentException: 
+    Unresolvable class definition for class [cn.howardliu.demo.AddressMapper]
+
+下面是异常栈：
+
+    at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:799) ~[spring-beans-5.2.13.RELEASE.jar:5.2.13.RELEASE]
+    at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:540) ~[spring-beans-5.2.13.RELEASE.jar:5.2.13.RELEASE]
+    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1341) ~[spring-beans-5.2.13.RELEASE.jar:5.2.13.RELEASE]
+    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1181) ~[spring-beans-5.2.13.RELEASE.jar:5.2.13.RELEASE]
+    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:556) ~[spring-beans-5.2.13.RELEASE.jar:5.2.13.RELEASE]
+    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:516) ~[spring-beans-5.2.13.RELEASE.jar:5.2.13.RELEASE]
+    at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:324) ~[spring-beans-5.2.13.RELEASE.jar:5.2.13.RELEASE]
+    at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.2.13.RELEASE.jar:5.2.13.RELEASE]
+    at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322) ~[spring-beans-5.2.13.RELEASE.jar:5.2.13.RELEASE]
+    at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:207) ~[spring-beans-5.2.13.RELEASE.jar:5.2.13.RELEASE]
+
+其他异常栈信息可以忽略了</code></pre>
+<p>我们可以根据目前有效的信息进行排查，首先看下我们的<code>cn.howardliu.demo.AddressMapper</code>定义是否有问题，再看看依赖它的 Service 有没有问题，什么问题也没有发现。下一个检查点是配置，比如<code>@MapperScan</code>是否正确、Mapper 类上有没有加上<code>@Mapper</code>注解，发现也没有问题。</p>
+<p>从异常信息找不到思路了，只能从代码入手了。</p>
+<blockquote>
+<p>这里需要说一下，打印异常信息至关重要，直接影响我们排错的思路。如果打印的信息没有办法准确定位，我们将会花费大量的时间查找真正的错误，这就需要走查代码，有时候还需要一些经验。</p>
+</blockquote>
+<h2 id="定位问题"><a href="#定位问题" class="headerlink" title="定位问题"></a>定位问题</h2><p>我们由异常栈``ConstructorResolver.createArgumentArray(ConstructorResolver.java:799) 入手，跟着断点往下追，最终会追到<code>org.springframework.util.ClassUtils#forName</code>方法，其中会抛出异常的代码是下面这块：</p>
+<pre><code class="java">try {
+    return Class.forName(name, false, clToUse);
+}
+catch (ClassNotFoundException ex) {
+    int lastDotIndex = name.lastIndexOf(PACKAGE_SEPARATOR);
+    if (lastDotIndex != -1) {
+        String innerClassName =
+                name.substring(0, lastDotIndex) + INNER_CLASS_SEPARATOR + name.substring(lastDotIndex + 1);
+        try {
+            return Class.forName(innerClassName, false, clToUse);
+        }
+        catch (ClassNotFoundException ex2) {
+            // Swallow - let original exception get through
+        }
+    }
+    throw ex;
+}</code></pre>
+<p>出现错误的是<code>Class.forName(name, false, clToUse)</code>这句，<code>name</code>传的是”cn.howardliu.demo.AddressMapper”字符串，抛出的异常是<code>java.lang.NoClassDefFoundError</code>，由于不是<code>ClassNotFoundException</code>异常，不会进入<code>catch</code>逻辑，会直接向上抛出。</p>
+<p>找到错误我们就好定位问题了。</p>
+<p>一般来说，<code>java.lang.NoClassDefFoundError</code>错误是需要加载的类能够找到，但是加载时出现了异常，简单说就是，类的定义有问题。我们借助 JD-GUI 反编译一下运行 jar 包，结果如下：</p>
+<pre><code class="java">import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import cn.howardliu.demo.Address;
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
+public interface AddressMapper extends BaseMapper&lt;Address&gt; {}</code></pre>
+<p>观察仔细的话，我们可以看到<code>import com.baomidou.mybatisplus.core.mapper.BaseMapper;</code>这行没有下划线，也就是说，在反编译工具中追溯不到这个接口，推断出来就是在运行环境中，找不到<code>BaseMapper</code>这个类定义。</p>
+<p>所以，当<code>Class.forName</code>加载类的时候抛出了<code>java.lang.NoClassDefFoundError</code>异常。</p>
+<h2 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h2><p>如果有一定经验，就会立刻想到，大概率出现了依赖 jar 的版本冲突。</p>
+<p>我们可以借助 maven 命令行找到版本冲突的依赖：</p>
+<pre><code class="shell">mvn dependency:tree -Dverbose | grep conflict</code></pre>
+<p>打印结果为：</p>
+<pre><code class="log">[INFO] |  +- (com.baomidou:mybatis-plus:jar:3.1.2:compile - omitted for conflict with 2.1.6)</code></pre>
+<p>我们也可以借助 IDEA 的可视化工具，在 pom.xml 上打开依赖图：</p>
+<p><img src="https://static.howardliu.cn/java/EF543BDC-9C35-43CF-A181_20211225114104.png" alt="依赖图"></p>
+<p>我们可以看到 mybatis-plus 的红线指示出冲突信息：</p>
+<p><img src="https://static.howardliu.cn/java/F0C16C09-7C27-4D34-99F9-B73B665EF0A3_20211225114132.png" alt="冲突信息"></p>
+<p>结论就是 Mybatis-Plus 版本冲突了，项目中依赖了 mybatis-plus 的 2.1.6 和 3.1.2 两个版本，由于 2.1.6 路径更短，最终被选中。</p>
+<p>此时只需要将低版本的依赖去掉即可。</p>
+<h2 id="复盘问题"><a href="#复盘问题" class="headerlink" title="复盘问题"></a>复盘问题</h2><h3 id="mybatis-plus-的版本问题"><a href="#mybatis-plus-的版本问题" class="headerlink" title="mybatis-plus 的版本问题"></a>mybatis-plus 的版本问题</h3><p>为什么低版本的 mybatis-plus 会造成类加载失败呢？是因为 mybatis-plus 跨版本更新时，把<code>BaseMapper</code>的包路径改了：</p>
+<pre><code class="java">// 3.1.2 版本
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+// 2.1.6 版本
+import com.baomidou.mybatisplus.mapper.BaseMapper;</code></pre>
+<p>而且还不止这一个，<code>IService</code>、<code>ServiceImpl</code>、<code>TableName</code>、<code>TableField</code>、<code>Model</code>、<code>TableField</code>等等，很多常用的类都改了位置。所以会造成找不到依赖的类。编译是 3.1.2 依赖还在运行环境中，就会出现编译没有问题，执行时出现加载类异常。</p>
+<p>想要工程化的解决这个问题，我们可以创建基础的依赖 bom 配置，定义好基础依赖包，在项目中不在指定版本。这样做到统一版本，可以有效的避免这类问题。</p>
+<p>我们还可以在 CI/CD 中加入冲突依赖检查，如果发现冲突依赖，就终止流水线。</p>
+<h3 id="真实异常被隐藏问题"><a href="#真实异常被隐藏问题" class="headerlink" title="真实异常被隐藏问题"></a>真实异常被隐藏问题</h3><p>接下来我们看下为什么明明是<code>java.lang.NoClassDefFoundError</code>异常，结果异常栈中打印的是一堆不相干的错误。继续跟着刚才的断点 Debug：</p>
+<p><code>org.springframework.util.ClassUtils#resolveClassName</code>会捕捉<code>LinkageError</code>错误，然后包装成<code>IllegalArgumentException</code>异常，这个时候真是异常还是继续上抛。</p>
+<p>然后在<code>org.springframework.beans.TypeConverterSupport#convertIfNecessary</code>方法会包装成<code>TypeMismatchException</code>异常，此时，真实异常还在异常<code>cause</code>参数中，并没有丢失。</p>
+<p>等回到<code>org.springframework.beans.factory.support.ConstructorResolver#createArgumentArray</code>方法后，捕捉异常的方法是：</p>
+<pre><code class="java">try {
+    convertedValue = converter.convertIfNecessary(originalValue, paramType, methodParam);
+}
+catch (TypeMismatchException ex) {
+    throw new UnsatisfiedDependencyException(
+            mbd.getResourceDescription(), beanName, new InjectionPoint(methodParam),
+            &quot;Could not convert argument value of type [&quot; +
+                    ObjectUtils.nullSafeClassName(valueHolder.getValue()) +
+                    &quot;] to required type [&quot; + paramType.getName() + &quot;]: &quot; + ex.getMessage());
+}</code></pre>
+<p>此时我们可以注意到，在包装成<code>UnsatisfiedDependencyException</code>异常的时候，只是把捕捉到的<code>TypeMismatchException</code>通过<code>getMessage</code>方法追加在异常描述后面，此时经过前面几轮的包装再包装，真实的异常的异常信息仅剩<code>Unresolvable class definition for class [cn.howardliu.demo.AddressMapper]</code>这段经过处理的信息，完全没有<code>java.lang.NoClassDefFoundError</code>的影子了。</p>
+<p>至此，真实异常消失无踪。</p>
+<p>这也给我们一个提醒，我们要保证异常的时候，一定要保留有效信息，否则，排错会非常麻烦。</p>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>本文是抓虫文，从问题出发，到解决问题，给出完整的思路。<code>java.lang.NoClassDefFoundError</code>一般都是出现在版本冲突的时候，这种异常是编译打包没有问题，在运行时加载类失败。在本文中之所以排查时走了一些弯路，是因为<code>Spring</code>隐藏了真实异常，给我们排错造成了一些阻碍。所以，我们在日常开发时也要重视异常的明确信息，可以给我们排错提供准确的目标。</p>
+<p>青山不改，绿水长流，我们下次见。</p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://mp.weixin.qq.com/s/7f5dcjjKLdBYpzS5p7_v7Q" target="_blank" rel="noopener">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/JOLrw7cbVh8z2czePEfLjw" target="_blank" rel="noopener">一文掌握 Java8 的 Optional 的 6 种操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Vhw-2lgCvmhNI5aeXOWYNg" target="_blank" rel="noopener">使用 Lambda 表达式实现超强的排序功能</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Srv6733byTYDg7hTrW_tdw" target="_blank" rel="noopener">Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API</a></li>
+<li><a href="https://mp.weixin.qq.com/s/LRydpL89GsjOeTrLrihyYQ" target="_blank" rel="noopener">Java8 的时间库（2）：Date 与 LocalDate 或 LocalDateTime 互相转换</a></li>
+<li><a href="https://mp.weixin.qq.com/s/KmBMLG1y73IUwFuSfUKaEQ" target="_blank" rel="noopener">Java8 的时间库（3）：开始使用 Java8 中的时间类</a></li>
+<li><a href="https://mp.weixin.qq.com/s/PxC0WQMReIeG0Tyl5WiK1Q" target="_blank" rel="noopener">Java8 的时间库（4）：检查日期字符串是否合法</a></li>
+<li><a href="https://mp.weixin.qq.com/s/rjMOq0QAdiWNacKYqHJqXA" target="_blank" rel="noopener">Java8 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/FHv963s0Qvh2K5r2tdLATA" target="_blank" rel="noopener">Java9 的新特性</a></li>
+</ul>
+<hr>
+<p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/mybatis-plus-conflict-noclassdeffounderror/">Mybatis-Plus 版本冲突触发“Could not convert argument value of type [java.lang.String] to required type [java.lang.Class]”的 java.lang.NoClassDefFoundError 异常</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/article/details/122203746" target="_blank" rel="noopener">Mybatis-Plus 版本冲突触发“Could not convert argument value of type [java.lang.String] to required type [java.lang.Class]”的 java.lang.NoClassDefFoundError 异常</a></p>
+<center><b>👇🏻欢迎关注我的公众号「看山的小屋」，领取精选资料👇🏻</b></center>
+
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/Java/">Java</a>
+            
+            <a href="/tags/NoClassDefFoundError/">NoClassDefFoundError</a>
+            
+            <a href="/tags/Mybatis-Plus/">Mybatis-Plus</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/java-9-features/">
+                <i class="icon-next">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java9 的新特性</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://www.howardliu.cn/images/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/缓存/" style="font-size: 15px;">缓存</a> <a href="/tags/解决方案/" style="font-size: 15px;">解决方案</a> <a href="/tags/任务队列/" style="font-size: 15px;">任务队列</a> <a href="/tags/任务/" style="font-size: 15px;">任务</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/事件驱动/" style="font-size: 15px;">事件驱动</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/分布式/" style="font-size: 15px;">分布式</a> <a href="/tags/架构设计/" style="font-size: 15px;">架构设计</a> <a href="/tags/短链服务/" style="font-size: 15px;">短链服务</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/go/" style="font-size: 15px;">go</a> <a href="/tags/开发指南/" style="font-size: 15px;">开发指南</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/Effective-Java/" style="font-size: 15px;">Effective Java</a> <a href="/tags/EasyExcel/" style="font-size: 15px;">EasyExcel</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Java8/" style="font-size: 15px;">Java8</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/Java9/" style="font-size: 15px;">Java9</a> <a href="/tags/Date/" style="font-size: 15px;">Date</a> <a href="/tags/Time/" style="font-size: 15px;">Time</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/Comparator/" style="font-size: 15px;">Comparator</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/jsp/" style="font-size: 15px;">jsp</a> <a href="/tags/freemarker/" style="font-size: 15px;">freemarker</a> <a href="/tags/jdk8/" style="font-size: 15px;">jdk8</a> <a href="/tags/队列/" style="font-size: 15px;">队列</a>
+    </div>
+</div>
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/mybatis-plus-conflict-noclassdeffounderror/">Mybatis-Plus 版本冲突触发“Could not convert argument value of type [java.lang.String] to required type [java.lang.Class]”的 java.lang.NoClassDefFoundError 异常</a></li><li class="post-list-item"><a class="post-list-link" href="/java-9-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java9 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/avoid-the-distributed-monolith/">微服务架构的陷阱：从单体到分布式单体</a></li><li class="post-list-item"><a class="post-list-link" href="/from-monolith-to-microservices-2/">如何实现单体架构到微服务架构的蜕变？</a></li><li class="post-list-item"><a class="post-list-link" href="/do-we-have-any-other-options-besides-microservices/">除了微服务，我们还有其他选择吗？</a></li><li class="post-list-item"><a class="post-list-link" href="/java-8-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java8 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/strategy-pattern/">人人都会设计模式：策略模式</a></li><li class="post-list-item"><a class="post-list-link" href="/java-lambda-powerful-comparation/">Java 进阶：使用 Lambda 表达式实现超强的排序功能</a></li><li class="post-list-item"><a class="post-list-link" href="/effective-java-tools-batch-rename-baiduwangpan/">看山聊 Java：从零实现“百度网盘批量重命名”工具</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-classpath-file-access/">SpringBoot 实战：加载和读取资源文件</a></li></ul>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">2021年12月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">2021年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">2021年10月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">2021年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">2021年08月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">2021年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2021</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
