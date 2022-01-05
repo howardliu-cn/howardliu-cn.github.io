@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Java11 中基于嵌套关系的访问控制优化||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="Java 语言很强大，但是，有人的地方就有江湖，有猿的地方就有 bug，Java 的核心代码并非十全十美。比如在JDK 中居然也有反模式接口常量中介绍的反模式实现，以及本文说到的这个技术债务：嵌套关系（NestMate）调用方式。">
+<meta name="keywords" content="java11,Java11 新特性,基于嵌套关系的访问控制,Nest Based Access">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java11 中基于嵌套关系的访问控制优化">
+<meta property="og:url" content="https://www.howardliu.cn/java-11-jep181-nestmate/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="Java 语言很强大，但是，有人的地方就有江湖，有猿的地方就有 bug，Java 的核心代码并非十全十美。比如在JDK 中居然也有反模式接口常量中介绍的反模式实现，以及本文说到的这个技术债务：嵌套关系（NestMate）调用方式。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://static.howardliu.cn/cover/rowan-2098486_1920.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2022-01-05T14:57:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java11 中基于嵌套关系的访问控制优化">
+<meta name="twitter:description" content="Java 语言很强大，但是，有人的地方就有江湖，有猿的地方就有 bug，Java 的核心代码并非十全十美。比如在JDK 中居然也有反模式接口常量中介绍的反模式实现，以及本文说到的这个技术债务：嵌套关系（NestMate）调用方式。">
+<meta name="twitter:image" content="https://static.howardliu.cn/cover/rowan-2098486_1920.jpg">
+
+<meta name="keywords" content="java11,Java11 新特性,基于嵌套关系的访问控制,Nest Based Access">
+
+
+<meta name="description" content="Java 语言很强大，但是，有人的地方就有江湖，有猿的地方就有 bug，Java 的核心代码并非十全十美。比如在JDK 中居然也有反模式接口常量中介绍的反模式实现，以及本文说到的这个技术债务：嵌套关系（NestMate）调用方式。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/styles/vs2015.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/java-11-jep181-nestmate/">Java11 中基于嵌套关系的访问控制优化</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2022-01-05</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/java-11-jep181-nestmate/" class="leancloud_visitors" data-flag-title="Java11 中基于嵌套关系的访问控制优化">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java11-之前的实现方式"><span class="toc-text">Java11 之前的实现方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#技术债务"><span class="toc-text">技术债务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java11-中的实现"><span class="toc-text">Java11 中的实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nestmate-新增的-API"><span class="toc-text">Nestmate 新增的 API</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#getNestHost"><span class="toc-text">getNestHost</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#getNestMembers"><span class="toc-text">getNestMembers</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#isNestmateOf"><span class="toc-text">isNestmateOf</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#后续的改进"><span class="toc-text">后续的改进</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="https://static.howardliu.cn/cover/rowan-2098486_1920.jpg" alt="Java11 中基于嵌套的权限控制"></p>
+<p>你好，我是看山。</p>
+<p>Java 语言很强大，但是，有人的地方就有江湖，有猿的地方就有 bug，Java 的核心代码并非十全十美。比如在 <a href="https://mp.weixin.qq.com/s/4jVPnaOr-rve3GQdukDFmA" target="_blank" rel="noopener">JDK 中居然也有反模式接口常量</a> 中介绍的反模式实现，以及本文说到的这个技术债务：嵌套关系（NestMate）调用方式。</p>
+<a id="more"></a>
+
+<p>在 Java 语言中，类和接口可以相互嵌套，这种组合之间可以不受限制的彼此访问，包括访问彼此的构造函数、字段、方法等。即使是<code>private</code>私有的，也可以彼此访问。比如下面这样定义：</p>
+<pre><code class="java">public class Outer {
+    private int i;
+
+    public void print1() {
+        print11();
+        print12();
+    }
+
+    private void print11() {
+        System.out.println(i);
+    }
+
+    private void print12() {
+        System.out.println(i);
+    }
+
+    public void callInnerMethod() {
+        final Inner inner = new Inner();
+        inner.print4();
+        inner.print5();
+        System.out.println(inner.j);
+    }
+
+    public class Inner {
+        private int j;
+
+        public void print3() {
+            System.out.println(i);
+            print1();
+        }
+
+        public void print4() {
+            System.out.println(i);
+            print11();
+            print12();
+        }
+
+        private void print5() {
+            System.out.println(i);
+            print11();
+            print12();
+        }
+    }
+}</code></pre>
+<p>上例中，<code>Outer</code>类中的字段<code>i</code>、方法<code>print11</code>和<code>print12</code>都是私有的，但是可以在<code>Inner</code>类中直接访问，<code>Inner</code>类的字段<code>j</code>、方法<code>print5</code>是私有的，也可以在<code>Outer</code>类中使用。这种设计是为了更好的封装，在用户看来，这几个彼此嵌套的类/接口是一体的，分开定义是为了更好的封装自己，隔离不同特性，但是有因为彼此是一体，所以私有元素也应该是共有的。</p>
+<h2 id="Java11-之前的实现方式"><a href="#Java11-之前的实现方式" class="headerlink" title="Java11 之前的实现方式"></a>Java11 之前的实现方式</h2><p>我们使用 Java8 编译，然后借助<code>javap -c</code>命令分别查看<code>Outer</code>和<code>Inner</code>的结果。</p>
+<pre><code class="shell">$ javap -c Outer.class      
+Compiled from &quot;Outer.java&quot;
+public class cn.howardliu.tutorials.java8.nest.Outer {
+  public cn.howardliu.tutorials.java8.nest.Outer();
+    Code:
+       0: aload_0
+       1: invokespecial #4                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V
+       4: return
+
+  public void print1();
+    Code:
+       0: aload_0
+       1: invokespecial #2                  // Method print11:()V
+       4: aload_0
+       5: invokespecial #1                  // Method print12:()V
+       8: return
+
+  public void callInnerMethod();
+    Code:
+       0: new           #7                  // class cn/howardliu/tutorials/java8/nest/Outer$Inner
+       3: dup
+       4: aload_0
+       5: invokespecial #8                  // Method cn/howardliu/tutorials/java8/nest/Outer$Inner.&quot;&lt;init&gt;&quot;:(Lcn/howardliu/tutorials/java8/nest/Outer;)V
+       8: astore_1
+       9: aload_1
+      10: invokevirtual #9                  // Method cn/howardliu/tutorials/java8/nest/Outer$Inner.print4:()V
+      13: aload_1
+      14: invokestatic  #10                 // Method cn/howardliu/tutorials/java8/nest/Outer$Inner.access$000:(Lcn/howardliu/tutorials/java8/nest/Outer$Inner;)V
+      17: getstatic     #5                  // Field java/lang/System.out:Ljava/io/PrintStream;
+      20: aload_1
+      21: invokestatic  #11                 // Method cn/howardliu/tutorials/java8/nest/Outer$Inner.access$100:(Lcn/howardliu/tutorials/java8/nest/Outer$Inner;)I
+      24: invokevirtual #6                  // Method java/io/PrintStream.println:(I)V
+      27: return
+
+  static int access$200(cn.howardliu.tutorials.java8.nest.Outer);
+    Code:
+       0: aload_0
+       1: getfield      #3                  // Field i:I
+       4: ireturn
+
+  static void access$300(cn.howardliu.tutorials.java8.nest.Outer);
+    Code:
+       0: aload_0
+       1: invokespecial #2                  // Method print11:()V
+       4: return
+
+  static void access$400(cn.howardliu.tutorials.java8.nest.Outer);
+    Code:
+       0: aload_0
+       1: invokespecial #1                  // Method print12:()V
+       4: return
+}</code></pre>
+<p>再来看看<code>Inner</code>的编译结果，这里需要注意的是，内部类会使用特殊的命名方式定义<code>Inner</code>类，最终会将编译结果存储在两个文件中：</p>
+<pre><code class="shell">$ javap -c Outer\$Inner.class
+Compiled from &quot;Outer.java&quot;
+public class cn.howardliu.tutorials.java8.nest.Outer$Inner {
+  final cn.howardliu.tutorials.java8.nest.Outer this$0;
+
+  public cn.howardliu.tutorials.java8.nest.Outer$Inner(cn.howardliu.tutorials.java8.nest.Outer);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: putfield      #3                  // Field this$0:Lcn/howardliu/tutorials/java8/nest/Outer;
+       5: aload_0
+       6: invokespecial #4                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V
+       9: return
+
+  public void print3();
+    Code:
+       0: getstatic     #5                  // Field java/lang/System.out:Ljava/io/PrintStream;
+       3: aload_0
+       4: getfield      #3                  // Field this$0:Lcn/howardliu/tutorials/java8/nest/Outer;
+       7: invokestatic  #6                  // Method cn/howardliu/tutorials/java8/nest/Outer.access$200:(Lcn/howardliu/tutorials/java8/nest/Outer;)I
+      10: invokevirtual #7                  // Method java/io/PrintStream.println:(I)V
+      13: aload_0
+      14: getfield      #3                  // Field this$0:Lcn/howardliu/tutorials/java8/nest/Outer;
+      17: invokevirtual #8                  // Method cn/howardliu/tutorials/java8/nest/Outer.print1:()V
+      20: return
+
+  public void print4();
+    Code:
+       0: getstatic     #5                  // Field java/lang/System.out:Ljava/io/PrintStream;
+       3: aload_0
+       4: getfield      #3                  // Field this$0:Lcn/howardliu/tutorials/java8/nest/Outer;
+       7: invokestatic  #6                  // Method cn/howardliu/tutorials/java8/nest/Outer.access$200:(Lcn/howardliu/tutorials/java8/nest/Outer;)I
+      10: invokevirtual #7                  // Method java/io/PrintStream.println:(I)V
+      13: aload_0
+      14: getfield      #3                  // Field this$0:Lcn/howardliu/tutorials/java8/nest/Outer;
+      17: invokestatic  #9                  // Method cn/howardliu/tutorials/java8/nest/Outer.access$300:(Lcn/howardliu/tutorials/java8/nest/Outer;)V
+      20: aload_0
+      21: getfield      #3                  // Field this$0:Lcn/howardliu/tutorials/java8/nest/Outer;
+      24: invokestatic  #10                 // Method cn/howardliu/tutorials/java8/nest/Outer.access$400:(Lcn/howardliu/tutorials/java8/nest/Outer;)V
+      27: return
+
+  static void access$000(cn.howardliu.tutorials.java8.nest.Outer$Inner);
+    Code:
+       0: aload_0
+       1: invokespecial #2                  // Method print5:()V
+       4: return
+
+  static int access$100(cn.howardliu.tutorials.java8.nest.Outer$Inner);
+    Code:
+       0: aload_0
+       1: getfield      #1                  // Field j:I
+       4: ireturn
+}</code></pre>
+<p>我们可以看到，<code>Outer</code>和<code>Inner</code>中多出了几个方法，方法名格式是<code>access$*00</code>。</p>
+<p><code>Outer</code>中的<code>access$200</code>方法返回了属性<code>i</code>，<code>access$300</code>和<code>access$400</code>分别调用了<code>print11</code>和<code>print12</code>方法。这些新增的方法都是静态方法，作用域是默认作用域，即包内可用。这些方法最终被<code>Inner</code>类中的<code>print3</code>和<code>print4</code>调用，相当于间接调用<code>Outer</code>中的私有属性或方法。</p>
+<p>我们称这些生成的方法为“桥”方法（Bridge Method），是一种实现嵌套关系内部互相访问的方式。</p>
+<p>在编译的时候，Java 为了保持类的单一特性，会将嵌套类编译到多个 class 文件中，同时为了保证嵌套类能够彼此访问，自动创建了调用私有方法的“桥”方法，这样，在保持原有定义不变的情况下，又实现了嵌套语法。</p>
+<h2 id="技术债务"><a href="#技术债务" class="headerlink" title="技术债务"></a>技术债务</h2><p>“桥”方法的实现是比较巧妙的，但是这会造成源码与编译结果访问控制权限不一致，比如，我们可以在<code>Inner</code>中调用<code>Outer</code>中的私有方法，按照道理来说，我们可以在<code>Inner</code>中通过反射调用<code>Outer</code>的方法，但实际上不行，会抛出<code>IllegalAccessException</code>异常。我们验证一下：</p>
+<pre><code class="java">public class Outer {
+    // 省略其他方法
+    public void callInnerReflectionMethod()
+            throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        final Inner inner = new Inner();
+        inner.callOuterPrivateMethod(this);
+    }
+
+    public class Inner {
+        // 省略其他方法
+        public void callOuterPrivateMethod(Outer outer)
+                throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+            final Method method = outer.getClass().getDeclaredMethod(&quot;print12&quot;);
+            method.invoke(outer);
+        }
+    }
+}</code></pre>
+<p>定义测试用例：</p>
+<pre><code class="java">@Test
+void gotAnExceptionInJava8() {
+    final Outer outer = new Outer();
+
+    final Exception e = assertThrows(IllegalAccessException.class, outer::callInnerReflectionMethod);
+    e.printStackTrace();
+
+    assertDoesNotThrow(outer::callInnerMethod);
+}</code></pre>
+<p>打印的异常信息是：</p>
+<pre><code class="log">java.lang.IllegalAccessException: class cn.howardliu.tutorials.java8.nest.Outer$Inner cannot access a member of class cn.howardliu.tutorials.java8.nest.Outer with modifiers &quot;private&quot;
+    at java.base/jdk.internal.reflect.Reflection.newIllegalAccessException(Reflection.java:361)
+    at java.base/java.lang.reflect.AccessibleObject.checkAccess(AccessibleObject.java:591)
+    at java.base/java.lang.reflect.Method.invoke(Method.java:558)
+    at cn.howardliu.tutorials.java8.nest.Outer$Inner.callOuterPrivateMethod(Outer.java:62)
+    at cn.howardliu.tutorials.java8.nest.Outer.callInnerReflectionMethod(Outer.java:36)</code></pre>
+<p>通过反射直接调用私有方法会失败，但是可以直接的或者通过反射访问这些“桥”方法，这样就比较奇怪了。所以提出 <a href="http://openjdk.java.net/jeps/181" target="_blank" rel="noopener">JEP181 改进</a>，修复这个技术债务的同时，为后续的改进铺路。</p>
+<h2 id="Java11-中的实现"><a href="#Java11-中的实现" class="headerlink" title="Java11 中的实现"></a>Java11 中的实现</h2><p>我们再来看看 Java11 编译之后的结果：</p>
+<pre><code class="shell">$ javap -c Outer.class      
+Compiled from &quot;Outer.java&quot;
+public class cn.howardliu.tutorials.java11.nest.Outer {
+  public cn.howardliu.tutorials.java11.nest.Outer();
+    Code:
+       0: aload_0
+       1: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V
+       4: return
+
+  public void print1();
+    Code:
+       0: aload_0
+       1: invokevirtual #2                  // Method print11:()V
+       4: aload_0
+       5: invokevirtual #3                  // Method print12:()V
+       8: return
+
+  public void callInnerMethod();
+    Code:
+       0: new           #7                  // class cn/howardliu/tutorials/java11/nest/Outer$Inner
+       3: dup
+       4: aload_0
+       5: invokespecial #8                  // Method cn/howardliu/tutorials/java11/nest/Outer$Inner.&quot;&lt;init&gt;&quot;:(Lcn/howardliu/tutorials/java11/nest/Outer;)V
+       8: astore_1
+       9: aload_1
+      10: invokevirtual #9                  // Method cn/howardliu/tutorials/java11/nest/Outer$Inner.print4:()V
+      13: aload_1
+      14: invokevirtual #10                 // Method cn/howardliu/tutorials/java11/nest/Outer$Inner.print5:()V
+      17: getstatic     #4                  // Field java/lang/System.out:Ljava/io/PrintStream;
+      20: aload_1
+      21: getfield      #11                 // Field cn/howardliu/tutorials/java11/nest/Outer$Inner.j:I
+      24: invokevirtual #6                  // Method java/io/PrintStream.println:(I)V
+      27: return
+}</code></pre>
+<p>是不是很干净，与<code>Outer</code>类的源码结构是一致的。我们再看看<code>Inner</code>有没有什么变化：</p>
+<pre><code class="shell">$ javap -c Outer\$Inner.class
+Compiled from &quot;Outer.java&quot;
+public class cn.howardliu.tutorials.java11.nest.Outer$Inner {
+  final cn.howardliu.tutorials.java11.nest.Outer this$0;
+
+  public cn.howardliu.tutorials.java11.nest.Outer$Inner(cn.howardliu.tutorials.java11.nest.Outer);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: putfield      #1                  // Field this$0:Lcn/howardliu/tutorials/java11/nest/Outer;
+       5: aload_0
+       6: invokespecial #2                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V
+       9: return
+
+  public void print3();
+    Code:
+       0: getstatic     #3                  // Field java/lang/System.out:Ljava/io/PrintStream;
+       3: aload_0
+       4: getfield      #1                  // Field this$0:Lcn/howardliu/tutorials/java11/nest/Outer;
+       7: getfield      #4                  // Field cn/howardliu/tutorials/java11/nest/Outer.i:I
+      10: invokevirtual #5                  // Method java/io/PrintStream.println:(I)V
+      13: aload_0
+      14: getfield      #1                  // Field this$0:Lcn/howardliu/tutorials/java11/nest/Outer;
+      17: invokevirtual #6                  // Method cn/howardliu/tutorials/java11/nest/Outer.print1:()V
+      20: return
+
+  public void print4();
+    Code:
+       0: getstatic     #3                  // Field java/lang/System.out:Ljava/io/PrintStream;
+       3: aload_0
+       4: getfield      #1                  // Field this$0:Lcn/howardliu/tutorials/java11/nest/Outer;
+       7: getfield      #4                  // Field cn/howardliu/tutorials/java11/nest/Outer.i:I
+      10: invokevirtual #5                  // Method java/io/PrintStream.println:(I)V
+      13: aload_0
+      14: getfield      #1                  // Field this$0:Lcn/howardliu/tutorials/java11/nest/Outer;
+      17: invokevirtual #7                  // Method cn/howardliu/tutorials/java11/nest/Outer.print11:()V
+      20: aload_0
+      21: getfield      #1                  // Field this$0:Lcn/howardliu/tutorials/java11/nest/Outer;
+      24: invokevirtual #8                  // Method cn/howardliu/tutorials/java11/nest/Outer.print12:()V
+      27: return
+}</code></pre>
+<p>同样干净。</p>
+<p>我们在通过测试用例验证一下反射调用：</p>
+<pre><code class="java">@Test
+void doesNotGotAnExceptionInJava11() {
+    final Outer outer = new Outer();
+
+    assertDoesNotThrow(outer::callInnerReflectionMethod);
+    assertDoesNotThrow(outer::callInnerMethod);
+}</code></pre>
+<p>结果是正常运行。</p>
+<p>这就是 JEP181 期望的结果，源码和编译结果一致，访问控制一致。</p>
+<h2 id="Nestmate-新增的-API"><a href="#Nestmate-新增的-API" class="headerlink" title="Nestmate 新增的 API"></a>Nestmate 新增的 API</h2><p>在 Java11 中还新增了几个 API，用于嵌套关系的验证：</p>
+<h3 id="getNestHost"><a href="#getNestHost" class="headerlink" title="getNestHost"></a>getNestHost</h3><p>这个方法是返回嵌套主机（NestHost），转成普通话就是找到嵌套类的外层类。对于非嵌套类，直接返回自身（其实也算是返回外层类）。</p>
+<p>我们看下用法：</p>
+<pre><code class="java">@Test
+void checkNestHostName() {
+    final String outerNestHostName = Outer.class.getNestHost().getName();
+    assertEquals(&quot;cn.howardliu.tutorials.java11.nest.Outer&quot;, outerNestHostName);
+
+    final String innerNestHostName = Inner.class.getNestHost().getName();
+    assertEquals(&quot;cn.howardliu.tutorials.java11.nest.Outer&quot;, innerNestHostName);
+
+    assertEquals(outerNestHostName, innerNestHostName);
+
+    final String notNestClass = NotNestClass.class.getNestHost().getName();
+    assertEquals(&quot;cn.howardliu.tutorials.java11.nest.NotNestClass&quot;, notNestClass);
+}</code></pre>
+<p>对于<code>Outer</code>和<code>Inner</code>都是返回了<code>cn.howardliu.tutorials.java11.nest.Outer</code>。</p>
+<h3 id="getNestMembers"><a href="#getNestMembers" class="headerlink" title="getNestMembers"></a>getNestMembers</h3><p>这个方法是返回嵌套类的嵌套成员数组，下标是 0 的元素确定是 NestHost 对应的类，其他元素顺序没有给出排序规则。我们看下使用：</p>
+<pre><code class="java">@Test
+void getNestMembers() {
+    final List&lt;String&gt; outerNestMembers = Arrays.stream(Outer.class.getNestMembers())
+            .map(Class::getName)
+            .collect(Collectors.toList());
+
+    assertEquals(2, outerNestMembers.size());
+    assertTrue(outerNestMembers.contains(&quot;cn.howardliu.tutorials.java11.nest.Outer&quot;));
+    assertTrue(outerNestMembers.contains(&quot;cn.howardliu.tutorials.java11.nest.Outer$Inner&quot;));
+
+    final List&lt;String&gt; innerNestMembers = Arrays.stream(Inner.class.getNestMembers())
+            .map(Class::getName)
+            .collect(Collectors.toList());
+
+    assertEquals(2, innerNestMembers.size());
+    assertTrue(innerNestMembers.contains(&quot;cn.howardliu.tutorials.java11.nest.Outer&quot;));
+    assertTrue(innerNestMembers.contains(&quot;cn.howardliu.tutorials.java11.nest.Outer$Inner&quot;));
+}</code></pre>
+<h3 id="isNestmateOf"><a href="#isNestmateOf" class="headerlink" title="isNestmateOf"></a>isNestmateOf</h3><p>这个方法是用于判断两个类是否是彼此的 NestMate，彼此形成嵌套关系。判断依据还是嵌套主机，只要相同，两个就是 NestMate。我们看下使用：</p>
+<pre><code class="java">@Test
+void checkIsNestmateOf() {
+    assertTrue(Inner.class.isNestmateOf(Outer.class));
+    assertTrue(Outer.class.isNestmateOf(Inner.class));
+}</code></pre>
+<h2 id="后续的改进"><a href="#后续的改进" class="headerlink" title="后续的改进"></a>后续的改进</h2><p>嵌套关系是作为 Valhalla 项目的一部分，这个项目的主要目标之一是改进 JAVA 中的值类型和泛型。后续会有更多的改进：</p>
+<ul>
+<li>在泛型特化（generic specialization）中，每个特化类型（specialized type）可被创建为泛型的一个 Nestmate。</li>
+<li>支持对<code>Unsafe.defineAnonymousClass()</code> API 的安全替换，实现将新类创建为已有类的 Nestmate。</li>
+<li>可能会影响“密封类”（sealed classes），仅允许 Nestmate 的子类作为密封类。</li>
+<li>可能会影响私有嵌套类型。私有嵌套类型当前定义为包内可访问（package-access）。</li>
+</ul>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>本文阐述了基于嵌套关系的访问控制优化，其中涉及<code>NestMate</code>、<code>NestHost</code>、<code>NestMember</code>等概念。这次优化是 Valhalla 项目中一部分，主要改进 Java 中的值类型和泛型等。文中涉及源码都上传在 GitHub 上，关注公号「看山的小屋」回复“java”获取源码。</p>
+<p>青山不改，绿水长流，咱们下次见。</p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://mp.weixin.qq.com/s/7f5dcjjKLdBYpzS5p7_v7Q" target="_blank" rel="noopener">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/JOLrw7cbVh8z2czePEfLjw" target="_blank" rel="noopener">一文掌握 Java8 的 Optional 的 6 种操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Vhw-2lgCvmhNI5aeXOWYNg" target="_blank" rel="noopener">使用 Lambda 表达式实现超强的排序功能</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Srv6733byTYDg7hTrW_tdw" target="_blank" rel="noopener">Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API</a></li>
+<li><a href="https://mp.weixin.qq.com/s/LRydpL89GsjOeTrLrihyYQ" target="_blank" rel="noopener">Java8 的时间库（2）：Date 与 LocalDate 或 LocalDateTime 互相转换</a></li>
+<li><a href="https://mp.weixin.qq.com/s/KmBMLG1y73IUwFuSfUKaEQ" target="_blank" rel="noopener">Java8 的时间库（3）：开始使用 Java8 中的时间类</a></li>
+<li><a href="https://mp.weixin.qq.com/s/PxC0WQMReIeG0Tyl5WiK1Q" target="_blank" rel="noopener">Java8 的时间库（4）：检查日期字符串是否合法</a></li>
+<li><a href="https://mp.weixin.qq.com/s/rjMOq0QAdiWNacKYqHJqXA" target="_blank" rel="noopener">Java8 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/FHv963s0Qvh2K5r2tdLATA" target="_blank" rel="noopener">Java9 的新特性</a></li>
+</ul>
+<hr>
+<p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/java-11-jep181-nestmate/">Java11 中基于嵌套关系的访问控制优化</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/article/details/122334212" target="_blank" rel="noopener">Java11 中基于嵌套关系的访问控制优化</a></p>
+<center><b>👇🏻欢迎关注我的公众号「看山的小屋」，领取精选资料👇🏻</b></center>
+
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/Java/">Java</a>
+            
+            <a href="/tags/Java11/">Java11</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/2021-summary/">
+                <i class="icon-next">这一年很幸运，平平淡淡的|2021 年度总结</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://www.howardliu.cn/images/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/缓存/" style="font-size: 15px;">缓存</a> <a href="/tags/解决方案/" style="font-size: 15px;">解决方案</a> <a href="/tags/任务队列/" style="font-size: 15px;">任务队列</a> <a href="/tags/任务/" style="font-size: 15px;">任务</a> <a href="/tags/事件驱动/" style="font-size: 15px;">事件驱动</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/分布式/" style="font-size: 15px;">分布式</a> <a href="/tags/架构设计/" style="font-size: 15px;">架构设计</a> <a href="/tags/短链服务/" style="font-size: 15px;">短链服务</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/go/" style="font-size: 15px;">go</a> <a href="/tags/开发指南/" style="font-size: 15px;">开发指南</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/http-状态码/" style="font-size: 15px;">http 状态码</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/Effective-Java/" style="font-size: 15px;">Effective Java</a> <a href="/tags/EasyExcel/" style="font-size: 15px;">EasyExcel</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Java8/" style="font-size: 15px;">Java8</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/Java10/" style="font-size: 15px;">Java10</a> <a href="/tags/Java11/" style="font-size: 15px;">Java11</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/Date/" style="font-size: 15px;">Date</a> <a href="/tags/Time/" style="font-size: 15px;">Time</a> <a href="/tags/Java9/" style="font-size: 15px;">Java9</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/Comparator/" style="font-size: 15px;">Comparator</a> <a href="/tags/import/" style="font-size: 15px;">import</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a>
+    </div>
+</div>
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/java-11-jep181-nestmate/">Java11 中基于嵌套关系的访问控制优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2021-summary/">这一年很幸运，平平淡淡的|2021 年度总结</a></li><li class="post-list-item"><a class="post-list-link" href="/2022-friends-of-time/">原来还能这么干——罗胖2022年《时间的朋友》观后感</a></li><li class="post-list-item"><a class="post-list-link" href="/java-10-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java10 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/mybatis-plus-conflict-noclassdeffounderror/">Mybatis-Plus 版本冲突触发“Could not convert argument value of type [java.lang.String] to required type [java.lang.Class]”的 java.lang.NoClassDefFoundError 异常</a></li><li class="post-list-item"><a class="post-list-link" href="/java-9-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java9 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/avoid-the-distributed-monolith/">微服务架构的陷阱：从单体到分布式单体</a></li><li class="post-list-item"><a class="post-list-link" href="/from-monolith-to-microservices-2/">如何实现单体架构到微服务架构的蜕变？</a></li><li class="post-list-item"><a class="post-list-link" href="/do-we-have-any-other-options-besides-microservices/">除了微服务，我们还有其他选择吗？</a></li><li class="post-list-item"><a class="post-list-link" href="/java-8-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java8 的新特性</a></li></ul>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">2022年01月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">2021年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">2021年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">2021年10月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">2021年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">2021年08月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">2021年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2022</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

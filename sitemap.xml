@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/java-11-jep181-nestmate/</loc>
+    
+    <lastmod>2022-01-05T14:57:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.howardliu.cn/2021-summary/</loc>
+    
+    <lastmod>2022-01-03T09:10:33.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/2022-friends-of-time/</loc>
     
     <lastmod>2022-01-01T16:48:14.000Z</lastmod>
@@ -730,14 +744,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
+    <loc>https://www.howardliu.cn/hadoop-environment-cluster-setup/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop-environment-cluster-setup/</loc>
+    <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
@@ -751,7 +765,7 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
+    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     
     <lastmod>2020-07-28T05:33:36.667Z</lastmod>
     
