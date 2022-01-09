@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java11 的新特性||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="今天我们就一起看看 Java11 都有哪些喜人的变化：增强的 API、全新的 HTTP 客户端、[基于嵌套关系的访问控制优化](https://mp.weixin.qq.com/s/baBv0mP2JmPE4MoNYESqhA)、低开销的堆性能采用工具、ZGC、Epsilon 垃圾收集器、飞行记录器等。">
+<meta name="keywords" content="java11,Java11 新特性,增强的 API,全新的 HTTP 客户端,基于嵌套关系的访问控制优化,低开销的堆性能采用工具,ZGC,Epsilon 垃圾收集器,飞行记录器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java11 的新特性">
+<meta property="og:url" content="https://www.howardliu.cn/java-11-features/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="今天我们就一起看看 Java11 都有哪些喜人的变化：增强的 API、全新的 HTTP 客户端、[基于嵌套关系的访问控制优化](https://mp.weixin.qq.com/s/baBv0mP2JmPE4MoNYESqhA)、低开销的堆性能采用工具、ZGC、Epsilon 垃圾收集器、飞行记录器等。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://static.howardliu.cn/cover/animal-gb69e2a049_1920.jpg">
+<meta property="og:image" content="https://static.howardliu.cn/Illustration/smile_1.jpg">
+<meta property="og:image" content="https://static.howardliu.cn/java/java-11-1.png">
+<meta property="og:image" content="https://static.howardliu.cn/Illustration/800.jpeg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2022-01-09T14:09:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java11 的新特性">
+<meta name="twitter:description" content="今天我们就一起看看 Java11 都有哪些喜人的变化：增强的 API、全新的 HTTP 客户端、[基于嵌套关系的访问控制优化](https://mp.weixin.qq.com/s/baBv0mP2JmPE4MoNYESqhA)、低开销的堆性能采用工具、ZGC、Epsilon 垃圾收集器、飞行记录器等。">
+<meta name="twitter:image" content="https://static.howardliu.cn/cover/animal-gb69e2a049_1920.jpg">
+
+<meta name="keywords" content="java11,Java11 新特性,增强的 API,全新的 HTTP 客户端,基于嵌套关系的访问控制优化,低开销的堆性能采用工具,ZGC,Epsilon 垃圾收集器,飞行记录器">
+
+
+<meta name="description" content="今天我们就一起看看 Java11 都有哪些喜人的变化：增强的 API、全新的 HTTP 客户端、[基于嵌套关系的访问控制优化](https://mp.weixin.qq.com/s/baBv0mP2JmPE4MoNYESqhA)、低开销的堆性能采用工具、ZGC、Epsilon 垃圾收集器、飞行记录器">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/styles/vs2015.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/java-11-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java11 的新特性</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2022-01-09</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/java-11-features/" class="leancloud_visitors" data-flag-title="Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java11 的新特性">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#增强-String"><span class="toc-text">增强 String</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#repeat"><span class="toc-text">repeat</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#strip、stripLeading、stripTrailing"><span class="toc-text">strip、stripLeading、stripTrailing</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#isBlank"><span class="toc-text">isBlank</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#lines"><span class="toc-text">lines</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#增强文件读写"><span class="toc-text">增强文件读写</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#增强集合的数组操作"><span class="toc-text">增强集合的数组操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#增强函数-Predicate"><span class="toc-text">增强函数 Predicate</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Lambda-中的局部变量"><span class="toc-text">Lambda 中的局部变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#转正的-HTTP-客户端"><span class="toc-text">转正的 HTTP 客户端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#基于嵌套关系的访问控制优化"><span class="toc-text">基于嵌套关系的访问控制优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#增强-java-命令"><span class="toc-text">增强 java 命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#动态类文件常量"><span class="toc-text">动态类文件常量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#低开销的堆性能采用工具"><span class="toc-text">低开销的堆性能采用工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ZGC"><span class="toc-text">ZGC</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#改进-Aarch64-指令集"><span class="toc-text">改进 Aarch64 指令集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Epsilon-垃圾收集器"><span class="toc-text">Epsilon 垃圾收集器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#飞行记录器（Flight-Recorder）"><span class="toc-text">飞行记录器（Flight Recorder）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#移除或过期组件"><span class="toc-text">移除或过期组件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他小改动"><span class="toc-text">其他小改动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="https://static.howardliu.cn/cover/animal-gb69e2a049_1920.jpg" alt="Java11 的新特性"></p>
+<p>你好，我是看山。</p>
+<blockquote>
+<p>本文收录在 <a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378#wechat_redirect" target="_blank" rel="noopener">《从小工到专家的 Java 进阶之旅》</a> 系列专栏中。</p>
+</blockquote>
+<p>从 2017 年开始，Java 版本更新策略从原来的每两年一个新版本，改为每六个月一个新版本，以快速验证新特性，推动 Java 的发展。从 <a href="https://res.cloudinary.com/snyk/image/upload/v1623860216/reports/jvm-ecosystem-report-2021.pdf" target="_blank" rel="noopener">《JVM Ecosystem Report 2021》</a> 中可以看出，目前开发环境中有近半的环境使用 Java8，有近半的人转移到了 Java11，随着 Java17 的发布，相信比例会有所变化。</p>
+<p>因此，准备出一个系列，配合示例讲解，阐述各个版本的新特性。</p>
+<a id="more"></a>
+
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Java11 是 2018 年 9 月发布的，是自 Java8 之后第一个长期支持版（long-term support，LTS）。相比于其他版本 6 个月维护期，长期支持版的维护期是 3 年。</p>
+<p>长期支持版的更新会比较多，而且都是相对稳定的更新。今天我们就一起看看 Java11 都有哪些喜人的变化：增强的 API、全新的 HTTP 客户端、<a href="https://mp.weixin.qq.com/s/baBv0mP2JmPE4MoNYESqhA" target="_blank" rel="noopener">基于嵌套关系的访问控制优化</a>、低开销的堆性能采用工具、ZGC、Epsilon 垃圾收集器、飞行记录器等。</p>
+<h2 id="增强-String"><a href="#增强-String" class="headerlink" title="增强 String"></a>增强 String</h2><p>首先说下<code>String</code>中新增的方法：<code>repeat</code>、<code>strip</code>、<code>stripLeading</code>、<code>stripTrailing</code>、<code>isBlank</code>、<code>lines</code>。这些方法还是挺有用的，以前我们可能需要借助第三方类库（比如 Apache 出品的 commons-lang）中的工具类，现在可以直接使用嫡亲方法了。</p>
+<h3 id="repeat"><a href="#repeat" class="headerlink" title="repeat"></a>repeat</h3><p><code>repeat</code>是实例方法，顾名思义，这个方法是返回给定字符串的重复值的，参数是<code>int</code>类型，传参的时候需要注意：</p>
+<ul>
+<li>如果重复次数小于 0 会抛出<code>IllegalArgumentException</code>异常；</li>
+<li>如果重复次数为 0 或者字符串本身是空字符串，将返回空字符串；</li>
+<li>如果重复次数为 1 直接返回本身；</li>
+<li>如果字符串重复指定次数后，长度超过<code>Integer.MAX_VALUE</code>，会抛出<code>OutOfMemoryError</code>错误。</li>
+</ul>
+<p>用法很简单：</p>
+<pre><code class="java">@Test
+void testRepeat() {
+    String output = &quot;foo &quot;.repeat(2) + &quot;bar&quot;;
+    assertEquals(&quot;foo foo bar&quot;, output);
+}</code></pre>
+<p>小而美的一个工具方法。</p>
+<h3 id="strip、stripLeading、stripTrailing"><a href="#strip、stripLeading、stripTrailing" class="headerlink" title="strip、stripLeading、stripTrailing"></a>strip、stripLeading、stripTrailing</h3><p><code>strip</code>方法算是<code>trim</code>方法的增强版，<code>trim</code>方法可以删除字符串两侧的空白字符（空格、tab 键、换行符），但是对于<code>Unicode</code>的空白字符无能为力，<code>strip</code>补足这一短板。</p>
+<p>用起来是这样的：</p>
+<pre><code class="java">@Test
+void testTrip() {
+    final String output = &quot;\n\t  hello   \u2005&quot;.strip();
+    assertEquals(&quot;hello&quot;, output);
+
+    final String trimOutput = &quot;\n\t  hello   \u2005&quot;.trim();
+    assertEquals(&quot;hello   \u2005&quot;, trimOutput);
+}</code></pre>
+<p>对比一下可以看到，<code>trim</code>方法的清理功能稍弱。</p>
+<p><code>stripLeading</code>和<code>stripTrailing</code>与<code>strip</code>类似，区别是一个清理头，一个清理尾。用法如下：</p>
+<pre><code class="java">@Test
+void testTripLeading() {
+    final String output = &quot;\n\t  hello   \u2005&quot;.stripLeading();
+    assertEquals(&quot;hello   \u2005&quot;, output);
+}
+
+@Test
+void testTripTrailing() {
+    final String output = &quot;\n\t  hello   \u2005&quot;.stripTrailing();
+    assertEquals(&quot;\n\t  hello&quot;, output);
+}</code></pre>
+<h3 id="isBlank"><a href="#isBlank" class="headerlink" title="isBlank"></a>isBlank</h3><p>这个方法是用于判断字符串是否都是空白字符，除了空格、tab 键、换行符，也包括<code>Unicode</code>的空白字符。</p>
+<p>用法很简单：</p>
+<pre><code class="java">@Test
+void testIsBlank() {
+    assertTrue(&quot;\n\t\u2005&quot;.isBlank());
+}</code></pre>
+<h3 id="lines"><a href="#lines" class="headerlink" title="lines"></a>lines</h3><p>最后这个方法是将字符串转化为字符串<code>Stream</code>类型，字符串分隔依据是换行符：<code>\n</code>、<code>\r</code>、<code>\r\n</code>，用法如下：</p>
+<pre><code class="java">@Test
+void testLines() {
+    final String multiline = &quot;This is\n \na multiline\nstring.&quot;;
+    final String output = multiline.lines()
+            .filter(Predicate.not(String::isBlank))
+            .collect(Collectors.joining(&quot; &quot;));
+    assertEquals(&quot;This is a multiline string.&quot;, output);
+}</code></pre>
+<h2 id="增强文件读写"><a href="#增强文件读写" class="headerlink" title="增强文件读写"></a>增强文件读写</h2><p>本次更新在<code>Files</code>中增加了两个方法：<code>readString</code>和<code>writeString</code>。<code>writeString</code>作用是将指定字符串写入文件，<code>readString</code>作用是从文件中读出内容到字符串。是一个对<code>Files</code>工具类的增强，封装了对输出流、字节等内容的操作。</p>
+<p>用法比较简单：</p>
+<pre><code class="java">@Test
+void testReadWriteString() throws IOException {
+    final Path tmpPath = Path.of(&quot;./&quot;);
+    final Path tempFile = Files.createTempFile(tmpPath, &quot;demo&quot;, &quot;.txt&quot;);
+    final Path filePath = Files.writeString(tempFile, &quot;看山 howardliu.cn\n 公众号：看山的小屋&quot;);
+    assertEquals(tempFile, filePath);
+
+    final String fileContent = Files.readString(filePath);
+    assertEquals(&quot;看山 howardliu.cn\n 公众号：看山的小屋&quot;, fileContent);
+
+    Files.deleteIfExists(filePath);
+}</code></pre>
+<p><code>readString</code>和<code>writeString</code>还可以指定字符集，不指定默认使用<code>StandardCharsets.UTF_8</code>字符集，可以应对大部分场景了。</p>
+<h2 id="增强集合的数组操作"><a href="#增强集合的数组操作" class="headerlink" title="增强集合的数组操作"></a>增强集合的数组操作</h2><p><code>java.util.Collection</code>提供了集合转数组的方法有两个：</p>
+<ul>
+<li><code>Object[] toArray()</code>：可以直接转数组，但是转换后是<code>Object</code>类型，后续使用的时候，需要强转，太不优雅了；</li>
+<li><code>&lt;T&gt; T[] toArray(T[] a)</code>：传入一个指定类型的数组，一般会有另种实现：<ul>
+<li>一是，如果传入数组长度小于列表长度，会借助<code>Arrays.copyOf</code>创建列表长度的数组，这个数组与传入数组参数没有关系</li>
+<li>二是，如果传入数组长度大于等于列表长度，会借助<code>System.arraycopy</code>将列表写入数组，超过长度的数组元素置为<code>null</code>。</li>
+</ul>
+</li>
+</ul>
+<p>我们一般这样用：</p>
+<pre><code class="java">@Test
+void testArray() {
+    final List&lt;String&gt; vars = Arrays.asList(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;);
+    final Object[] objArray = vars.toArray();
+    final String[] strArray = vars.toArray(new String[0]);
+    Assertions.assertTrue(Arrays.asList(strArray).contains(&quot;1&quot;));
+    Assertions.assertTrue(Arrays.asList(strArray).contains(&quot;2&quot;));
+    Assertions.assertTrue(Arrays.asList(strArray).contains(&quot;3&quot;));
+}</code></pre>
+<p>在 Java11 中，又新增了一种实现，相当于对<code>&lt;T&gt; T[] toArray(T[] a)</code>做了增强，其源码是：</p>
+<pre><code class="java">default &lt;T&gt; T[] toArray(IntFunction&lt;T[]&gt; generator) {
+    return toArray(generator.apply(0));
+}</code></pre>
+<p>可以看到，是通过传入一个<code>IntFunction</code>类型的函数，然后调用<code>&lt;T&gt; T[] toArray(T[] a)</code>创建数组，其实是采用了我们常用的给<code>toArray</code>传入空数组的方式，用法如下：</p>
+<pre><code class="java">@Test
+void testArray() {
+    final List&lt;String&gt; vars = Arrays.asList(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;);
+    final String[] strArray2 = vars.toArray(String[]::new);
+    Assertions.assertTrue(Arrays.asList(strArray2).contains(&quot;1&quot;));
+    Assertions.assertTrue(Arrays.asList(strArray2).contains(&quot;2&quot;));
+    Assertions.assertTrue(Arrays.asList(strArray2).contains(&quot;3&quot;));
+}</code></pre>
+<p>从使用上，似乎没有太多的提升，但是写法上，使用了函数式编程，是不是很优雅。</p>
+<p><img src="https://static.howardliu.cn/Illustration/smile_1.jpg" alt="优雅的假笑"></p>
+<h2 id="增强函数-Predicate"><a href="#增强函数-Predicate" class="headerlink" title="增强函数 Predicate"></a>增强函数 Predicate</h2><p>这个也是方法增强，在以前，我们在<code>Stream</code>中的<code>filter</code>方法判断否的时候，一般需要<code>!</code>运算，比如我们想要找到字符串列表中的数字，可以这样写：</p>
+<pre><code class="java">final List&lt;String&gt; list = Arrays.asList(&quot;1&quot;, &quot;a&quot;);
+final List&lt;String&gt; nums = list.stream()
+        .filter(NumberUtils::isDigits)
+        .collect(Collectors.toList());
+Assertions.assertEquals(1, nums.size());
+Assertions.assertTrue(nums.contains(&quot;1&quot;));</code></pre>
+<p>想要找到非数字的，<code>filter</code>方法写的就会用到<code>!</code>非操作：</p>
+<pre><code class="java">final List&lt;String&gt; notNums = list.stream()
+        .filter(x -&gt; !NumberUtils.isDigits(x))
+        .collect(Collectors.toList());
+Assertions.assertEquals(1, notNums.size());
+Assertions.assertTrue(notNums.contains(&quot;a&quot;));</code></pre>
+<p>Java11 中为<code>Predicate</code>增加<code>not</code>方法，可以更加简单的实现非操作：</p>
+<pre><code class="java">final List&lt;String&gt; notNums2 = list.stream()
+        .filter(Predicate.not(NumberUtils::isDigits))
+        .collect(Collectors.toList());
+Assertions.assertEquals(1, notNums2.size());
+Assertions.assertTrue(notNums2.contains(&quot;a&quot;));</code></pre>
+<p>有些教程还会推崇静态引入，比如在头部使用<code>import static java.util.function.Predicate.not</code>，这样在函数式编程时，可以写更少的代码，语义更强，比如：</p>
+<pre><code class="java">final List&lt;String&gt; notNums2 = list.stream()
+        .filter(not(NumberUtils::isDigits))
+        .collect(toList());</code></pre>
+<p>喜好随人，没有优劣。</p>
+<h2 id="Lambda-中的局部变量"><a href="#Lambda-中的局部变量" class="headerlink" title="Lambda 中的局部变量"></a>Lambda 中的局部变量</h2><p>局部变量是 Java10 中增加的特性，具体可以查看 <a href="https://mp.weixin.qq.com/s/NY5-qkfZGdaOvz9iyJ3VSQ" target="_blank" rel="noopener">Java10 的新特性</a> 中的介绍，但是不支持在 Lambda 中使用局部变量。</p>
+<p>在 Lambda 中，我们可以这样操作：</p>
+<pre><code class="java">(String s1, String s2) -&gt; s1 + s2</code></pre>
+<p>也可以这样：</p>
+<pre><code class="java">(s1, s2) -&gt; s1 + s2</code></pre>
+<p>到 Java11 之后，我们还能这样：</p>
+<pre><code class="java">(var s1, var s2) -&gt; s1 + s2</code></pre>
+<p>单纯从语法上，似乎没啥特点，但是如果再加上一些别的用法，比如：</p>
+<pre><code class="java">(@Nonnull var s1, @Nullable var s2) -&gt; s1 + s2</code></pre>
+<p>是不是就能看出差别了，我们可以有如下的操作：</p>
+<pre><code class="java">@Test
+void testLocalVariable() {
+    final List&lt;String&gt; sampleList = Arrays.asList(&quot;Hello&quot;, &quot;World&quot;);
+    final String resultString = sampleList.stream()
+            .map((@NotNull var x) -&gt; x.toUpperCase())
+            .collect(Collectors.joining(&quot;, &quot;));
+    Assertions.assertEquals(&quot;HELLO, WORLD&quot;, resultString);
+}</code></pre>
+<p>不过，这里还是有一些限制，比如：</p>
+<p>如果是多个参数，不能有的使用<code>var</code>修饰，有的不指定类型：</p>
+<pre><code class="java">// 错误写法
+(var s1, s2) -&gt; s1 + s2</code></pre>
+<p>或者，不能混合使用，一个使用<code>var</code>修饰，一个使用明确的类型：</p>
+<pre><code class="java">// 错误写法
+(var s1, String s2) -&gt; s1 + s2</code></pre>
+<p>如果是单个参数，如果是单行操作，我们可以不写<code>{}</code>，但是使用<code>var</code>修饰的时候，就不能省略<code>{}</code>了：</p>
+<pre><code class="java">// 错误写法
+var s1 -&gt; s1.toUpperCase()</code></pre>
+<p>还是有一些限制的，我们在便利的同时，需要符合一定的约束。自由和规范不冲突。</p>
+<h2 id="转正的-HTTP-客户端"><a href="#转正的-HTTP-客户端" class="headerlink" title="转正的 HTTP 客户端"></a>转正的 HTTP 客户端</h2><p>在 <a href="https://mp.weixin.qq.com/s/FHv963s0Qvh2K5r2tdLATA" target="_blank" rel="noopener">Java9 的新特性</a> 中说过，Java 中有一个全新的 HTTP 客户端，当时还在孵化模块中，到 Java11 可以正式使用了。</p>
+<p>新客户端用法简单、性能可靠，而且支持功能也多。我们先简单看下使用：</p>
+<pre><code class="java">@Test
+void testHttpClient() throws IOException, InterruptedException {
+    final HttpClient httpClient = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_2)
+            .connectTimeout(Duration.ofSeconds(20))
+            .build();
+    final HttpRequest httpRequest = HttpRequest.newBuilder()
+            .GET()
+            .uri(URI.create(&quot;https://www.howardliu.cn/robots.txt&quot;))
+            .build();
+    final HttpResponse&lt;String&gt; httpResponse = httpClient.send(httpRequest, BodyHandlers.ofString());
+    final String responseBody = httpResponse.body();
+    assertTrue(responseBody.contains(&quot;Allow&quot;));
+}</code></pre>
+<h2 id="基于嵌套关系的访问控制优化"><a href="#基于嵌套关系的访问控制优化" class="headerlink" title="基于嵌套关系的访问控制优化"></a>基于嵌套关系的访问控制优化</h2><p>这部分是遗留的技术债务，从 Java1.1 开始，到 Java11 修复，属于 Valhalla 项目的一部分，我们在 <a href="https://mp.weixin.qq.com/s/baBv0mP2JmPE4MoNYESqhA" target="_blank" rel="noopener">Java11 中基于嵌套关系的访问控制优化</a> 一文中有详细解释，这里就不再赘述了。</p>
+<h2 id="增强-java-命令"><a href="#增强-java-命令" class="headerlink" title="增强 java 命令"></a>增强 java 命令</h2><p>在 Java11 之前，想要运行源文件，需要先通过<code>javac</code>命令编译，然后使用<code>java</code>命令运行，先可以直接使用<code>java</code>运行了：</p>
+<pre><code class="java">$ java HelloWorld.java
+Hello Java 11!</code></pre>
+<h2 id="动态类文件常量"><a href="#动态类文件常量" class="headerlink" title="动态类文件常量"></a>动态类文件常量</h2><p>为了使 JVM 对动态语言更具吸引力，Java 指令集引入了 invokedynamic。</p>
+<p>不过 Java 开发人员通常不会注意到此功能，因为它隐藏在 Java 字节代码中。通过使用 invokedynamic，可以延迟方法调用的绑定。例如，Java 语言使用该技术来实现 Lambda 表达式，这些表达式仅在首次使用时才显示出来。这样做，invokedynamic 已经演变成一种必不可少的语言功能。</p>
+<p>Java 11 引入了类似的机制，扩展了 Java 文件格式，以支持新的常量池：CONSTANT_Dynamic，它在初始化的时候，像 invokedynamic 指令生成代理方法一样，委托给 bootstrap 方法进行初始化创建，对上层软件没有很大的影响，降低开发新形式的可实现类文件约束带来的成本和干扰。</p>
+<p>此功能可提高性能，并面向语言设计人员和编译器实现人员。</p>
+<h2 id="低开销的堆性能采用工具"><a href="#低开销的堆性能采用工具" class="headerlink" title="低开销的堆性能采用工具"></a>低开销的堆性能采用工具</h2><p>Java 11 中提供一种低开销的 Java 堆分配采样方法，能够得到堆分配的 Java 对象信息，并且能够通过 JVMTI 访问堆信息。</p>
+<p>引入这个低开销内存分析工具是为了达到如下目的：</p>
+<ul>
+<li>足够低的开销，可以默认且一直开启；</li>
+<li>能通过定义好的程序接口访问；</li>
+<li>能够对所有堆分配区域进行采样；</li>
+<li>能给出正在和未被使用的 Java 对象信息。</li>
+</ul>
+<p>对用户来说，了解堆中内存分布是非常重要的，特别是遇到生产环境中出现的高 CPU、高内存占用率的情况。目前有一些已经开源的工具，允许用户分析应用程序中的堆使用情况，比如：Java Flight Recorder、jmap、YourKit 以及 VisualVM tools.。但是这些工具都有一个明显的不足之处：无法得到对象的分配位置，headp dump 以及 heap histogram 中都没有包含对象分配的具体信息，但是这些信息对于调试内存问题至关重要，因为它能够告诉开发人员他们的代码中发生的高内存分配的确切位置，并根据实际源码来分析具体问题，这也是 Java 11 中引入这种低开销堆分配采样方法的原因。</p>
+<h2 id="ZGC"><a href="#ZGC" class="headerlink" title="ZGC"></a>ZGC</h2><p>ZGC 是一个可伸缩、低延迟的垃圾收集器，性能由于 G1 收集器，从 Java11 开始可以在 Linux/x64 平台体验，全平台支持是从 Java17 开始。详细介绍可以从<a href="https://wiki.openjdk.java.net/display/zgc/Main" target="_blank" rel="noopener">https://wiki.openjdk.java.net/display/zgc/Main</a>查看。</p>
+<p>在 Java11 中尚处于试验阶段，没有包含在 JDK 构建中，想要启用，需要在 JDK 编译时添加参数<code>--with-jvm-features=zgc</code>。显式启用了 ZGC 之后，我们可以使用构建好的 JDK 启动，需要添加参数<code>-XX:+UnlockExperimentalVMOptions -XX:+UseZGC</code>。</p>
+<p>ZGC 有下面几个目标：</p>
+<ul>
+<li>GC 停顿时间不超过 10ms</li>
+<li>可以处理从几百 MB 的小堆，到几个 TB 的大堆</li>
+<li>与 G1 回收算法相比，应用吞吐能力不会下降超过 15%</li>
+<li>为未来的 GC 特性和优化有色指针和负载屏障奠定基础</li>
+</ul>
+<p>从<a href="https://openjdk.java.net/jeps/333" target="_blank" rel="noopener">https://openjdk.java.net/jeps/333</a>给出的数据可以看出来，在 128G 堆大小的测试中，ZGC 优势明显，找了一张网上的图片：</p>
+<p><img src="https://static.howardliu.cn/java/java-11-1.png" alt="SPECjbb 2015 的基准测试"></p>
+<p>这里预告一下，Java12 中也增加了一个实现阶段的垃圾收集器 Shenandoah，到时候咱们看一下。</p>
+<h2 id="改进-Aarch64-指令集"><a href="#改进-Aarch64-指令集" class="headerlink" title="改进 Aarch64 指令集"></a>改进 Aarch64 指令集</h2><p>Java 11 优化了 ARM64 或 Arch64 处理器上现有的字符串和数组内部函数。还为<code>java.lang.Math</code>的<code>sin</code>、<code>cos</code>和<code>log</code>方法实现了新的内部函数。</p>
+<p>我们像其他函数一样使用内在函数，但是，编译器会以特殊的方式处理内部函数，将使用 CPU 体系结构特定的汇编代码来提高性能。可以关注一下<code>HotSpotIntrinsicCandidate</code>这个注解。</p>
+<h2 id="Epsilon-垃圾收集器"><a href="#Epsilon-垃圾收集器" class="headerlink" title="Epsilon 垃圾收集器"></a>Epsilon 垃圾收集器</h2><p>Java11 引入了一个新的实验性垃圾收集器：Epsilon。Epsilon 垃圾收集器提供一个完全消极的 GC 实现，分配有限的内存资源，最大限度的降低内存占用和内存吞吐延迟时间，适用于模拟内存不足错误的场景。</p>
+<p>Epsilon 垃圾收集器有几个使用场景：</p>
+<ul>
+<li>性能测试：无操作的垃圾收集器可以过滤因为收集器自身原因造成的性能损失；</li>
+<li>内存压力测试：可以用于验证分配内存的阈值；</li>
+<li>VM 接口测试：以 VM 开发视角，有一个简单的 GC 实现，有助于理解 VM-GC 的最小接口实现。它也用于证明 VM-GC 接口的健全性；</li>
+<li>存活极短的任务：这种生命周期极短的任务，需要实现快速启动、快速释放资源的特性。开发者知道这种任务的内存阈值是多少，很大概率上，任务存活周期内，不会触发垃圾回收，就需要一个什么也不干的收集器站着位置就行。</li>
+</ul>
+<p>可以通过<code>-XX:+UnlockExperimentalVMOptions -XX:+UseEpsilonGC</code>参数开启。</p>
+<h2 id="飞行记录器（Flight-Recorder）"><a href="#飞行记录器（Flight-Recorder）" class="headerlink" title="飞行记录器（Flight Recorder）"></a>飞行记录器（Flight Recorder）</h2><p>飞行记录器（Flight Recorder）可是个好东西，之前是 Oracle JDK 中的一个商用产品，现已在 Open JDK 中开源。这是一种低开销的事件信息收集框架，主要用于对应用程序和 JVM 进行故障检查、分析。</p>
+<p>飞行记录器记录的主要数据源于应用程序、JVM 和操作系统，这些事件信息保存在单独的事件记录文件中，故障发生后，能够从事件记录文件中提取出有用信息对故障进行分析。有些类似于飞机上的黑匣子。</p>
+<p><img src="https://static.howardliu.cn/Illustration/800.jpeg" alt="飞机上的黑匣子"></p>
+<p>比如，我们可以使用以下参数开启一个时长为 120 秒的记录：</p>
+<pre><code class="shell">-XX:StartFlightRecording=duration=120s,settings=profile,filename=recording.jfr</code></pre>
+<p>生成的文件可以使用 JMC 工具可视化查看，也可以自己写代码通过<code>RecordedEvent</code>解析。不过嘛，有可视化的，干嘛还要自己敲代码呢？</p>
+<p>我们也可以在运行时通过<code>jcmd</code>命令启动记录：</p>
+<pre><code class="shell">$ jcmd &lt;pid&gt; JFR.start
+$ jcmd &lt;pid&gt; JFR.dump filename=recording.jfr
+$ jcmd &lt;pid&gt; JFR.stop</code></pre>
+<p>收到监控，想推广一下之前写的开源监控组件 Cynomys，源码在<a href="https://github.com/howardliu-cn/cynomys" target="_blank" rel="noopener">https://github.com/howardliu-cn/cynomys</a>，里面包含通过 Netty 实现的 RPC 框架、javaagent 实现的探针、使用 javassist 操作字节码、JMX 实现 JVM 内部监控等，可以对操作系统、网络、JVM、请求、SQL 等内容进行监控。</p>
+<h2 id="移除或过期组件"><a href="#移除或过期组件" class="headerlink" title="移除或过期组件"></a>移除或过期组件</h2><p>社会在发展，技术在进步。又有一些功能或组件不合时宜，要么移除、要么标记过期。标记过期的最好不要再用了，不知道哪天就会被移除，想要升级依赖反而麻烦。</p>
+<ul>
+<li>JavaEE 和 CORBA：单独的 JavaEE 版本可以从第三方站点获取，所以在 JavaSEO 中不再包含。从 Java9 开始，JavaEE 和 CORBA 模块已经标记为过期，到 Java11 就完全移除。</li>
+<li>JMC 从 JDK 中移除，可以单独下载。</li>
+<li>JavaFX 也是这样，从 JDK 模块从中移除，需要单独引入。</li>
+<li>Nashorn JavaScript 引擎标记为废弃</li>
+<li>Jar 包的 Pack200 压缩方案标记为废弃</li>
+</ul>
+<h2 id="其他小改动"><a href="#其他小改动" class="headerlink" title="其他小改动"></a>其他小改动</h2><ul>
+<li>实现了新的 ChaCha20 和 ChaCha20-Poly1305 加密算法，取代不安全的 RC4。</li>
+<li>使用 Curve25519 和 Curve448 支持加密密钥协议，以取代现有的 ECDH 方案</li>
+<li>升级 TLS 版本到 1.3，提升了安全性和性能</li>
+<li>支持 Unicode 10， 带来了更多的字符、符号和表情符号</li>
+</ul>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>本文介绍了 Java11 新增的特性，完整的特性清单可以从<a href="https://openjdk.java.net/projects/jdk/11/" target="_blank" rel="noopener">https://openjdk.java.net/projects/jdk/11/</a>查看。后续内容会发布在 <a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378#wechat_redirect" target="_blank" rel="noopener">从小工到专家的 Java 进阶之旅</a> 系列专栏中。</p>
+<p>青山不改，绿水长流，我们下次见。</p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://mp.weixin.qq.com/s/7f5dcjjKLdBYpzS5p7_v7Q" target="_blank" rel="noopener">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/JOLrw7cbVh8z2czePEfLjw" target="_blank" rel="noopener">一文掌握 Java8 的 Optional 的 6 种操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Vhw-2lgCvmhNI5aeXOWYNg" target="_blank" rel="noopener">使用 Lambda 表达式实现超强的排序功能</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Srv6733byTYDg7hTrW_tdw" target="_blank" rel="noopener">Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API</a></li>
+<li><a href="https://mp.weixin.qq.com/s/LRydpL89GsjOeTrLrihyYQ" target="_blank" rel="noopener">Java8 的时间库（2）：Date 与 LocalDate 或 LocalDateTime 互相转换</a></li>
+<li><a href="https://mp.weixin.qq.com/s/KmBMLG1y73IUwFuSfUKaEQ" target="_blank" rel="noopener">Java8 的时间库（3）：开始使用 Java8 中的时间类</a></li>
+<li><a href="https://mp.weixin.qq.com/s/PxC0WQMReIeG0Tyl5WiK1Q" target="_blank" rel="noopener">Java8 的时间库（4）：检查日期字符串是否合法</a></li>
+<li><a href="https://mp.weixin.qq.com/s/rjMOq0QAdiWNacKYqHJqXA" target="_blank" rel="noopener">Java8 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/FHv963s0Qvh2K5r2tdLATA" target="_blank" rel="noopener">Java9 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/NY5-qkfZGdaOvz9iyJ3VSQ" target="_blank" rel="noopener">Java10 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/baBv0mP2JmPE4MoNYESqhA" target="_blank" rel="noopener">Java11 中基于嵌套关系的访问控制优化</a></li>
+<li><a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378#wechat_redirect" target="_blank" rel="noopener">从小工到专家的 Java 进阶之旅</a></li>
+</ul>
+<hr>
+<p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/java-11-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java11 的新特性</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/article/details/122401213" target="_blank" rel="noopener">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java11 的新特性</a></p>
+<center><b>👇🏻欢迎关注我的公众号「看山的小屋」，领取精选资料👇🏻</b></center>
+
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/Java/">Java</a>
+            
+            <a href="/tags/Java11/">Java11</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/java-11-jep181-nestmate/">
+                <i class="icon-next">Java11 中基于嵌套关系的访问控制优化</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://www.howardliu.cn/images/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/缓存/" style="font-size: 15px;">缓存</a> <a href="/tags/解决方案/" style="font-size: 15px;">解决方案</a> <a href="/tags/任务队列/" style="font-size: 15px;">任务队列</a> <a href="/tags/任务/" style="font-size: 15px;">任务</a> <a href="/tags/事件驱动/" style="font-size: 15px;">事件驱动</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/分布式/" style="font-size: 15px;">分布式</a> <a href="/tags/架构设计/" style="font-size: 15px;">架构设计</a> <a href="/tags/短链服务/" style="font-size: 15px;">短链服务</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/go/" style="font-size: 15px;">go</a> <a href="/tags/开发指南/" style="font-size: 15px;">开发指南</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/http-状态码/" style="font-size: 15px;">http 状态码</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/Effective-Java/" style="font-size: 15px;">Effective Java</a> <a href="/tags/EasyExcel/" style="font-size: 15px;">EasyExcel</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Java10/" style="font-size: 15px;">Java10</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/Java9/" style="font-size: 15px;">Java9</a> <a href="/tags/Java11/" style="font-size: 15px;">Java11</a> <a href="/tags/Java8/" style="font-size: 15px;">Java8</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/Date/" style="font-size: 15px;">Date</a> <a href="/tags/Time/" style="font-size: 15px;">Time</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/JDK8/" style="font-size: 15px;">JDK8</a> <a href="/tags/Comparator/" style="font-size: 15px;">Comparator</a> <a href="/tags/stream/" style="font-size: 15px;">stream</a> <a href="/tags/collectors/" style="font-size: 15px;">collectors</a> <a href="/tags/import/" style="font-size: 15px;">import</a>
+    </div>
+</div>
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/java-11-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java11 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java-11-jep181-nestmate/">Java11 中基于嵌套关系的访问控制优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2021-summary/">这一年很幸运，平平淡淡的|2021 年度总结</a></li><li class="post-list-item"><a class="post-list-link" href="/2022-friends-of-time/">原来还能这么干——罗胖2022年《时间的朋友》观后感</a></li><li class="post-list-item"><a class="post-list-link" href="/java-10-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java10 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/mybatis-plus-conflict-noclassdeffounderror/">Mybatis-Plus 版本冲突触发“Could not convert argument value of type [java.lang.String] to required type [java.lang.Class]”的 java.lang.NoClassDefFoundError 异常</a></li><li class="post-list-item"><a class="post-list-link" href="/java-9-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java9 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/avoid-the-distributed-monolith/">微服务架构的陷阱：从单体到分布式单体</a></li><li class="post-list-item"><a class="post-list-link" href="/from-monolith-to-microservices-2/">如何实现单体架构到微服务架构的蜕变？</a></li><li class="post-list-item"><a class="post-list-link" href="/do-we-have-any-other-options-besides-microservices/">除了微服务，我们还有其他选择吗？</a></li></ul>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">2022年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">2021年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">2021年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">2021年10月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">2021年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">2021年08月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">2021年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2022</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
