@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>2022 年 Java 行业分析报告||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="前段时间介绍了从 Java8 到 Java17 每个版本比较有特点的新特性（收录在《从小工到专家的 Java 进阶之旅》专栏），今天看到 JRebel 发布了《2022 年 Java 发展趋势和分析》，于是借此分析一下 Java 行业的现状，希望给大家一些参考。">
+<meta name="keywords" content="Java 行业分析报告,Java 新特性,Java 专家,最受欢迎的 IDE">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2022 年 Java 行业分析报告">
+<meta property="og:url" content="https://www.howardliu.cn/java-developer-productivity-report-2022/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="前段时间介绍了从 Java8 到 Java17 每个版本比较有特点的新特性（收录在《从小工到专家的 Java 进阶之旅》专栏），今天看到 JRebel 发布了《2022 年 Java 发展趋势和分析》，于是借此分析一下 Java 行业的现状，希望给大家一些参考。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://static.howardliu.cn/cover/sea-5382487_1920.jpeg">
+<meta property="og:image" content="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/6.png">
+<meta property="og:image" content="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/9.png">
+<meta property="og:image" content="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/10.png">
+<meta property="og:image" content="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/13.png">
+<meta property="og:image" content="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/14.png">
+<meta property="og:image" content="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/17.png">
+<meta property="og:image" content="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/18.png">
+<meta property="og:image" content="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/18-1.png">
+<meta property="og:image" content="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/22.png">
+<meta property="og:image" content="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/24.png">
+<meta property="og:image" content="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/24.png">
+<meta property="og:image" content="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/24-1.png">
+<meta property="og:image" content="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/27.png">
+<meta property="og:image" content="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/29.png">
+<meta property="og:image" content="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/30.png">
+<meta property="og:image" content="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/31.png">
+<meta property="og:image" content="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/32.png">
+<meta property="og:image" content="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/38.png">
+<meta property="og:image" content="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/41.png">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2022-06-19T03:23:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2022 年 Java 行业分析报告">
+<meta name="twitter:description" content="前段时间介绍了从 Java8 到 Java17 每个版本比较有特点的新特性（收录在《从小工到专家的 Java 进阶之旅》专栏），今天看到 JRebel 发布了《2022 年 Java 发展趋势和分析》，于是借此分析一下 Java 行业的现状，希望给大家一些参考。">
+<meta name="twitter:image" content="https://static.howardliu.cn/cover/sea-5382487_1920.jpeg">
+
+<meta name="keywords" content="Java 行业分析报告,Java 新特性,Java 专家,最受欢迎的 IDE">
+
+
+<meta name="description" content="前段时间介绍了从 Java8 到 Java17 每个版本比较有特点的新特性（收录在《从小工到专家的 Java 进阶之旅》专栏），今天看到 JRebel 发布了《2022 年 Java 发展趋势和分析》，于是借此分析一下 Java 行业的现状，希望给大家一些参考。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/styles/vs2015.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/java-developer-productivity-report-2022/">2022 年 Java 行业分析报告</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2022-06-19</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/java-developer-productivity-report-2022/" class="leancloud_visitors" data-flag-title="2022 年 Java 行业分析报告">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-语言及开发趋势"><span class="toc-text">Java 语言及开发趋势</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Java8-的占比还是比较高"><span class="toc-text">Java8 的占比还是比较高</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#升级-Java17-的意愿还是比较强的"><span class="toc-text">升级 Java17 的意愿还是比较强的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OracleJDK-和-OpenJDK-占据过半市场"><span class="toc-text">OracleJDK 和 OpenJDK 占据过半市场</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Java-应用架构趋势"><span class="toc-text">Java 应用架构趋势</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#微服务架构趋势"><span class="toc-text">微服务架构趋势</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#微服务架构的应用状态"><span class="toc-text">微服务架构的应用状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#每个应用中微服务的数量"><span class="toc-text">每个应用中微服务的数量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SpringBoot-几乎霸占了整个微服务市场"><span class="toc-text">SpringBoot 几乎霸占了整个微服务市场</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#启动时间在增长"><span class="toc-text">启动时间在增长</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#启动需要多长时间"><span class="toc-text">启动需要多长时间</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-技术趋势"><span class="toc-text">Java 技术趋势</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Java-应用超过半数使用了容器部署"><span class="toc-text">Java 应用超过半数使用了容器部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PaaS-平台还得看-AWS"><span class="toc-text">PaaS 平台还得看 AWS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#近半数服务端使用-Tomcat-容器"><span class="toc-text">近半数服务端使用 Tomcat 容器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Maven-是主要的构建工具"><span class="toc-text">Maven 是主要的构建工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#近半数开发者使用-IntelliJ-IDEA"><span class="toc-text">近半数开发者使用 IntelliJ IDEA</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#开发者生产力趋势"><span class="toc-text">开发者生产力趋势</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#重新部署应用的时间"><span class="toc-text">重新部署应用的时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#如果节省重新部署的时间你会做什么？"><span class="toc-text">如果节省重新部署的时间你会做什么？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-text">参考</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="https://static.howardliu.cn/cover/sea-5382487_1920.jpeg" alt="2022 年 Java 行业分析报告"></p>
+<p>你好，我是看山。</p>
+<p>前段时间介绍了从 Java8 到 Java17 每个版本比较有特点的新特性（收录在 <a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378#wechat_redirect" target="_blank" rel="noopener">从小工到专家的 Java 进阶之旅</a> 专栏），今天看到 JRebel 发布了《2022 年 Java 发展趋势和分析》，于是借此分析一下 Java 行业的现状，希望给大家一些参考。</p>
+<a id="more"></a>
+
+<blockquote>
+<p>JRebel 是通过调研问卷的方式总结的报告，涉及了不同国家、不同岗位、不同公司规模、不同行业，相对来说，该调查报告是有一定参考意义的。</p>
+</blockquote>
+<h2 id="Java-语言及开发趋势"><a href="#Java-语言及开发趋势" class="headerlink" title="Java 语言及开发趋势"></a>Java 语言及开发趋势</h2><h3 id="Java8-的占比还是比较高"><a href="#Java8-的占比还是比较高" class="headerlink" title="Java8 的占比还是比较高"></a>Java8 的占比还是比较高</h3><p>我们先来看下大家都在使用的 Java 版本（包括 JVM 语言：Kotlin、Groovy、Scala）：</p>
+<p><img src="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/6.png" alt="Java 各版本语言占比"></p>
+<p>从结果我们可以看到，Java8 占比 37%，Java11 占比 29%，甚至有 12%的被调查者使用了高于 Java12 的版本。</p>
+<p>Java8 是 2014 年发布，相较于之前版本，增加了 Lambda 表达式、Stream 流式处理等一种优秀的 API。至今已 8 年时间，Java 版本也是从 8 一直升到了 17。版本号一直在增加，却没有增加特别吸引人的语言特性。</p>
+<p>哪些因素是大家升级的动力呢？</p>
+<p><img src="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/9.png" alt="升级的动力"></p>
+<p>可以看到，主要的升级因素包括 LTS 版本（25%）、安全性（23%）、性能（20%），新特性（18%）和随大流（14%）占比低一些。</p>
+<p>从这点我们也就知道为什么 Java11 之后的版本占比并不高了，随着 Java17 的发布，可能 Java8 和 Java11 的占比会降低。安全性方面，除非是严重的漏洞，一般 Java 开发团队会通过补丁的方式升级，不会影响大版本号占比。</p>
+<p>性能方面，Java 团队一直在不断优化，随着 G1、ZGC、Shenandoah 等一众优秀的 GC 被添加进来，这也成为大家从 Java8 升级的重要原因。</p>
+<p>就功能特性而言，Java11 之后增加了 Record 类型、密封类、instanceof 模式匹配、Swtich 表达式和模式匹配等一些语法糖。这些新特性，也能够提升升级到 Java17 的意愿。</p>
+<h3 id="升级-Java17-的意愿还是比较强的"><a href="#升级-Java17-的意愿还是比较强的" class="headerlink" title="升级 Java17 的意愿还是比较强的"></a>升级 Java17 的意愿还是比较强的</h3><p>Java17 是 2021 年下半年发布的 LTS 版本（长期支持版）。</p>
+<p>我们看下大家升级的意愿：</p>
+<p><img src="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/10.png" alt="升级 Java17 的意愿"></p>
+<p>从结果可以看出来，有 37%的人会在未来 6 个月内升级，有 25%的人会在 6-12 个月内升级，不会升级的占比仅占 8%。</p>
+<p>可见，有 62%的人会在未来一年内升级到 Java17，大家的升级意愿还是比较强的。</p>
+<h3 id="OracleJDK-和-OpenJDK-占据过半市场"><a href="#OracleJDK-和-OpenJDK-占据过半市场" class="headerlink" title="OracleJDK 和 OpenJDK 占据过半市场"></a>OracleJDK 和 OpenJDK 占据过半市场</h3><p>我们都知道，市面上有很多的 JDK 版本，在 Oracle 起诉 Google 侵权之前，非企业特供的情况下，我们基本上用的都是 OracleJDK，后来因为容器中使用 JDK 版本的版权问题，容器中大部分使用了 OpenJDK。</p>
+<p>从问卷结果也反映了这种情况：</p>
+<p><img src="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/13.png" alt="JRE/JDK 各种版本的市场份额"></p>
+<p>OracleJDK 的版本占比 36%，OpenJDK 的版本占比 43%，其中包括标准 OpenJDK 和 AdoptOpenJDK 版本。</p>
+<p>有些同学会疑惑 OracleJDK 和 OpenJDK 的区别在哪？我们日常用到的部分，没有任何区别。</p>
+<h3 id="Java-应用架构趋势"><a href="#Java-应用架构趋势" class="headerlink" title="Java 应用架构趋势"></a>Java 应用架构趋势</h3><p>这个问题的结果有些出乎我的预料：</p>
+<p><img src="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/14.png" alt="Java 应用架构趋势"></p>
+<p>各种架构风格中，微服务架构仅占 32%，单体架构占比 22%，模块化单体架构占比 13%，SOA 架构占比 12%。</p>
+<p>从结果来看，这个问卷的对架构风格的定义和分类比较细腻。</p>
+<p>很多公司把系统的服务化、模块化也统称为了微服务，这是一种很严重的错误，在之前的文章 <a href="https://mp.weixin.qq.com/s/b7my-EHc0fGOE3veeQyxBg" target="_blank" rel="noopener">《微服务架构的陷阱：从单体到分布式单体》</a> 中介绍过这种错误。</p>
+<p>推荐阅读：</p>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/09ILTzijUr3knHBj13t_kQ" target="_blank" rel="noopener">《什么是微服务？》</a></li>
+<li><a href="https://mp.weixin.qq.com/s/n1eKTlLP_BbyBkKG4OyLSw" target="_blank" rel="noopener">《微服务编程范式》</a></li>
+<li><a href="https://mp.weixin.qq.com/s/NcftJ1jNAd-DHpzBXKk8RA" target="_blank" rel="noopener">《从单体架构到微服务架构》</a>。</li>
+</ul>
+<blockquote>
+<p>这里不对架构风格做出评价，架构只有合适与否，没有优劣之分。</p>
+</blockquote>
+<h2 id="微服务架构趋势"><a href="#微服务架构趋势" class="headerlink" title="微服务架构趋势"></a>微服务架构趋势</h2><p>既然微服务架构占比高一些，我们就来看一下微服务架构的应用趋势。</p>
+<h3 id="微服务架构的应用状态"><a href="#微服务架构的应用状态" class="headerlink" title="微服务架构的应用状态"></a>微服务架构的应用状态</h3><p><img src="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/17.png" alt="微服务架构使用状态"></p>
+<p>从结果来看，有 44%的人团队已经是完全微服务架构了，还有 44%的团队在向微服务架构迁移。可见，在 Java 行业中，微服务架构是得到大家普遍认可的。</p>
+<blockquote>
+<p>但是这个结果与上面的架构风格占比结果有出入，可能是问卷题目设计问题，或者问题回答者的主观原因，不能够苛求结果准确性。</p>
+</blockquote>
+<h3 id="每个应用中微服务的数量"><a href="#每个应用中微服务的数量" class="headerlink" title="每个应用中微服务的数量"></a>每个应用中微服务的数量</h3><p><img src="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/18.png" alt="每个应用中微服务的数量"></p>
+<p>既然是微服务架构，每个应用中服务数量必然超过 1 个。从结果可以看出来，有 54%的应用中少于 10 个服务，还有 22%的应用服务数量超过 20 个。</p>
+<p><img src="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/18-1.png" alt="微服务数量与公司规模的关系"></p>
+<p>按照公司规模维度，越是大公司，每个应用中服务数量越多，结果符合康威定律的。从大家普遍实践结果看，当团队规模较小时，要尽量减少微服务数量。市面上很多老师会告诉我们，微服务架构要按照业务域拆分，但是你要知道，如果团队规模不大，即使拆分了业务域，可能最终开发调试维护也只有你一个。</p>
+<h3 id="SpringBoot-几乎霸占了整个微服务市场"><a href="#SpringBoot-几乎霸占了整个微服务市场" class="headerlink" title="SpringBoot 几乎霸占了整个微服务市场"></a>SpringBoot 几乎霸占了整个微服务市场</h3><p><img src="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/22.png" alt="微服务框架的使用度"></p>
+<p>从结果看，SpringBoot 几乎霸占了整个微服务市场。所以，大家在日常工作学习过程中，还是主要看看 SpringBoot 栈吧。</p>
+<p>在国内，SpringBoot 技术栈还会细分为 SpringNetflixCloud 栈、SpringAlibabaCloud 栈、SpringBoot+Dubbo 栈等。</p>
+<p>不同的技术栈中组件有些差异，所以我们需要掌握的不是简单的应用，还要了解其中的原理。原理掌握了，不同的组价只是在应用层面的差异。</p>
+<h3 id="启动时间在增长"><a href="#启动时间在增长" class="headerlink" title="启动时间在增长"></a>启动时间在增长</h3><p>随着公司业务的增长，应用中会增加各种各样的新功能。问卷中有个问题是关于随着时间推移，微服务启动时间的变化：</p>
+<p><img src="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/24.png" alt="启动时间在增长"></p>
+<p>可见，有 60%的服务启动时间都在增加，甚至有 13%的应用启动时间增长超过 50%，有 30%的应用启动时间增长范围在 10%-50%。</p>
+<p>为什么启动时间会增长呢？这个与公司业务增长后，代码增加了很多新功能有关。随着功能增加、类的增加，系统体积增大、加载类数量增大，启动时间会随之增加。这会引起系统的腐化，当腐化到一定程度，可能就需要重构了。或者随着业务增长，原来的微服务边界划分不合适了，需要重新划分系统边界，拆分微服务。</p>
+<h3 id="启动需要多长时间"><a href="#启动需要多长时间" class="headerlink" title="启动需要多长时间"></a>启动需要多长时间</h3><p>既然微服务总体的启动时间在增长，那启动时间一般是多久呢？</p>
+<p><img src="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/24.png" alt="启动需要多长时间"></p>
+<p>可以看到，只有 9%的服务在 1 分钟内启动成功，有 26%的服务启动时间需要 10 分钟以上。</p>
+<p><img src="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/24-1.png" alt="不同公司规模服务启动时间分布"></p>
+<p>从上图可以看出来，人员规模大于 100 人的公司中，服务启动时间普遍长于少于 100 人的公司。产生这种情况的原因有这么几个：</p>
+<ol>
+<li>公司规模大一些，可能业务复杂一些，服务中的代码、类库更多一些；</li>
+<li>公司规模大一些，依赖的组件更多一些，在服务启动时，需要与各种中间件建立链接，然后彼此交换成功心跳，自然需要时间更多。</li>
+</ol>
+<p>采用微服务其中一个好处是服务足够小，启动时间比较少。但是，从上面两个问卷结果来看，普遍情况是启动时间比较长，而且在变得更长。</p>
+<h2 id="Java-技术趋势"><a href="#Java-技术趋势" class="headerlink" title="Java 技术趋势"></a>Java 技术趋势</h2><h3 id="Java-应用超过半数使用了容器部署"><a href="#Java-应用超过半数使用了容器部署" class="headerlink" title="Java 应用超过半数使用了容器部署"></a>Java 应用超过半数使用了容器部署</h3><p><img src="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/27.png" alt="Java 应用超过半数使用了容器部署"></p>
+<p>从问卷结果可以看到，Docker 使用率是 41%，Kubernetes 使用率是 26%，VMware 使用率是 16%，Vagrant 使用率是 3%，即有 86%已经实现了虚拟化，其中 Docker、Kubernetes 占比最高。</p>
+<p>所以在 Java 升级版本特性中，实现了容器感知的能力，使 Java 服务容器化更容易一些。</p>
+<h3 id="PaaS-平台还得看-AWS"><a href="#PaaS-平台还得看-AWS" class="headerlink" title="PaaS 平台还得看 AWS"></a>PaaS 平台还得看 AWS</h3><p><img src="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/29.png" alt="PaaS 平台"></p>
+<p>JRebel 的这个问卷调查是全球性质的，从全球范围看，AWS 当之无愧的 NO.1。AWS 作为亚马逊曾经的附属产业，已经成为了亚马逊的重要业务之一。</p>
+<p>与亚马逊的经历类似，阿里巴巴从电商切入，然后布局云服务（阿里云）。如果还是走亚马逊的老路，势必没法超越。不过阿里从很多年前开始布局 CPU 和芯片领域，如果能够有所突破，就可以破开西方技术的封锁，依托我国的发展潜力，未必不能撼动亚马逊的 PaaS 服务商地位。</p>
+<h3 id="近半数服务端使用-Tomcat-容器"><a href="#近半数服务端使用-Tomcat-容器" class="headerlink" title="近半数服务端使用 Tomcat 容器"></a>近半数服务端使用 Tomcat 容器</h3><p><img src="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/30.png" alt="应用服务器"></p>
+<p>前面关于微服务的问题中，SpringBoot 是众多微服务框架中的首选，SpringBoot 默认的应用容器是 Tomcat。加之 Tomcat 的开源方式，将近半数应用服务器选择 Tomcat 也是预料之中。</p>
+<h3 id="Maven-是主要的构建工具"><a href="#Maven-是主要的构建工具" class="headerlink" title="Maven 是主要的构建工具"></a>Maven 是主要的构建工具</h3><p><img src="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/31.png" alt="构建共建"></p>
+<p>Maven 和 Gradle 到底该用哪个？这个问题似乎争论许久。从问卷结果看，Maven 占有率是 68%，Gradle 占有率是 23%，Maven 还是有绝对的优势。</p>
+<p>Gradle 采用了约定大于配置的方式，与 SpringBoot 的理念一致。但是从市场接受度和发展而言，并没有形成替换 Maven 的风潮。Android 项目默认使用 Gradle，能够看出 Google 对 Gradle 的推崇，也从侧面印证 Gradle 的优秀。但是，Gradle 并没有绝对优势。</p>
+<h3 id="近半数开发者使用-IntelliJ-IDEA"><a href="#近半数开发者使用-IntelliJ-IDEA" class="headerlink" title="近半数开发者使用 IntelliJ IDEA"></a>近半数开发者使用 IntelliJ IDEA</h3><p><img src="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/32.png" alt="IDE"></p>
+<p>我是从 2015 年开始使用 IntelliJ IDEA，试用之后立马抛弃了 Eclipse。首先是快捷键的设计，可以很大程度摆脱鼠标。内置的插件市场，可以找到任何需要的插件，提升编程体验。更关键的是，JetBrains 公司出品的 IDE，可以无缝对接，实现不同语言的编程支持。</p>
+<p>Eclips 也不是一无是处，它的插件体系也是相当丰富，很多低代码开发工具都是基于 Eclipse 开发的。如果是普通开发，推荐使用 IntelliJ IDEA；如果想要做低代码工具，可以考虑对 Eclipse 进行二次开发。</p>
+<h2 id="开发者生产力趋势"><a href="#开发者生产力趋势" class="headerlink" title="开发者生产力趋势"></a>开发者生产力趋势</h2><p>这一部分属于 JRebel 有私心的部分，JRebel 一个优势功能是提供热部署能力，所以会在问卷中询问被调查者重新部署应用的时间。</p>
+<h3 id="重新部署应用的时间"><a href="#重新部署应用的时间" class="headerlink" title="重新部署应用的时间"></a>重新部署应用的时间</h3><p>很多时候，我们可能只改动一行代码，然后验证功能是不是正常，这个时候需要重新部署应用。JRebel 统计了重新部署需要花费的时间。</p>
+<p><img src="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/38.png" alt="重新部署应用的时间"></p>
+<p>从结果上看，重新部署需要超过 3 分钟时间的占 50%，其中 21%的比率需要 10 分钟以上。那这段时间，大家会干什么？</p>
+<h3 id="如果节省重新部署的时间你会做什么？"><a href="#如果节省重新部署的时间你会做什么？" class="headerlink" title="如果节省重新部署的时间你会做什么？"></a>如果节省重新部署的时间你会做什么？</h3><p><img src="https://static.howardliu.cn/jrebel-2022-java-developer-productivity-report/41.png" alt="重新部署时大家在做什么"></p>
+<p>有 28%会增加新功能；有 20%会优化系统性能；有 19%会完善测试覆盖。这些都是正向的，大概率的是那些回答其他的：喝咖啡、喝啤酒、开趴、睡觉、钓鱼……</p>
+<p>不过也是符合我们工作的原因：我们工作是为了生活，而不是为了加班。所以，假如每天给你 1 小时的自由时间，你会用来做什么呢？欢迎评论区讨论。</p>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><ol>
+<li>微服务的使用情况来看，启动时间和重新部署时间不是优先考虑的因素。多数选择微服务架构的原因无非有两个：<ol>
+<li>看中微服务架构流行趋势，听说这个很好，那就开始用，至于是微服务架构还是分布式单体架构，就不重要了；</li>
+<li>微服务的优势能够弥补带来的弊端，比如业务迭代速度等；</li>
+</ol>
+</li>
+<li>微服务收康威定律影响比较大；</li>
+<li>技术在不断革新，但是大家会比较理性地接受。公司规模越大，越趋于选择成熟的技术；</li>
+<li>容器已经是大势，需要掌握。</li>
+</ol>
+<p>技术不断发展，我们需要学习的东西越来越多，很多时候感觉学不动了。但既然选择了这个行业，拿着高于其他行业的薪资，也承担着各种裁员的风险，总归是要有一些技能傍身，才不至于被历史的车轮碾成粉末。</p>
+<p>青山不改，绿水长流，我们下次见。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://www.i-programmer.info/news/80-java/15317-wheres-java-going-in-2022.html" target="_blank" rel="noopener">https://www.i-programmer.info/news/80-java/15317-wheres-java-going-in-2022.html</a></li>
+<li><a href="https://www.jrebel.com/resources/java-developer-productivity-report-2022" target="_blank" rel="noopener">https://www.jrebel.com/resources/java-developer-productivity-report-2022</a></li>
+</ul>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://mp.weixin.qq.com/s/7f5dcjjKLdBYpzS5p7_v7Q" target="_blank" rel="noopener">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/JOLrw7cbVh8z2czePEfLjw" target="_blank" rel="noopener">一文掌握 Java8 的 Optional 的 6 种操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Vhw-2lgCvmhNI5aeXOWYNg" target="_blank" rel="noopener">使用 Lambda 表达式实现超强的排序功能</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Srv6733byTYDg7hTrW_tdw" target="_blank" rel="noopener">Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API</a></li>
+<li><a href="https://mp.weixin.qq.com/s/LRydpL89GsjOeTrLrihyYQ" target="_blank" rel="noopener">Java8 的时间库（2）：Date 与 LocalDate 或 LocalDateTime 互相转换</a></li>
+<li><a href="https://mp.weixin.qq.com/s/KmBMLG1y73IUwFuSfUKaEQ" target="_blank" rel="noopener">Java8 的时间库（3）：开始使用 Java8 中的时间类</a></li>
+<li><a href="https://mp.weixin.qq.com/s/PxC0WQMReIeG0Tyl5WiK1Q" target="_blank" rel="noopener">Java8 的时间库（4）：检查日期字符串是否合法</a></li>
+<li><a href="https://mp.weixin.qq.com/s/rjMOq0QAdiWNacKYqHJqXA" target="_blank" rel="noopener">Java8 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/FHv963s0Qvh2K5r2tdLATA" target="_blank" rel="noopener">Java9 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/NY5-qkfZGdaOvz9iyJ3VSQ" target="_blank" rel="noopener">Java10 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/baBv0mP2JmPE4MoNYESqhA" target="_blank" rel="noopener">Java11 中基于嵌套关系的访问控制优化</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Bn4S2OfMoG19lI-L3nw8cg" target="_blank" rel="noopener">Java11 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/xBjXHC5UWy4JEKaRo6xQsg" target="_blank" rel="noopener">Java12 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/9EdRVPK0GUoQqI7eXcmwEA" target="_blank" rel="noopener">Java13 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/rEAHIf40j_UECLlxK5KW6w" target="_blank" rel="noopener">Java14 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/UESHDzuY3H7p5LLPJfwyAw" target="_blank" rel="noopener">Java15 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/HExV39BU0lSbdtg0aMjbSA" target="_blank" rel="noopener">Java16 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/By2JoZqAHA6U36PG8qvCcg" target="_blank" rel="noopener">Java17 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378#wechat_redirect" target="_blank" rel="noopener">从小工到专家的 Java 进阶之旅</a></li>
+</ul>
+<hr>
+<p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/java-developer-productivity-report-2022">2022 年 Java 行业分析报告</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/article/details/125356270" target="_blank" rel="noopener">2022 年 Java 行业分析报告</a></p>
+<center><b>👇🏻欢迎关注我的公众号「看山的小屋」，领取精选资料👇🏻</b></center>
+
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/Java/">Java</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/java-17-features/">
+                <i class="icon-next">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java17 的新特性</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://www.howardliu.cn/images/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/缓存/" style="font-size: 15px;">缓存</a> <a href="/tags/解决方案/" style="font-size: 15px;">解决方案</a> <a href="/tags/任务队列/" style="font-size: 15px;">任务队列</a> <a href="/tags/任务/" style="font-size: 15px;">任务</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/事件驱动/" style="font-size: 15px;">事件驱动</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/分布式/" style="font-size: 15px;">分布式</a> <a href="/tags/架构设计/" style="font-size: 15px;">架构设计</a> <a href="/tags/短链服务/" style="font-size: 15px;">短链服务</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/go/" style="font-size: 15px;">go</a> <a href="/tags/开发指南/" style="font-size: 15px;">开发指南</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/Effective-Java/" style="font-size: 15px;">Effective Java</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/EasyExcel/" style="font-size: 15px;">EasyExcel</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Java10/" style="font-size: 15px;">Java10</a> <a href="/tags/Java11/" style="font-size: 15px;">Java11</a> <a href="/tags/Java12/" style="font-size: 15px;">Java12</a> <a href="/tags/Java13/" style="font-size: 15px;">Java13</a> <a href="/tags/Java14/" style="font-size: 15px;">Java14</a> <a href="/tags/Java15/" style="font-size: 15px;">Java15</a> <a href="/tags/Java16/" style="font-size: 15px;">Java16</a> <a href="/tags/Java8/" style="font-size: 15px;">Java8</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/Java17/" style="font-size: 15px;">Java17</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/thread/" style="font-size: 15px;">thread</a> <a href="/tags/synchronized/" style="font-size: 15px;">synchronized</a> <a href="/tags/Date/" style="font-size: 15px;">Date</a> <a href="/tags/Time/" style="font-size: 15px;">Time</a> <a href="/tags/Java9/" style="font-size: 15px;">Java9</a>
+    </div>
+</div>
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/java-developer-productivity-report-2022/">2022 年 Java 行业分析报告</a></li><li class="post-list-item"><a class="post-list-link" href="/java-17-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java17 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java-16-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java16 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java-15-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java15 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java-14-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java14 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java-13-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java13 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/2022-spring-festival/">从春运迁徙图看到的一些东西</a></li><li class="post-list-item"><a class="post-list-link" href="/java-12-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java12 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java-11-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java11 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java-11-jep181-nestmate/">Java11 中基于嵌套关系的访问控制优化</a></li></ul>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">2022年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">2022年05月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">2022年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">2022年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">2022年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">2022年01月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">2021年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">2021年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">2021年10月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">2021年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">2021年08月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">2021年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2022</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

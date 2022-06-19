@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/java-developer-productivity-report-2022/</loc>
+    
+    <lastmod>2022-06-19T03:23:42.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/java-17-features/</loc>
     
     <lastmod>2022-05-14T02:37:39.000Z</lastmod>
@@ -772,14 +779,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
+    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
+    <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     

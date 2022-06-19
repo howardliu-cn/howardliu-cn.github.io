@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.howardliu.cn/java-developer-productivity-report-2022/</loc>
+    <lastmod>2022-06-19</lastmod>
+  </url>  <url>
     <loc>https://www.howardliu.cn/java-17-features/</loc>
     <lastmod>2022-05-14</lastmod>
   </url>  <url>
@@ -328,10 +331,10 @@
     <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
+    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
+    <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/reprint-10-reasons-to-replace-your-jsps-with-freemarker-templates/</loc>
