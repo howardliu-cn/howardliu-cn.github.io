@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.howardliu.cn/springboot-action-messagesource/</loc>
+    <lastmod>2022-07-30</lastmod>
+  </url>  <url>
     <loc>https://www.howardliu.cn/transmittable-thread-local-make-trouble/</loc>
     <lastmod>2022-07-30</lastmod>
   </url>  <url>
@@ -229,10 +232,10 @@
     <loc>https://www.howardliu.cn/main-thread-waiting-for-the-end-of-subthread/</loc>
     <lastmod>2021-05-12</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/talk-about-CyclicBarrier-again/</loc>
+    <loc>https://www.howardliu.cn/talk-about-CountDownLatch-again/</loc>
     <lastmod>2021-05-12</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/talk-about-CountDownLatch-again/</loc>
+    <loc>https://www.howardliu.cn/talk-about-CyclicBarrier-again/</loc>
     <lastmod>2021-05-12</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/longest-substring-without-repeating-character/</loc>
@@ -352,10 +355,10 @@
     <loc>https://www.howardliu.cn/hadoop-environment-cluster-setup/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
+    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
+    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
