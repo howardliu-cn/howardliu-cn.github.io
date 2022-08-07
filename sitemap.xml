@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.howardliu.cn/springboot-action-messagesource-principle/</loc>
+    
+    <lastmod>2022-08-07T13:04:19.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.howardliu.cn/springboot-action-messagesource/</loc>
     
     <lastmod>2022-07-30T03:26:55.000Z</lastmod>
@@ -758,14 +765,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hbase-environment-standalone-model/</loc>
+    <loc>https://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
     
     <lastmod>2020-07-28T05:48:04.720Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
+    <loc>https://www.howardliu.cn/hbase-environment-standalone-model/</loc>
     
     <lastmod>2020-07-28T05:48:04.720Z</lastmod>
     
@@ -807,14 +814,14 @@
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
+    <loc>https://www.howardliu.cn/reprint-10-reasons-to-replace-your-jsps-with-freemarker-templates/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.howardliu.cn/reprint-10-reasons-to-replace-your-jsps-with-freemarker-templates/</loc>
+    <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
     
     <lastmod>2020-07-28T05:48:04.719Z</lastmod>
     
