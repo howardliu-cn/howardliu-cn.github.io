@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SpringBoot 实战：国际化组件 MessageSource 与 Nacos 组合实现动态配置能力||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="前面介绍了 Spring 的 MessageSource 组件的用法、执行逻辑和源码，本文我们将根据前面的知识，实现自己的动态刷新的国际化组件。">
+<meta name="keywords" content="SpringBoot,SpringBoot 实战,SpringBoot 手册,MessageSource,ResourceBundleMessageSource,ReloadableResourceBundleMessageSource,Nacos">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot 实战：国际化组件 MessageSource 与 Nacos 组合实现动态配置能力">
+<meta property="og:url" content="https://www.howardliu.cn/springboot-action-messagesource-nacos/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="前面介绍了 Spring 的 MessageSource 组件的用法、执行逻辑和源码，本文我们将根据前面的知识，实现自己的动态刷新的国际化组件。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://static.howardliu.cn/cover/jellyfish-g1ec9e22b7_1920.jpeg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="og:updated_time" content="2022-08-14T02:52:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringBoot 实战：国际化组件 MessageSource 与 Nacos 组合实现动态配置能力">
+<meta name="twitter:description" content="前面介绍了 Spring 的 MessageSource 组件的用法、执行逻辑和源码，本文我们将根据前面的知识，实现自己的动态刷新的国际化组件。">
+<meta name="twitter:image" content="https://static.howardliu.cn/cover/jellyfish-g1ec9e22b7_1920.jpeg">
+
+<meta name="keywords" content="SpringBoot,SpringBoot 实战,SpringBoot 手册,MessageSource,ResourceBundleMessageSource,ReloadableResourceBundleMessageSource,Nacos">
+
+
+<meta name="description" content="前面介绍了 Spring 的 MessageSource 组件的用法、执行逻辑和源码，本文我们将根据前面的知识，实现自己的动态刷新的国际化组件。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+<link rel="icon" href="/favicon.png">
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/styles/vs2015.min.css">
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/springboot-action-messagesource-nacos/">SpringBoot 实战：国际化组件 MessageSource 与 Nacos 组合实现动态配置能力</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2022-08-14</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/springboot-action-messagesource-nacos/" class="leancloud_visitors" data-flag-title="SpringBoot 实战：国际化组件 MessageSource 与 Nacos 组合实现动态配置能力">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#几个关键点"><span class="toc-text">几个关键点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文件名"><span class="toc-text">文件名</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#加载方式"><span class="toc-text">加载方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#动态刷新"><span class="toc-text">动态刷新</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#发散一下"><span class="toc-text">发散一下</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="https://static.howardliu.cn/cover/jellyfish-g1ec9e22b7_1920.jpeg" alt="SpringBoot 实战：国际化组件 MessageSource 与 Nacos 组合实现动态配置能力"></p>
+<p>你好，我是看山。</p>
+<p>前面介绍了 Spring 的 MessageSource 组件的用法、执行逻辑和源码，本文我们将根据前面的知识，实现自己的动态刷新的国际化组件。</p>
+<a id="more"></a>
+
+<p>现在大家都用的是微服务，为了高可用，每个服务部署时最少两个实例。</p>
+<ul>
+<li>如果使用<code>ResourceBundleMessageSource</code>实现国际化，每次修改配置文件，都需要重启服务。</li>
+<li>如果使用<code>ReloadableResourceBundleMessageSource</code>，我们可以借助多个服务挂在同一个磁盘或同一个卷读取同一个配置文件，借助远程工具，修改文件实现动态配置内容的修改。但是这就涉及到文本编辑，不能很好的实现审计记录和文件管控。</li>
+</ul>
+<p>所以，我们要实现一个适用于微服务架构、方便修改、具备审计功能的动态的国际化配置组件。本文选择 Nacos 实现，Nacos 有配置中心的能力，适合在微服务架构中使用，同时也具备方便修改和审计能力，只要我们实现从 Nacos 加载国际化配置的能力，就可以轻松实现目标。</p>
+<h2 id="几个关键点"><a href="#几个关键点" class="headerlink" title="几个关键点"></a>几个关键点</h2><p>Spring 提供的默认实现中，<code>ReloadableResourceBundleMessageSource</code>实现了动态刷新的能力，只不过是从文件读取内容，我们可以借助<code>ReloadableResourceBundleMessageSource</code>的逻辑实现，只是将其改为从 Nacos 读取内容。</p>
+<p>这个实现，通常可以有两种方案（假设我们新实现的类命名为<code>NacosBundleMessageSource</code>）：</p>
+<ol>
+<li>继承<code>ReloadableResourceBundleMessageSource</code>：重写读取配置的方法，然后通过 Spring 注入新的方法。这种方式有优点和缺点：<ol>
+<li>优点 1：我们可以保持与<code>ReloadableResourceBundleMessageSource</code>相似的结构和执行逻辑，当 Spring 进行升级的时候，我们直接通过继承获取了能力；</li>
+<li>优点 2：我们只需要覆盖几个关键方法，需要重写的方法比较少；</li>
+<li>缺点 1：当我们期望在系统中引入多种类型的 MessageSource 组件时，就不能简单的通过类型加载了。比如<code>applicationContext.getBean(ReloadableResourceBundleMessageSource.class)</code>会找到<code>ReloadableResourceBundleMessageSource</code>和<code>NacosBundleMessageSource</code>两个 Bean，Spring 容器就不知道该返回哪个了；</li>
+<li>缺点 2：虽然继承能够少写代码，但是一旦 Spring 修改了执行逻辑，我们的<code>NacosBundleMessageSource</code>就可能需要重写。</li>
+</ol>
+</li>
+<li>模仿<code>ReloadableResourceBundleMessageSource</code>：完全实现自己的一个动态加载类。与第一种的优缺点正好相反：<ol>
+<li>优点 1：完全不同的类，Bean 对应的 class 类型不同，<code>applicationContext.getBean</code>可以通过 class 类型获取；</li>
+<li>优点 2：与<code>ReloadableResourceBundleMessageSource</code>的类定义没有关系，除非 Spring 修改底层逻辑，否则不会因为<code>ReloadableResourceBundleMessageSource</code>的变动出现不兼容的情况；</li>
+<li>缺点 1：当 Spring 对<code>ReloadableResourceBundleMessageSource</code>进行升级，提出更加优化的写法，我们就需要重写<code>NacosBundleMessageSource</code>了；</li>
+<li>缺点 2：既然是仿写，很多方法都是与<code>ReloadableResourceBundleMessageSource</code>完全相同的重复代码。</li>
+</ol>
+</li>
+</ol>
+<p>考虑到两种方案的优缺点，结合业务中的逻辑，最终选择方案二。</p>
+<h2 id="文件名"><a href="#文件名" class="headerlink" title="文件名"></a>文件名</h2><p>我们要实现的国际化组件，在 Spring 的实现中，使用的是<code>Locale</code>表示指定的区域，在这个类中，定义了三个不同的维度<code>language</code>、<code>country</code>、<code>variant</code>，翻译过来是<code>语言</code>、<code>国家</code>、<code>变种</code>，结合<code>BaseLocale</code>的定义，可以将<code>country</code>看做是语言大类。</p>
+<p>根据前面的介绍，我们的国际化配置文件定义格式是根据<code>Locale</code>格式定义的。比如，basename 是 messages，Locale 是 de_AT_oo 的话，对应的配置文件可以是“messages_de_AT_OO”、“messages_de_AT”、“messages_de”。</p>
+<p>所以我们需要用到递归的方式获取文件名：</p>
+<pre><code class="java">protected List&lt;String&gt; calculateFilenamesForLocale(String basename, Locale locale) {
+    List&lt;String&gt; result = new ArrayList&lt;&gt;(3);
+    String language = locale.getLanguage();
+    String country = locale.getCountry();
+    String variant = locale.getVariant();
+    StringBuilder temp = new StringBuilder(basename);
+
+    temp.append(&#39;_&#39;);
+    if (language.length() &gt; 0) {
+        temp.append(language);
+        result.add(0, temp.toString());
+    }
+
+    temp.append(&#39;_&#39;);
+    if (country.length() &gt; 0) {
+        temp.append(country);
+        result.add(0, temp.toString());
+    }
+
+    if (variant.length() &gt; 0 &amp;&amp; (language.length() &gt; 0 || country.length() &gt; 0)) {
+        temp.append(&#39;_&#39;).append(variant);
+        result.add(0, temp.toString());
+    }
+
+    return result;
+}</code></pre>
+<h2 id="加载方式"><a href="#加载方式" class="headerlink" title="加载方式"></a>加载方式</h2><p>既然是从 Nacos 读取配置，那配置文件的内容就需要通过 Nacos 获取。这里使用了<code>NacosConfigManager</code>获取：</p>
+<pre><code class="java">protected Properties loadProperties(String filename) throws IOException, NacosException {
+    final Properties props = newProperties();
+    final String dataId = filename + NacosConstants.PROPERTIES_SUFFIX;
+    logger.info(&quot;Loading properties for &quot; + dataId);
+    final String config = nacosConfigManager.getConfigService().getConfig(dataId, nacosGroup, 5000);
+    if (StringUtils.hasText(config)) {
+        logger.info(&quot;No properties found for &quot; + dataId);
+        throw new NoSuchFileException(dataId);
+    }
+
+    try (Reader reader = new StringReader(config)) {
+        this.propertiesPersister.load(props, reader);
+        logger.info(&quot;Loaded properties for &quot; + dataId);
+    }
+    return props;
+}</code></pre>
+<p>方法传入的<code>filename</code>就是从上一节中获取的文件名。当然，文件名是我们计算出来的，可能不存在，此处直接抛出<code>NoSuchFileException</code>，由上层逻辑捕捉处理：</p>
+<pre><code class="java">protected PropertiesHolder refreshProperties(String filename, @Nullable PropertiesHolder propHolder) {
+    long refreshTimestamp = (getCacheMillis() &lt; 0 ? -1 : System.currentTimeMillis());
+
+    try {
+        Properties props = loadProperties(filename);
+        propHolder = new PropertiesHolder(props, -1);
+    } catch (NacosException ex) {
+        if (logger.isWarnEnabled()) {
+            logger.warn(&quot;Could not get properties form nacos &quot;, ex);
+        }
+        // Empty holder representing &quot;not valid&quot;.
+        propHolder = new PropertiesHolder();
+    } catch (IOException ex) {
+        if (logger.isInfoEnabled()) {
+            logger.info(&quot;Could not get properties form nacos, the message is &quot; + ex.getMessage());
+        }
+        // Empty holder representing &quot;not valid&quot;.
+        propHolder = new PropertiesHolder();
+    }
+
+    propHolder.setRefreshTimestamp(refreshTimestamp);
+    this.cachedProperties.put(filename, propHolder);
+    logger.info(&quot;Refreshed properties for &quot; + filename);
+    return propHolder;
+}</code></pre>
+<p>我们可以看到，从 Nacos 中读取配置逻辑的上层会捕捉<code>Exception</code>，然后创建一个空的配置管理器。此处会有两个异常：</p>
+<ul>
+<li><code>NacosException</code>：读取 Nacos 失败抛出的异常，包括 Nacos 链接不正确或者是读取失败等；</li>
+<li><code>IOException</code>：没有指定文件名的配置时会抛出 IOException。</li>
+</ul>
+<h2 id="动态刷新"><a href="#动态刷新" class="headerlink" title="动态刷新"></a>动态刷新</h2><p>前一节讲了加载 Nacos 配置文件的方式，本节说一下怎么实现 Nacos 配置文件的监听，动态刷新配置内容。</p>
+<p>我们先介绍一下实现 Nacos 监听的几个类：</p>
+<ul>
+<li>NacosRefreshHistory：nacos 配置文件刷新的历史记录，会保存 Nacos 配置文件的刷新历史，最多存储 20 个；</li>
+<li>ConfigService：一般使用的时候是 NacosConfigService 类，这个类是使用<code>NacosConfigManager#getConfigService</code>通过反射创建的，用于存储 Nacos 监听器，实现监听逻辑；</li>
+<li>Listener：这个就是具体的监听器了，在我们的例子中，使用的是<code>AbstractSharedListener</code>的匿名子类，实现动态刷新的逻辑就在这个类里。</li>
+</ul>
+<p>首先，我们当前组件是 MessageSource，用于实现国际化的组件。这个组件是在整个应用就绪后再加载就行，所以，我们监听 Spring 的<code>ApplicationReadyEvent</code>事件即可。</p>
+<pre><code class="java">@Override
+public void onApplicationEvent(ApplicationReadyEvent event) {
+    // many Spring context
+    if (this.ready.compareAndSet(false, true)) {
+        for (Locale defaultLocale : this.nacosBundleMessageSource.defaultLocales()) {
+            this.nacosBundleMessageSource.getMergedProperties(defaultLocale);
+        }
+        this.registerNacosListenersForApplications();
+    }
+}</code></pre>
+<p>然后是我们需要对所有可能的配置文件进行监听，就需要用到前文的<code>calculateFilenamesForLocale</code>方法，计算所有可能出现的名字。</p>
+<pre><code class="java">private void registerNacosListenersForApplications() {
+    if (!isRefreshEnabled()) {
+        return;
+    }
+
+    this.nacosBundleMessageSource.getBasenameSet().stream()
+            .map(basename -&gt; this.nacosBundleMessageSource.defaultLocales().stream()
+                    .map(locale -&gt; this.nacosBundleMessageSource.calculateAllFilenames(basename, locale))
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList())
+            )
+            .flatMap(List::stream)
+            .forEach(x -&gt; registerNacosListener(nacosBundleMessageSource.getNacosGroup(), x + NacosConstants.PROPERTIES_SUFFIX));
+}</code></pre>
+<p>最后，我们需要向 Nacos 的运行管理器中注册文件监听，实现动态刷新的能力。</p>
+<pre><code class="java">private void registerNacosListener(final String groupKey, final String dataKey) {
+    final String key = NacosPropertySourceRepository.getMapKey(dataKey, groupKey);
+    final Listener listener = listenerMap.computeIfAbsent(key, lst -&gt; new AbstractSharedListener() {
+        @Override
+        public void innerReceive(String dataId, String group, String configInfo) {
+            refreshCountIncrement();
+            nacosRefreshHistory.addRefreshRecord(dataId, group, configInfo);
+            try {
+                nacosBundleMessageSource.forceRefresh(dataId, configInfo);
+                if (log.isDebugEnabled()) {
+                    log.debug(&quot;Refresh Nacos config group={},dataId={},configInfo={}&quot;, group, dataId, configInfo);
+                }
+            } catch (IOException e) {
+                log.warn(&quot;Nacos refresh failed, dataId: {}, group: {}, configInfo: {}&quot;,
+                        dataId, group, configInfo, e);
+            }
+        }
+    });
+    try {
+        configService.addListener(dataKey, groupKey, listener);
+    } catch (NacosException e) {
+        log.warn(&quot;register fail for nacos listener ,dataId=[{}],group=[{}]&quot;, dataKey, groupKey, e);
+    }
+}</code></pre>
+<p>至此，我们获取了国际化组件 MessageSource 与 Nacos 组合实现动态配置能力。本文中的实例已经传到 GitHub，关注公众号「看山的小屋」，回复<code>spring</code>获取源码。</p>
+<h2 id="发散一下"><a href="#发散一下" class="headerlink" title="发散一下"></a>发散一下</h2><p>接下来，我们再重头想一下，我们最初想要实现一个适用于微服务架构、方便修改、具备审计功能的动态的国际化配置组件。选择 Nacos 作为例子，是因为 Nacos 本身实现了动态监听的能力，可以快速复刻<code>ReloadableResourceBundleMessageSource</code>的能力。那 Nacos 具备什么能力呢？</p>
+<ol>
+<li>中心化存储：因为我们想在微服务架构中使用，就不能采用与独立服务耦合的方式，需要所有服务可以读取的方式。比如数据库（包括关系型数据库、非关系型数据库等）、分布式缓存、远程磁盘（或者 Docker 的卷）等；</li>
+<li>可监听：任何配置的修改能够被服务感知，想要做到这个，就是在配置发生修改时，发送一个修改时间，通知监听服务配置被修改。可以采用被动和主动两种方式：<ol>
+<li>被动方式：这个比较简单，只要将组件中的缓存逻辑删除就可以了，每次查询配置都直接存储器中读取，但是这又与性能相悖，一般不采用这个方案；</li>
+<li>主动方式：通过发送事件或者消息的方式，比如采用 CQRS 模式，发生修改时，发送一条消息，各个微服务监听这个消息，重新加载配置；</li>
+</ol>
+</li>
+<li>可审计：这个能力简单说就是要记录每次修改的时间、人物、动作等信息，这个功能是常用功能，这里就不赘述了。</li>
+</ol>
+<p>只要具备上面三个特性，我们可以通过各种组合实现，比如：</p>
+<ol>
+<li>可挂在磁盘</li>
+<li>Git+Hook</li>
+<li>MySQL+Redis+MQ</li>
+<li>……</li>
+</ol>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>本文从实践角度出发，实现了一个适用于微服务架构、方便修改、具备审计功能的动态的国际化配置组件。文中的实例已经传到 GitHub，关注公众号「看山的小屋」，回复<code>spring</code>获取源码。如果是你，你会采用哪种方案呢？欢迎一起讨论。</p>
+<p>青山不改，绿水长流，我们下次见。</p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://mp.weixin.qq.com/s/zUrx7duy0-OY1oYn8FeKOw" target="_blank" rel="noopener">SpringBoot 实战：一招实现结果的优雅响应</a></li>
+<li><a href="https://mp.weixin.qq.com/s/H599Wri3VbjTuLBnf7pD3w" target="_blank" rel="noopener">SpringBoot 实战：如何优雅地处理异常</a></li>
+<li><a href="https://mp.weixin.qq.com/s/fcVE-cE7tDuWKoNNX9rsoQ" target="_blank" rel="noopener">SpringBoot 实战：通过 BeanPostProcessor 动态注入 ID 生成器</a></li>
+<li><a href="https://mp.weixin.qq.com/s/xQQbl6VNF2eCgmQPrMyc4w" target="_blank" rel="noopener">SpringBoot 实战：自定义 Filter 优雅获取请求参数和响应结果</a></li>
+<li><a href="https://mp.weixin.qq.com/s/coKjuefWMmCA4bSkRDIRVA" target="_blank" rel="noopener">SpringBoot 实战：优雅地使用枚举参数</a></li>
+<li><a href="https://mp.weixin.qq.com/s/pet_rA7-O1JD3QfQ1fqxAQ" target="_blank" rel="noopener">SpringBoot 实战：优雅地使用枚举参数（原理篇）</a></li>
+<li><a href="https://mp.weixin.qq.com/s/2OXArNObVejXLvMOmE3oqw" target="_blank" rel="noopener">SpringBoot 实战：在 RequestBody 中优雅地使用枚举参数</a></li>
+<li><a href="https://mp.weixin.qq.com/s/hdioIIwPA2lv2khfRmKhOQ" target="_blank" rel="noopener">SpringBoot 实战：在 RequestBody 中优雅地使用枚举参数（原理篇）</a></li>
+<li><a href="https://mp.weixin.qq.com/s/vbccn0kTdyOlmznDr3RItw" target="_blank" rel="noopener">SpringBoot 实战：JUnit5+MockMvc+Mockito 做好单元测试</a></li>
+<li><a href="https://mp.weixin.qq.com/s/s8PQXLT8Ni3dLqsOgf3syA" target="_blank" rel="noopener">SpringBoot 实战：加载和读取资源文件内容</a></li>
+<li><a href="https://mp.weixin.qq.com/s/dGPhS5vdbnFdiTxkpr2mLg" target="_blank" rel="noopener">SpringBoot 实战：国际化组件 MessageSource</a></li>
+<li><a href="https://mp.weixin.qq.com/s/FzX-nVMl96RwI6ITULhQcQ" target="_blank" rel="noopener">SpringBoot 实战：国际化组件MessageSource的执行逻辑与源码</a></li>
+</ul>
+<hr>
+<p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/springboot-action-messagesource-nacos/">SpringBoot 实战：国际化组件 MessageSource 与 Nacos 组合实现动态配置能力</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">SpringBoot 实战：国际化组件 MessageSource 与 Nacos 组合实现动态配置能力</a></p>
+<center><b>👇🏻欢迎关注我的公众号「看山的小屋」，领取精选资料👇🏻</b></center>
+
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/SpringBoot-实战/">SpringBoot 实战</a>
+            
+            <a href="/tags/SpringBoot/">SpringBoot</a>
+            
+            <a href="/tags/spring/">spring</a>
+            
+            <a href="/tags/SpringBoot-手册/">SpringBoot 手册</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/springboot-action-messagesource-principle/">
+                <i class="icon-next">SpringBoot 实战：国际化组件 MessageSource 的执行逻辑与源码</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://www.howardliu.cn/images/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/微服务/" style="font-size: 15px;">微服务</a> <a href="/tags/云计算/" style="font-size: 15px;">云计算</a> <a href="/tags/概念/" style="font-size: 15px;">概念</a> <a href="/tags/线性代数/" style="font-size: 15px;">线性代数</a> <a href="/tags/矩阵/" style="font-size: 15px;">矩阵</a> <a href="/tags/矩阵乘法/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/双指针/" style="font-size: 15px;">双指针</a> <a href="/tags/滑动窗口/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/八皇后问题/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/方法论/" style="font-size: 15px;">方法论</a> <a href="/tags/架构/" style="font-size: 15px;">架构</a> <a href="/tags/缓存/" style="font-size: 15px;">缓存</a> <a href="/tags/事件驱动/" style="font-size: 15px;">事件驱动</a> <a href="/tags/解决方案/" style="font-size: 15px;">解决方案</a> <a href="/tags/任务队列/" style="font-size: 15px;">任务队列</a> <a href="/tags/任务/" style="font-size: 15px;">任务</a> <a href="/tags/分布式/" style="font-size: 15px;">分布式</a> <a href="/tags/架构设计/" style="font-size: 15px;">架构设计</a> <a href="/tags/短链服务/" style="font-size: 15px;">短链服务</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/中文字符/" style="font-size: 15px;">中文字符</a> <a href="/tags/debug/" style="font-size: 15px;">debug</a> <a href="/tags/transmittable/" style="font-size: 15px;">transmittable</a> <a href="/tags/ttl/" style="font-size: 15px;">ttl</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/系统运维/" style="font-size: 15px;">系统运维</a> <a href="/tags/部署/" style="font-size: 15px;">部署</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/操作技巧/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/自动登录/" style="font-size: 15px;">自动登录</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/go/" style="font-size: 15px;">go</a> <a href="/tags/开发指南/" style="font-size: 15px;">开发指南</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/大数据/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/线程安全/" style="font-size: 15px;">线程安全</a> <a href="/tags/模式/" style="font-size: 15px;">模式</a> <a href="/tags/http-状态码/" style="font-size: 15px;">http 状态码</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ipv4/" style="font-size: 15px;">ipv4</a> <a href="/tags/int/" style="font-size: 15px;">int</a> <a href="/tags/Effective-Java/" style="font-size: 15px;">Effective Java</a> <a href="/tags/EasyExcel/" style="font-size: 15px;">EasyExcel</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/注释/" style="font-size: 15px;">注释</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/规范/" style="font-size: 15px;">规范</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Java11/" style="font-size: 15px;">Java11</a> <a href="/tags/Java10/" style="font-size: 15px;">Java10</a> <a href="/tags/Java12/" style="font-size: 15px;">Java12</a> <a href="/tags/Java13/" style="font-size: 15px;">Java13</a> <a href="/tags/Java15/" style="font-size: 15px;">Java15</a> <a href="/tags/Java14/" style="font-size: 15px;">Java14</a> <a href="/tags/Java16/" style="font-size: 15px;">Java16</a> <a href="/tags/Java17/" style="font-size: 15px;">Java17</a> <a href="/tags/Java8/" style="font-size: 15px;">Java8</a> <a href="/tags/optional/" style="font-size: 15px;">optional</a> <a href="/tags/Java9/" style="font-size: 15px;">Java9</a> <a href="/tags/Date/" style="font-size: 15px;">Date</a>
+    </div>
+</div>
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/springboot-action-messagesource-nacos/">SpringBoot 实战：国际化组件 MessageSource 与 Nacos 组合实现动态配置能力</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-messagesource-principle/">SpringBoot 实战：国际化组件 MessageSource 的执行逻辑与源码</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-messagesource/">SpringBoot 实战：国际化组件 MessageSource</a></li><li class="post-list-item"><a class="post-list-link" href="/transmittable-thread-local-make-trouble/">小心 transmittable-thread-local 的这个坑</a></li><li class="post-list-item"><a class="post-list-link" href="/java-switch/">Switch 块、Switch 表达式、Switch 模式匹配，越来越好用的 Switch</a></li><li class="post-list-item"><a class="post-list-link" href="/java-developer-productivity-report-2022/">2022 年 Java 行业分析报告</a></li><li class="post-list-item"><a class="post-list-link" href="/java-17-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java17 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java-16-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java16 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java-15-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java15 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java-14-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java14 的新特性</a></li></ul>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">2022年08月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">2022年07月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">2022年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">2022年05月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">2022年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">2022年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">2022年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">2022年01月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">2021年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">2021年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">2021年10月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">2021年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">2021年08月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">2021年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <p>Howard Liu &copy; 2022</p>
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn" target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow" href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark" target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</footer>
+
+</div>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="/js/header.js"></script>
+<script src="/js/toc.js"></script>
+<!--[if lt IE 9]>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity="0.9" zindex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
