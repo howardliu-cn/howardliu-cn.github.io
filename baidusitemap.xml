@@ -1,463 +1,639 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.howardliu.cn/java/java-23-features/</loc>
+    <lastmod>2024-12-05</lastmod>
+  </url>
+  <url>
+    <loc>https://www.howardliu.cn/java/java-22-features/</loc>
+    <lastmod>2024-12-05</lastmod>
+  </url>
+  <url>
+    <loc>https://www.howardliu.cn/java/java-21-features/</loc>
+    <lastmod>2024-12-05</lastmod>
+  </url>
+  <url>
+    <loc>https://www.howardliu.cn/java/java-20-features/</loc>
+    <lastmod>2024-12-05</lastmod>
+  </url>
+  <url>
+    <loc>https://www.howardliu.cn/java/java-19-features/</loc>
+    <lastmod>2024-12-05</lastmod>
+  </url>
+  <url>
+    <loc>https://www.howardliu.cn/java/java-18-features/</loc>
+    <lastmod>2024-12-05</lastmod>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/what-i-think-of-covid-19/</loc>
     <lastmod>2023-01-07</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/springboot-action-messagesource-nacos/</loc>
     <lastmod>2022-08-14</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/springboot-action-messagesource-principle/</loc>
     <lastmod>2022-08-07</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/springboot-action-messagesource/</loc>
     <lastmod>2022-07-30</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/transmittable-thread-local-make-trouble/</loc>
     <lastmod>2022-07-30</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-switch/</loc>
     <lastmod>2022-06-19</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-developer-productivity-report-2022/</loc>
     <lastmod>2022-06-19</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-17-features/</loc>
     <lastmod>2022-05-14</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-16-features/</loc>
     <lastmod>2022-04-18</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-15-features/</loc>
     <lastmod>2022-03-07</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-14-features/</loc>
     <lastmod>2022-03-05</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-13-features/</loc>
     <lastmod>2022-02-14</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/2022-spring-festival/</loc>
     <lastmod>2022-01-29</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-12-features/</loc>
     <lastmod>2022-01-15</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-11-features/</loc>
     <lastmod>2022-01-09</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-11-jep181-nestmate/</loc>
     <lastmod>2022-01-05</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/2021-summary/</loc>
     <lastmod>2022-01-03</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/2022-friends-of-time/</loc>
     <lastmod>2022-01-01</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-10-features/</loc>
     <lastmod>2021-12-29</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/mybatis-plus-conflict-noclassdeffounderror/</loc>
     <lastmod>2021-12-25</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-9-features/</loc>
     <lastmod>2021-12-19</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/avoid-the-distributed-monolith/</loc>
     <lastmod>2021-12-12</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/the-base-of-microservice/</loc>
     <lastmod>2021-12-06</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/the-paradigm-of-microservice/</loc>
     <lastmod>2021-12-06</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/from-monolith-to-microservices-2/</loc>
     <lastmod>2021-12-05</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/do-we-have-any-other-options-besides-microservices/</loc>
     <lastmod>2021-12-05</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-8-features/</loc>
     <lastmod>2021-11-24</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/translation-perform-two-phase-commits-in-mongodb/</loc>
     <lastmod>2021-11-24</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/translation-distributed-locks-with-redis/</loc>
     <lastmod>2021-11-24</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn//thinking/the-solution-about-job-queue/</loc>
     <lastmod>2021-11-17</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/strategy-pattern/</loc>
     <lastmod>2021-11-15</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/constant-interface-anti-pattern/</loc>
     <lastmod>2021-11-10</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-lambda-powerful-comparation/</loc>
     <lastmod>2021-11-07</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java/jvm-tuning-basic/</loc>
     <lastmod>2021-11-05</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/effective-java-tools-batch-rename-baiduwangpan/</loc>
     <lastmod>2021-10-25</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn//http/http-connection/</loc>
     <lastmod>2021-10-24</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/spring-cloud/spring-cloud-config-encrypt-keystore-path-error/</loc>
     <lastmod>2021-10-24</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/springboot-action-classpath-file-access/</loc>
     <lastmod>2021-10-24</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/oom-permgen-space-in-weblogic/</loc>
     <lastmod>2021-10-24</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/get-chinese-length/</loc>
     <lastmod>2021-10-23</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/zookeeper/zookeeper-error-packet-lenX-is-out-of-range/</loc>
     <lastmod>2021-10-22</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/sonarqube-jenkins-pipeline/</loc>
     <lastmod>2021-10-20</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/why-it-is-difficult-to-get-high-salaries-for-iters/</loc>
     <lastmod>2021-10-20</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/when-to-leave-your-programming-job/</loc>
     <lastmod>2021-10-20</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/we-should-know-when-changing-job/</loc>
     <lastmod>2021-10-20</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java/gc-overhead-limit-exceeded/</loc>
     <lastmod>2021-10-20</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn//os/init-my-ubuntu/</loc>
     <lastmod>2021-10-16</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/effective-java-easyexcel-action-fill/</loc>
     <lastmod>2021-10-10</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/effective-java-easyexcel-action-write-pretty/</loc>
     <lastmod>2021-10-07</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/effective-java-easyexcel-action-write/</loc>
     <lastmod>2021-10-03</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/data-consistency-in-microservices/</loc>
     <lastmod>2021-09-17</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/springboot-action-junit5-mockmvc-mockito/</loc>
     <lastmod>2021-09-11</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/springboot-action-enum-params-in-requestbody-principle/</loc>
     <lastmod>2021-08-28</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/springboot-action-enum-params-in-requestbody/</loc>
     <lastmod>2021-08-22</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/springboot-enum-params-principle/</loc>
     <lastmod>2021-08-13</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/spring-enum-params/</loc>
     <lastmod>2021-08-10</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-date-string-valid-date/</loc>
     <lastmod>2021-08-06</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/manage-install/</loc>
     <lastmod>2021-07-24</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/install-go/</loc>
     <lastmod>2021-07-24</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/about-the-fenix-project/</loc>
     <lastmod>2021-07-12</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/relax-and-run/</loc>
     <lastmod>2021-07-09</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-date-time-migrating-to-jsr310/</loc>
     <lastmod>2021-06-30</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/the-introduction-of-http-status-codes/</loc>
     <lastmod>2021-06-30</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/how-to-use-comment-in-java/</loc>
     <lastmod>2021-06-30</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/the-cost-to-change-phone/</loc>
     <lastmod>2021-06-29</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/arraylist-is-not-thread-safe-2/</loc>
     <lastmod>2021-06-29</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-date-to-localdate-and-localdatetime/</loc>
     <lastmod>2021-06-22</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn//the-eight-queens-puzzle/</loc>
     <lastmod>2021-06-21</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-date-and-time-intro/</loc>
     <lastmod>2021-06-15</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java/jdk-tools-and-utilities/</loc>
     <lastmod>2021-06-15</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn//middleware/the-different-between-some-distributed-message-queue/</loc>
     <lastmod>2021-06-14</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/rabbitmq-operation/</loc>
     <lastmod>2021-06-11</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn//os/all-about-linux-swap-space/</loc>
     <lastmod>2021-06-10</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/http/the-introduction-of-the-http-service/</loc>
     <lastmod>2021-06-09</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/lists-book-recommendations-2021/</loc>
     <lastmod>2021-06-08</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/geek-talk-20210523/</loc>
     <lastmod>2021-05-31</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/the-joys-and-the-woes-of-the-craft/</loc>
     <lastmod>2021-05-24</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-util-optional/</loc>
     <lastmod>2021-05-17</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-stream-collectors/</loc>
     <lastmod>2021-05-12</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/main-thread-waiting-for-the-end-of-subthread/</loc>
     <lastmod>2021-05-12</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/talk-about-CountDownLatch-again/</loc>
-    <lastmod>2021-05-12</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/talk-about-CyclicBarrier-again/</loc>
     <lastmod>2021-05-12</lastmod>
-  </url>  <url>
+  </url>
+  <url>
+    <loc>https://www.howardliu.cn/talk-about-CountDownLatch-again/</loc>
+    <lastmod>2021-05-12</lastmod>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/longest-substring-without-repeating-character/</loc>
     <lastmod>2021-05-08</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/spring-request-recorder/</loc>
     <lastmod>2021-04-29</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/spring-beanpostprocessor/</loc>
     <lastmod>2021-04-25</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/storm/setting-up-a-storm-cluster/</loc>
     <lastmod>2021-04-19</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/storm/trident-tutorial/</loc>
     <lastmod>2021-04-19</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/reprint-the-introduction-of-storm/</loc>
     <lastmod>2021-04-19</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-concurrency-ordered-thread-print/</loc>
     <lastmod>2021-04-11</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-concurrency-synchronized/</loc>
     <lastmod>2021-03-28</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/docker-commands/</loc>
     <lastmod>2021-03-19</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/docker-dockerfile/</loc>
     <lastmod>2021-03-13</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/docker-tutorial/</loc>
     <lastmod>2021-03-07</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-vector-vs-collections-synchronizedlist-arraylist/</loc>
     <lastmod>2021-02-27</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/event-driven-architecture/</loc>
     <lastmod>2021-02-20</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/understanding-java-list/</loc>
     <lastmod>2021-02-09</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/arraylist-is-not-thread-safe/</loc>
     <lastmod>2021-02-04</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/java-import-package/</loc>
     <lastmod>2021-01-31</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/algo-for-jvm-gc/</loc>
     <lastmod>2021-01-24</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/caching-techniques/</loc>
     <lastmod>2021-01-17</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/keep-moving-forward/</loc>
     <lastmod>2021-01-10</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/i-resigned-from-hx/</loc>
     <lastmod>2020-12-31</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/springboot-action-gracefully-response-exception/</loc>
     <lastmod>2020-09-11</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/singleton-pattern/</loc>
     <lastmod>2020-08-23</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/blue-green-deployments-a-b-testing-and-canary-releases/</loc>
     <lastmod>2020-08-17</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/zookeeper-s-function/</loc>
     <lastmod>2020-08-16</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/springboot-action-gracefully-response/</loc>
     <lastmod>2020-08-12</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/tiny-url-system/</loc>
     <lastmod>2020-07-28</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/micro-services/data-consistency-in-micro-services/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eclipse/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/hbase-environment-standalone-model/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/the-introduction-of-iaas-paas-saas/</loc>
     <lastmod>2020-07-28</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/deploy-ear-from-eos-to-weblogic/</loc>
     <lastmod>2020-07-28</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/install-weblogic-dev-on-windows/</loc>
     <lastmod>2020-07-28</lastmod>
-  </url>  <url>
+  </url>
+  <url>
+    <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eclipse/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/install-weblogic-plugin-in-eos-platform/</loc>
     <lastmod>2020-07-28</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/hbase-environment-pseudo-distributed-model/</loc>
     <lastmod>2020-07-28</lastmod>
-  </url>  <url>
+  </url>
+  <url>
+    <loc>https://www.howardliu.cn/hbase-environment-standalone-model/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.howardliu.cn/hadoop-environment/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.howardliu.cn/micro-services/data-consistency-in-micro-services-reliable-event/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.howardliu.cn/micro-services/data-consistency-in-micro-services/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/reprint-10-reasons-to-replace-your-jsps-with-freemarker-templates/</loc>
     <lastmod>2020-07-28</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/zookeeper-environment/</loc>
     <lastmod>2020-07-28</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop-environment-cluster-setup/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
-    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/disable-bps-in-eos-project/</loc>
     <lastmod>2020-07-28</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/logon-windows-automatic-uncheck-password/</loc>
     <lastmod>2020-07-28</lastmod>
-  </url>  <url>
+  </url>
+  <url>
+    <loc>https://www.howardliu.cn/hadoop-environment-cluster-setup/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.howardliu.cn/hadoop/rm-ha/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.howardliu.cn/hadoop/hdfs-architecture/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.howardliu.cn/hadoop/yarn-architecture/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.howardliu.cn/storm/the-concepts-of-storm/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.howardliu.cn/storm/trident-state/</loc>
+    <lastmod>2020-07-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/how-to-use-branch-efficiently-in-git/</loc>
     <lastmod>2020-07-24</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/convert-ipv4-to-int/</loc>
     <lastmod>2020-07-20</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/the-builder-pattern/</loc>
     <lastmod>2020-03-22</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/from-monolith-to-microservice/</loc>
     <lastmod>2020-03-08</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/dont-let-irrational-thinking-ruin-your-lift/</loc>
     <lastmod>2020-02-23</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/storm/storm-integration-with-kafka/</loc>
     <lastmod>2020-02-07</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/the-three-ways-principles-underpinning-devops/</loc>
     <lastmod>2020-02-04</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/service-registry-and-discovery/</loc>
     <lastmod>2020-01-28</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/translation-faceting/</loc>
     <lastmod>2020-01-27</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/translation-the-standard-query-parser/</loc>
     <lastmod>2020-01-27</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/translation-the-extended-dismax-query-parser/</loc>
     <lastmod>2020-01-27</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/translation-the-dismax-query-parser/</loc>
     <lastmod>2020-01-27</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/translation-local-parameters-in-queries/</loc>
     <lastmod>2020-01-27</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/translation-common-query-parameters/</loc>
     <lastmod>2020-01-27</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/hadoop/hdfs-ha-using-qjm/</loc>
     <lastmod>2020-01-27</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/ubuntu-ufw-settings/</loc>
     <lastmod>2020-01-27</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/catch-ModuleException-when-startup-weblogic/</loc>
     <lastmod>2020-01-27</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/build-nginx-from-sources/</loc>
     <lastmod>2020-01-27</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/the-origin-of-matrix-multiplication/</loc>
     <lastmod>2020-01-27</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/os/WindowsUpdate_800B0100-failed-to-updates/</loc>
     <lastmod>2020-01-27</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/http/http-response-header-vary/</loc>
     <lastmod>2020-01-27</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/the-multiplication-of-matrices-use-mapreduce/</loc>
     <lastmod>2020-01-27</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/use-authority-in-mysql/</loc>
     <lastmod>2020-01-27</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/setup-passwordless-ssh/</loc>
     <lastmod>2020-01-27</lastmod>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://www.howardliu.cn/what-is-microservice/</loc>
     <lastmod>2020-01-04</lastmod>
   </url>
-</urlset>
+</urlset> 

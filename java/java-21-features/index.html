@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java21 的新特性||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="Java21 在 2023 年 9 月 19 日发布GA版本，Java21是长期支持版（LTS，Long-Term Support），共十五大特性。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java21 的新特性">
+<meta property="og:url" content="https://www.howardliu.cn/java/java-21-features/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="Java21 在 2023 年 9 月 19 日发布GA版本，Java21是长期支持版（LTS，Long-Term Support），共十五大特性。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://static.howardliu.cn/202409122326976.jpg">
+<meta property="og:image" content="https://static.howardliu.cn/SequencedCollectionDiagram20220216.png">
+<meta property="og:image" content="https://static.howardliu.cn/p9999-event-latency.png">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="article:published_time" content="2024-09-13T00:20:00.000Z">
+<meta property="article:modified_time" content="2024-12-05T03:07:50.000Z">
+<meta property="article:author" content="Howard Liu">
+<meta property="article:tag" content="java21">
+<meta property="article:tag" content="Java21 新特性">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static.howardliu.cn/202409122326976.jpg">
+
+<meta name="keywords" content="java21,Java21 新特性">
+
+
+<meta name="description" content="Java21 在 2023 年 9 月 19 日发布GA版本，Java21是长期支持版（LTS，Long-Term Support），共十五大特性。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon"/>
+<link rel="icon" href="/favicon.png">
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+
+<link rel="stylesheet" href="/css/theme.css">
+
+
+<link rel="stylesheet" href="/css/syntax.css">
+
+
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+
+
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/styles/vs2015.min.css">
+
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+<meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="沉潜飞动" type="application/atom+xml">
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/java/java-21-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java21 的新特性</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2024-09-13</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/java/java-21-features/" class="leancloud_visitors" data-flag-title="Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java21 的新特性">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JEP-431-有序集合（Sequenced-Collections）"><span class="toc-text">JEP 431: 有序集合（Sequenced Collections）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JEP-439-分代ZGC（Generational-ZGC）"><span class="toc-text">JEP 439: 分代ZGC（Generational ZGC）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JEP-440-Record模式（Record-Patterns）"><span class="toc-text">JEP 440: Record模式（Record Patterns）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JEP-441-switch模式匹配（Pattern-Matching-for-switch）"><span class="toc-text">JEP 441: switch模式匹配（Pattern Matching for switch）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JEP-444-虚拟线程（Virtual-Threads）"><span class="toc-text">JEP 444: 虚拟线程（Virtual Threads）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JEP-452-密钥封装机制-API（Key-Encapsulation-Mechanism-API-KEM-API）"><span class="toc-text">JEP 452: 密钥封装机制 API（Key Encapsulation Mechanism API, KEM API）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#预览功能"><span class="toc-text">预览功能</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JEP-430-字符串模板（String-Templates，预览）"><span class="toc-text">JEP 430: 字符串模板（String Templates，预览）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JEP-442-外部函数和内存API（Foreign-Function-amp-Memory-API，FFM-API，第三次预览）"><span class="toc-text">JEP 442: 外部函数和内存API（Foreign Function &amp; Memory API，FFM API，第三次预览）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JEP-443-未命名模式和变量（Unnamed-Patterns-and-Variables，预览）"><span class="toc-text">JEP 443: 未命名模式和变量（Unnamed Patterns and Variables，预览）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JEP-445-未命名类和示例main方法（Unnamed-Classes-and-Instance-Main-Methods，预览）"><span class="toc-text">JEP 445: 未命名类和示例main方法（Unnamed Classes and Instance Main Methods，预览）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JEP-446-作用域值（Scoped-Values，预览）"><span class="toc-text">JEP 446: 作用域值（Scoped Values，预览）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JEP-453-结构化并发API（Structured-Concurrency，预览）"><span class="toc-text">JEP 453: 结构化并发API（Structured Concurrency，预览）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#孵化功能"><span class="toc-text">孵化功能</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JEP-448-向量API（Vector-API，第六次孵化）"><span class="toc-text">JEP 448: 向量API（Vector API，第六次孵化）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#弃用"><span class="toc-text">弃用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JEP-449-启用Windows32位-x86支持（Deprecate-the-Windows-32-bit-x86-Port-for-Removal）"><span class="toc-text">JEP 449: 启用Windows32位 x86支持（Deprecate the Windows 32-bit x86 Port for Removal）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JEP-451-准备禁止动态加载代理（Prepare-to-Disallow-the-Dynamic-Loading-of-Agents）"><span class="toc-text">JEP 451: 准备禁止动态加载代理（Prepare to Disallow the Dynamic Loading of Agents）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p>你好，我是看山。</p>
+<a id="more"></a>
+
+<p><img src="https://static.howardliu.cn/202409122326976.jpg" alt="Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java21 的新特性"></p>
+<p>你好，我是看山。</p>
+<blockquote>
+<p>本文收录在 <a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378" target="_blank" rel="noopener">《从小工到专家的 Java 进阶之旅》</a> 系列专栏中。</p>
+</blockquote>
+<p>从 2017 年开始，Java 版本更新策略从原来的每两年一个新版本，改为每六个月一个新版本，以快速验证新特性，推动 Java 的发展。让我们跟随 Java 的脚步，配合示例讲解，看一看每个版本的新特性，本期是 Java21 的新特性。</p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Java21 在 2023 年 9 月 19 日发布GA版本，Java21是长期支持版（LTS，Long-Term Support），共十五大特性：</p>
+<ul>
+<li>JEP 430: 字符串模板（String Templates，预览）</li>
+<li>JEP 431: 有序集合（Sequenced Collections）</li>
+<li>JEP 439: 分代ZGC（Generational ZGC）</li>
+<li>JEP 440: Record模式（Record Patterns）</li>
+<li>JEP 441: switch模式匹配（Pattern Matching for switch）</li>
+<li>JEP 442: 外部函数和内存API（Foreign Function &amp; Memory API，FFM API，第三次预览）</li>
+<li>JEP 443: 未命名模式和变量（Unnamed Patterns and Variables，预览）</li>
+<li>JEP 444: 虚拟线程（Virtual Threads）</li>
+<li>JEP 445: 未命名类和示例main方法（Unnamed Classes and Instance Main Methods，预览）</li>
+<li>JEP 446: 作用域值（Scoped Values，预览）</li>
+<li>JEP 448: 向量API（Vector API，第六次孵化）</li>
+<li>JEP 449: 启用Windows32位 x86支持（Deprecate the Windows 32-bit x86 Port for Removal）</li>
+<li>JEP 451: 准备禁止动态加载代理（Prepare to Disallow the Dynamic Loading of Agents）</li>
+<li>JEP 452: 密钥封装机制 API（Key Encapsulation Mechanism API）</li>
+<li>JEP 453: 结构化并发API（Structured Concurrency，预览）</li>
+</ul>
+<p>接下来我们一起看看这些特性。</p>
+<h2 id="JEP-431-有序集合（Sequenced-Collections）"><a href="#JEP-431-有序集合（Sequenced-Collections）" class="headerlink" title="JEP 431: 有序集合（Sequenced Collections）"></a>JEP 431: 有序集合（Sequenced Collections）</h2><p>JEP 431:有序集合是Java21版本中引入的一个新特性，旨在为Java集合框架添加对有序集合的支持。</p>
+<p>有序集合是一种具有定义好的元素访问顺序的集合类型，它允许以一致的方式访问和处理集合中的元素，无论是从第一个元素到最后一个元素，还是从最后一个元素到第一个元素。</p>
+<p>在 Java 中，集合类库非常重要且使用频率非常高，但是缺乏一种能够表示具有定义好的元素访问顺序的集合类型。</p>
+<p>例如，<code>List</code>和<code>Deque</code>都定义了元素的访问顺序，但它们的共同父接口<code>Collection</code>却没有。同样，Set不定义元素的访问顺序，其子类型如<code>HashSet</code>也没有定义，但子类型如<code>SortedSet</code>和<code>LinkedHashSet</code>则有定义。因此，支持访问顺序的功能散布在整个类型层次结构中，使得在API中表达某些有用的概念变得困难。<code>Collection</code>太通用，将此类约束留给文档规范，可能导致难以调试的错误。</p>
+<p>而且，虽然某些集合有顺序操作方法，但是却不尽相同，比如</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>First element</th>
+<th>Last element</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>List</td>
+<td>list.get(0)</td>
+<td>list.get(list.size() - 1)</td>
+</tr>
+<tr>
+<td>Deque</td>
+<td>deque.getFirst()</td>
+<td>deque.getLast()</td>
+</tr>
+<tr>
+<td>SortedSet</td>
+<td>sortedSet.first()</td>
+<td>sortedSet.last()</td>
+</tr>
+<tr>
+<td>LinkedHashSet</td>
+<td>linkedHashSet.iterator().next()</td>
+<td>缺失</td>
+</tr>
+</tbody></table>
+<p>于是在Java21提供了有序集合<code>SequencedCollection</code>、<code>SequencedSet</code>、<code>SequencedMap</code>：</p>
+<pre><code class="java">interface SequencedCollection&lt;E&gt; extends Collection&lt;E&gt; {
+    // new method
+    SequencedCollection&lt;E&gt; reversed();
+    // methods promoted from Deque
+    void addFirst(E);
+    void addLast(E);
+    E getFirst();
+    E getLast();
+    E removeFirst();
+    E removeLast();
+}
+
+interface SequencedSet&lt;E&gt; extends Set&lt;E&gt;, SequencedCollection&lt;E&gt; {
+    SequencedSet&lt;E&gt; reversed();    // covariant override
+}
+
+interface SequencedMap&lt;K,V&gt; extends Map&lt;K,V&gt; {
+    // new methods
+    SequencedMap&lt;K,V&gt; reversed();
+    SequencedSet&lt;K&gt; sequencedKeySet();
+    SequencedCollection&lt;V&gt; sequencedValues();
+    SequencedSet&lt;Entry&lt;K,V&gt;&gt; sequencedEntrySet();
+    V putFirst(K, V);
+    V putLast(K, V);
+    // methods promoted from NavigableMap
+    Entry&lt;K, V&gt; firstEntry();
+    Entry&lt;K, V&gt; lastEntry();
+    Entry&lt;K, V&gt; pollFirstEntry();
+    Entry&lt;K, V&gt; pollLastEntry();
+}</code></pre>
+<p><code>SequencedCollection</code>的<code>reversed()</code>方法提供了一个原始集合的反向视图。任何对原始集合的修改都会在视图中可见。如果允许，视图中的修改会写回到原始集合。</p>
+<p><img src="https://static.howardliu.cn/SequencedCollectionDiagram20220216.png" alt="JEP 431: 有序集合（Sequenced Collections）"></p>
+<p>我们看一个例子，假设我们有一个LinkedHashSet，现在我们想要获取它的反向视图并以反向顺序遍历它：</p>
+<pre><code class="java">LinkedHashSet&lt;Integer&gt; linkedHashSet = new LinkedHashSet&lt;&gt;(Arrays.asList(3, 2, 1));
+
+// 获取反向视图
+SequencedCollection&lt;Integer&gt; reversed = linkedHashSet.reversed();
+
+// 反向遍历
+System.out.println(&quot;原始数据：&quot; + linkedHashSet);
+System.out.println(&quot;反转数据：&quot; + reversed);
+
+// 运行结果：
+// 原始数据：[3, 2, 1]
+// 反转数据：[1, 2, 3]</code></pre>
+<p>这些方法都是便捷方法，内部数据结构没有变化，其实本质也是原来的用法。比如<code>ArrayList</code>中的<code>getFirst</code>和<code>getLast</code>方法：</p>
+<pre><code class="java">/**
+ * {@inheritDoc}
+ *
+ * @throws NoSuchElementException {@inheritDoc}
+ * @since 21
+ */
+public E getFirst() {
+    if (size == 0) {
+        throw new NoSuchElementException();
+    } else {
+        return elementData(0);
+    }
+}
+
+/**
+ * {@inheritDoc}
+ *
+ * @throws NoSuchElementException {@inheritDoc}
+ * @since 21
+ */
+public E getLast() {
+    int last = size - 1;
+    if (last &lt; 0) {
+        throw new NoSuchElementException();
+    } else {
+        return elementData(last);
+    }
+}</code></pre>
+<h2 id="JEP-439-分代ZGC（Generational-ZGC）"><a href="#JEP-439-分代ZGC（Generational-ZGC）" class="headerlink" title="JEP 439: 分代ZGC（Generational ZGC）"></a>JEP 439: 分代ZGC（Generational ZGC）</h2><p>ZGC从Java11开始预览，Java15提供生产支持，Java16增加并发线程堆栈处理，发展到Java21提供了分代ZGC，具体发展历程可以查看<a href="https://wiki.openjdk.org/display/zgc/Main" target="_blank" rel="noopener">https://wiki.openjdk.org/display/zgc/Main</a>。</p>
+<p>江湖传说，ZGC（Z Garbage Collector）的Z表示最后一个GC，可见其雄心勃勃。而分代ZGC的出现，就是革自己的命。</p>
+<p>与非分代ZGC相比，在不影响吞吐量的的情况下，带来更多的好处：</p>
+<ul>
+<li>更低的分配停顿风险；</li>
+<li>更低的堆内存开销；</li>
+<li>更低的CPU开销。</li>
+</ul>
+<p>分代ZGC的目标是：</p>
+<ul>
+<li>暂停时间不超过1ms（ZGC的目标是10ms）</li>
+<li>支持从几M字节到几T字节的堆大小；</li>
+<li>尽量少的配置。</li>
+</ul>
+<p>在Java21中，分代ZGC的实现细节主要包括以下几个方面：</p>
+<ul>
+<li>分代设计：基于「大部分对象朝生夕死」的分代假说，分代ZGC将内存划分为年轻代和老年代，并为这两种代分别维护不同的垃圾收集策略。这种设计可以更有效地处理不同生命周期的对象，从而提高整体性能。</li>
+<li>彩色指针结构：分代ZGC使用彩色指针结构来优化内存访问。元数据被放在指针的低阶位，而对象地址被放在高阶位。这种结构可以减少加载屏障中的机器指令数量，从而提高性能。</li>
+<li>写屏障技术：分代ZGC引入了写屏障技术，以确保在对象年龄更新时能够正确地通知垃圾收集器。这有助于减少垃圾收集过程中对应用程序的影响。</li>
+<li>内存管理优化：通过分代收集，分代ZGC可以更频繁地对新生代进行垃圾收集，从而减少分配停顿的风险，降低内存开销，并减少垃圾收集的CPU开销。</li>
+</ul>
+<p>我们可以通过命令<code>-XX:+UseZGC -XX:+ZGenerational</code>使用分代ZGC。</p>
+<p>为了平稳的过渡，在Java21中必须增加<code>-XX:+ZGenerational</code>参数，显性的指明使用分代ZGC，在未来，非分代ZGC将被移除，<code>ZGenerational</code>参数也就作废了。</p>
+<p>我们看下<a href="https://kstefanj.github.io/2023/11/07/hazelcast-on-generational-zgc.html" target="_blank" rel="noopener">Hazelcast Jet on Generational ZGC</a>中给出的测评效果：</p>
+<p><img src="https://static.howardliu.cn/p9999-event-latency.png" alt="JEP 439: 分代ZGC（Generational ZGC）"></p>
+<p>从上图可以看到，非分代 ZGC 在低负载下表现非常好，但随着分配压力的增加，延迟也会增加。使用分代 ZGC 后，即使在高负载下，延迟也非常低，而且延迟效果优于G1。</p>
+<h2 id="JEP-440-Record模式（Record-Patterns）"><a href="#JEP-440-Record模式（Record-Patterns）" class="headerlink" title="JEP 440: Record模式（Record Patterns）"></a>JEP 440: Record模式（Record Patterns）</h2><p>Record类型提供不可变对象的简单实现（其实就是Java Bean，但是省略一堆的getter、setter、hashcode、equals、toString等方法），Java16开始一直在演化增强（参见<a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378" target="_blank" rel="noopener">从小工到专家的 Java 进阶之旅</a>）。</p>
+<p>Record模式归属于Amber项目的一部分，Amber项目旨在通过小而美的方式，增强Java语言特性。本次的Record模式，主要是使Record类型可以直接在instanceof和switch模式匹配中使用。</p>
+<p>Record模式最初作为预览功能在JEP 405中提出，并在Java19中交付。JEP 432提出了第二次预览，基于持续的经验和反馈进行了进一步的完善。终于在JEP 440正式转正。</p>
+<p>我们一起看个示例，比如有下面几个基础元素：</p>
+<pre><code class="java">// 颜色
+enum Color { RED, GREEN, BLUE}
+// 点
+record Point(int x, int y) {}
+// 带颜色的点
+record ColoredPoint(Point p, Color color) {}
+// 正方形
+record Square(ColoredPoint upperLeft, ColoredPoint lowerRight) {}</code></pre>
+<p>我们分别通过instanceof模式匹配和switch模式匹配判断输入参数的类型，打印不同的格式：</p>
+<pre><code class="java">private static void instancePatternsAndPrint(Object o) {
+    if (o instanceof Square(ColoredPoint upperLeft, ColoredPoint lowerRight)) {
+        System.out.println(&quot;Square类型：&quot; + upperLeft + &quot; &quot; + lowerRight);
+    } else if (o instanceof ColoredPoint(Point(int x, int y), Color color)) {
+        System.out.println(&quot;ColoredPoint类型：&quot; + x + &quot; &quot; + y + &quot; &quot; + color);
+    } else if (o instanceof Point p) {
+        System.out.println(&quot;Point类型：&quot; + p);
+    }
+}
+
+private static void switchPatternsAndPrint(Object o) {
+    switch (o) {
+        case Square(ColoredPoint upperLeft, ColoredPoint lowerRight) -&gt; {
+            System.out.println(&quot;Square类型：&quot; + upperLeft + &quot; &quot; + lowerRight);
+        }
+        case ColoredPoint(Point(int x, int y), Color color) -&gt; {
+            System.out.println(&quot;ColoredPoint类型：&quot; + x + &quot; &quot; + y + &quot; &quot; + color);
+        }
+        case Point p -&gt; {
+            System.out.println(&quot;Point类型：&quot; + p);
+        }
+        default -&gt; throw new IllegalStateException(&quot;Unexpected value: &quot; + o);
+    }
+}</code></pre>
+<p>我们通过main方法执行下：</p>
+<pre><code class="java">public static void main(String[] args) {
+    var p = new Point(1, 2);
+    var cp1 = new ColoredPoint(p, Color.RED);
+    var cp2 = new ColoredPoint(p, Color.GREEN);
+    var square = new Square(cp1, cp2);
+
+    instancePatternsAndPrint(square);
+    instancePatternsAndPrint(cp1);
+    instancePatternsAndPrint(p);
+
+    switchPatternsAndPrint(square);
+    switchPatternsAndPrint(cp1);
+    switchPatternsAndPrint(p);
+}
+// 结果是：
+//
+// Square类型：ColoredPoint[p=Point[x=1, y=2], color=RED] ColoredPoint[p=Point[x=1, y=2], color=GREEN]
+// ColoredPoint类型：1 2 RED
+// Point类型：Point[x=1, y=2]
+//
+// Square类型：ColoredPoint[p=Point[x=1, y=2], color=RED] ColoredPoint[p=Point[x=1, y=2], color=GREEN]
+// ColoredPoint类型：1 2 RED
+// Point类型：Point[x=1, y=2]</code></pre>
+<h2 id="JEP-441-switch模式匹配（Pattern-Matching-for-switch）"><a href="#JEP-441-switch模式匹配（Pattern-Matching-for-switch）" class="headerlink" title="JEP 441: switch模式匹配（Pattern Matching for switch）"></a>JEP 441: switch模式匹配（Pattern Matching for switch）</h2><p>switch模式经过四次预览，终于转正。</p>
+<p>switch模式匹配是一个非常赞的功能，可以在选择器表达式使用基础判断和任意引用类型，包括instanceof操作符。这意味着可以更灵活地使用对象、数组、列表等复杂数据结构作为switch语句的基础，从而简化代码并提高可读性。</p>
+<p>switch模式匹配允许在switch语句中使用模式来测试表达式，每个模式都有特定的动作，从而可以简洁、安全地表达复杂的数据导向查询。</p>
+<p>通过代码看下switch模式匹配的魅力；</p>
+<pre><code class="java">static String formatValue(Object obj) {
+    return switch (obj) {
+        case null -&gt; &quot;null&quot;;
+        case Integer i -&gt; String.format(&quot;int %d&quot;, i);
+        case Long l -&gt; String.format(&quot;long %d&quot;, l);
+        case Double d -&gt; String.format(&quot;double %f&quot;, d);
+        case String s -&gt; String.format(&quot;String %s&quot;, s);
+        case Person(String name, String address) -&gt; String.format(&quot;Person %s %s&quot;, name, address);
+        default -&gt; obj.toString();
+    };
+}
+
+public record Person(String name, String address) {}
+
+public static void main(String[] args) {
+    System.out.println(formatValue(10));
+    System.out.println(formatValue(20L));
+    System.out.println(formatValue(3.14));
+    System.out.println(formatValue(&quot;Hello&quot;));
+    System.out.println(formatValue(null));
+    System.out.println(formatValue(new Person(&quot;Howard&quot;, &quot;Beijing&quot;)));
+}
+
+// 运行结果
+// int 10
+// long 20
+// double 3.140000
+// String Hello
+// null
+// Person Howard Beijing</code></pre>
+<h2 id="JEP-444-虚拟线程（Virtual-Threads）"><a href="#JEP-444-虚拟线程（Virtual-Threads）" class="headerlink" title="JEP 444: 虚拟线程（Virtual Threads）"></a>JEP 444: 虚拟线程（Virtual Threads）</h2><p>虚拟线程是一种轻量级的线程实现，旨在显著降低编写、维护和观察高吞吐量并发应用程序的难度。它们占用的资源少，不需要被池化，可以创建大量虚拟线程，特别适用于IO密集型任务，因为它们可以高效地调度大量虚拟线程来处理并发请求，从而显著提高程序的吞吐量和响应速度。</p>
+<p>虚拟线程有下面几个特点：</p>
+<ol>
+<li>轻量级：虚拟线程是JVM内部实现的轻量级线程，不需要操作系统内核参与，创建和上下文切换的成本远低于传统的操作系统线程（即平台线程），且占用的内存资源较少。</li>
+<li>减少CPU时间消耗：由于虚拟线程不依赖于操作系统平台线程，因此在进行线程切换时耗费的CPU时间会大大减少，从而提高了程序的执行效率。</li>
+<li>简化多线程编程：虚拟线程通过结构化并发API来简化多线程编程，使得开发者可以更容易地编写、维护和观察高吞吐量并发应用程序。</li>
+<li>适用于大量任务场景：虚拟线程非常适合需要创建和销毁大量线程的任务、需要执行大量计算的任务（如数据处理、科学计算等）以及需要实现任务并行执行以提高程序性能的场景。</li>
+<li>提高系统吞吐量：通过对虚拟线程的介绍和与Go协程的对比，可以看出虚拟线程能够大幅提高系统的整体吞吐量。</li>
+</ol>
+<p>不考虑虚拟线程实现原理，对开发者而言，使用体验上与传统线程几乎没有区别。我们一起试用下。</p>
+<pre><code class="java">try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+    IntStream.range(0, 10_000).forEach(i -&gt; {
+        executor.submit(() -&gt; {
+            Thread.sleep(Duration.ofSeconds(1));
+            System.out.println(Thread.currentThread().getName() + &quot;: &quot; + i);
+            return i;
+        });
+    });
+}
+
+Thread.startVirtualThread(() -&gt; {
+    System.out.println(&quot;Hello from a virtual thread[Thread.startVirtualThread]&quot;);
+});
+
+final ThreadFactory factory = Thread.ofVirtual().factory();
+factory.newThread(() -&gt; {
+            System.out.println(&quot;Hello from a virtual thread[ThreadFactory.newThread]&quot;);
+        })
+        .start();</code></pre>
+<p>虚拟线程为了降低使用门槛，直接提供了与原生线程类似的方法：</p>
+<ul>
+<li><code>Executors.newVirtualThreadPerTaskExecutor()</code>，可以像普通线程池一样创建虚拟线程。</li>
+<li><code>Thread.startVirtualThread</code>，通过工具方法直接创建并运行虚拟线程。</li>
+<li><code>Thread.ofVirtual().factory().newThread()</code>，另一个工具方法可以创建并运行虚拟线程。<code>Thread</code>还有一个<code>ofPlatform()</code>方法，用来构建普通线程。</li>
+</ul>
+<p>通过本地简单测试（在「公众号：看山的小屋」回复”java”获取源码），1w个模拟线程运行时，性能方面虚拟线程 &gt; 线程池。</p>
+<p>需要注意的是，虚拟线程适用于IO密集场景，而非CPU密集的场景。</p>
+<h2 id="JEP-452-密钥封装机制-API（Key-Encapsulation-Mechanism-API-KEM-API）"><a href="#JEP-452-密钥封装机制-API（Key-Encapsulation-Mechanism-API-KEM-API）" class="headerlink" title="JEP 452: 密钥封装机制 API（Key Encapsulation Mechanism API, KEM API）"></a>JEP 452: 密钥封装机制 API（Key Encapsulation Mechanism API, KEM API）</h2><p>KEM是一种现代加密技术，它通过使用非对称或公钥密码学来保护对称密钥。与传统的加密方法不同，KEM使用公钥的属性来派生一个相关的对称密钥，这个过程不需要填充，因此可以更容易地证明其安全性。</p>
+<p>KEM的工作流程</p>
+<ol>
+<li>密钥对生成函数：返回包含公钥和私钥的一对密钥。</li>
+<li>密钥封装函数：由发送方调用，接受接收方的公钥和加密选项；返回一个秘密密钥K和一个密钥封装消息（在ISO 18033-2中称为ciphertext）。发送方将密钥封装消息发送给接收方。</li>
+<li>密钥解封函数：由接收方调用，接受接收方的私钥和收到的密钥封装消息；返回秘密密钥K。</li>
+</ol>
+<p>据说这种算法是可以解决量子计算威胁，若有有安全需求，可以深入研究下。</p>
+<h2 id="预览功能"><a href="#预览功能" class="headerlink" title="预览功能"></a>预览功能</h2><h3 id="JEP-430-字符串模板（String-Templates，预览）"><a href="#JEP-430-字符串模板（String-Templates，预览）" class="headerlink" title="JEP 430: 字符串模板（String Templates，预览）"></a>JEP 430: 字符串模板（String Templates，预览）</h3><p>字符串模板是一个值得期待的功能，Java21中提供了预览版。</p>
+<p>字符串模板通过将文本和嵌入式表达式结合在一起，使得Java程序能够以一种更加直观和安全的方式构建字符串。与传统的字符串拼接（使用+操作符）、<code>StringBuilder</code>或<code>String.format</code> 等方法相比，字符串模板提供了一种更加清晰和安全的字符串构建方式。特别是当字符串需要从用户提供的值构建并传递给其他系统时（例如，构建数据库查询），使用字符串模板可以有效地验证和转换模板及其嵌入表达式的值，从而提高Java程序的安全性。</p>
+<p>让我们通过代码看一下这个特性的魅力：</p>
+<pre><code class="java">public static void main(String[] args) {
+    // 拼装变量
+    String name = &quot;看山&quot;;
+    String info = STR. &quot;My name is \{ name }&quot; ;
+    assert info.equals(&quot;My name is 看山&quot;);
+
+    // 拼装变量
+    String firstName = &quot;Howard&quot;;
+    String lastName = &quot;Liu&quot;;
+    String fullName = STR. &quot;\{ firstName } \{ lastName }&quot; ;
+    assert fullName.equals(&quot;Howard Liu&quot;);
+    String sortName = STR. &quot;\{ lastName }, \{ firstName }&quot; ;
+    assert sortName.equals(&quot;Liu, Howard&quot;);
+
+    // 模板中调用方法
+    String s2 = STR. &quot;You have a \{ getOfferType() } waiting for you!&quot; ;
+    assert s2.equals(&quot;You have a gift waiting for you!&quot;);
+
+    Request req = new Request(&quot;2017-07-19&quot;, &quot;09:15&quot;, &quot;https://www.howardliu.cn&quot;);
+    // 模板中引用对象属性
+    String s3 = STR. &quot;Access at \{ req.date } \{ req.time } from \{ req.address }&quot; ;
+    assert s3.equals(&quot;Access at 2017-07-19 09:15 from https://www.howardliu.cn&quot;);
+
+    LocalTime now = LocalTime.now();
+    String markTime = DateTimeFormatter
+            .ofPattern(&quot;HH:mm:ss&quot;)
+            .format(now);
+    // 模板中调用方法
+    String time = STR. &quot;The time is \{
+            // The java.time.format package is very useful
+            DateTimeFormatter
+                    .ofPattern(&quot;HH:mm:ss&quot;)
+                    .format(now)
+            } right now&quot; ;
+    assert time.equals(&quot;The time is &quot; + markTime + &quot; right now&quot;);
+
+    // 模板嵌套模板
+    String[] fruit = {&quot;apples&quot;, &quot;oranges&quot;, &quot;peaches&quot;};
+    String s4 = STR. &quot;\{ fruit[0] }, \{
+            STR. &quot;\{ fruit[1] }, \{ fruit[2] }&quot;
+            }&quot; ;
+    assert s4.equals(&quot;apples, oranges, peaches&quot;);
+
+    // 模板与文本块结合
+    String title = &quot;My Web Page&quot;;
+    String text = &quot;Hello, world&quot;;
+    String html = STR. &quot;&quot;&quot;
+    &lt;html&gt;
+      &lt;head&gt;
+        &lt;title&gt;\{ title }&lt;/title&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;p&gt;\{ text }&lt;/p&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+    &quot;&quot;&quot; ;
+    assert html.equals(&quot;&quot;&quot;
+            &lt;html&gt;
+              &lt;head&gt;
+                &lt;title&gt;My Web Page&lt;/title&gt;
+              &lt;/head&gt;
+              &lt;body&gt;
+                &lt;p&gt;Hello, world&lt;/p&gt;
+              &lt;/body&gt;
+            &lt;/html&gt;
+            &quot;&quot;&quot;);
+
+    // 带格式化的字符串模板
+    record Rectangle(String name, double width, double height) {
+        double area() {
+            return width * height;
+        }
+    }
+    Rectangle[] zone = new Rectangle[] {
+            new Rectangle(&quot;Alfa&quot;, 17.8, 31.4),
+            new Rectangle(&quot;Bravo&quot;, 9.6, 12.4),
+            new Rectangle(&quot;Charlie&quot;, 7.1, 11.23),
+    };
+    String table = FMT. &quot;&quot;&quot;
+        Description     Width    Height     Area
+        %-12s\{ zone[0].name }  %7.2f\{ zone[0].width }  %7.2f\{ zone[0].height }     %7.2f\{ zone[0].area() }
+        %-12s\{ zone[1].name }  %7.2f\{ zone[1].width }  %7.2f\{ zone[1].height }     %7.2f\{ zone[1].area() }
+        %-12s\{ zone[2].name }  %7.2f\{ zone[2].width }  %7.2f\{ zone[2].height }     %7.2f\{ zone[2].area() }
+        \{ &quot; &quot;.repeat(28) } Total %7.2f\{ zone[0].area() + zone[1].area() + zone[2].area() }
+        &quot;&quot;&quot;;
+    assert table.equals(&quot;&quot;&quot;
+            Description     Width    Height     Area
+            Alfa            17.80    31.40      558.92
+            Bravo            9.60    12.40      119.04
+            Charlie          7.10    11.23       79.73
+                                         Total  757.69
+            &quot;&quot;&quot;);
+}
+
+public static String getOfferType() {
+    return &quot;gift&quot;;
+}
+
+record Request(String date, String time, String address) {
+}</code></pre>
+<p>这个功能当前是第一次预览，在Java22第二次预览，Java23的8.12版本中还没有展示字符串模板的第三次预览（JEP 465: String Templates），还不能确定什么时候可以正式用上。</p>
+<h3 id="JEP-442-外部函数和内存API（Foreign-Function-amp-Memory-API，FFM-API，第三次预览）"><a href="#JEP-442-外部函数和内存API（Foreign-Function-amp-Memory-API，FFM-API，第三次预览）" class="headerlink" title="JEP 442: 外部函数和内存API（Foreign Function &amp; Memory API，FFM API，第三次预览）"></a>JEP 442: 外部函数和内存API（Foreign Function &amp; Memory API，FFM API，第三次预览）</h3><p>FFM API经历过多次的预览及改进，从JEP 412（第一轮孵化）开始，逐步发展到JEP 442（第三次预览）。相较于前两次的改进主要体现在以下几个方面：</p>
+<ol>
+<li>管理本地内存段的生命周期：在JEP 442中，通过新的Arena API集中管理本地内存段的生命周期，这使得内存管理更加高效和安全。</li>
+<li>增强布局路径：引入了一个新的元素来解引用地址布局，这使得内存布局更加灵活和强大。</li>
+<li>优化短暂使用期函数调用：提供了一个链接器选项，优化了对短暂使用期函数（例如clock_gettime）的调用，这些函数不会调用到Java代码。</li>
+<li>本地链接器实现：引入了一个基于libffi的本地链接器实现，以便于移植。</li>
+<li>移除VaList：在JEP 442中移除了VaList，这是对API的一次简化。</li>
+</ol>
+<p>我们看下官方示例：</p>
+<pre><code class="java">
+// 1. 在C库路径上查找名为radixsort的外部函数
+Linker linker = Linker.nativeLinker();
+SymbolLookup stdlib = linker.defaultLookup();
+final MemorySegment memorySegment = stdlib.find(&quot;radixsort&quot;).orElseThrow();
+FunctionDescriptor descriptor = FunctionDescriptor.ofVoid(
+        ValueLayout.ADDRESS,
+        ValueLayout.JAVA_INT,
+        ValueLayout.ADDRESS
+);
+MethodHandle radixsort = linker.downcallHandle(memorySegment, descriptor);
+
+// 下面的代码将使用这个外部函数对字符串进行排序
+
+// 2. 分配栈上内存来存储四个字符串
+String[] javaStrings = {&quot;mouse&quot;, &quot;cat&quot;, &quot;dog&quot;, &quot;car&quot;};
+// 3. 使用try-with-resources来管理离堆内存的生命周期
+try (Arena offHeap = Arena.ofConfined()) {
+    // 4. 分配一段离堆内存来存储四个指针
+    MemorySegment pointers = offHeap.allocateArray(ValueLayout.ADDRESS, javaStrings.length);
+    // 5. 将字符串从栈上内存复制到离堆内存
+    for (int i = 0; i &lt; javaStrings.length; i++) {
+        MemorySegment cString = offHeap.allocateUtf8String(javaStrings[i]);
+        pointers.setAtIndex(ValueLayout.ADDRESS, i, cString);
+    }
+    // 6. 通过调用外部函数对离堆数据进行排序
+    radixsort.invoke(pointers, javaStrings.length, MemorySegment.NULL, &#39;\0&#39;);
+    // 7. 将排序后的字符串从离堆内存复制回栈上内存
+    for (int i = 0; i &lt; javaStrings.length; i++) {
+        MemorySegment cString = pointers.getAtIndex(ValueLayout.ADDRESS, i);
+        javaStrings[i] = cString.getUtf8String(0);
+    }
+} // 8. 所有离堆内存在此处被释放
+
+// 验证排序结果
+assert Arrays.equals(javaStrings, new String[] {&quot;car&quot;, &quot;cat&quot;, &quot;dog&quot;, &quot;mouse&quot;});  // true</code></pre>
+<p>我们都知道，JNI也是可以调用外部代码的，那FFM API相较于JNI的优势在于：</p>
+<ol>
+<li>更安全的内存访问：FFM API 提供了一种更安全和受控的方式来与本地代码交互，避免了JNI中常见的内存泄漏和数据损坏问题。</li>
+<li>直接访问本地内存：FFM API 允许Java程序直接访问本地内存（即Java堆外的内存），这使得数据处理更加高效和灵活。</li>
+<li>跨语言函数调用：FFM API 支持调用Java程序的外部函数，以与外部代码和数据一起操作，而无需依赖JNI的复杂机制。</li>
+<li>更高效的集成：FFM API 使得Java与C、C++等语言编写的库集成更加方便和高效，特别是在数据处理和机器学习等领域。</li>
+<li>减少代码复杂性：FFM API 提供了一种更简洁的API，减少了JNI中复杂的代码编写和维护工作。</li>
+<li>更广泛的适用性：FFM API 不仅适用于简单的函数调用，还可以处理复杂的内存管理任务，如堆外内存的管理。</li>
+<li>提高性能：FFM API 通过高效地调用外部函数和安全地访问外部内存，提高了程序的运行效率。</li>
+</ol>
+<p>这个功能将在下一个版本 Java22 正式发布。</p>
+<h3 id="JEP-443-未命名模式和变量（Unnamed-Patterns-and-Variables，预览）"><a href="#JEP-443-未命名模式和变量（Unnamed-Patterns-and-Variables，预览）" class="headerlink" title="JEP 443: 未命名模式和变量（Unnamed Patterns and Variables，预览）"></a>JEP 443: 未命名模式和变量（Unnamed Patterns and Variables，预览）</h3><p>该特性使用下划线字符 <code>_</code> 来表示未命名的模式和变量，从而简化代码并提高代码可读性和可维护性。</p>
+<p>比如：</p>
+<pre><code class="java">public static void main(String[] args) {
+    var _ = new Point(1, 2);
+}
+
+record Point(int x, int y) {
+}</code></pre>
+<p>这个可以用在任何定义变量的地方，比如：</p>
+<ul>
+<li><code>... instanceof Point(_, int y)</code></li>
+<li><code>r instanceof Point _</code></li>
+<li><code>switch …… case Box(_)</code></li>
+<li><code>for (Order _ : orders)</code></li>
+<li><code>for (int i = 0, _ = sideEffect(); i &lt; 10; i++)</code></li>
+<li><code>try { ... } catch (Exception _) { ... } catch (Throwable _) { ... }</code></li>
+</ul>
+<p>只要是这个不准备用，可以一律使用<code>_</code>代替。</p>
+<h3 id="JEP-445-未命名类和示例main方法（Unnamed-Classes-and-Instance-Main-Methods，预览）"><a href="#JEP-445-未命名类和示例main方法（Unnamed-Classes-and-Instance-Main-Methods，预览）" class="headerlink" title="JEP 445: 未命名类和示例main方法（Unnamed Classes and Instance Main Methods，预览）"></a>JEP 445: 未命名类和示例main方法（Unnamed Classes and Instance Main Methods，预览）</h3><p>无论学习哪门语言，第一课一定是打印<code>Hello, World!</code>，Java中的写法是：</p>
+<pre><code class="java">public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println (&quot;Hello, World!&quot;);
+    }
+}</code></pre>
+<p>如果是第一次接触，一定会有很多疑问，<code>public</code>干啥的，<code>main</code>方法的约定参数<code>args</code>是什么鬼？然后老师就说，这就是模板，照着抄就行，不这样写不运行。</p>
+<p>JEP 445特性后，可以简化为：</p>
+<pre><code class="java">class HelloWorld {
+    void main() {
+        System.out.println (&quot;Hello, World!&quot;);
+    }
+}</code></pre>
+<p>我们还可以这样写：</p>
+<pre><code class="java">String greeting() { return &quot;Hello, World!&quot;; }
+
+void main() {
+    System.out.println(greeting());
+}</code></pre>
+<p>虽然看起来没啥用，但是在JShell中使用，就比较友好了。</p>
+<h3 id="JEP-446-作用域值（Scoped-Values，预览）"><a href="#JEP-446-作用域值（Scoped-Values，预览）" class="headerlink" title="JEP 446: 作用域值（Scoped Values，预览）"></a>JEP 446: 作用域值（Scoped Values，预览）</h3><p>作用域值（Scoped Values）在Java20孵化，在Java21预览，旨在提供一种安全且高效的方法来共享数据，无需使用方法参数。这一特性允许在不使用方法参数的情况下，将数据安全地共享给方法，优先于线程局部变量，特别是在使用大量虚拟线程时。</p>
+<p>在多线程环境中，作用域值可以在线程内和线程间共享不可变数据，例如从父线程向子线程传递数据，从而解决了在多线程应用中传递数据的问题。此外，作用域值提高了数据的安全性、不变性和封装性，并且在多线程环境中使用事务、安全主体和其他形式的共享上下文的应用程序中表现尤为突出。</p>
+<p>作用域值的主要特点：</p>
+<ul>
+<li>不可变性：作用域值是不可变的，这意味着一旦设置，其值就不能更改。这种不可变性减少了并发编程中意外副作用的风险。</li>
+<li>作用域生命周期：作用域值的生命周期仅限于 run 方法定义的作用域。一旦执行离开该作用域，作用域值将不再可访问。</li>
+<li>继承性：子线程会自动继承父线程的作用域值，从而允许在线程边界间无缝共享数据。</li>
+</ul>
+<p>在这个功能之前，在多线程间传递数据，我们有两种选择：</p>
+<ol>
+<li>方法参数：显示参数传递；缺点是新增参数时修改联动修改一系列方法，如果是框架或SDK层面的，无法做到向下兼容。</li>
+<li><code>ThreadLocal</code>：在<code>ThreadLocal</code>保存当前线程变量。</li>
+</ol>
+<p>使用过<code>ThreadLocal</code>的都清楚，<code>ThreadLocal</code>会有三大问题。</p>
+<ol>
+<li>无约束的可变性：每个线程局部变量都是可变的。任何可以调用线程局部变量的<code>get</code>方法的代码都可以随时调用该变量的<code>set</code>方法。即使线程局部变量中的对象是不可变的，每个字段都被声明为final，情况仍然如此。<code>ThreadLocal</code> API允许这样做，以便支持一个完全通用的通信模型，在该模型中，数据可以在方法之间以任何方向流动。这可能会导致数据流混乱，导致程序难以分辨哪个方法更新共享状态以及以何种顺序进行。</li>
+<li>无界生存期：一旦通过<code>set</code>方法设置了一个线程局部变量的副本，该值就会在该线程的生存期内保留，或者直到该线程中的代码调用<code>remove</code>方法。我们有时候会忘记调用<code>remove</code>，如果使用线程池，在一个任务中设置的线程局部变量的值如果不清除，可能会意外泄漏到无关的任务中，导致危险的安全漏洞（比如人员SSO）。对于依赖于线程局部变量的无约束可变性的程序来说，可能没有明确的点可以保证线程调用<code>remove</code>是安全的，可能会导致内存泄漏，因为每个线程的数据在退出之前都不会被垃圾回收。</li>
+<li>昂贵的继承：当使用大量线程时，线程局部变量的开销可能会更糟糕，因为父线程的线程局部变量可以被子线程继承。（事实上，线程局部变量并不是某个特定线程的本地变量。）当开发人员选择创建一个继承了线程局部变量的子线程时，该子线程必须为之前在父线程中写入的每个线程局部变量分配存储空间。这可能会显著增加内存占用。子线程不能共享父线程使用的存储，因为ThreadLocal API要求更改线程的线程局部变量副本在其他线程中不可见。这也会有另一个隐藏的问题，子线程没有办法向父线程<code>set</code>数据。</li>
+</ol>
+<p>作用域值可以有效解决上面提到的问题，而且写起来更加优雅。</p>
+<p>我们一起看下作用域值的使用：</p>
+<pre><code class="java">// 声明一个作用域值用于存储用户名
+public final static ScopedValue&lt;String&gt; USERNAME = ScopedValue.newInstance();
+
+private static final Runnable printUsername = () -&gt;
+        System.out.println(Thread.currentThread().threadId() + &quot; 用户名是 &quot; + USERNAME.get());
+
+public static void main(String[] args) throws Exception {
+    // 将用户名 &quot;Bob&quot; 绑定到作用域并执行 Runnable
+    ScopedValue.where(USERNAME, &quot;Bob&quot;).run(() -&gt; {
+        printUsername.run();
+        new Thread(printUsername).start();
+    });
+
+    // 将用户名 &quot;Chris&quot; 绑定到另一个作用域并执行 Runnable
+    ScopedValue.where(USERNAME, &quot;Chris&quot;).run(() -&gt; {
+        printUsername.run();
+        new Thread(() -&gt; {
+            new Thread(printUsername).start();
+            printUsername.run();
+        }).start();
+    });
+
+    // 检查在任何作用域外 USERNAME 是否被绑定
+    System.out.println(&quot;用户名是否被绑定: &quot; + USERNAME.isBound());
+}</code></pre>
+<p>写起来干净利索，而且功能更强。</p>
+<h3 id="JEP-453-结构化并发API（Structured-Concurrency，预览）"><a href="#JEP-453-结构化并发API（Structured-Concurrency，预览）" class="headerlink" title="JEP 453: 结构化并发API（Structured Concurrency，预览）"></a>JEP 453: 结构化并发API（Structured Concurrency，预览）</h3><p>JEP 453: 结构化并发API（Structured Concurrency API）旨在简化多线程编程，通过引入一个API来处理在不同线程中运行的多个任务作为一个单一工作单元，从而简化错误处理和取消操作，提高可靠性，并增强可观测性。本次发布是第一次预览。</p>
+<p>结构化并发API提供了明确的语法结构来定义子任务的生命周期，并启用一个运行时表示线程间的层次结构。这有助于实现错误传播和取消以及并发程序的有意义观察。</p>
+<p>Java使用异常处理机制来管理运行时错误和其他异常。当异常在代码中产生时，如何被传递和处理的过程称为异常传播。</p>
+<p>在结构化并发环境中，异常可以通过显式地从当前环境中抛出并传播到更大的环境中去处理。</p>
+<p>在Java并发编程中，非受检异常的处理是程序健壮性的重要组成部分。特别是对于非受检异常的处理，这关系到程序在遇到错误时是否能够优雅地继续运行或者至少提供有意义的反馈。</p>
+<pre><code class="java">try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+    var task1 = scope.fork(() -&gt; {
+        Thread.sleep(1000);
+        return &quot;Result from task 1&quot;;
+    });
+
+    var task2 = scope.fork(() -&gt; {
+        Thread.sleep(2000);
+        return &quot;Result from task 2&quot;;
+    });
+
+    scope.join();
+    scope.throwIfFailed(RuntimeException::new);
+
+    System.out.println(task1.get());
+    System.out.println(task2.get());
+} catch (Exception e) {
+    e.printStackTrace();
+}</code></pre>
+<p>在这个例子中，handle()方法使用StructuredTaskScope来并行执行两个子任务：task1和task2。通过使用try-with-resources语句自动管理资源，并确保所有子任务都在try块结束时正确完成或被取消。这种方式使得线程的生命周期和任务的逻辑结构紧密相关，提高了代码的清晰度和错误处理的效率。使用 StructuredTaskScope 可以确保一些有价值的属性：</p>
+<ul>
+<li>错误处理与短路：如果task1或task2子任务中的任何一个失败，另一个如果尚未完成则会被取消。（这由 ShutdownOnFailure 实现的关闭策略来管理；还有其他策略可能）。</li>
+<li>取消传播：如果在运行上面方法的线程在调用 join() 之前或之中被中断，则线程在退出作用域时会自动取消两个子任务。</li>
+<li>清晰性：设置子任务，等待它们完成或被取消，然后决定是成功（并处理已经完成的子任务的结果）还是失败（子任务已经完成，因此没有更多需要清理的）。</li>
+<li>可观察性：线程转储清楚地显示了任务层次结构，其中运行task1或task2的线程被显示为作用域的子任务。</li>
+</ul>
+<p>上面的示例能够很好的解决我们的一个痛点，有两个可并行的任务A和B，A+B才是完整结果，任何一个失败，另外一个也不需要成功，结构化并发API就可以很容易的实现这个逻辑。</p>
+<h2 id="孵化功能"><a href="#孵化功能" class="headerlink" title="孵化功能"></a>孵化功能</h2><h3 id="JEP-448-向量API（Vector-API，第六次孵化）"><a href="#JEP-448-向量API（Vector-API，第六次孵化）" class="headerlink" title="JEP 448: 向量API（Vector API，第六次孵化）"></a>JEP 448: 向量API（Vector API，第六次孵化）</h3><p>向量API的功能是提供一个表达向量计算的API，旨在通过引入向量计算API来提高Java应用程序的性能。这一API允许开发者在支持的CPU架构上可靠地编译为最佳向量指令，从而实现比等效的标量计算更高的性能。这些计算在运行时可靠地编译成支持的CPU架构上的最优向量指令，从而实现比等效标量计算更优的性能。</p>
+<p>下面这个是官方给的示例：</p>
+<pre><code class="java">// 标量计算示例
+void scalarComputation(float[] a, float[] b, float[] c) {
+    for (int i = 0; i &lt; a.length ; i++) {
+        c[i] = (a[i] * a[i] + b[i] * b[i]) * -1.0f;
+    }
+}
+
+// 使用向量API的向量计算示例
+static final VectorSpecies&lt;Float&gt; SPECIES = FloatVector.SPECIES_PREFERRED;
+
+void vectorComputation(float[] a, float[] b, float[] c) {
+    int i = 0;
+    int upperBound = SPECIES.loopBound(a.length);
+    for (; i &lt; upperBound; i += SPECIES.length()) {
+        // FloatVector va, vb, vc;
+        var va = FloatVector.fromArray(SPECIES, a, i);
+        var vb = FloatVector.fromArray(SPECIES, b, i);
+        var vc = va.mul(va).add(vb.mul(vb)).neg();
+        vc.intoArray(c, i);
+    }
+    for (; i &lt; a.length; i++) {
+        c[i] = (a[i] * a[i] + b[i] * b[i]) * -1.0f;
+    }
+}</code></pre>
+<p>向量API在Java中的独特优势在于其高效的并行计算能力、丰富的向量化指令集、跨平台的数据并行算法支持以及对机器学习的特别优化。</p>
+<h2 id="弃用"><a href="#弃用" class="headerlink" title="弃用"></a>弃用</h2><h3 id="JEP-449-启用Windows32位-x86支持（Deprecate-the-Windows-32-bit-x86-Port-for-Removal）"><a href="#JEP-449-启用Windows32位-x86支持（Deprecate-the-Windows-32-bit-x86-Port-for-Removal）" class="headerlink" title="JEP 449: 启用Windows32位 x86支持（Deprecate the Windows 32-bit x86 Port for Removal）"></a>JEP 449: 启用Windows32位 x86支持（Deprecate the Windows 32-bit x86 Port for Removal）</h3><p>旨在弃用并最终移除Windows 32位x86平台上的Java支持，原因是该平台已经逐渐被淘汰、性能限制和安全问题等。主要影响对象是OpenJDK的开发者和Windows 32位x86平台上的Java用户。</p>
+<h3 id="JEP-451-准备禁止动态加载代理（Prepare-to-Disallow-the-Dynamic-Loading-of-Agents）"><a href="#JEP-451-准备禁止动态加载代理（Prepare-to-Disallow-the-Dynamic-Loading-of-Agents）" class="headerlink" title="JEP 451: 准备禁止动态加载代理（Prepare to Disallow the Dynamic Loading of Agents）"></a>JEP 451: 准备禁止动态加载代理（Prepare to Disallow the Dynamic Loading of Agents）</h3><p>该特性主要目的是通过在运行中的JVM中动态加载代理时发出警告，来帮助用户为将来的版本做好准备。这些警告旨在提高JVM的默认完整性，因为未来的版本将默认禁止动态加载代理。</p>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>本文介绍了 Java21 新增的特性，完整的特性清单可以从 <a href="https://openjdk.org/projects/jdk/21/" target="_blank" rel="noopener">https://openjdk.org/projects/jdk/21/</a> 查看。后续内容会发布在 <a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378" target="_blank" rel="noopener">从小工到专家的 Java 进阶之旅</a> 系列专栏中。</p>
+<p>青山不改，绿水长流，我们下次见。</p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378" target="_blank" rel="noopener">从小工到专家的 Java 进阶之旅</a></li>
+<li><a href="https://mp.weixin.qq.com/s/7f5dcjjKLdBYpzS5p7_v7Q" target="_blank" rel="noopener">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/JOLrw7cbVh8z2czePEfLjw" target="_blank" rel="noopener">一文掌握 Java8 的 Optional 的 6 种操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Vhw-2lgCvmhNI5aeXOWYNg" target="_blank" rel="noopener">使用 Lambda 表达式实现超强的排序功能</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Srv6733byTYDg7hTrW_tdw" target="_blank" rel="noopener">Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API</a></li>
+<li><a href="https://mp.weixin.qq.com/s/LRydpL89GsjOeTrLrihyYQ" target="_blank" rel="noopener">Java8 的时间库（2）：Date 与 LocalDate 或 LocalDateTime 互相转换</a></li>
+<li><a href="https://mp.weixin.qq.com/s/KmBMLG1y73IUwFuSfUKaEQ" target="_blank" rel="noopener">Java8 的时间库（3）：开始使用 Java8 中的时间类</a></li>
+<li><a href="https://mp.weixin.qq.com/s/PxC0WQMReIeG0Tyl5WiK1Q" target="_blank" rel="noopener">Java8 的时间库（4）：检查日期字符串是否合法</a></li>
+<li><a href="https://mp.weixin.qq.com/s/rjMOq0QAdiWNacKYqHJqXA" target="_blank" rel="noopener">Java8 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/FHv963s0Qvh2K5r2tdLATA" target="_blank" rel="noopener">Java9 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/NY5-qkfZGdaOvz9iyJ3VSQ" target="_blank" rel="noopener">Java10 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/baBv0mP2JmPE4MoNYESqhA" target="_blank" rel="noopener">Java11 中基于嵌套关系的访问控制优化</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Bn4S2OfMoG19lI-L3nw8cg" target="_blank" rel="noopener">Java11 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/xBjXHC5UWy4JEKaRo6xQsg" target="_blank" rel="noopener">Java12 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/9EdRVPK0GUoQqI7eXcmwEA" target="_blank" rel="noopener">Java13 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/rEAHIf40j_UECLlxK5KW6w" target="_blank" rel="noopener">Java14 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/UESHDzuY3H7p5LLPJfwyAw" target="_blank" rel="noopener">Java15 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/HExV39BU0lSbdtg0aMjbSA" target="_blank" rel="noopener">Java16 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/By2JoZqAHA6U36PG8qvCcg" target="_blank" rel="noopener">Java17 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/W6Esovb7zzCL_seXgY84jA" target="_blank" rel="noopener">Java18 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/WutbAX_IQNqP4M3rud9f_g" target="_blank" rel="noopener">Java19 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/DvZYrZTtGfdXNsXGzmQN1A" target="_blank" rel="noopener">Java20 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/iiXa9rpJu1Vedpke0XpBzQ" target="_blank" rel="noopener">Java21 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/eHHFaJErH8XH4QSRrfcehQ" target="_blank" rel="noopener">Java22 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/XvB0D2vzhaAvHESupdALag" target="_blank" rel="noopener">Java23 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378" target="_blank" rel="noopener">Java24 的新特性</a></li>
+</ul>
+<hr>
+<p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p>
+<p>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a><br>个人博文：<a href="https://www.howardliu.cn/java/java-21-features">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java21 的新特性</a><br>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a><br>CSDN 博文：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java21 的新特性</a></p>
+<center><b>👇🏻欢迎关注我的公众号「看山的小屋」，领取精选资料👇🏻</b></center>
+
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/Java/">Java</a>
+            
+            <a href="/tags/Java21/">Java21</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/java/java-22-features/">
+                <i class="icon-previous">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java22 的新特性</i>
+            </a>
+            
+            
+            <a class="next" href="/java/java-20-features/">
+                <i class="icon-next">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java20 的新特性</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://static.howardliu.cn/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 15px;">微服务</a> <a href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" style="font-size: 15px;">云计算</a> <a href="/tags/%E6%A6%82%E5%BF%B5/" style="font-size: 15px;">概念</a> <a href="/tags/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/" style="font-size: 15px;">线性代数</a> <a href="/tags/%E7%9F%A9%E9%98%B5/" style="font-size: 15px;">矩阵</a> <a href="/tags/%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15px;">算法</a> <a href="/tags/%E5%8F%8C%E6%8C%87%E9%92%88/" style="font-size: 15px;">双指针</a> <a href="/tags/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/%E5%85%AB%E7%9A%87%E5%90%8E%E9%97%AE%E9%A2%98/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/%E6%96%B9%E6%B3%95%E8%AE%BA/" style="font-size: 15px;">方法论</a> <a href="/tags/%E6%9E%B6%E6%9E%84/" style="font-size: 15px;">架构</a> <a href="/tags/%E4%BA%8B%E4%BB%B6%E9%A9%B1%E5%8A%A8/" style="font-size: 15px;">事件驱动</a> <a href="/tags/%E7%BC%93%E5%AD%98/" style="font-size: 15px;">缓存</a> <a href="/tags/%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" style="font-size: 15px;">解决方案</a> <a href="/tags/%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97/" style="font-size: 15px;">任务队列</a> <a href="/tags/%E4%BB%BB%E5%8A%A1/" style="font-size: 15px;">任务</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 15px;">分布式</a> <a href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" style="font-size: 15px;">架构设计</a> <a href="/tags/%E7%9F%AD%E9%93%BE%E6%9C%8D%E5%8A%A1/" style="font-size: 15px;">短链服务</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/%E4%B8%AD%E6%96%87%E5%AD%97%E7%AC%A6/" style="font-size: 15px;">中文字符</a> <a href="/tags/debug/" style="font-size: 15px;">debug</a> <a href="/tags/transmittable/" style="font-size: 15px;">transmittable</a> <a href="/tags/ttl/" style="font-size: 15px;">ttl</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 15px;">设计模式</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/" style="font-size: 15px;">系统运维</a> <a href="/tags/%E9%83%A8%E7%BD%B2/" style="font-size: 15px;">部署</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E6%8A%80%E5%B7%A7/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/%E8%87%AA%E5%8A%A8%E7%99%BB%E5%BD%95/" style="font-size: 15px;">自动登录</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/go/" style="font-size: 15px;">go</a> <a href="/tags/%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97/" style="font-size: 15px;">开发指南</a> <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/%E5%BC%80%E6%BA%90/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/http-%E7%8A%B6%E6%80%81%E7%A0%81/" style="font-size: 15px;">http 状态码</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 15px;">数据一致性</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 15px;">事务</a> <a href="/tags/%E5%8F%AF%E9%9D%A0%E4%BA%8B%E4%BB%B6/" style="font-size: 15px;">可靠事件</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" style="font-size: 15px;">中间件</a> <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" style="font-size: 15px;">消息队列</a> <a href="/tags/%E9%80%89%E5%9E%8B/" style="font-size: 15px;">选型</a> <a href="/tags/%E5%8D%95%E4%BD%93%E6%9E%B6%E6%9E%84/" style="font-size: 15px;">单体架构</a> <a href="/tags/%E9%87%8D%E6%9E%84/" style="font-size: 15px;">重构</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/%E8%8C%83%E5%BC%8F/" style="font-size: 15px;">范式</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E6%9B%B4%E6%96%B0/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%EF%BC%8Clinux/" style="font-size: 15px;">操作系统，linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E7%A9%BA%E9%97%B4/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/%E5%B7%A5%E4%BD%9C%E7%8E%AF%E5%A2%83/" style="font-size: 15px;">工作环境</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8/" style="font-size: 15px;">线程安全</a> <a href="/tags/%E6%A8%A1%E5%BC%8F/" style="font-size: 15px;">模式</a>
+    </div>
+</div>
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/java/java-23-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java23 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-22-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java22 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-21-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java21 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-20-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java20 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-19-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java19 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-18-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java18 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/what-i-think-of-covid-19/">羊不羊的关我什么事？</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-messagesource-nacos/">SpringBoot 实战：国际化组件 MessageSource 与 Nacos 组合实现动态配置能力</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-messagesource-principle/">SpringBoot 实战：国际化组件 MessageSource 的执行逻辑与源码</a></li><li class="post-list-item"><a class="post-list-link" href="/springboot-action-messagesource/">SpringBoot 实战：国际化组件 MessageSource</a></li></ul>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">2024年09月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">2023年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">2022年08月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">2022年07月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">2022年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">2022年05月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">2022年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">2022年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">2022年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">2022年01月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">2021年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">2021年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">2021年10月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">2021年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">2021年08月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">2021年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn"
+                       target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow"
+                       href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark"
+                       target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+            <p> &copy; 2014-2024 Howard Liu 版权所有</p>
+            <div class="">
+<!--                <a class="" href="http://idinfo.zjamr.zj.gov.cn/bscx.do?method=lzxx&amp;id=3301963301080000025024" target="_blank">-->
+<!--                    <img data-src="//gw.alicdn.com/tfs/TB1GxwdSXXXXXa.aXXXXXXXXXXX-65-70.gif"-->
+<!--                         src="//gw.alicdn.com/tfs/TB1GxwdSXXXXXa.aXXXXXXXXXXX-65-70.gif"-->
+<!--                         style="width: 20px;-->
+<!--                                display: inline-block;-->
+<!--                                height: 20px;-->
+<!--                                margin-right: 12px;">-->
+<!--                </a>-->
+<!--                <a class="" href="http://www.beian.gov.cn/portal/registerSystemInfo" target="_blank">-->
+<!--                    <img data-src="//img.alicdn.com/tfs/TB1..50QpXXXXX7XpXXXXXXXXXX-40-40.png"-->
+<!--                         src="//img.alicdn.com/tfs/TB1..50QpXXXXX7XpXXXXXXXXXX-40-40.png"-->
+<!--                         style="width: 20px;-->
+<!--                                display: inline-block;-->
+<!--                                height: 20px;-->
+<!--                                margin-right: 12px;">-->
+<!--                    <span class="" style="height: 20px;-->
+<!--                                        line-height: 20px;-->
+<!--                                        color: #939393;-->
+<!--                                        margin-left: -7px;-->
+<!--                                        font-size: 14px;-->
+<!--                                    ">浙公网安备 33010602009975号</span>-->
+<!--                </a>-->
+                <a class="" href="https://beian.miit.gov.cn/" target="_blank">
+                    <span class="" style="margin-left: 12px;
+                                        height: 20px;
+                                        line-height: 20px;
+                                        color: #939393;
+                                        font-size: 14px;
+                                    ">京ICP备19060080号-1</span>
+                </a>
+            </div>
+            <div style="width:300px;margin:0 auto; padding:20px 0;">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011502006279" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                    <img src="https://static.howardliu.cn/beian.png" style="float:left;"/>
+                    <p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">京公网安备 11011502006279号</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</div>
+
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
+<script src="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script src="/js/header.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+<!--[if lt IE 9]>
+
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity='0.9' zIndex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
