@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>从Java8到Java23值得期待的x个特性||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="万字长文掌握从Java8到Java23值得期待的x个特性。从 2017 年开始，Java 版本更新遵循每六个月发布一次的节奏，LTS版本则每两年发布一次，以快速验证新特性，推动 Java 的发展。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从Java8到Java23值得期待的x个特性">
+<meta property="og:url" content="https://www.howardliu.cn/java/java-features-8-23/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="万字长文掌握从Java8到Java23值得期待的x个特性。从 2017 年开始，Java 版本更新遵循每六个月发布一次的节奏，LTS版本则每两年发布一次，以快速验证新特性，推动 Java 的发展。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://static.howardliu.cn/202409161115516.jpg">
+<meta property="og:image" content="https://static.howardliu.cn/202409111451409.png">
+<meta property="og:image" content="https://static.howardliu.cn/202409161142744.png">
+<meta property="og:image" content="https://static.howardliu.cn/202409161143487.png">
+<meta property="og:image" content="https://static.howardliu.cn/202409161336772.png">
+<meta property="og:image" content="https://static.howardliu.cn/202409161336975.png">
+<meta property="og:image" content="https://static.howardliu.cn/202409161338899.png">
+<meta property="og:image" content="https://static.howardliu.cn/202409161340780.png">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="article:published_time" content="2024-09-19T00:23:00.000Z">
+<meta property="article:modified_time" content="2024-12-06T11:36:03.000Z">
+<meta property="article:author" content="Howard Liu">
+<meta property="article:tag" content="java8">
+<meta property="article:tag" content="Java8">
+<meta property="article:tag" content="optional">
+<meta property="article:tag" content="Java8 新特性">
+<meta property="article:tag" content="Java21 新特性">
+<meta property="article:tag" content="Java22 新特性">
+<meta property="article:tag" content="Java23 新特性">
+<meta property="article:tag" content="Java24 新特性">
+<meta property="article:tag" content="Java 新特性">
+<meta property="article:tag" content="Lambda">
+<meta property="article:tag" content="Stream">
+<meta property="article:tag" content="虚拟线程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static.howardliu.cn/202409161115516.jpg">
+
+<meta name="keywords" content="java8,Java8,optional,Java8 新特性,Java21 新特性,Java22 新特性,Java23 新特性,Java24 新特性,Java 新特性,Lambda,Stream,虚拟线程">
+
+
+<meta name="description" content="万字长文掌握从Java8到Java23值得期待的x个特性。从 2017 年开始，Java 版本更新遵循每六个月发布一次的节奏，LTS版本则每两年发布一次，以快速验证新特性，推动 Java 的发展。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon"/>
+<link rel="icon" href="/favicon.png">
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+
+<link rel="stylesheet" href="/css/theme.css">
+
+
+<link rel="stylesheet" href="/css/syntax.css">
+
+
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+
+
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/styles/vs2015.min.css">
+
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+<meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="沉潜飞动" type="application/atom+xml">
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/java/java-features-8-23/">从Java8到Java23值得期待的x个特性</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2024-09-19</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/java/java-features-8-23/" class="leancloud_visitors" data-flag-title="从Java8到Java23值得期待的x个特性">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#有意思的特性"><span class="toc-text">有意思的特性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#大家都很熟悉的特性"><span class="toc-text">大家都很熟悉的特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#补全技能树"><span class="toc-text">补全技能树</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Record-类型（Java-16）"><span class="toc-text">Record 类型（Java 16）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#密封类和接口（Java-17）"><span class="toc-text">密封类和接口（Java 17）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#全新的-HTTP-客户端（Java-11）"><span class="toc-text">全新的 HTTP 客户端（Java 11）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#有序集合（Java-21）"><span class="toc-text">有序集合（Java 21）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#提升幸福感的特性"><span class="toc-text">提升幸福感的特性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#局部变量类型推断（Java-10）"><span class="toc-text">局部变量类型推断（Java 10）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Switch表达式（Java-14）"><span class="toc-text">Switch表达式（Java 14）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文本块（Java-15）"><span class="toc-text">文本块（Java 15）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#字符串模板（预览）"><span class="toc-text">字符串模板（预览）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#模式匹配"><span class="toc-text">模式匹配</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#instanceof模式匹配（Java-16）"><span class="toc-text">instanceof模式匹配（Java 16）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#switch模式匹配（Java-21）"><span class="toc-text">switch模式匹配（Java 21）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Record-模式（Java-21）"><span class="toc-text">Record 模式（Java 21）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#灵活的构造函数主体（预览特性）"><span class="toc-text">灵活的构造函数主体（预览特性）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#永远学不完的多线程"><span class="toc-text">永远学不完的多线程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#虚拟线程（Java-21）"><span class="toc-text">虚拟线程（Java 21）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#作用域值（预览特性）"><span class="toc-text">作用域值（预览特性）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#结构化并发API（预览特性）"><span class="toc-text">结构化并发API（预览特性）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#垃圾收集器"><span class="toc-text">垃圾收集器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#G1（Java-9）"><span class="toc-text">G1（Java 9）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ZGC（Java-15）"><span class="toc-text">ZGC（Java 15）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Shenandoah（Java-15）"><span class="toc-text">Shenandoah（Java 15）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一些小特性"><span class="toc-text">一些小特性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#增强-String"><span class="toc-text">增强 String</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#repeat"><span class="toc-text">repeat</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#strip、stripLeading、stripTrailing"><span class="toc-text">strip、stripLeading、stripTrailing</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#isBlank"><span class="toc-text">isBlank</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#lines"><span class="toc-text">lines</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#indent"><span class="toc-text">indent</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#transform"><span class="toc-text">transform</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#增强文件读写（Java-11）"><span class="toc-text">增强文件读写（Java 11）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#增强函数-Predicate（Java-11）"><span class="toc-text">增强函数 Predicate（Java 11）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#未命名模式和变量（Java-22）"><span class="toc-text">未命名模式和变量（Java 22）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Markdown格式文档注释（Java-23）"><span class="toc-text">Markdown格式文档注释（Java 23）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一些可能不会用到的特性"><span class="toc-text">一些可能不会用到的特性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#web服务器jwebserver（Java-18）"><span class="toc-text">web服务器jwebserver（Java 18）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#隐式声明的类和实例方法（预览特性）"><span class="toc-text">隐式声明的类和实例方法（预览特性）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="https://static.howardliu.cn/202409161115516.jpg" alt="从Java8到Java23值得期待的x个特性"></p>
+<p>你好，我是看山。</p>
+<blockquote>
+<p>本文收录在 <a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378" target="_blank" rel="noopener">《从小工到专家的 Java 进阶之旅》</a> 系列专栏中。</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>从 2017 年开始，Java 版本更新遵循每六个月发布一次的节奏，LTS版本则每两年发布一次，以快速验证新特性，推动 Java 的发展。</p>
+<p><img src="https://static.howardliu.cn/202409111451409.png" alt="Java版本分布"></p>
+<blockquote>
+<p>数据来源<a href="https://newrelic.com/sites/default/files/2024-05/new-relic-state-of-the-java-ecosystem-2024-05-29.pdf" target="_blank" rel="noopener">2024 State of the Java Ecosystem</a></p>
+</blockquote>
+<h2 id="有意思的特性"><a href="#有意思的特性" class="headerlink" title="有意思的特性"></a>有意思的特性</h2><blockquote>
+<p>可以从 <a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378" target="_blank" rel="noopener">《从小工到专家的 Java 进阶之旅》</a> 系列专栏中查看各个版本的特性。</p>
+</blockquote>
+<h3 id="大家都很熟悉的特性"><a href="#大家都很熟悉的特性" class="headerlink" title="大家都很熟悉的特性"></a>大家都很熟悉的特性</h3><p>Java8中的Lambda表达式、Stream流、Optional是大版本特性，Java8是2014年发布，已有十年历史了。大家应该分厂熟悉了，这里不在赘述。推荐两篇文章：</p>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/7f5dcjjKLdBYpzS5p7_v7Q" target="_blank" rel="noopener">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/JOLrw7cbVh8z2czePEfLjw" target="_blank" rel="noopener">一文掌握 Java8 的 Optional 的 6 种操作</a></li>
+</ul>
+<h3 id="补全技能树"><a href="#补全技能树" class="headerlink" title="补全技能树"></a>补全技能树</h3><h4 id="Record-类型（Java-16）"><a href="#Record-类型（Java-16）" class="headerlink" title="Record 类型（Java 16）"></a>Record 类型（Java 16）</h4><p>Java新增了一个关键字<code>record</code>，它是定义不可变数据类型封装类的关键字，主要用在特定领域类上。</p>
+<p>我们都知道，在Java开发中，我们需要定义POJO作为数据存储对象，根据规范，POJO中除了属性是个性化的，其他的比如<code>getter</code>、<code>setter</code>、<code>equals</code>、<code>hashCode</code>、<code>toString</code>都是模板化的写法，所以为了简便，很多类似Lombok的组件提供Java类编译时增强，通过在类上定义<code>@Data</code>注解自动添加这些模板化方法。在Java14中，我们可以直接使用<code>record</code>解决这个问题。</p>
+<p>比如，我们定义一个<code>Person</code>类：</p>
+<pre><code class="Java">public record Person(String name, String address) {
+}</code></pre>
+<p>我们转换为之前的定义会是一坨下面这种代码：</p>
+<pre><code class="Java">public final class PersonBefore {
+    private final String name;
+    private final String address;
+
+    public PersonBefore(String name, String address) {
+        this.name = name;
+        this.address = address;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public String address() {
+        return address;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PersonBefore14 that = (PersonBefore14) o;
+        return Objects.equals(name, that.name) &amp;&amp; Objects.equals(address, that.address);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, address);
+    }
+
+    @Override
+    public String toString() {
+        return &quot;PersonBefore{&quot; +
+                &quot;name=&#39;&quot; + name + &#39;\&#39;&#39; +
+                &quot;, address=&#39;&quot; + address + &#39;\&#39;&#39; +
+                &#39;}&#39;;
+    }
+}</code></pre>
+<p>我们可以发现Record类有如下特征：</p>
+<ol>
+<li>一个构造方法</li>
+<li>getter方法名与属性名相同</li>
+<li>有<code>equals()</code>、<code>hashCode()</code>方法</li>
+<li>有<code>toString()</code>方法</li>
+<li>类对象和属性被<code>final</code>修饰，所以构造函数是包含所有属性的，而且没有setter方法</li>
+</ol>
+<p>在<code>Class</code>类中也新增了对应的处理方法：</p>
+<ul>
+<li><code>getRecordComponents()</code>：返回一组<code>java.lang.reflect.RecordComponent</code>对象组成的数组，该数组的元素与<code>Record</code>类中的组件相对应，其顺序与在记录声明中出现的顺序相同，可以从该数组中的每个<code>RecordComponent</code>中提取到组件信息，包括其名称、类型、泛型类型、注释及其访问方法。</li>
+<li><code>isRecord()</code>：返回所在类是否是 Record 类型，如果是，则返回 true。</li>
+</ul>
+<p>看起来，Record类和Enum很像，都是一定的模板类，通过语法糖定义，在Java编译过程中，将其编译成特定的格式，功能很好，但如果没有习惯使用，可能会觉得限制太多。 </p>
+<h4 id="密封类和接口（Java-17）"><a href="#密封类和接口（Java-17）" class="headerlink" title="密封类和接口（Java 17）"></a>密封类和接口（Java 17）</h4><p>目前，Java 没有提供对继承的细粒度控制，只有 public、protected、private、包内控制四种非常粗粒度的控制方式。</p>
+<p>为此，密封类的目标是允许单个类声明哪些类型可以用作其子类型。这也适用于接口，并确定哪些类型可以实现它们。该功能特性新增了<code>sealed</code>和<code>non-sealed</code>修饰符和<code>permits</code>关键字。</p>
+<p>我们可以做如下定义：</p>
+<pre><code class="Java">public sealed class Person permits Student, Worker, Teacher {}
+
+public sealed class Student extends Person
+        permits Pupil, JuniorSchoolStudent, HighSchoolStudent, CollegeStudent, GraduateStudent {}
+
+public final class Pupil extends Student {}
+
+public non-sealed class Worker extends Person {}
+
+public class OtherClass extends Worker {}
+
+public final class Teacher extends Person {}</code></pre>
+<p>我们可以先定义一个<code>sealed</code>修饰的类<code>Person</code>，使用<code>permits</code>指定被继承的子类，这些子类必须是使用<code>final</code>或<code>sealed</code>或<code>non-sealed</code>修饰的类。其中<code>Student</code>是使用<code>sealed</code>修饰，所以也需要使用<code>permits</code>指定被继承的子类。<code>Worker</code>类使用<code>non-sealed</code>修饰，成为普通类，其他类都可以继承它。<code>Teacher</code>使用<code>final</code>修饰，不可再被继承。</p>
+<p>从类图上看没有太多区别：</p>
+<p><img src="https://static.howardliu.cn/202409161142744.png" alt="密封类和接口"></p>
+<p>但是从功能特性上，起到了很好的约束作用，我们可以放心大胆的定义可以公开使用，但又不想被非特定类继承的类了。</p>
+<h4 id="全新的-HTTP-客户端（Java-11）"><a href="#全新的-HTTP-客户端（Java-11）" class="headerlink" title="全新的 HTTP 客户端（Java 11）"></a>全新的 HTTP 客户端（Java 11）</h4><p>老版 HTTP 客户端存在很多问题，大家开发的时候基本上都是使用第三方 HTTP 库，比如 Apache HttpClient、Netty、Jetty 等。</p>
+<p>新版 HTTP 客户端的目标很多，毕竟这么多珠玉在前，如果还是做成一坨，指定是要被笑死的。所以新版 HTTP 客户端列出了 16 个目标，包括简单易用、打印关键信息、WebSocket、HTTP/2、HTTPS/TLS、良好的性能、非阻塞 API 等等。</p>
+<pre><code class="Java">@Test
+void testHttpClient() throws IOException, InterruptedException {
+    final HttpClient httpClient = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_2)
+            .connectTimeout(Duration.ofSeconds(20))
+            .build();
+    final HttpRequest httpRequest = HttpRequest.newBuilder()
+            .GET()
+            .uri(URI.create(&quot;https://www.howardliu.cn/robots.txt&quot;))
+            .build();
+    final HttpResponse&lt;String&gt; httpResponse = httpClient.send(httpRequest, BodyHandlers.ofString());
+    final String responseBody = httpResponse.body();
+    assertTrue(responseBody.contains(&quot;Allow&quot;));
+}
+</code></pre>
+<h4 id="有序集合（Java-21）"><a href="#有序集合（Java-21）" class="headerlink" title="有序集合（Java 21）"></a>有序集合（Java 21）</h4><p>有序集合是Java21版本中引入的一个新特性，旨在为Java集合框架添加对有序集合的支持。</p>
+<p>有序集合是一种具有定义好的元素访问顺序的集合类型，它允许以一致的方式访问和处理集合中的元素，无论是从第一个元素到最后一个元素，还是从最后一个元素到第一个元素。</p>
+<p>在 Java 中，集合类库非常重要且使用频率非常高，但是缺乏一种能够表示具有定义好的元素访问顺序的集合类型。</p>
+<p>例如，<code>List</code>和<code>Deque</code>都定义了元素的访问顺序，但它们的共同父接口<code>Collection</code>却没有。同样，Set不定义元素的访问顺序，其子类型如<code>HashSet</code>也没有定义，但子类型如<code>SortedSet</code>和<code>LinkedHashSet</code>则有定义。因此，支持访问顺序的功能散布在整个类型层次结构中，使得在API中表达某些有用的概念变得困难。<code>Collection</code>太通用，将此类约束留给文档规范，可能导致难以调试的错误。</p>
+<p>而且，虽然某些集合有顺序操作方法，但是却不尽相同，比如</p>
+<table>
+<thead>
+<tr>
+<th><br></th>
+<th>First element</th>
+<th>Last element</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>List</td>
+<td>list.get(0)</td>
+<td>list.get(list.size() - 1)</td>
+</tr>
+<tr>
+<td>Deque</td>
+<td>deque.getFirst()</td>
+<td>deque.getLast()</td>
+</tr>
+<tr>
+<td>SortedSet</td>
+<td>sortedSet.first()</td>
+<td>sortedSet.last()</td>
+</tr>
+<tr>
+<td>LinkedHashSet</td>
+<td>linkedHashSet.iterator().next()</td>
+<td>缺失</td>
+</tr>
+</tbody></table>
+<p>提供了有序集合<code>SequencedCollection</code>、<code>SequencedSet</code>、<code>SequencedMap</code>：</p>
+<pre><code class="Java">interface SequencedCollection&lt;E&gt; extends Collection&lt;E&gt; {
+    // new method
+    SequencedCollection&lt;E&gt; reversed();
+    // methods promoted from Deque
+    void addFirst(E);
+    void addLast(E);
+    E getFirst();
+    E getLast();
+    E removeFirst();
+    E removeLast();
+}
+
+interface SequencedSet&lt;E&gt; extends Set&lt;E&gt;, SequencedCollection&lt;E&gt; {
+    SequencedSet&lt;E&gt; reversed();    // covariant override
+}
+
+interface SequencedMap&lt;K,V&gt; extends Map&lt;K,V&gt; {
+    // new methods
+    SequencedMap&lt;K,V&gt; reversed();
+    SequencedSet&lt;K&gt; sequencedKeySet();
+    SequencedCollection&lt;V&gt; sequencedValues();
+    SequencedSet&lt;Entry&lt;K,V&gt;&gt; sequencedEntrySet();
+    V putFirst(K, V);
+    V putLast(K, V);
+    // methods promoted from NavigableMap
+    Entry&lt;K, V&gt; firstEntry();
+    Entry&lt;K, V&gt; lastEntry();
+    Entry&lt;K, V&gt; pollFirstEntry();
+    Entry&lt;K, V&gt; pollLastEntry();
+}</code></pre>
+<p><code>SequencedCollection</code>的<code>reversed()</code>方法提供了一个原始集合的反向视图。任何对原始集合的修改都会在视图中可见。如果允许，视图中的修改会写回到原始集合。</p>
+<p><img src="https://static.howardliu.cn/202409161143487.png" alt="JEP 431: 有序集合（Sequenced Collections）"></p>
+<p>我们看一个例子，假设我们有一个LinkedHashSet，现在我们想要获取它的反向视图并以反向顺序遍历它：</p>
+<pre><code class="Java">LinkedHashSet&lt;Integer&gt; linkedHashSet = new LinkedHashSet&lt;&gt;(Arrays.asList(3, 2, 1));
+
+// 获取反向视图
+SequencedCollection&lt;Integer&gt; reversed = linkedHashSet.reversed();
+
+// 反向遍历
+System.out.println(&quot;原始数据：&quot; + linkedHashSet);
+System.out.println(&quot;反转数据：&quot; + reversed);
+
+// 运行结果：
+// 原始数据：[3, 2, 1]
+// 反转数据：[1, 2, 3]</code></pre>
+<p>这些方法都是便捷方法，内部数据结构没有变化，其实本质也是原来的用法。比如<code>ArrayList</code>中的<code>getFirst</code>和<code>getLast</code>方法：</p>
+<pre><code class="java">/**
+ * {@inheritDoc}
+ *
+ * @throws NoSuchElementException {@inheritDoc}
+ * @since 21
+ */
+public E getFirst() {
+    if (size == 0) {
+        throw new NoSuchElementException();
+    } else {
+        return elementData(0);
+    }
+}
+
+/**
+ * {@inheritDoc}
+ *
+ * @throws NoSuchElementException {@inheritDoc}
+ * @since 21
+ */
+public E getLast() {
+    int last = size - 1;
+    if (last &lt; 0) {
+        throw new NoSuchElementException();
+    } else {
+        return elementData(last);
+    }
+}</code></pre>
+<h2 id="提升幸福感的特性"><a href="#提升幸福感的特性" class="headerlink" title="提升幸福感的特性"></a>提升幸福感的特性</h2><h3 id="局部变量类型推断（Java-10）"><a href="#局部变量类型推断（Java-10）" class="headerlink" title="局部变量类型推断（Java 10）"></a>局部变量类型推断（Java 10）</h3><pre><code class="Java">// 以前的写法
+Map&lt;String, List&lt;ProcSequenceFlow&gt;&gt; sourceMap = sequenceFlowList.stream()
+        .collect(Collectors.groupingBy(ProcSequenceFlow::getSourceRef));
+
+// 现在的写法
+var sourceMap2 = sequenceFlowList.stream()
+        .collect(Collectors.groupingBy(ProcSequenceFlow::getSourceRef));</code></pre>
+<h3 id="Switch表达式（Java-14）"><a href="#Switch表达式（Java-14）" class="headerlink" title="Switch表达式（Java 14）"></a>Switch表达式（Java 14）</h3><p>我们以“判断是否工作日”的例子展示一下，在Java14之前：</p>
+<pre><code class="Java">@Test
+void testSwitch() {
+    final DayOfWeek day = DayOfWeek.from(LocalDate.now());
+    String typeOfDay = &quot;&quot;;
+    switch (day) {
+        case MONDAY:
+        case TUESDAY:
+        case WEDNESDAY:
+        case THURSDAY:
+        case FRIDAY:
+            typeOfDay = &quot;Working Day&quot;;
+            break;
+        case SATURDAY:
+        case SUNDAY:
+            typeOfDay = &quot;Rest Day&quot;;
+            break;
+    }
+
+    Assertions.assertFalse(typeOfDay.isEmpty());
+}</code></pre>
+<p>在Java14中：</p>
+<pre><code class="Java">@Test
+void testSwitchExpression() {
+    final DayOfWeek day = DayOfWeek.SATURDAY;
+    final String typeOfDay = switch (day) {
+        case MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY -&gt; {
+            System.out.println(&quot;Working Day: &quot; + day);
+            yield &quot;Working Day&quot;;
+        }
+        case SATURDAY, SUNDAY -&gt; &quot;Day Off&quot;;
+    };
+
+    Assertions.assertEquals(&quot;Day Off&quot;, typeOfDay);
+}</code></pre>
+<p>注意看，例子中我们使用了两种写法，一种是通过<code>yield</code>关键字表示返回结果，一种是在<code>-&gt;</code>之后直接返回。</p>
+<h3 id="文本块（Java-15）"><a href="#文本块（Java-15）" class="headerlink" title="文本块（Java 15）"></a>文本块（Java 15）</h3><p>直接上代码</p>
+<pre><code class="Java">@Test
+void testTextBlock() {
+    final String singleLine = &quot;你好，我是看山，公众号「看山的小屋」。这行没有换行，而且我的后面多了一个空格 
+ 这次换行了&quot;;
+    final String textBlockSingleLine = &quot;&quot;&quot;
+            你好，我是看山，公众号「看山的小屋」。\
+            这行没有换行，而且我的后面多了一个空格\s
+            这次换行了&quot;&quot;&quot;;
+
+    Assertions.assertEquals(singleLine, textBlockSingleLine);
+}</code></pre>
+<h3 id="字符串模板（预览）"><a href="#字符串模板（预览）" class="headerlink" title="字符串模板（预览）"></a>字符串模板（预览）</h3><p>字符串模板通过将文本和嵌入式表达式结合在一起，使得Java程序能够以一种更加直观和安全的方式构建字符串。</p>
+<p>与传统的字符串拼接（使用+操作符）、<code>StringBuilder</code>或<code>String.format</code> 等方法相比，字符串模板提供了一种更加清晰和安全的字符串构建方式。</p>
+<p>特别是当字符串需要从用户提供的值构建并传递给其他系统时（例如，构建数据库查询），使用字符串模板可以有效地验证和转换模板及其嵌入表达式的值，从而提高Java程序的安全性。</p>
+<p>让我们通过代码看一下这个特性的魅力：</p>
+<pre><code class="Java">public static void main(String[] args) {
+    // 拼装变量
+    String name = &quot;看山&quot;;
+    String info = STR. &quot;My name is \{ name }&quot; ;
+    assert info.equals(&quot;My name is 看山&quot;);
+
+    // 拼装变量
+    String firstName = &quot;Howard&quot;;
+    String lastName = &quot;Liu&quot;;
+    String fullName = STR. &quot;\{ firstName } \{ lastName }&quot; ;
+    assert fullName.equals(&quot;Howard Liu&quot;);
+    String sortName = STR. &quot;\{ lastName }, \{ firstName }&quot; ;
+    assert sortName.equals(&quot;Liu, Howard&quot;);
+
+    // 模板中调用方法
+    String s2 = STR. &quot;You have a \{ getOfferType() } waiting for you!&quot; ;
+    assert s2.equals(&quot;You have a gift waiting for you!&quot;);
+
+    Request req = new Request(&quot;2017-07-19&quot;, &quot;09:15&quot;, &quot;https://www.howardliu.cn&quot;);
+    // 模板中引用对象属性
+    String s3 = STR. &quot;Access at \{ req.date } \{ req.time } from \{ req.address }&quot; ;
+    assert s3.equals(&quot;Access at 2017-07-19 09:15 from https://www.howardliu.cn&quot;);
+
+    LocalTime now = LocalTime.now();
+    String markTime = DateTimeFormatter
+            .ofPattern(&quot;HH:mm:ss&quot;)
+            .format(now);
+    // 模板中调用方法
+    String time = STR. &quot;The time is \{
+            // The java.time.format package is very useful
+            DateTimeFormatter
+                    .ofPattern(&quot;HH:mm:ss&quot;)
+                    .format(now)
+            } right now&quot; ;
+    assert time.equals(&quot;The time is &quot; + markTime + &quot; right now&quot;);
+
+    // 模板嵌套模板
+    String[] fruit = {&quot;apples&quot;, &quot;oranges&quot;, &quot;peaches&quot;};
+    String s4 = STR. &quot;\{ fruit[0] }, \{
+            STR. &quot;\{ fruit[1] }, \{ fruit[2] }&quot;
+            }&quot; ;
+    assert s4.equals(&quot;apples, oranges, peaches&quot;);
+
+    // 模板与文本块结合
+    String title = &quot;My Web Page&quot;;
+    String text = &quot;Hello, world&quot;;
+    String html = STR. &quot;&quot;&quot;
+    &lt;html&gt;
+      &lt;head&gt;
+        &lt;title&gt;\{ title }&lt;/title&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;p&gt;\{ text }&lt;/p&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+    &quot;&quot;&quot; ;
+    assert html.equals(&quot;&quot;&quot;
+            &lt;html&gt;
+              &lt;head&gt;
+                &lt;title&gt;My Web Page&lt;/title&gt;
+              &lt;/head&gt;
+              &lt;body&gt;
+                &lt;p&gt;Hello, world&lt;/p&gt;
+              &lt;/body&gt;
+            &lt;/html&gt;
+            &quot;&quot;&quot;);
+
+    // 带格式化的字符串模板
+    record Rectangle(String name, double width, double height) {
+        double area() {
+            return width * height;
+        }
+    }
+    Rectangle[] zone = new Rectangle[] {
+            new Rectangle(&quot;Alfa&quot;, 17.8, 31.4),
+            new Rectangle(&quot;Bravo&quot;, 9.6, 12.4),
+            new Rectangle(&quot;Charlie&quot;, 7.1, 11.23),
+    };
+    String table = FMT. &quot;&quot;&quot;
+        Description     Width    Height     Area
+        %-12s\{ zone[0].name }  %7.2f\{ zone[0].width }  %7.2f\{ zone[0].height }     %7.2f\{ zone[0].area() }
+        %-12s\{ zone[1].name }  %7.2f\{ zone[1].width }  %7.2f\{ zone[1].height }     %7.2f\{ zone[1].area() }
+        %-12s\{ zone[2].name }  %7.2f\{ zone[2].width }  %7.2f\{ zone[2].height }     %7.2f\{ zone[2].area() }
+        \{ &quot; &quot;.repeat(28) } Total %7.2f\{ zone[0].area() + zone[1].area() + zone[2].area() }
+        &quot;&quot;&quot;;
+    assert table.equals(&quot;&quot;&quot;
+            Description     Width    Height     Area
+            Alfa            17.80    31.40      558.92
+            Bravo            9.60    12.40      119.04
+            Charlie          7.10    11.23       79.73
+                                         Total  757.69
+            &quot;&quot;&quot;);
+}
+
+public static String getOfferType() {
+    return &quot;gift&quot;;
+}
+
+record Request(String date, String time, String address) {
+}</code></pre>
+<p>这个功能当前是第一次预览，在Java22第二次预览，Java23的8.12版本中还没有展示字符串模板的第三次预览（JEP 465: String Templates），还不能确定什么时候可以正式用上。</p>
+<h3 id="模式匹配"><a href="#模式匹配" class="headerlink" title="模式匹配"></a>模式匹配</h3><h4 id="instanceof模式匹配（Java-16）"><a href="#instanceof模式匹配（Java-16）" class="headerlink" title="instanceof模式匹配（Java 16）"></a>instanceof模式匹配（Java 16）</h4><p><code>instanceof</code>主要用来检查对象类型，作为类型强转前的安全检查。</p>
+<p>比如：</p>
+<pre><code class="Java">@Test
+void test() {
+    final Object obj1 = &quot;Hello, World!&quot;;
+    int result = 0;
+    if (obj1 instanceof String) {
+        String str = (String) obj1;
+        result = str.length();
+    } else if (obj1 instanceof Number) {
+        Number num = (Number) obj1;
+        result = num.intValue();
+    }
+
+    Assertions.assertEquals(13, result);
+}</code></pre>
+<p>可以看到，我们每次判断类型之后，需要声明一个判断类型的变量，然后将判断参数强制转换类型，赋值给新声明的变量。</p>
+<p>这种写法显得繁琐且多余。</p>
+<p><code>instanceof</code>改进后：</p>
+<pre><code class="Java">@Test
+void test1() {
+    final Object obj1 = &quot;Hello, World!&quot;;
+    int result = 0;
+    if (obj1 instanceof String str) {
+        result = str.length();
+    } else if (obj1 instanceof Number num) {
+        result = num.intValue();
+    }
+
+    Assertions.assertEquals(13, result);
+}</code></pre>
+<p>不仅如此，<code>instanceof</code>模式匹配的作用域还可以扩展。在<code>if</code>条件判断中，我们都知道<code>&amp;&amp;</code>与判断是会执行所有的表达式，所以使用<code>instanceof</code>模式匹配定义的局部变量继续判断。</p>
+<p>比如：</p>
+<pre><code class="Java">if (obj1 instanceof String str &amp;&amp; str.length() &gt; 20) {
+    result = str.length();
+}</code></pre>
+<p>与原来的写法对比，新的写法代码更加简洁、可读性更高，能够提出很多冗余繁琐的代码，非常实用的一个特性。</p>
+<h4 id="switch模式匹配（Java-21）"><a href="#switch模式匹配（Java-21）" class="headerlink" title="switch模式匹配（Java 21）"></a>switch模式匹配（Java 21）</h4><p>switch模式匹配是一个非常赞的功能，可以在选择器表达式使用基础判断和任意引用类型，包括instanceof操作符。这意味着可以更灵活地使用对象、数组、列表等复杂数据结构作为switch语句的基础，从而简化代码并提高可读性。</p>
+<p>switch模式匹配允许在switch语句中使用模式来测试表达式，每个模式都有特定的动作，从而可以简洁、安全地表达复杂的数据导向查询。</p>
+<p>通过代码看下switch模式匹配的魅力；</p>
+<pre><code class="Java">static String formatValue(Object obj) {
+    return switch (obj) {
+        case null -&gt; &quot;null&quot;;
+        case Integer i -&gt; String.format(&quot;int %d&quot;, i);
+        case Long l -&gt; String.format(&quot;long %d&quot;, l);
+        case Double d -&gt; String.format(&quot;double %f&quot;, d);
+        case String s -&gt; String.format(&quot;String %s&quot;, s);
+        case Person(String name, String address) -&gt; String.format(&quot;Person %s %s&quot;, name, address);
+        default -&gt; obj.toString();
+    };
+}
+
+public record Person(String name, String address) {}
+
+public static void main(String[] args) {
+    System.out.println(formatValue(10));
+    System.out.println(formatValue(20L));
+    System.out.println(formatValue(3.14));
+    System.out.println(formatValue(&quot;Hello&quot;));
+    System.out.println(formatValue(null));
+    System.out.println(formatValue(new Person(&quot;Howard&quot;, &quot;Beijing&quot;)));
+}
+
+// 运行结果
+// int 10
+// long 20
+// double 3.140000
+// String Hello
+// null
+// Person Howard Beijing</code></pre>
+<h4 id="Record-模式（Java-21）"><a href="#Record-模式（Java-21）" class="headerlink" title="Record 模式（Java 21）"></a>Record 模式（Java 21）</h4><p>Record是Java16正式发布的基础类型，提供不可变对象的简单实现（其实就是Java Bean，但是省略一堆的getter、setter、hashcode、equals、toString等方法）。</p>
+<p>Record模式，主要是使Record类型可以直接在instanceof和switch模式匹配中使用。</p>
+<p>我们一起看个示例，比如有下面几个基础元素：</p>
+<pre><code class="Java">// 颜色
+enum Color { RED, GREEN, BLUE}
+// 点
+record Point(int x, int y) {}
+// 带颜色的点
+record ColoredPoint(Point p, Color color) {}
+// 正方形
+record Square(ColoredPoint upperLeft, ColoredPoint lowerRight) {}</code></pre>
+<p>我们分别通过instanceof模式匹配和switch模式匹配判断输入参数的类型，打印不同的格式：</p>
+<pre><code class="Java">private static void instancePatternsAndPrint(Object o) {
+    if (o instanceof Square(ColoredPoint upperLeft, ColoredPoint lowerRight)) {
+        System.out.println(&quot;Square类型：&quot; + upperLeft + &quot; &quot; + lowerRight);
+    } else if (o instanceof ColoredPoint(Point(int x, int y), Color color)) {
+        System.out.println(&quot;ColoredPoint类型：&quot; + x + &quot; &quot; + y + &quot; &quot; + color);
+    } else if (o instanceof Point p) {
+        System.out.println(&quot;Point类型：&quot; + p);
+    }
+}
+
+private static void switchPatternsAndPrint(Object o) {
+    switch (o) {
+        case Square(ColoredPoint upperLeft, ColoredPoint lowerRight) -&gt; {
+            System.out.println(&quot;Square类型：&quot; + upperLeft + &quot; &quot; + lowerRight);
+        }
+        case ColoredPoint(Point(int x, int y), Color color) -&gt; {
+            System.out.println(&quot;ColoredPoint类型：&quot; + x + &quot; &quot; + y + &quot; &quot; + color);
+        }
+        case Point p -&gt; {
+            System.out.println(&quot;Point类型：&quot; + p);
+        }
+        default -&gt; throw new IllegalStateException(&quot;Unexpected value: &quot; + o);
+    }
+}</code></pre>
+<p>我们通过main方法执行下：</p>
+<pre><code class="Java">public static void main(String[] args) {
+    var p = new Point(1, 2);
+    var cp1 = new ColoredPoint(p, Color.RED);
+    var cp2 = new ColoredPoint(p, Color.GREEN);
+    var square = new Square(cp1, cp2);
+
+    instancePatternsAndPrint(square);
+    instancePatternsAndPrint(cp1);
+    instancePatternsAndPrint(p);
+
+    switchPatternsAndPrint(square);
+    switchPatternsAndPrint(cp1);
+    switchPatternsAndPrint(p);
+}
+// 结果是：
+//
+// Square类型：ColoredPoint[p=Point[x=1, y=2], color=RED] ColoredPoint[p=Point[x=1, y=2], color=GREEN]
+// ColoredPoint类型：1 2 RED
+// Point类型：Point[x=1, y=2]
+//
+// Square类型：ColoredPoint[p=Point[x=1, y=2], color=RED] ColoredPoint[p=Point[x=1, y=2], color=GREEN]
+// ColoredPoint类型：1 2 RED
+// Point类型：Point[x=1, y=2]
+</code></pre>
+<p>是不是很简洁，就像Java8提供的Lambda表达式一样，很丝滑。</p>
+<h3 id="灵活的构造函数主体（预览特性）"><a href="#灵活的构造函数主体（预览特性）" class="headerlink" title="灵活的构造函数主体（预览特性）"></a>灵活的构造函数主体（预览特性）</h3><p>我们都知道，在子类的构造函数中，比如通过<code>super(……)</code>调用父类，在<code>super</code>之前是不允许有其他语句的。</p>
+<p>大部分的时候这种限制都没问题，但是有时候不太灵活。如果想在<code>super</code>之前加上一些子类特有逻辑，比如想统计下子类构造耗时，就得重写一遍父类的实现。</p>
+<p>除了有损灵活性，这种重写的做法也会造成父子类之间的关系变得奇怪。假设父类是SDK中的一个类，SDK升级时在父类构造函数增加了一些逻辑，我们项目中是无法继承这些逻辑的，某次需要升级SDK（比如低版本有安全风险），验证不完整的情况下，就很容易出现bug。</p>
+<p>该特性的目标是提高构造函数的可读性和可预测性，同时保持构造函数调用的自上而下的规则。通过允许在显式调用 <code>super()</code> 或 <code>this()</code> 前初始化字段，从而实现更灵活的构造函数主体。这一变化使得代码更具表现力。</p>
+<p>我们看下示例代码：</p>
+<pre><code class="Java">public class PositiveBigInteger extends BigInteger {
+    public PositiveBigInteger(long value) {
+        if (value &lt;= 0) {
+            throw new IllegalArgumentException(&quot;non-positive value&quot;);
+        }
+        super(value);
+    }
+}</code></pre>
+<h2 id="永远学不完的多线程"><a href="#永远学不完的多线程" class="headerlink" title="永远学不完的多线程"></a>永远学不完的多线程</h2><h3 id="虚拟线程（Java-21）"><a href="#虚拟线程（Java-21）" class="headerlink" title="虚拟线程（Java 21）"></a>虚拟线程（Java 21）</h3><p>虚拟线程是一种轻量级的线程实现，旨在显著降低编写、维护和观察高吞吐量并发应用程序的难度。它们占用的资源少，不需要被池化，可以创建大量虚拟线程，特别适用于IO密集型任务，因为它们可以高效地调度大量虚拟线程来处理并发请求，从而显著提高程序的吞吐量和响应速度。</p>
+<p>虚拟线程有下面几个特点：</p>
+<ol>
+<li>轻量级：虚拟线程是JVM内部实现的轻量级线程，不需要操作系统内核参与，创建和上下文切换的成本远低于传统的操作系统线程（即平台线程），且占用的内存资源较少。</li>
+<li>减少CPU时间消耗：由于虚拟线程不依赖于操作系统平台线程，因此在进行线程切换时耗费的CPU时间会大大减少，从而提高了程序的执行效率。</li>
+<li>简化多线程编程：虚拟线程通过结构化并发API来简化多线程编程，使得开发者可以更容易地编写、维护和观察高吞吐量并发应用程序。</li>
+<li>适用于大量任务场景：虚拟线程非常适合需要创建和销毁大量线程的任务、需要执行大量计算的任务（如数据处理、科学计算等）以及需要实现任务并行执行以提高程序性能的场景。</li>
+<li>提高系统吞吐量：通过对虚拟线程的介绍和与Go协程的对比，可以看出虚拟线程能够大幅提高系统的整体吞吐量。</li>
+</ol>
+<p>不考虑虚拟线程实现原理，对开发者而言，使用体验上与传统线程几乎没有区别。</p>
+<pre><code class="Java">try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+    IntStream.range(0, 10_000).forEach(i -&gt; {
+        executor.submit(() -&gt; {
+            Thread.sleep(Duration.ofSeconds(1));
+            System.out.println(Thread.currentThread().getName() + &quot;: &quot; + i);
+            return i;
+        });
+    });
+}
+
+Thread.startVirtualThread(() -&gt; {
+    System.out.println(&quot;Hello from a virtual thread[Thread.startVirtualThread]&quot;);
+});
+
+final ThreadFactory factory = Thread.ofVirtual().factory();
+factory.newThread(() -&gt; {
+            System.out.println(&quot;Hello from a virtual thread[ThreadFactory.newThread]&quot;);
+        })
+        .start();
+</code></pre>
+<p>虚拟线程为了降低使用门槛，直接提供了与原生线程类似的方法：</p>
+<ul>
+<li><code>Executors.newVirtualThreadPerTaskExecutor()</code>，可以像普通线程池一样创建虚拟线程。</li>
+<li><code>Thread.startVirtualThread</code>，通过工具方法直接创建并运行虚拟线程。</li>
+<li><code>Thread.ofVirtual().factory().newThread()</code>，另一个工具方法可以创建并运行虚拟线程。<code>Thread</code>还有一个<code>ofPlatform()</code>方法，用来构建普通线程。</li>
+</ul>
+<p>需要注意的是，虚拟线程适用于IO密集场景，而非CPU密集的场景。</p>
+<h3 id="作用域值（预览特性）"><a href="#作用域值（预览特性）" class="headerlink" title="作用域值（预览特性）"></a>作用域值（预览特性）</h3><p>作用域值（Scoped Values），旨在促进在线程内和线程间共享不可变数据。这一特性为现代 Java 应用程序提供了一种更高效和安全的替代传统 ThreadLocal 机制的方法，尤其是在并发编程的背景下。</p>
+<p>作用域值允许开发者定义一个变量，该变量可以在特定的作用域内访问，包括当前线程及其创建的任何子线程。这一机制特别适用于在方法调用链中隐式传递数据，而无需在方法签名中添加额外的参数。</p>
+<p>作用域值的主要特点：</p>
+<ul>
+<li>不可变性：作用域值是不可变的，这意味着一旦设置，其值就不能更改。这种不可变性减少了并发编程中意外副作用的风险。</li>
+<li>作用域生命周期：作用域值的生命周期仅限于 run 方法定义的作用域。一旦执行离开该作用域，作用域值将不再可访问。</li>
+<li>继承性：子线程会自动继承父线程的作用域值，从而允许在线程边界间无缝共享数据。</li>
+</ul>
+<p>在之前，在多线程间传递数据，我们会使用<code>ThreadLocal</code>来保存当前线程变量，用完需要手动清理，如果忘记清理或者使用不规范，可能导致内存泄漏等问题。作用域值通过自动管理生命周期和内存，减少了这种风险。</p>
+<p>我们一起看下作用域值的使用：</p>
+<pre><code class="Java">// 声明一个作用域值用于存储用户名
+public final static ScopedValue&lt;String&gt; USERNAME = ScopedValue.newInstance();
+
+private static final Runnable printUsername = () -&gt;
+        System.out.println(Thread.currentThread().threadId() + &quot; 用户名是 &quot; + USERNAME.get());
+
+public static void main(String[] args) throws Exception {
+    // 将用户名 &quot;Bob&quot; 绑定到作用域并执行 Runnable
+    ScopedValue.where(USERNAME, &quot;Bob&quot;).run(() -&gt; {
+        printUsername.run();
+        new Thread(printUsername).start();
+    });
+
+    // 将用户名 &quot;Chris&quot; 绑定到另一个作用域并执行 Runnable
+    ScopedValue.where(USERNAME, &quot;Chris&quot;).run(() -&gt; {
+        printUsername.run();
+        new Thread(() -&gt; {
+            new Thread(printUsername).start();
+            printUsername.run();
+        }).start();
+    });
+
+    // 检查在任何作用域外 USERNAME 是否被绑定
+    System.out.println(&quot;用户名是否被绑定: &quot; + USERNAME.isBound());
+}
+</code></pre>
+<p>写起来干净利索，而且功能更强。</p>
+<h3 id="结构化并发API（预览特性）"><a href="#结构化并发API（预览特性）" class="headerlink" title="结构化并发API（预览特性）"></a>结构化并发API（预览特性）</h3><p>结构化并发API（Structured Concurrency API）旨在简化多线程编程，通过引入一个API来处理在不同线程中运行的多个任务作为一个单一工作单元，从而简化错误处理和取消操作，提高可靠性，并增强可观测性。这是一个处于孵化阶段的API。</p>
+<p>结构化并发API提供了明确的语法结构来定义子任务的生命周期，并启用一个运行时表示线程间的层次结构。这有助于实现错误传播和取消以及并发程序的有意义观察。</p>
+<p>Java使用异常处理机制来管理运行时错误和其他异常。当异常在代码中产生时，如何被传递和处理的过程称为异常传播。</p>
+<p>在结构化并发环境中，异常可以通过显式地从当前环境中抛出并传播到更大的环境中去处理。</p>
+<p>在Java并发编程中，非受检异常的处理是程序健壮性的重要组成部分。特别是对于非受检异常的处理，这关系到程序在遇到错误时是否能够优雅地继续运行或者至少提供有意义的反馈。</p>
+<pre><code class="Java">try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+    var task1 = scope.fork(() -&gt; {
+        Thread.sleep(1000);
+        return &quot;Result from task 1&quot;;
+    });
+
+    var task2 = scope.fork(() -&gt; {
+        Thread.sleep(2000);
+        return &quot;Result from task 2&quot;;
+    });
+
+    scope.join();
+    scope.throwIfFailed(RuntimeException::new);
+
+    System.out.println(task1.get());
+    System.out.println(task2.get());
+} catch (Exception e) {
+    e.printStackTrace();
+}</code></pre>
+<p>在这个例子中，handle()方法使用StructuredTaskScope来并行执行两个子任务：task1和task2。通过使用try-with-resources语句自动管理资源，并确保所有子任务都在try块结束时正确完成或被取消。这种方式使得线程的生命周期和任务的逻辑结构紧密相关，提高了代码的清晰度和错误处理的效率。使用 StructuredTaskScope 可以确保一些有价值的属性：</p>
+<ul>
+<li>错误处理与短路：如果task1或task2子任务中的任何一个失败，另一个如果尚未完成则会被取消。（这由 ShutdownOnFailure 实现的关闭策略来管理；还有其他策略可能）。</li>
+<li>取消传播：如果在运行上面方法的线程在调用 join() 之前或之中被中断，则线程在退出作用域时会自动取消两个子任务。</li>
+<li>清晰性：设置子任务，等待它们完成或被取消，然后决定是成功（并处理已经完成的子任务的结果）还是失败（子任务已经完成，因此没有更多需要清理的）。</li>
+<li>可观察性：线程转储清楚地显示了任务层次结构，其中运行task1或task2的线程被显示为作用域的子任务。</li>
+</ul>
+<p>上面的示例能够很好的解决我们的一个痛点，有两个可并行的任务A和B，A+B才是完整结果，任何一个失败，另外一个也不需要成功，结构化并发API就可以很容易的实现这个逻辑。</p>
+<h2 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h2><h3 id="G1（Java-9）"><a href="#G1（Java-9）" class="headerlink" title="G1（Java 9）"></a>G1（Java 9）</h3><p>G1垃圾收集器（Garbage-First Garbage Collector，简称G1 GC）是一种专为服务器端应用设计的垃圾收集器，特别适用于具有多核处理器和大内存的机器。它在Java 9中成为默认的垃圾收集器。</p>
+<ol>
+<li>分区机制：G1将整个堆空间划分为若干个大小相等的独立区域（Region），每个Region的大小根据堆的实际大小而定，通常控制在1MB到32MB之间。这种分区的思想弱化了传统的分代概念，使得垃圾收集更加灵活和高效。</li>
+<li>垃圾回收策略：G1采用混合垃圾回收策略（Mix GC），不仅回收新生代中的所有Region，还会回收部分老年代中的Region。这种策略的目标是在保证停顿时间不超过预期的情况下，尽可能地回收更多的垃圾对象。</li>
+<li>并行与并发：G1能够充分利用CPU、多核环境下的硬件优势，使用多个CPU核心来缩短Stop-The-World停顿时间。部分其他收集器需要停顿Java线程执行的GC动作，但G1可以通过并发的方式让Java程序继续运行。</li>
+<li>高吞吐量与低延迟：G1的主要目标是在满足高吞吐量的同时，尽可能减少GC停顿时间。通过跟踪各个Region中的垃圾堆积情况，每次根据设置的垃圾回收时间，优先处理优先级最高的区域，避免一次性清理整个新生代或整个老年代的垃圾。</li>
+</ol>
+<p>G1垃圾收集器非常适合大尺寸堆内存的应用场景，特别是在多处理器环境下。它的设计目标是能够在有限的时间内获取尽可能高的收集效率，并且避免内存碎片。对于那些对GC停顿时间敏感的应用，如实时系统和大数据处理系统，G1是一个非常合适的选择。</p>
+<h3 id="ZGC（Java-15）"><a href="#ZGC（Java-15）" class="headerlink" title="ZGC（Java 15）"></a>ZGC（Java 15）</h3><p>ZGC 是一个可伸缩、低延迟的垃圾收集器，使用-XX:+UseZGC 命令开启。</p>
+<p>名称中的“Z”并没有特定的含义，主要是一个名称，灵感来源于Oracle的ZFS文件系统。ZFS在设计上具有革命性，因此ZGC的命名也向其致敬。</p>
+<p>在Java15发布时，提供的是不分代收集器，所有对象都放在一起，期望STW最大10ms。</p>
+<p>在Java21的时候，基于「大部分对象朝生夕死」的分代假说，ZGC提供了分代版本，将内存划分为年轻代和老年代，并为这两种代分别维护不同的垃圾收集策略，期望STW最大是1ms。</p>
+<p>我们看下<a href="https://kstefanj.github.io/2023/11/07/hazelcast-on-generational-zgc.html" target="_blank" rel="noopener">Hazelcast Jet on Generational ZGC</a>中给出的测评效果：</p>
+<p><img src="https://static.howardliu.cn/202409161336772.png" alt="JEP 439: 分代ZGC（Generational ZGC）"></p>
+<p>从上图可以看到，非分代 ZGC 在低负载下表现非常好，但随着分配压力的增加，延迟也会增加。使用分代 ZGC 后，即使在高负载下，延迟也非常低，而且延迟效果优于G1。</p>
+<h3 id="Shenandoah（Java-15）"><a href="#Shenandoah（Java-15）" class="headerlink" title="Shenandoah（Java 15）"></a>Shenandoah（Java 15）</h3><p>Shenandoah（读音：谢南多厄），作为一个低停顿的垃圾收集器。</p>
+<p>Shenandoah 垃圾收集器是 RedHat 在 2014 年宣布进行的垃圾收集器研究项目，其工作原理是通过与 Java 应用执行线程同时运行来降低停顿时间。</p>
+<p>简单的说就是，Shenandoah 工作时与应用程序线程并发，通过交换 CPU 并发周期和空间以改善停顿时间，使得垃圾回收器执行线程能够在 Java 线程运行时进行堆压缩，并且标记和整理能够同时进行，因此避免了在大多数 JVM 垃圾收集器中所遇到的问题。</p>
+<p><img src="https://static.howardliu.cn/202409161336975.png" alt="Shenandoah GC"></p>
+<p>Shenandoah 垃圾回收器的暂停时间与堆大小无关，这意味着无论将堆设置为 200MB 还是 200GB，都将拥有一致的系统暂停时间，不过实际使用性能将取决于实际工作堆的大小和工作负载。</p>
+<p><a href="https://wiki.openjdk.java.net/display/shenandoah" target="_blank" rel="noopener">https://wiki.openjdk.java.net/display/shenandoah</a></p>
+<h2 id="一些小特性"><a href="#一些小特性" class="headerlink" title="一些小特性"></a>一些小特性</h2><h3 id="增强-String"><a href="#增强-String" class="headerlink" title="增强 String"></a>增强 String</h3><p>String中新增的方法：repeat、strip、stripLeading、stripTrailing、isBlank、lines、indent 和 transform。</p>
+<p>这些方法还是挺有用的，以前我们可能需要借助第三方类库（比如 Apache 出品的 commons-lang）中的工具类，现在可以直接使用嫡亲方法了。</p>
+<h4 id="repeat"><a href="#repeat" class="headerlink" title="repeat"></a>repeat</h4><p>repeat是实例方法，顾名思义，这个方法是返回给定字符串的重复值的，参数是int类型，传参的时候需要注意：</p>
+<ul>
+<li>如果重复次数小于 0 会抛出IllegalArgumentException异常；</li>
+<li>如果重复次数为 0 或者字符串本身是空字符串，将返回空字符串；</li>
+<li>如果重复次数为 1 直接返回本身；</li>
+<li>如果字符串重复指定次数后，长度超过Integer.MAX_VALUE<code>，会抛出</code>OutOfMemoryError`错误。</li>
+</ul>
+<p>用法很简单：</p>
+<pre><code class="Java">@Test
+void testRepeat() {
+    String output = &quot;foo &quot;.repeat(2) + &quot;bar&quot;;
+    assertEquals(&quot;foo foo bar&quot;, output);
+}</code></pre>
+<p>小而美的一个工具方法。</p>
+<h4 id="strip、stripLeading、stripTrailing"><a href="#strip、stripLeading、stripTrailing" class="headerlink" title="strip、stripLeading、stripTrailing"></a>strip、stripLeading、stripTrailing</h4><p><code>strip</code>方法算是<code>trim</code>方法的增强版，<code>trim</code>方法可以删除字符串两侧的空白字符（空格、tab 键、换行符），但是对于<code>Unicode</code>的空白字符无能为力，<code>strip</code>补足这一短板。</p>
+<p>用起来是这样的：</p>
+<pre><code class="Java">@Test
+void testTrip() {
+    final String output = &quot;
+      hello   \u2005&quot;.strip();
+    assertEquals(&quot;hello&quot;, output);
+
+    final String trimOutput = &quot;
+      hello   \u2005&quot;.trim();
+    assertEquals(&quot;hello   \u2005&quot;, trimOutput);
+}</code></pre>
+<p>对比一下可以看到，<code>trim</code>方法的清理功能稍弱。</p>
+<p><code>stripLeading</code>和<code>stripTrailing</code>与<code>strip</code>类似，区别是一个清理头，一个清理尾。用法如下：</p>
+<pre><code class="Java">@Test
+void testTripLeading() {
+    final String output = &quot;
+      hello   \u2005&quot;.stripLeading();
+    assertEquals(&quot;hello   \u2005&quot;, output);
+}
+
+@Test
+void testTripTrailing() {
+    final String output = &quot;
+      hello   \u2005&quot;.stripTrailing();
+    assertEquals(&quot;
+      hello&quot;, output);
+}</code></pre>
+<h4 id="isBlank"><a href="#isBlank" class="headerlink" title="isBlank"></a>isBlank</h4><p>这个方法是用于判断字符串是否都是空白字符，除了空格、tab 键、换行符，也包括<code>Unicode</code>的空白字符。</p>
+<p>用法很简单：</p>
+<pre><code class="Java">@Test
+void testIsBlank() {
+    assertTrue(&quot;
+    \u2005&quot;.isBlank());
+}</code></pre>
+<h4 id="lines"><a href="#lines" class="headerlink" title="lines"></a>lines</h4><p>最后这个方法是将字符串转化为字符串<code>Stream</code>类型，字符串分隔依据是换行符：<code>\n</code>、<code>\r</code>、<code>\r\n</code>，用法如下：</p>
+<pre><code class="Java">@Test
+void testLines() {
+    final String multiline = &quot;This is
+
+a multiline
+string.&quot;;
+    final String output = multiline.lines()
+            .filter(Predicate.not(String::isBlank))
+            .collect(Collectors.joining(&quot; &quot;));
+    assertEquals(&quot;This is a multiline string.&quot;, output);
+}</code></pre>
+<h4 id="indent"><a href="#indent" class="headerlink" title="indent"></a>indent</h4><p><code>indent</code>方法是对字符串每行（使用<code>\r</code>或<code>\n</code>分隔）数据缩进指定空白字符，参数是 int 类型。</p>
+<p>如果参数大于 0，就缩进指定数量的空格；如果参数小于 0，就将左侧的空字符删除指定数量，即右移。</p>
+<p>我们看下源码：</p>
+<pre><code class="Java">public String indent(int n) {
+    if (isEmpty()) {
+        return &quot;&quot;;
+    }
+    Stream&lt;String&gt; stream = lines();
+    if (n &gt; 0) {
+        final String spaces = &quot; &quot;.repeat(n);
+        stream = stream.map(s -&gt; spaces + s);
+    } else if (n == Integer.MIN_VALUE) {
+        stream = stream.map(s -&gt; s.stripLeading());
+    } else if (n &lt; 0) {
+        stream = stream.map(s -&gt; s.substring(Math.min(-n, s.indexOfNonWhitespace())));
+    }
+    return stream.collect(Collectors.joining(&quot;
+&quot;, &quot;&quot;, &quot;
+&quot;));
+}
+</code></pre>
+<p><code>indent</code>最后会将多行数据通过<code>Collectors.joining(&quot;\n&quot;, &quot;&quot;, &quot;\n&quot;)</code>方法拼接，结果会有两点需要注意：</p>
+<ul>
+<li><code>\r</code>会被替换成<code>\n</code>；</li>
+<li>如果原字符串是多行数据，最后一行的结尾没有<code>\n</code>，最后会补上一个<code>\n</code>，即多了一个空行。</li>
+</ul>
+<p>我们看下测试代码：</p>
+<pre><code class="Java">@Test
+void testIndent() {
+    final String text = &quot;             你好，我是看山。
+ \u0020\u2005Java12 的 新特性。
+ 欢迎三连+关注哟&quot;;
+    assertEquals(&quot;                 你好，我是看山。
+     \u0020\u2005Java12 的 新特性。
+    欢迎三连+关注哟、n&quot;, text.indent(4));
+    assertEquals(&quot;     你好，我是看山。
+\u2005Java12 的 新特性。
+ 欢迎三连+关注哟、n&quot;, text.indent(-2));
+
+    final String text2 = &quot;山水有相逢&quot;;
+    assertEquals(&quot;山水有相逢&quot;, text2);
+}
+</code></pre>
+<h4 id="transform"><a href="#transform" class="headerlink" title="transform"></a>transform</h4><p>我们再来看看<code>transform</code>方法，源码一目了然：</p>
+<pre><code class="Java">public &lt;R&gt; R transform(Function&lt;? super String, ? extends R&gt; f) {
+    return f.apply(this);
+}</code></pre>
+<p>通过传入的<code>Function</code>对当前字符串进行转换，转换结果由<code>Function</code>决定。比如，我们要对字符串反转：</p>
+<pre><code class="Java">@Test
+void testTransform() {
+    final String text = &quot;看山是山&quot;;
+    final String reverseText = text.transform(s -&gt; new StringBuilder(s).reverse().toString());
+    assertEquals(&quot;山是山看&quot;, reverseText);
+}</code></pre>
+<h3 id="增强文件读写（Java-11）"><a href="#增强文件读写（Java-11）" class="headerlink" title="增强文件读写（Java 11）"></a>增强文件读写（Java 11）</h3><p>本次更新在<code>Files</code>中增加了两个方法：<code>readString</code>和<code>writeString</code>。<code>writeString</code>作用是将指定字符串写入文件，<code>readString</code>作用是从文件中读出内容到字符串。是一个对<code>Files</code>工具类的增强，封装了对输出流、字节等内容的操作。</p>
+<p>用法比较简单：</p>
+<pre><code class="Java">@Test
+void testReadWriteString() throws IOException {
+    final Path tmpPath = Path.of(&quot;./&quot;);
+    final Path tempFile = Files.createTempFile(tmpPath, &quot;demo&quot;, &quot;.txt&quot;);
+    final Path filePath = Files.writeString(tempFile, &quot;看山 howardliu.cn
+ 公众号：看山的小屋&quot;);
+    assertEquals(tempFile, filePath);
+
+    final String fileContent = Files.readString(filePath);
+    assertEquals(&quot;看山 howardliu.cn
+ 公众号：看山的小屋&quot;, fileContent);
+
+    Files.deleteIfExists(filePath);
+}</code></pre>
+<p><code>readString</code>和<code>writeString</code>还可以指定字符集，不指定默认使用<code>StandardCharsets.UTF\_8</code>字符集，可以应对大部分场景了。</p>
+<h3 id="增强函数-Predicate（Java-11）"><a href="#增强函数-Predicate（Java-11）" class="headerlink" title="增强函数 Predicate（Java 11）"></a>增强函数 Predicate（Java 11）</h3><p>这个也是方法增强，在以前，我们在<code>Stream</code>中的<code>filter</code>方法判断否的时候，一般需要<code>!</code>运算，比如我们想要找到字符串列表中的数字，可以这样写：</p>
+<pre><code class="Java">final List&lt;String&gt; list = Arrays.asList(&quot;1&quot;, &quot;a&quot;);
+final List&lt;String&gt; nums = list.stream()
+        .filter(NumberUtils::isDigits)
+        .collect(Collectors.toList());
+Assertions.assertEquals(1, nums.size());
+Assertions.assertTrue(nums.contains(&quot;1&quot;));
+</code></pre>
+<p>想要找到非数字的，<code>filter</code>方法写的就会用到<code>!</code>非操作：</p>
+<pre><code class="Java">final List&lt;String&gt; notNums = list.stream()
+        .filter(x -&gt; !NumberUtils.isDigits(x))
+        .collect(Collectors.toList());
+Assertions.assertEquals(1, notNums.size());
+Assertions.assertTrue(notNums.contains(&quot;a&quot;));
+</code></pre>
+<p><code>Predicate</code>增加<code>not</code>方法，可以更加简单的实现非操作：</p>
+<pre><code class="Java">final List&lt;String&gt; notNums2 = list.stream()
+        .filter(Predicate.not(NumberUtils::isDigits))
+        .collect(Collectors.toList());
+Assertions.assertEquals(1, notNums2.size());
+Assertions.assertTrue(notNums2.contains(&quot;a&quot;));
+</code></pre>
+<p>有些教程还会推崇静态引入，比如在头部使用<code>import static java.util.function.Predicate.not</code>，这样在函数式编程时，可以写更少的代码，语义更强，比如：</p>
+<pre><code class="Java">final List&lt;String&gt; notNums2 = list.stream()
+        .filter(not(NumberUtils::isDigits))
+        .collect(toList());
+</code></pre>
+<h3 id="未命名模式和变量（Java-22）"><a href="#未命名模式和变量（Java-22）" class="headerlink" title="未命名模式和变量（Java 22）"></a>未命名模式和变量（Java 22）</h3><p>该特性使用下划线字符 <code>\_</code> 来表示未命名的模式和变量，从而简化代码并提高代码可读性和可维护性。</p>
+<p>比如：</p>
+<pre><code class="Java">public static void main(String[] args) {
+    var _ = new Point(1, 2);
+}
+
+record Point(int x, int y) {
+}</code></pre>
+<p>这个可以用在任何定义变量的地方，比如：</p>
+<ul>
+<li><code>... instanceof Point(\_, int y)</code></li>
+<li><code>r instanceof Point \_</code></li>
+<li><code>switch …… case Box(\_)</code></li>
+<li><code>for (Order \_ : orders)</code></li>
+<li><code>for (int i = 0, \_ = sideEffect(); i &lt; 10; i++)</code></li>
+<li><code>try { ... } catch (Exception \_) { ... } catch (Throwable \_) { ... }</code></li>
+</ul>
+<p>只要是这个不准备用，可以一律使用<code>\_</code>代替。</p>
+<h3 id="Markdown格式文档注释（Java-23）"><a href="#Markdown格式文档注释（Java-23）" class="headerlink" title="Markdown格式文档注释（Java 23）"></a>Markdown格式文档注释（Java 23）</h3><p>Markdown是一种轻量级的标记语言，可用于在纯文本文档中添加格式化元素，具体语法可以参考<a href="https://www.markdownguide.org/basic-syntax/" target="_blank" rel="noopener">Markdown Guide</a>。本文就是使用Markdown语法编写的。</p>
+<p>在Java注释中引入Markdown，目标是使API文档注释以源代码形式更易于编写和阅读。主要收益包括：</p>
+<ul>
+<li>提高文档编写的效率：Markdown语法相比HTML更为简洁，开发者可以更快地编写和修改文档注释。</li>
+<li>增强文档的可读性：Markdown格式的文档在源代码中更易于阅读，有助于开发者快速理解API的用途和行为。</li>
+<li>促进文档的一致性：通过支持Markdown，可以确保文档风格的一致性，减少因格式问题导致的文档混乱。</li>
+<li>简化文档维护：Markdown格式的文档注释更易于维护和更新，特别是在多人协作的项目中，可以减少因文档格式问题导致的沟通成本。</li>
+</ul>
+<p>具体使用方式是在注释前面增加<code>///</code>，比如<code>java.lang.Object.hashCode</code>的注释：</p>
+<pre><code class="Java">/**
+ * Returns a hash code value for the object. This method is
+ * supported for the benefit of hash tables such as those provided by
+ * {@link java.util.HashMap}.
+ * &lt;p&gt;
+ * The general contract of {@code hashCode} is:
+ * &lt;ul&gt;
+ * &lt;li&gt;Whenever it is invoked on the same object more than once during
+ *     an execution of a Java application, the {@code hashCode} method
+ *     must consistently return the same integer, provided no information
+ *     used in {@code equals} comparisons on the object is modified.
+ *     This integer need not remain consistent from one execution of an
+ *     application to another execution of the same application.
+ * &lt;li&gt;If two objects are equal according to the {@link
+ *     #equals(Object) equals} method, then calling the {@code
+ *     hashCode} method on each of the two objects must produce the
+ *     same integer result.
+ * &lt;li&gt;It is &lt;em&gt;not&lt;/em&gt; required that if two objects are unequal
+ *     according to the {@link #equals(Object) equals} method, then
+ *     calling the {@code hashCode} method on each of the two objects
+ *     must produce distinct integer results.  However, the programmer
+ *     should be aware that producing distinct integer results for
+ *     unequal objects may improve the performance of hash tables.
+ * &lt;/ul&gt;
+ *
+ * @implSpec
+ * As far as is reasonably practical, the {@code hashCode} method defined
+ * by class {@code Object} returns distinct integers for distinct objects.
+ *
+ * @return  a hash code value for this object.
+ * @see     java.lang.Object#equals(java.lang.Object)
+ * @see     java.lang.System#identityHashCode
+ */
+</code></pre>
+<p>如果使用JEP 467的Markdown方式：</p>
+<pre><code class="Java">/// Returns a hash code value for the object. This method is
+/// supported for the benefit of hash tables such as those provided by
+/// [java.util.HashMap].
+///
+/// The general contract of `hashCode` is:
+///
+///   - Whenever it is invoked on the same object more than once during
+///     an execution of a Java application, the `hashCode` method
+///     must consistently return the same integer, provided no information
+///     used in `equals` comparisons on the object is modified.
+///     This integer need not remain consistent from one execution of an
+///     application to another execution of the same application.
+///   - If two objects are equal according to the
+///     [equals][#equals(Object)] method, then calling the
+///     `hashCode` method on each of the two objects must produce the
+///     same integer result.
+///   - It is _not_ required that if two objects are unequal
+///     according to the [equals][#equals(Object)] method, then
+///     calling the `hashCode` method on each of the two objects
+///     must produce distinct integer results.  However, the programmer
+///     should be aware that producing distinct integer results for
+///     unequal objects may improve the performance of hash tables.
+///
+/// @implSpec
+/// As far as is reasonably practical, the `hashCode` method defined
+/// by class `Object` returns distinct integers for distinct objects.
+///
+/// @return  a hash code value for this object.
+/// @see     java.lang.Object#equals(java.lang.Object)
+/// @see     java.lang.System#identityHashCode
+</code></pre>
+<p>简单两种写法的差异，相同注释，Markdown的写法更加简洁：</p>
+<p><img src="https://static.howardliu.cn/202409161338899.png" alt="Object hashcode注释差异"></p>
+<h2 id="一些可能不会用到的特性"><a href="#一些可能不会用到的特性" class="headerlink" title="一些可能不会用到的特性"></a>一些可能不会用到的特性</h2><h3 id="web服务器jwebserver（Java-18）"><a href="#web服务器jwebserver（Java-18）" class="headerlink" title="web服务器jwebserver（Java 18）"></a>web服务器jwebserver（Java 18）</h3><p>为开发者提供一个轻量级、简单易用的 HTTP 服务器，通过命令行工具<code>jwebserver</code>可以启动一个最小化的静态 Web 服务器，这个服务器仅支持静态资源的访问，不支持 CGI（Common Gateway Interface）或类似 servlet 的功能，主要用于原型制作、测试和开发环境中的静态文件托管与共享。</p>
+<p>它的应用场景包括：</p>
+<ul>
+<li>原型开发：由于其简单易用的特性，jwebserver 可以作为快速原型开发工具，帮助开发者在短时间内搭建起一个可以访问静态资源的 Web 服务。这对于需要验证某个功能或概念的初期阶段非常有用。</li>
+<li>快速部署：对于一些小规模的应用或者临时性的项目，使用 jwebserver 可以快速启动并运行一个简单的 Web 服务，而无需复杂的配置和环境搭建。这使得开发者能够迅速将想法转化为实际的可访问服务。</li>
+<li>学习与教育：jwebserver 提供了一个直观的平台，让初学者可以轻松上手 Java Web 开发。通过简单的命令行操作，用户可以快速理解 Web 服务器的工作原理及其基本配置。</li>
+<li>测试与调试：在进行 Web 应用的测试和调试时，jwebserver 可以作为一个独立的工具来提供静态文件的访问服务，从而方便开发者对应用进行测试和调试。</li>
+<li>本地开发环境：在本地开发环境中，jwebserver 可以替代传统的 Web 服务器如 Apache Tomcat 或 Nginx，为开发者提供一个轻量级的选择，以减少系统资源的占用。</li>
+</ul>
+<p>我们可以简单试一下，在当前目录编写index.html：</p>
+<pre><code class="HTML">&lt;html&gt;
+&lt;head&gt;
+    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot; /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h2&gt;欢迎参观&lt;/h2&gt;
+    &lt;h3&gt;&lt;a href=&quot;https://www.howardliu.cn/&quot;&gt;看山的小屋 howardliu.cn&lt;/a&gt;&lt;/h3&gt;
+    &lt;p&gt;
+        一起&lt;strong&gt;开心&lt;/strong&gt;学技术
+    &lt;/p&gt;
+    &lt;p&gt;
+        让我们一起&lt;strong&gt;扬帆起航&lt;/strong&gt;
+    &lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>运行<code>jwebserver</code>命令：</p>
+<pre><code class="Bash">$ ./bin/jwebserver
+
+Binding to loopback by default. For all interfaces use &quot;-b 0.0.0.0&quot; or &quot;-b ::&quot;.
+Serving /Users/liuxinghao/Library/Java/JavaVirtualMachines/temurin-18.0.2.1/Contents/Home and subdirectories on 127.0.0.1 port 8000
+URL http://127.0.0.1:8000/</code></pre>
+<p>打开<code>[http://127.0.0.1:8000/](http://127.0.0.1:8000/)</code>就可以直接看到index.html的效果：</p>
+<p><img src="https://static.howardliu.cn/202409161340780.png" alt="公众号：看山的小屋"></p>
+<p><code>jwebserver</code>还支持指定地址和端口等参数，具体使用可以通过命令查看：</p>
+<pre><code class="Bash">$ ./bin/jwebserver -h
+Usage: jwebserver [-b bind address] [-p port] [-d directory]
+                  [-o none|info|verbose] [-h to show options]
+                  [-version to show version information]
+Options:
+-b, --bind-address    - Address to bind to. Default: 127.0.0.1 (loopback).
+                        For all interfaces use &quot;-b 0.0.0.0&quot; or &quot;-b ::&quot;.
+-d, --directory       - Directory to serve. Default: current directory.
+-o, --output          - Output format. none|info|verbose. Default: info.
+-p, --port            - Port to listen on. Default: 8000.
+-h, -?, --help        - Prints this help message and exits.
+-version, --version   - Prints version information and exits.
+</code></pre>
+<h3 id="隐式声明的类和实例方法（预览特性）"><a href="#隐式声明的类和实例方法（预览特性）" class="headerlink" title="隐式声明的类和实例方法（预览特性）"></a>隐式声明的类和实例方法（预览特性）</h3><p>隐式声明的类和实例方法的目标是简化 Java 语言，使得学生和初学者可以更容易地编写他们的第一个程序，而无需理解为大型程序设计的复杂语言特性。</p>
+<p>无论学习哪门语言，第一课一定是打印<code>Hello, World!</code>，Java中的写法是：</p>
+<pre><code class="Java">public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println (&quot;Hello, World!&quot;);
+    }
+}</code></pre>
+<p>如果是第一次接触，一定会有很多疑问，<code>public</code>干啥的，<code>main</code>方法的约定参数<code>args</code>是什么鬼？然后老师就说，这就是模板，照着抄就行，不这样写不运行。</p>
+<p>现在可以简化为：</p>
+<pre><code class="Java">class HelloWorld {
+    void main() {
+        System.out.println (&quot;Hello, World!&quot;);
+    }
+}</code></pre>
+<p>我们还可以这样写：</p>
+<pre><code class="Java">String greeting() { return &quot;Hello, World!&quot;; }
+
+void main() {
+    System.out.println(greeting());
+}</code></pre>
+<p><code>main</code>方法直接简化为名字和括号，甚至连类也不需要显性定义了。虽然看起来没啥用，但是在JShell中使用，就比较友好了。</p>
+<p>本次预览新增了三个IO操作方法：</p>
+<pre><code class="Java">public static void println(Object obj);
+public static void print(Object obj);
+public static String readln(String prompt);</code></pre>
+<p>想要快速实现控制台操作，可以这样写了：</p>
+<pre><code class="Java">void main() {
+    String name = readln(&quot;请输入姓名: &quot;);
+    print(&quot;很高兴见到你, &quot;);
+    println(name);
+}</code></pre>
+<p>作为一个老程序猿，也不得不哇塞一下。</p>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>想要了解各版本的详细特性，可以从<a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378" target="_blank" rel="noopener">从小工到专家的 Java 进阶之旅</a> 系列专栏中查看。</p>
+<p>青山不改，绿水长流，我们下次见。</p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378" target="_blank" rel="noopener">从小工到专家的 Java 进阶之旅</a></li>
+<li><a href="https://mp.weixin.qq.com/s/7f5dcjjKLdBYpzS5p7_v7Q" target="_blank" rel="noopener">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/JOLrw7cbVh8z2czePEfLjw" target="_blank" rel="noopener">一文掌握 Java8 的 Optional 的 6 种操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Vhw-2lgCvmhNI5aeXOWYNg" target="_blank" rel="noopener">使用 Lambda 表达式实现超强的排序功能</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Srv6733byTYDg7hTrW_tdw" target="_blank" rel="noopener">Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API</a></li>
+<li><a href="https://mp.weixin.qq.com/s/LRydpL89GsjOeTrLrihyYQ" target="_blank" rel="noopener">Java8 的时间库（2）：Date 与 LocalDate 或 LocalDateTime 互相转换</a></li>
+<li><a href="https://mp.weixin.qq.com/s/KmBMLG1y73IUwFuSfUKaEQ" target="_blank" rel="noopener">Java8 的时间库（3）：开始使用 Java8 中的时间类</a></li>
+<li><a href="https://mp.weixin.qq.com/s/PxC0WQMReIeG0Tyl5WiK1Q" target="_blank" rel="noopener">Java8 的时间库（4）：检查日期字符串是否合法</a></li>
+<li><a href="https://mp.weixin.qq.com/s/rjMOq0QAdiWNacKYqHJqXA" target="_blank" rel="noopener">Java8 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/FHv963s0Qvh2K5r2tdLATA" target="_blank" rel="noopener">Java9 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/NY5-qkfZGdaOvz9iyJ3VSQ" target="_blank" rel="noopener">Java10 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/baBv0mP2JmPE4MoNYESqhA" target="_blank" rel="noopener">Java11 中基于嵌套关系的访问控制优化</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Bn4S2OfMoG19lI-L3nw8cg" target="_blank" rel="noopener">Java11 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/xBjXHC5UWy4JEKaRo6xQsg" target="_blank" rel="noopener">Java12 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/9EdRVPK0GUoQqI7eXcmwEA" target="_blank" rel="noopener">Java13 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/rEAHIf40j_UECLlxK5KW6w" target="_blank" rel="noopener">Java14 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/UESHDzuY3H7p5LLPJfwyAw" target="_blank" rel="noopener">Java15 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/HExV39BU0lSbdtg0aMjbSA" target="_blank" rel="noopener">Java16 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/By2JoZqAHA6U36PG8qvCcg" target="_blank" rel="noopener">Java17 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/W6Esovb7zzCL_seXgY84jA" target="_blank" rel="noopener">Java18 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/WutbAX_IQNqP4M3rud9f_g" target="_blank" rel="noopener">Java19 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/DvZYrZTtGfdXNsXGzmQN1A" target="_blank" rel="noopener">Java20 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/iiXa9rpJu1Vedpke0XpBzQ" target="_blank" rel="noopener">Java21 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/eHHFaJErH8XH4QSRrfcehQ" target="_blank" rel="noopener">Java22 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/XvB0D2vzhaAvHESupdALag" target="_blank" rel="noopener">Java23 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378" target="_blank" rel="noopener">Java24 的新特性</a></li>
+</ul>
+<hr>
+<p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p>
+<ul>
+<li>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a></li>
+<li>个人博文：<a href="https://www.howardliu.cn/">从Java8到Java23值得期待的x个特性</a></li>
+<li>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a></li>
+<li>CSDN 博文：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">从Java8到Java23值得期待的x个特性</a></li>
+</ul>
+<center><b>👇🏻欢迎关注我的公众号「看山的小屋」，领取精选资料👇🏻</b></center>
+
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/java/">java</a>
+            
+            <a href="/tags/Java/">Java</a>
+            
+            <a href="/tags/Java10/">Java10</a>
+            
+            <a href="/tags/Java11/">Java11</a>
+            
+            <a href="/tags/Java12/">Java12</a>
+            
+            <a href="/tags/Java14/">Java14</a>
+            
+            <a href="/tags/Java15/">Java15</a>
+            
+            <a href="/tags/Java13/">Java13</a>
+            
+            <a href="/tags/Java16/">Java16</a>
+            
+            <a href="/tags/Java17/">Java17</a>
+            
+            <a href="/tags/Java18/">Java18</a>
+            
+            <a href="/tags/Java19/">Java19</a>
+            
+            <a href="/tags/Java20/">Java20</a>
+            
+            <a href="/tags/Java21/">Java21</a>
+            
+            <a href="/tags/Java8/">Java8</a>
+            
+            <a href="/tags/Java22/">Java22</a>
+            
+            <a href="/tags/Java9/">Java9</a>
+            
+            <a href="/tags/Java23/">Java23</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/java/java-features-8-23-4/">
+                <i class="icon-previous">从Java8到Java23值得期待的x个特性（4）：垃圾收集器</i>
+            </a>
+            
+            
+            <a class="next" href="/java/java-features-8-23-3/">
+                <i class="icon-next">从Java8到Java23值得期待的x个特性（3）：永远学不完的多线程</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://static.howardliu.cn/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 15px;">微服务</a> <a href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" style="font-size: 15px;">云计算</a> <a href="/tags/%E6%A6%82%E5%BF%B5/" style="font-size: 15px;">概念</a> <a href="/tags/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/" style="font-size: 15px;">线性代数</a> <a href="/tags/%E7%9F%A9%E9%98%B5/" style="font-size: 15px;">矩阵</a> <a href="/tags/%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15px;">算法</a> <a href="/tags/%E5%8F%8C%E6%8C%87%E9%92%88/" style="font-size: 15px;">双指针</a> <a href="/tags/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/%E5%85%AB%E7%9A%87%E5%90%8E%E9%97%AE%E9%A2%98/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/%E6%96%B9%E6%B3%95%E8%AE%BA/" style="font-size: 15px;">方法论</a> <a href="/tags/%E6%9E%B6%E6%9E%84/" style="font-size: 15px;">架构</a> <a href="/tags/%E4%BA%8B%E4%BB%B6%E9%A9%B1%E5%8A%A8/" style="font-size: 15px;">事件驱动</a> <a href="/tags/%E7%BC%93%E5%AD%98/" style="font-size: 15px;">缓存</a> <a href="/tags/%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" style="font-size: 15px;">解决方案</a> <a href="/tags/%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97/" style="font-size: 15px;">任务队列</a> <a href="/tags/%E4%BB%BB%E5%8A%A1/" style="font-size: 15px;">任务</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 15px;">分布式</a> <a href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" style="font-size: 15px;">架构设计</a> <a href="/tags/%E7%9F%AD%E9%93%BE%E6%9C%8D%E5%8A%A1/" style="font-size: 15px;">短链服务</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/%E4%B8%AD%E6%96%87%E5%AD%97%E7%AC%A6/" style="font-size: 15px;">中文字符</a> <a href="/tags/debug/" style="font-size: 15px;">debug</a> <a href="/tags/transmittable/" style="font-size: 15px;">transmittable</a> <a href="/tags/ttl/" style="font-size: 15px;">ttl</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 15px;">设计模式</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/" style="font-size: 15px;">系统运维</a> <a href="/tags/%E9%83%A8%E7%BD%B2/" style="font-size: 15px;">部署</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E6%8A%80%E5%B7%A7/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/%E8%87%AA%E5%8A%A8%E7%99%BB%E5%BD%95/" style="font-size: 15px;">自动登录</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/go/" style="font-size: 15px;">go</a> <a href="/tags/%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97/" style="font-size: 15px;">开发指南</a> <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/%E5%BC%80%E6%BA%90/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/http-%E7%8A%B6%E6%80%81%E7%A0%81/" style="font-size: 15px;">http 状态码</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 15px;">数据一致性</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 15px;">事务</a> <a href="/tags/%E5%8F%AF%E9%9D%A0%E4%BA%8B%E4%BB%B6/" style="font-size: 15px;">可靠事件</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" style="font-size: 15px;">中间件</a> <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" style="font-size: 15px;">消息队列</a> <a href="/tags/%E9%80%89%E5%9E%8B/" style="font-size: 15px;">选型</a> <a href="/tags/%E5%8D%95%E4%BD%93%E6%9E%B6%E6%9E%84/" style="font-size: 15px;">单体架构</a> <a href="/tags/%E9%87%8D%E6%9E%84/" style="font-size: 15px;">重构</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/%E8%8C%83%E5%BC%8F/" style="font-size: 15px;">范式</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E6%9B%B4%E6%96%B0/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%EF%BC%8Clinux/" style="font-size: 15px;">操作系统，linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E7%A9%BA%E9%97%B4/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/%E5%B7%A5%E4%BD%9C%E7%8E%AF%E5%A2%83/" style="font-size: 15px;">工作环境</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8/" style="font-size: 15px;">线程安全</a> <a href="/tags/%E6%A8%A1%E5%BC%8F/" style="font-size: 15px;">模式</a>
+    </div>
+</div>
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/regular-expressions-java-1/">正则表达式实用指南（一）：元字符及关系运算</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23-6/">从Java8到Java23值得期待的x个特性（6）：一些可能不会用到的特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23-5/">从Java8到Java23值得期待的x个特性（5）：增强小特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23-4/">从Java8到Java23值得期待的x个特性（4）：垃圾收集器</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23/">从Java8到Java23值得期待的x个特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23-3/">从Java8到Java23值得期待的x个特性（3）：永远学不完的多线程</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23-2/">从Java8到Java23值得期待的x个特性（2）：提升幸福感的特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23-1/">从Java8到Java23值得期待的x个特性（1）：有意思的特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-23-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java23 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-22-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java22 的新特性</a></li></ul>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/01/">2025年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">2024年09月</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">2023年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">2022年08月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">2022年07月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">2022年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">2022年05月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">2022年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">2022年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">2022年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">2022年01月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">2021年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">2021年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">2021年10月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">2021年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">2021年08月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">2021年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn"
+                       target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow"
+                       href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark"
+                       target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+            <p> &copy; 2014-2025 Howard Liu 版权所有</p>
+            <div class="">
+<!--                <a class="" href="http://idinfo.zjamr.zj.gov.cn/bscx.do?method=lzxx&amp;id=3301963301080000025024" target="_blank">-->
+<!--                    <img data-src="//gw.alicdn.com/tfs/TB1GxwdSXXXXXa.aXXXXXXXXXXX-65-70.gif"-->
+<!--                         src="//gw.alicdn.com/tfs/TB1GxwdSXXXXXa.aXXXXXXXXXXX-65-70.gif"-->
+<!--                         style="width: 20px;-->
+<!--                                display: inline-block;-->
+<!--                                height: 20px;-->
+<!--                                margin-right: 12px;">-->
+<!--                </a>-->
+<!--                <a class="" href="http://www.beian.gov.cn/portal/registerSystemInfo" target="_blank">-->
+<!--                    <img data-src="//img.alicdn.com/tfs/TB1..50QpXXXXX7XpXXXXXXXXXX-40-40.png"-->
+<!--                         src="//img.alicdn.com/tfs/TB1..50QpXXXXX7XpXXXXXXXXXX-40-40.png"-->
+<!--                         style="width: 20px;-->
+<!--                                display: inline-block;-->
+<!--                                height: 20px;-->
+<!--                                margin-right: 12px;">-->
+<!--                    <span class="" style="height: 20px;-->
+<!--                                        line-height: 20px;-->
+<!--                                        color: #939393;-->
+<!--                                        margin-left: -7px;-->
+<!--                                        font-size: 14px;-->
+<!--                                    ">浙公网安备 33010602009975号</span>-->
+<!--                </a>-->
+                <a class="" href="https://beian.miit.gov.cn/" target="_blank">
+                    <span class="" style="margin-left: 12px;
+                                        height: 20px;
+                                        line-height: 20px;
+                                        color: #939393;
+                                        font-size: 14px;
+                                    ">京ICP备19060080号-1</span>
+                </a>
+            </div>
+            <div style="width:300px;margin:0 auto; padding:20px 0;">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011502006279" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                    <img src="https://static.howardliu.cn/beian.png" style="float:left;"/>
+                    <p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">京公网安备 11011502006279号</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</div>
+
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
+<script src="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script src="/js/header.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+<!--[if lt IE 9]>
+
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity='0.9' zIndex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

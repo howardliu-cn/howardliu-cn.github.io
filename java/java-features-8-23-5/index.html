@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>从Java8到Java23值得期待的x个特性（5）：增强小特性||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="增强小特性。从 2017 年开始，Java 版本更新遵循每六个月发布一次的节奏，LTS版本则每两年发布一次，以快速验证新特性，推动 Java 的发展。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从Java8到Java23值得期待的x个特性（5）：增强小特性">
+<meta property="og:url" content="https://www.howardliu.cn/java/java-features-8-23-5/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="增强小特性。从 2017 年开始，Java 版本更新遵循每六个月发布一次的节奏，LTS版本则每两年发布一次，以快速验证新特性，推动 Java 的发展。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://static.howardliu.cn/202409161331298.jpg">
+<meta property="og:image" content="https://static.howardliu.cn/202409111451409.png">
+<meta property="og:image" content="https://static.howardliu.cn/202409161338899.png">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="article:published_time" content="2024-09-21T00:20:00.000Z">
+<meta property="article:modified_time" content="2024-12-06T11:36:03.000Z">
+<meta property="article:author" content="Howard Liu">
+<meta property="article:tag" content="java8">
+<meta property="article:tag" content="Java8">
+<meta property="article:tag" content="optional">
+<meta property="article:tag" content="Java8 新特性">
+<meta property="article:tag" content="Java21 新特性">
+<meta property="article:tag" content="Java22 新特性">
+<meta property="article:tag" content="Java23 新特性">
+<meta property="article:tag" content="Java24 新特性">
+<meta property="article:tag" content="Java 新特性">
+<meta property="article:tag" content="Lambda">
+<meta property="article:tag" content="Stream">
+<meta property="article:tag" content="虚拟线程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static.howardliu.cn/202409161331298.jpg">
+
+<meta name="keywords" content="java8,Java8,optional,Java8 新特性,Java21 新特性,Java22 新特性,Java23 新特性,Java24 新特性,Java 新特性,Lambda,Stream,虚拟线程">
+
+
+<meta name="description" content="增强小特性。从 2017 年开始，Java 版本更新遵循每六个月发布一次的节奏，LTS版本则每两年发布一次，以快速验证新特性，推动 Java 的发展。">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon"/>
+<link rel="icon" href="/favicon.png">
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+
+<link rel="stylesheet" href="/css/theme.css">
+
+
+<link rel="stylesheet" href="/css/syntax.css">
+
+
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+
+
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/styles/vs2015.min.css">
+
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+<meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="沉潜飞动" type="application/atom+xml">
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/java/java-features-8-23-5/">从Java8到Java23值得期待的x个特性（5）：增强小特性</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2024-09-21</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/java/java-features-8-23-5/" class="leancloud_visitors" data-flag-title="从Java8到Java23值得期待的x个特性（5）：增强小特性">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一些小特性"><span class="toc-text">一些小特性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#增强-String"><span class="toc-text">增强 String</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#repeat"><span class="toc-text">repeat</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#strip、stripLeading、stripTrailing"><span class="toc-text">strip、stripLeading、stripTrailing</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#isBlank"><span class="toc-text">isBlank</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#lines"><span class="toc-text">lines</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#indent"><span class="toc-text">indent</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#transform"><span class="toc-text">transform</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#增强文件读写（Java-11）"><span class="toc-text">增强文件读写（Java 11）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#增强函数-Predicate（Java-11）"><span class="toc-text">增强函数 Predicate（Java 11）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#未命名模式和变量（Java-22）"><span class="toc-text">未命名模式和变量（Java 22）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Markdown格式文档注释（Java-23）"><span class="toc-text">Markdown格式文档注释（Java 23）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="https://static.howardliu.cn/202409161331298.jpg" alt="从Java8到Java23值得期待的x个特性"></p>
+<p>你好，我是看山。</p>
+<blockquote>
+<p>本文收录在 <a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378" target="_blank" rel="noopener">《从小工到专家的 Java 进阶之旅》</a> 系列专栏中。</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>从 2017 年开始，Java 版本更新遵循每六个月发布一次的节奏，LTS版本则每两年发布一次，以快速验证新特性，推动 Java 的发展。</p>
+<p><img src="https://static.howardliu.cn/202409111451409.png" alt="Java版本分布"></p>
+<blockquote>
+<p>数据来源<a href="https://newrelic.com/sites/default/files/2024-05/new-relic-state-of-the-java-ecosystem-2024-05-29.pdf" target="_blank" rel="noopener">2024 State of the Java Ecosystem</a></p>
+</blockquote>
+<h2 id="一些小特性"><a href="#一些小特性" class="headerlink" title="一些小特性"></a>一些小特性</h2><h3 id="增强-String"><a href="#增强-String" class="headerlink" title="增强 String"></a>增强 String</h3><p>String中新增的方法：repeat、strip、stripLeading、stripTrailing、isBlank、lines、indent 和 transform。</p>
+<p>这些方法还是挺有用的，以前我们可能需要借助第三方类库（比如 Apache 出品的 commons-lang）中的工具类，现在可以直接使用嫡亲方法了。</p>
+<h4 id="repeat"><a href="#repeat" class="headerlink" title="repeat"></a>repeat</h4><p>repeat是实例方法，顾名思义，这个方法是返回给定字符串的重复值的，参数是int类型，传参的时候需要注意：</p>
+<ul>
+<li>如果重复次数小于 0 会抛出IllegalArgumentException异常；</li>
+<li>如果重复次数为 0 或者字符串本身是空字符串，将返回空字符串；</li>
+<li>如果重复次数为 1 直接返回本身；</li>
+<li>如果字符串重复指定次数后，长度超过Integer.MAX_VALUE<code>，会抛出</code>OutOfMemoryError`错误。</li>
+</ul>
+<p>用法很简单：</p>
+<pre><code class="Java">@Test
+void testRepeat() {
+    String output = &quot;foo &quot;.repeat(2) + &quot;bar&quot;;
+    assertEquals(&quot;foo foo bar&quot;, output);
+}</code></pre>
+<p>小而美的一个工具方法。</p>
+<h4 id="strip、stripLeading、stripTrailing"><a href="#strip、stripLeading、stripTrailing" class="headerlink" title="strip、stripLeading、stripTrailing"></a>strip、stripLeading、stripTrailing</h4><p><code>strip</code>方法算是<code>trim</code>方法的增强版，<code>trim</code>方法可以删除字符串两侧的空白字符（空格、tab 键、换行符），但是对于<code>Unicode</code>的空白字符无能为力，<code>strip</code>补足这一短板。</p>
+<p>用起来是这样的：</p>
+<pre><code class="Java">@Test
+void testTrip() {
+    final String output = &quot;
+      hello   \u2005&quot;.strip();
+    assertEquals(&quot;hello&quot;, output);
+
+    final String trimOutput = &quot;
+      hello   \u2005&quot;.trim();
+    assertEquals(&quot;hello   \u2005&quot;, trimOutput);
+}</code></pre>
+<p>对比一下可以看到，<code>trim</code>方法的清理功能稍弱。</p>
+<p><code>stripLeading</code>和<code>stripTrailing</code>与<code>strip</code>类似，区别是一个清理头，一个清理尾。用法如下：</p>
+<pre><code class="Java">@Test
+void testTripLeading() {
+    final String output = &quot;
+      hello   \u2005&quot;.stripLeading();
+    assertEquals(&quot;hello   \u2005&quot;, output);
+}
+
+@Test
+void testTripTrailing() {
+    final String output = &quot;
+      hello   \u2005&quot;.stripTrailing();
+    assertEquals(&quot;
+      hello&quot;, output);
+}</code></pre>
+<h4 id="isBlank"><a href="#isBlank" class="headerlink" title="isBlank"></a>isBlank</h4><p>这个方法是用于判断字符串是否都是空白字符，除了空格、tab 键、换行符，也包括<code>Unicode</code>的空白字符。</p>
+<p>用法很简单：</p>
+<pre><code class="Java">@Test
+void testIsBlank() {
+    assertTrue(&quot;
+    \u2005&quot;.isBlank());
+}</code></pre>
+<h4 id="lines"><a href="#lines" class="headerlink" title="lines"></a>lines</h4><p>最后这个方法是将字符串转化为字符串<code>Stream</code>类型，字符串分隔依据是换行符：<code>\n</code>、<code>\r</code>、<code>\r\n</code>，用法如下：</p>
+<pre><code class="Java">@Test
+void testLines() {
+    final String multiline = &quot;This is
+
+a multiline
+string.&quot;;
+    final String output = multiline.lines()
+            .filter(Predicate.not(String::isBlank))
+            .collect(Collectors.joining(&quot; &quot;));
+    assertEquals(&quot;This is a multiline string.&quot;, output);
+}</code></pre>
+<h4 id="indent"><a href="#indent" class="headerlink" title="indent"></a>indent</h4><p><code>indent</code>方法是对字符串每行（使用<code>\r</code>或<code>\n</code>分隔）数据缩进指定空白字符，参数是 int 类型。</p>
+<p>如果参数大于 0，就缩进指定数量的空格；如果参数小于 0，就将左侧的空字符删除指定数量，即右移。</p>
+<p>我们看下源码：</p>
+<pre><code class="Java">public String indent(int n) {
+    if (isEmpty()) {
+        return &quot;&quot;;
+    }
+    Stream&lt;String&gt; stream = lines();
+    if (n &gt; 0) {
+        final String spaces = &quot; &quot;.repeat(n);
+        stream = stream.map(s -&gt; spaces + s);
+    } else if (n == Integer.MIN_VALUE) {
+        stream = stream.map(s -&gt; s.stripLeading());
+    } else if (n &lt; 0) {
+        stream = stream.map(s -&gt; s.substring(Math.min(-n, s.indexOfNonWhitespace())));
+    }
+    return stream.collect(Collectors.joining(&quot;
+&quot;, &quot;&quot;, &quot;
+&quot;));
+}
+</code></pre>
+<p><code>indent</code>最后会将多行数据通过<code>Collectors.joining(&quot;\n&quot;, &quot;&quot;, &quot;\n&quot;)</code>方法拼接，结果会有两点需要注意：</p>
+<ul>
+<li><code>\r</code>会被替换成<code>\n</code>；</li>
+<li>如果原字符串是多行数据，最后一行的结尾没有<code>\n</code>，最后会补上一个<code>\n</code>，即多了一个空行。</li>
+</ul>
+<p>我们看下测试代码：</p>
+<pre><code class="Java">@Test
+void testIndent() {
+    final String text = &quot;             你好，我是看山。
+ \u0020\u2005Java12 的 新特性。
+ 欢迎三连+关注哟&quot;;
+    assertEquals(&quot;                 你好，我是看山。
+     \u0020\u2005Java12 的 新特性。
+    欢迎三连+关注哟、n&quot;, text.indent(4));
+    assertEquals(&quot;     你好，我是看山。
+\u2005Java12 的 新特性。
+ 欢迎三连+关注哟、n&quot;, text.indent(-2));
+
+    final String text2 = &quot;山水有相逢&quot;;
+    assertEquals(&quot;山水有相逢&quot;, text2);
+}
+</code></pre>
+<h4 id="transform"><a href="#transform" class="headerlink" title="transform"></a>transform</h4><p>我们再来看看<code>transform</code>方法，源码一目了然：</p>
+<pre><code class="Java">public &lt;R&gt; R transform(Function&lt;? super String, ? extends R&gt; f) {
+    return f.apply(this);
+}</code></pre>
+<p>通过传入的<code>Function</code>对当前字符串进行转换，转换结果由<code>Function</code>决定。比如，我们要对字符串反转：</p>
+<pre><code class="Java">@Test
+void testTransform() {
+    final String text = &quot;看山是山&quot;;
+    final String reverseText = text.transform(s -&gt; new StringBuilder(s).reverse().toString());
+    assertEquals(&quot;山是山看&quot;, reverseText);
+}</code></pre>
+<h3 id="增强文件读写（Java-11）"><a href="#增强文件读写（Java-11）" class="headerlink" title="增强文件读写（Java 11）"></a>增强文件读写（Java 11）</h3><p>本次更新在<code>Files</code>中增加了两个方法：<code>readString</code>和<code>writeString</code>。<code>writeString</code>作用是将指定字符串写入文件，<code>readString</code>作用是从文件中读出内容到字符串。是一个对<code>Files</code>工具类的增强，封装了对输出流、字节等内容的操作。</p>
+<p>用法比较简单：</p>
+<pre><code class="Java">@Test
+void testReadWriteString() throws IOException {
+    final Path tmpPath = Path.of(&quot;./&quot;);
+    final Path tempFile = Files.createTempFile(tmpPath, &quot;demo&quot;, &quot;.txt&quot;);
+    final Path filePath = Files.writeString(tempFile, &quot;看山 howardliu.cn
+ 公众号：看山的小屋&quot;);
+    assertEquals(tempFile, filePath);
+
+    final String fileContent = Files.readString(filePath);
+    assertEquals(&quot;看山 howardliu.cn
+ 公众号：看山的小屋&quot;, fileContent);
+
+    Files.deleteIfExists(filePath);
+}</code></pre>
+<p><code>readString</code>和<code>writeString</code>还可以指定字符集，不指定默认使用<code>StandardCharsets.UTF\_8</code>字符集，可以应对大部分场景了。</p>
+<h3 id="增强函数-Predicate（Java-11）"><a href="#增强函数-Predicate（Java-11）" class="headerlink" title="增强函数 Predicate（Java 11）"></a>增强函数 Predicate（Java 11）</h3><p>这个也是方法增强，在以前，我们在<code>Stream</code>中的<code>filter</code>方法判断否的时候，一般需要<code>!</code>运算，比如我们想要找到字符串列表中的数字，可以这样写：</p>
+<pre><code class="Java">final List&lt;String&gt; list = Arrays.asList(&quot;1&quot;, &quot;a&quot;);
+final List&lt;String&gt; nums = list.stream()
+        .filter(NumberUtils::isDigits)
+        .collect(Collectors.toList());
+Assertions.assertEquals(1, nums.size());
+Assertions.assertTrue(nums.contains(&quot;1&quot;));
+</code></pre>
+<p>想要找到非数字的，<code>filter</code>方法写的就会用到<code>!</code>非操作：</p>
+<pre><code class="Java">final List&lt;String&gt; notNums = list.stream()
+        .filter(x -&gt; !NumberUtils.isDigits(x))
+        .collect(Collectors.toList());
+Assertions.assertEquals(1, notNums.size());
+Assertions.assertTrue(notNums.contains(&quot;a&quot;));
+</code></pre>
+<p><code>Predicate</code>增加<code>not</code>方法，可以更加简单的实现非操作：</p>
+<pre><code class="Java">final List&lt;String&gt; notNums2 = list.stream()
+        .filter(Predicate.not(NumberUtils::isDigits))
+        .collect(Collectors.toList());
+Assertions.assertEquals(1, notNums2.size());
+Assertions.assertTrue(notNums2.contains(&quot;a&quot;));
+</code></pre>
+<p>有些教程还会推崇静态引入，比如在头部使用<code>import static java.util.function.Predicate.not</code>，这样在函数式编程时，可以写更少的代码，语义更强，比如：</p>
+<pre><code class="Java">final List&lt;String&gt; notNums2 = list.stream()
+        .filter(not(NumberUtils::isDigits))
+        .collect(toList());
+</code></pre>
+<h3 id="未命名模式和变量（Java-22）"><a href="#未命名模式和变量（Java-22）" class="headerlink" title="未命名模式和变量（Java 22）"></a>未命名模式和变量（Java 22）</h3><p>该特性使用下划线字符 <code>\_</code> 来表示未命名的模式和变量，从而简化代码并提高代码可读性和可维护性。</p>
+<p>比如：</p>
+<pre><code class="Java">public static void main(String[] args) {
+    var _ = new Point(1, 2);
+}
+
+record Point(int x, int y) {
+}</code></pre>
+<p>这个可以用在任何定义变量的地方，比如：</p>
+<ul>
+<li><code>... instanceof Point(\_, int y)</code></li>
+<li><code>r instanceof Point \_</code></li>
+<li><code>switch …… case Box(\_)</code></li>
+<li><code>for (Order \_ : orders)</code></li>
+<li><code>for (int i = 0, \_ = sideEffect(); i &lt; 10; i++)</code></li>
+<li><code>try { ... } catch (Exception \_) { ... } catch (Throwable \_) { ... }</code></li>
+</ul>
+<p>只要是这个不准备用，可以一律使用<code>\_</code>代替。</p>
+<h3 id="Markdown格式文档注释（Java-23）"><a href="#Markdown格式文档注释（Java-23）" class="headerlink" title="Markdown格式文档注释（Java 23）"></a>Markdown格式文档注释（Java 23）</h3><p>Markdown是一种轻量级的标记语言，可用于在纯文本文档中添加格式化元素，具体语法可以参考<a href="https://www.markdownguide.org/basic-syntax/" target="_blank" rel="noopener">Markdown Guide</a>。本文就是使用Markdown语法编写的。</p>
+<p>在Java注释中引入Markdown，目标是使API文档注释以源代码形式更易于编写和阅读。主要收益包括：</p>
+<ul>
+<li>提高文档编写的效率：Markdown语法相比HTML更为简洁，开发者可以更快地编写和修改文档注释。</li>
+<li>增强文档的可读性：Markdown格式的文档在源代码中更易于阅读，有助于开发者快速理解API的用途和行为。</li>
+<li>促进文档的一致性：通过支持Markdown，可以确保文档风格的一致性，减少因格式问题导致的文档混乱。</li>
+<li>简化文档维护：Markdown格式的文档注释更易于维护和更新，特别是在多人协作的项目中，可以减少因文档格式问题导致的沟通成本。</li>
+</ul>
+<p>具体使用方式是在注释前面增加<code>///</code>，比如<code>java.lang.Object.hashCode</code>的注释：</p>
+<pre><code class="Java">/**
+ * Returns a hash code value for the object. This method is
+ * supported for the benefit of hash tables such as those provided by
+ * {@link java.util.HashMap}.
+ * &lt;p&gt;
+ * The general contract of {@code hashCode} is:
+ * &lt;ul&gt;
+ * &lt;li&gt;Whenever it is invoked on the same object more than once during
+ *     an execution of a Java application, the {@code hashCode} method
+ *     must consistently return the same integer, provided no information
+ *     used in {@code equals} comparisons on the object is modified.
+ *     This integer need not remain consistent from one execution of an
+ *     application to another execution of the same application.
+ * &lt;li&gt;If two objects are equal according to the {@link
+ *     #equals(Object) equals} method, then calling the {@code
+ *     hashCode} method on each of the two objects must produce the
+ *     same integer result.
+ * &lt;li&gt;It is &lt;em&gt;not&lt;/em&gt; required that if two objects are unequal
+ *     according to the {@link #equals(Object) equals} method, then
+ *     calling the {@code hashCode} method on each of the two objects
+ *     must produce distinct integer results.  However, the programmer
+ *     should be aware that producing distinct integer results for
+ *     unequal objects may improve the performance of hash tables.
+ * &lt;/ul&gt;
+ *
+ * @implSpec
+ * As far as is reasonably practical, the {@code hashCode} method defined
+ * by class {@code Object} returns distinct integers for distinct objects.
+ *
+ * @return  a hash code value for this object.
+ * @see     java.lang.Object#equals(java.lang.Object)
+ * @see     java.lang.System#identityHashCode
+ */
+</code></pre>
+<p>如果使用JEP 467的Markdown方式：</p>
+<pre><code class="Java">/// Returns a hash code value for the object. This method is
+/// supported for the benefit of hash tables such as those provided by
+/// [java.util.HashMap].
+///
+/// The general contract of `hashCode` is:
+///
+///   - Whenever it is invoked on the same object more than once during
+///     an execution of a Java application, the `hashCode` method
+///     must consistently return the same integer, provided no information
+///     used in `equals` comparisons on the object is modified.
+///     This integer need not remain consistent from one execution of an
+///     application to another execution of the same application.
+///   - If two objects are equal according to the
+///     [equals][#equals(Object)] method, then calling the
+///     `hashCode` method on each of the two objects must produce the
+///     same integer result.
+///   - It is _not_ required that if two objects are unequal
+///     according to the [equals][#equals(Object)] method, then
+///     calling the `hashCode` method on each of the two objects
+///     must produce distinct integer results.  However, the programmer
+///     should be aware that producing distinct integer results for
+///     unequal objects may improve the performance of hash tables.
+///
+/// @implSpec
+/// As far as is reasonably practical, the `hashCode` method defined
+/// by class `Object` returns distinct integers for distinct objects.
+///
+/// @return  a hash code value for this object.
+/// @see     java.lang.Object#equals(java.lang.Object)
+/// @see     java.lang.System#identityHashCode
+</code></pre>
+<p>简单两种写法的差异，相同注释，Markdown的写法更加简洁：</p>
+<p><img src="https://static.howardliu.cn/202409161338899.png" alt="Object hashcode注释差异"></p>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>想要了解各版本的详细特性，可以从<a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378" target="_blank" rel="noopener">从小工到专家的 Java 进阶之旅</a> 系列专栏中查看。</p>
+<p>青山不改，绿水长流，我们下次见。</p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378" target="_blank" rel="noopener">从小工到专家的 Java 进阶之旅</a></li>
+<li><a href="https://mp.weixin.qq.com/s/7f5dcjjKLdBYpzS5p7_v7Q" target="_blank" rel="noopener">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/JOLrw7cbVh8z2czePEfLjw" target="_blank" rel="noopener">一文掌握 Java8 的 Optional 的 6 种操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Vhw-2lgCvmhNI5aeXOWYNg" target="_blank" rel="noopener">使用 Lambda 表达式实现超强的排序功能</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Srv6733byTYDg7hTrW_tdw" target="_blank" rel="noopener">Java8 的时间库（1）：介绍 Java8 中的时间类及常用 API</a></li>
+<li><a href="https://mp.weixin.qq.com/s/LRydpL89GsjOeTrLrihyYQ" target="_blank" rel="noopener">Java8 的时间库（2）：Date 与 LocalDate 或 LocalDateTime 互相转换</a></li>
+<li><a href="https://mp.weixin.qq.com/s/KmBMLG1y73IUwFuSfUKaEQ" target="_blank" rel="noopener">Java8 的时间库（3）：开始使用 Java8 中的时间类</a></li>
+<li><a href="https://mp.weixin.qq.com/s/PxC0WQMReIeG0Tyl5WiK1Q" target="_blank" rel="noopener">Java8 的时间库（4）：检查日期字符串是否合法</a></li>
+<li><a href="https://mp.weixin.qq.com/s/rjMOq0QAdiWNacKYqHJqXA" target="_blank" rel="noopener">Java8 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/FHv963s0Qvh2K5r2tdLATA" target="_blank" rel="noopener">Java9 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/NY5-qkfZGdaOvz9iyJ3VSQ" target="_blank" rel="noopener">Java10 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/baBv0mP2JmPE4MoNYESqhA" target="_blank" rel="noopener">Java11 中基于嵌套关系的访问控制优化</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Bn4S2OfMoG19lI-L3nw8cg" target="_blank" rel="noopener">Java11 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/xBjXHC5UWy4JEKaRo6xQsg" target="_blank" rel="noopener">Java12 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/9EdRVPK0GUoQqI7eXcmwEA" target="_blank" rel="noopener">Java13 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/rEAHIf40j_UECLlxK5KW6w" target="_blank" rel="noopener">Java14 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/UESHDzuY3H7p5LLPJfwyAw" target="_blank" rel="noopener">Java15 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/HExV39BU0lSbdtg0aMjbSA" target="_blank" rel="noopener">Java16 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/By2JoZqAHA6U36PG8qvCcg" target="_blank" rel="noopener">Java17 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/W6Esovb7zzCL_seXgY84jA" target="_blank" rel="noopener">Java18 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/WutbAX_IQNqP4M3rud9f_g" target="_blank" rel="noopener">Java19 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/DvZYrZTtGfdXNsXGzmQN1A" target="_blank" rel="noopener">Java20 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/iiXa9rpJu1Vedpke0XpBzQ" target="_blank" rel="noopener">Java21 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/eHHFaJErH8XH4QSRrfcehQ" target="_blank" rel="noopener">Java22 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/s/XvB0D2vzhaAvHESupdALag" target="_blank" rel="noopener">Java23 的新特性</a></li>
+<li><a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378" target="_blank" rel="noopener">Java24 的新特性</a></li>
+</ul>
+<hr>
+<p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p>
+<ul>
+<li>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a></li>
+<li>个人博文：<a href="https://www.howardliu.cn/">从Java8到Java23值得期待的x个特性（5）：增强小特性</a></li>
+<li>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a></li>
+<li>CSDN 博文：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">从Java8到Java23值得期待的x个特性（5）：增强小特性</a></li>
+</ul>
+<center><b>👇🏻欢迎关注我的公众号「看山的小屋」，领取精选资料👇🏻</b></center>
+
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/java/">java</a>
+            
+            <a href="/tags/Java/">Java</a>
+            
+            <a href="/tags/Java10/">Java10</a>
+            
+            <a href="/tags/Java11/">Java11</a>
+            
+            <a href="/tags/Java12/">Java12</a>
+            
+            <a href="/tags/Java14/">Java14</a>
+            
+            <a href="/tags/Java15/">Java15</a>
+            
+            <a href="/tags/Java13/">Java13</a>
+            
+            <a href="/tags/Java16/">Java16</a>
+            
+            <a href="/tags/Java17/">Java17</a>
+            
+            <a href="/tags/Java18/">Java18</a>
+            
+            <a href="/tags/Java19/">Java19</a>
+            
+            <a href="/tags/Java20/">Java20</a>
+            
+            <a href="/tags/Java21/">Java21</a>
+            
+            <a href="/tags/Java8/">Java8</a>
+            
+            <a href="/tags/Java22/">Java22</a>
+            
+            <a href="/tags/Java9/">Java9</a>
+            
+            <a href="/tags/Java23/">Java23</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            <a class="pre" href="/java/java-features-8-23-6/">
+                <i class="icon-previous">从Java8到Java23值得期待的x个特性（6）：一些可能不会用到的特性</i>
+            </a>
+            
+            
+            <a class="next" href="/java/java-features-8-23-4/">
+                <i class="icon-next">从Java8到Java23值得期待的x个特性（4）：垃圾收集器</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://static.howardliu.cn/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 15px;">微服务</a> <a href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" style="font-size: 15px;">云计算</a> <a href="/tags/%E6%A6%82%E5%BF%B5/" style="font-size: 15px;">概念</a> <a href="/tags/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/" style="font-size: 15px;">线性代数</a> <a href="/tags/%E7%9F%A9%E9%98%B5/" style="font-size: 15px;">矩阵</a> <a href="/tags/%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15px;">算法</a> <a href="/tags/%E5%8F%8C%E6%8C%87%E9%92%88/" style="font-size: 15px;">双指针</a> <a href="/tags/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/%E5%85%AB%E7%9A%87%E5%90%8E%E9%97%AE%E9%A2%98/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/%E6%96%B9%E6%B3%95%E8%AE%BA/" style="font-size: 15px;">方法论</a> <a href="/tags/%E6%9E%B6%E6%9E%84/" style="font-size: 15px;">架构</a> <a href="/tags/%E4%BA%8B%E4%BB%B6%E9%A9%B1%E5%8A%A8/" style="font-size: 15px;">事件驱动</a> <a href="/tags/%E7%BC%93%E5%AD%98/" style="font-size: 15px;">缓存</a> <a href="/tags/%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" style="font-size: 15px;">解决方案</a> <a href="/tags/%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97/" style="font-size: 15px;">任务队列</a> <a href="/tags/%E4%BB%BB%E5%8A%A1/" style="font-size: 15px;">任务</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 15px;">分布式</a> <a href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" style="font-size: 15px;">架构设计</a> <a href="/tags/%E7%9F%AD%E9%93%BE%E6%9C%8D%E5%8A%A1/" style="font-size: 15px;">短链服务</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/%E4%B8%AD%E6%96%87%E5%AD%97%E7%AC%A6/" style="font-size: 15px;">中文字符</a> <a href="/tags/debug/" style="font-size: 15px;">debug</a> <a href="/tags/transmittable/" style="font-size: 15px;">transmittable</a> <a href="/tags/ttl/" style="font-size: 15px;">ttl</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 15px;">设计模式</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/" style="font-size: 15px;">系统运维</a> <a href="/tags/%E9%83%A8%E7%BD%B2/" style="font-size: 15px;">部署</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E6%8A%80%E5%B7%A7/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/%E8%87%AA%E5%8A%A8%E7%99%BB%E5%BD%95/" style="font-size: 15px;">自动登录</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/go/" style="font-size: 15px;">go</a> <a href="/tags/%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97/" style="font-size: 15px;">开发指南</a> <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/%E5%BC%80%E6%BA%90/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/http-%E7%8A%B6%E6%80%81%E7%A0%81/" style="font-size: 15px;">http 状态码</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 15px;">数据一致性</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 15px;">事务</a> <a href="/tags/%E5%8F%AF%E9%9D%A0%E4%BA%8B%E4%BB%B6/" style="font-size: 15px;">可靠事件</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" style="font-size: 15px;">中间件</a> <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" style="font-size: 15px;">消息队列</a> <a href="/tags/%E9%80%89%E5%9E%8B/" style="font-size: 15px;">选型</a> <a href="/tags/%E5%8D%95%E4%BD%93%E6%9E%B6%E6%9E%84/" style="font-size: 15px;">单体架构</a> <a href="/tags/%E9%87%8D%E6%9E%84/" style="font-size: 15px;">重构</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/%E8%8C%83%E5%BC%8F/" style="font-size: 15px;">范式</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E6%9B%B4%E6%96%B0/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%EF%BC%8Clinux/" style="font-size: 15px;">操作系统，linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E7%A9%BA%E9%97%B4/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/%E5%B7%A5%E4%BD%9C%E7%8E%AF%E5%A2%83/" style="font-size: 15px;">工作环境</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8/" style="font-size: 15px;">线程安全</a> <a href="/tags/%E6%A8%A1%E5%BC%8F/" style="font-size: 15px;">模式</a>
+    </div>
+</div>
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/regular-expressions-java-1/">正则表达式实用指南（一）：元字符及关系运算</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23-6/">从Java8到Java23值得期待的x个特性（6）：一些可能不会用到的特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23-5/">从Java8到Java23值得期待的x个特性（5）：增强小特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23-4/">从Java8到Java23值得期待的x个特性（4）：垃圾收集器</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23/">从Java8到Java23值得期待的x个特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23-3/">从Java8到Java23值得期待的x个特性（3）：永远学不完的多线程</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23-2/">从Java8到Java23值得期待的x个特性（2）：提升幸福感的特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23-1/">从Java8到Java23值得期待的x个特性（1）：有意思的特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-23-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java23 的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-22-features/">Java 每半年就会更新一次新特性，再不掌握就要落伍了：Java22 的新特性</a></li></ul>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/01/">2025年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">2024年09月</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">2023年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">2022年08月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">2022年07月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">2022年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">2022年05月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">2022年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">2022年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">2022年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">2022年01月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">2021年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">2021年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">2021年10月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">2021年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">2021年08月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">2021年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn"
+                       target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow"
+                       href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark"
+                       target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+            <p> &copy; 2014-2025 Howard Liu 版权所有</p>
+            <div class="">
+<!--                <a class="" href="http://idinfo.zjamr.zj.gov.cn/bscx.do?method=lzxx&amp;id=3301963301080000025024" target="_blank">-->
+<!--                    <img data-src="//gw.alicdn.com/tfs/TB1GxwdSXXXXXa.aXXXXXXXXXXX-65-70.gif"-->
+<!--                         src="//gw.alicdn.com/tfs/TB1GxwdSXXXXXa.aXXXXXXXXXXX-65-70.gif"-->
+<!--                         style="width: 20px;-->
+<!--                                display: inline-block;-->
+<!--                                height: 20px;-->
+<!--                                margin-right: 12px;">-->
+<!--                </a>-->
+<!--                <a class="" href="http://www.beian.gov.cn/portal/registerSystemInfo" target="_blank">-->
+<!--                    <img data-src="//img.alicdn.com/tfs/TB1..50QpXXXXX7XpXXXXXXXXXX-40-40.png"-->
+<!--                         src="//img.alicdn.com/tfs/TB1..50QpXXXXX7XpXXXXXXXXXX-40-40.png"-->
+<!--                         style="width: 20px;-->
+<!--                                display: inline-block;-->
+<!--                                height: 20px;-->
+<!--                                margin-right: 12px;">-->
+<!--                    <span class="" style="height: 20px;-->
+<!--                                        line-height: 20px;-->
+<!--                                        color: #939393;-->
+<!--                                        margin-left: -7px;-->
+<!--                                        font-size: 14px;-->
+<!--                                    ">浙公网安备 33010602009975号</span>-->
+<!--                </a>-->
+                <a class="" href="https://beian.miit.gov.cn/" target="_blank">
+                    <span class="" style="margin-left: 12px;
+                                        height: 20px;
+                                        line-height: 20px;
+                                        color: #939393;
+                                        font-size: 14px;
+                                    ">京ICP备19060080号-1</span>
+                </a>
+            </div>
+            <div style="width:300px;margin:0 auto; padding:20px 0;">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011502006279" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                    <img src="https://static.howardliu.cn/beian.png" style="float:left;"/>
+                    <p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">京公网安备 11011502006279号</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</div>
+
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
+<script src="//cdn.bootcdn.net/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script src="/js/header.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+<!--[if lt IE 9]>
+
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+
+![endif]-->
+<!--fancybox-->
+
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity='0.9' zIndex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
