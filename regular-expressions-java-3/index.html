@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>正则表达式实用指南（三）：边界匹配、Pattern模式、Matcher方法||沉潜飞动|君子藏器于身，待时而动。</title>
+<meta name="description" content="本文收录在 《从小工到专家的 Java 进阶之旅》 系列专栏中。  你好，我是看山。 正则表达式是Java变成中一把利器，常出现在文本检查、替换等逻辑中。本文中，我们将深入探讨 Java 正则表达式 API，并研究如何在 Java 编程语言中运用正则表达式。 在正则表达式的领域中，存在多种不同的“风格”可供选择，例如 grep、Perl、Python、PHP、awk 等等。这就意味着，在一种">
+<meta property="og:type" content="article">
+<meta property="og:title" content="正则表达式实用指南（三）：边界匹配、Pattern模式、Matcher方法">
+<meta property="og:url" content="https://www.howardliu.cn/regular-expressions-java-3/index.html">
+<meta property="og:site_name" content="沉潜飞动">
+<meta property="og:description" content="本文收录在 《从小工到专家的 Java 进阶之旅》 系列专栏中。  你好，我是看山。 正则表达式是Java变成中一把利器，常出现在文本检查、替换等逻辑中。本文中，我们将深入探讨 Java 正则表达式 API，并研究如何在 Java 编程语言中运用正则表达式。 在正则表达式的领域中，存在多种不同的“风格”可供选择，例如 grep、Perl、Python、PHP、awk 等等。这就意味着，在一种">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://static.howardliu.cn/20250114225842777.jpg">
+<meta property="og:image" content="http://static.howardliu.cn/about/kanshanshuo.png">
+<meta property="article:published_time" content="2025-01-14T15:06:10.000Z">
+<meta property="article:modified_time" content="2025-01-14T15:06:10.000Z">
+<meta property="article:author" content="Howard Liu">
+<meta property="article:tag" content="正则表达式">
+<meta property="article:tag" content="元字符">
+<meta property="article:tag" content="关系运算符">
+<meta property="article:tag" content="正则表达式的交集">
+<meta property="article:tag" content="正则表达式的并集">
+<meta property="article:tag" content="正则表达式的差集">
+<meta property="article:tag" content="正则表达式的范围">
+<meta property="article:tag" content="正则表达式的或运算">
+<meta property="article:tag" content="正则表达式的与运算">
+<meta property="article:tag" content="转义字符">
+<meta property="article:tag" content="量词">
+<meta property="article:tag" content="捕获组">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static.howardliu.cn/20250114225842777.jpg">
+
+<meta name="keywords" content="正则表达式,元字符,关系运算符,正则表达式的交集,正则表达式的并集,正则表达式的差集,正则表达式的范围,正则表达式的或运算,正则表达式的与运算,转义字符,量词,捕获组">
+
+
+<meta name="description" content="本文收录在 《从小工到专家的 Java 进阶之旅》 系列专栏中。
+
+你好，我是看山。
+正则表达式是Java变成中一把利器，常出现在文本检查、替换等逻辑中。本文中，我们将深入探讨 Java 正则表达式 API，并研究如何在 Java 编程语言中运用正则表达式。
+在正则表达式的领域中，存在多种不同的“风">
+
+<meta name="author" content="Howard Liu,howardliu1988@163.com">
+
+
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon"/>
+<link rel="icon" href="/favicon.png">
+
+
+<link rel="stylesheet" href="https://static.howardliu.cn/bootstrap/3.3.6/css/bootstrap.min.css">
+
+
+<link rel="stylesheet" href="/css/theme.css">
+
+
+<link rel="stylesheet" href="/css/syntax.css">
+
+
+<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+
+
+<link rel="stylesheet" href="https://static.howardliu.cn/highlight.js/11.0.1/styles/vs2015.min.css">
+
+<!--baidu analytics-->
+
+<script>
+    // baidu analytics
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bbbf795fe3b264fb8122078f86cbaae5";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+<meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="沉潜飞动" type="application/atom+xml">
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            <a class="navbar-brand" href="/.">沉潜飞动</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                
+                <li><a href="/." class="current"><i class="icon-home"> 首页</i></a></li>
+                
+                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
+                
+                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
+                
+                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrapper">
+    <div class="content">
+        <div class="container container-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="article">
+    <div class="well">
+        <h1><a href="/regular-expressions-java-3/">正则表达式实用指南（三）：边界匹配、Pattern模式、Matcher方法</a></h1>
+        <div class="post-meta">
+            <div class="post-time">
+                <i class="fa fa-calendar"></i><time> 2025-01-14</time>
+            </div>
+            <div class="post-visitors-count">
+                <i class="fa fa-ge"></i>
+                <span id="/regular-expressions-java-3/" class="leancloud_visitors" data-flag-title="正则表达式实用指南（三）：边界匹配、Pattern模式、Matcher方法">
+                    <span class="post-meta-item-text">阅读量 </span>
+                    <i class="leancloud-visitors-count">0</i>
+                </span>
+            </div>
+        </div>
+        <div id="articleContainer" class="post-content article-entry">
+            <!-- 
+    <div id="toc" class="toc-content">
+      <strong class="toc-title">目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#八、边界匹配器"><span class="toc-text">八、边界匹配器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#九、Pattern-类方法"><span class="toc-text">九、Pattern 类方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Pattern-CANON-EQ"><span class="toc-text">Pattern.CANON_EQ</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pattern-CASE-INSENSITIVE"><span class="toc-text">Pattern.CASE_INSENSITIVE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pattern-COMMENTS"><span class="toc-text">Pattern.COMMENTS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pattern-DOTALL"><span class="toc-text">Pattern.DOTALL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pattern-LITERAL"><span class="toc-text">Pattern.LITERAL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pattern-MULTILINE"><span class="toc-text">Pattern.MULTILINE</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#十、Matcher-类方法"><span class="toc-text">十、Matcher 类方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#（一）索引方法"><span class="toc-text">（一）索引方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#（二）查找方法"><span class="toc-text">（二）查找方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#（三）替换方法"><span class="toc-text">（三）替换方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文末总结"><span class="toc-text">文末总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐阅读"><span class="toc-text">推荐阅读</span></a></li></ol>
+    </div>
+ -->
+            <p><img src="https://static.howardliu.cn/20250114225842777.jpg" alt="正则表达式实用指南（三）：边界匹配、Pattern模式、Matcher方法"></p>
+<blockquote>
+<p> 本文收录在 <a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378" target="_blank" rel="noopener">《从小工到专家的 Java 进阶之旅》</a> 系列专栏中。</p>
+</blockquote>
+<p>你好，我是看山。</p>
+<p>正则表达式是Java变成中一把利器，常出现在文本检查、替换等逻辑中。本文中，我们将深入探讨 Java 正则表达式 API，并研究如何在 Java 编程语言中运用正则表达式。</p>
+<p>在正则表达式的领域中，存在多种不同的“风格”可供选择，例如 grep、Perl、Python、PHP、awk 等等。这就意味着，在一种编程语言中有效的正则表达式，在另一种语言中可能无法正常工作。Java 中的正则表达式语法与 Perl 中的最为相似。</p>
+<a id="more"></a>
+
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/i1i9dc1IQknVni0K-4Ydtw" target="_blank" rel="noopener">一、元字符及关系运算</a></li>
+<li><a href="https://mp.weixin.qq.com/s/KoOKKMV2YT3WKDMUhB_14A" target="_blank" rel="noopener">转义字符、量词和捕获小能手</a></li>
+</ul>
+<h2 id="八、边界匹配器"><a href="#八、边界匹配器" class="headerlink" title="八、边界匹配器"></a>八、边界匹配器</h2><p>Java 正则表达式 API 还支持边界匹配，如果我们需要判断匹配的位置，就可以使用边界匹配器。</p>
+<p>要仅在文本开头满足所需正则表达式时进行匹配，我们使用“^”。下面的测试将通过，因为“dog”在文本开头：</p>
+<pre><code class="java">int matches = runTest(&quot;^dog&quot;, &quot;dogs are friendly&quot;);
+
+assertTrue(matches &gt; 0);</code></pre>
+<p>下面示例就会匹配失败：</p>
+<pre><code class="java">int matches = runTest(&quot;^dog&quot;, &quot;are dogs are friendly?&quot;);
+
+assertFalse(matches &gt; 0);</code></pre>
+<p>要仅在文本结尾满足所需正则表达式时进行匹配，我们使用“$”。在下面的情况下，我们会找到匹配：</p>
+<pre><code class="java">int matches = runTest(&quot;dog$&quot;, &quot;Man&#39;s best friend is a dog&quot;);
+
+assertTrue(matches &gt; 0);</code></pre>
+<p>下面示例就会匹配失败：</p>
+<pre><code class="java">int matches = runTest(&quot;dog$&quot;, &quot;is a dog man&#39;s best friend?&quot;);
+
+assertFalse(matches &gt; 0);</code></pre>
+<p><code>\\b</code>表示单词边界，正则表达是中所说的单词是指<code>\w</code>+空格，即数字、大小写字母、下划线、空格。</p>
+<pre><code class="java">int matches = runTest(&quot;\\bdog\\b&quot;, &quot;a dog is friendly&quot;);
+
+assertEquals(matches, 1);</code></pre>
+<p>行首的空字符串也是一个单词边界：</p>
+<pre><code class="java">int matches = runTest(&quot;\\bdog\\b&quot;, &quot;dog is man&#39;s best friend&quot;);
+
+assertEquals(matches, 1);</code></pre>
+<p>下面这个示例则会无匹配字符：</p>
+<pre><code class="java">int matches = runTest(&quot;\\bdog\\b&quot;, &quot;snoop dogg is a rapper&quot;);
+
+assertEquals(matches, 0);</code></pre>
+<p>两个连续的单词字符不标记为单词边界，但我们可以通过更改正则表达式的结尾来查找非单词边界，使其通过测试：</p>
+<pre><code class="java">int matches = runTest(&quot;\\bdog\\B&quot;, &quot;snoop dogg is a rapper&quot;);
+assertEquals(matches, 1);</code></pre>
+<p>这里用到了<code>\B</code>，表示非边界单词，与<code>\b</code>正好相反。</p>
+<h2 id="九、Pattern-类方法"><a href="#九、Pattern-类方法" class="headerlink" title="九、Pattern 类方法"></a>九、Pattern 类方法</h2><p><code>Pattern</code>的<code>compile</code>方法可以传入一组标志，这些标志会影响匹配方式。</p>
+<p>让我们在测试类中重载<code>runTest</code>方法，使其能够接受一个标志：</p>
+<pre><code class="java">public static int runTest(String regex, String text, int flags) {
+    Pattern pattern = Pattern.compile(regex, flags);
+    Matcher matcher = pattern.matcher(text);
+    int matches = 0;
+    while (matcher.find()) {
+        matches++;
+    }
+    return matches;
+}</code></pre>
+<p><code>Pattern</code>提供了标记的常量，我们一一看一下。</p>
+<h3 id="Pattern-CANON-EQ"><a href="#Pattern-CANON-EQ" class="headerlink" title="Pattern.CANON_EQ"></a>Pattern.CANON_EQ</h3><p>当指定此标志时，两个字符只有在其完整的规范分解匹配时才被视为匹配。主要用于组合码与组成元素之间的匹配。</p>
+<p>比如，带重音的 Unicode 字符“é”。它的组合码点是“u00E9”，Unicode 也为其组成字符“e”（“u0065”）和锐音符（“u0301”）提供了单独的码点。如果启用<code>CANON_EQ</code>模式，组合字符“u00E9”与两个字符序列“u0065 u0301”可以算作匹配的。</p>
+<p>默认情况下，下面示例是不会命中：</p>
+<pre><code class="java">int matches = runTest(&quot;\u00E9&quot;, &quot;\u0065\u0301&quot;);
+
+assertEquals(matches, 0);</code></pre>
+<p>如果我们设置了<code>CANON_EQ</code>标志，测试将通过：</p>
+<pre><code class="java">int matches = runTest(&quot;\u00E9&quot;, &quot;\u0065\u0301&quot;, Pattern.CANON_EQ);
+
+assertTrue(matches &gt; 0);</code></pre>
+<h3 id="Pattern-CASE-INSENSITIVE"><a href="#Pattern-CASE-INSENSITIVE" class="headerlink" title="Pattern.CASE_INSENSITIVE"></a>Pattern.CASE_INSENSITIVE</h3><p>此标志启用不区分大小写的匹配。</p>
+<p>默认情况下，匹配是区分大小写的：</p>
+<pre><code class="java">int matches = runTest(&quot;dog&quot;, &quot;This is a Dog&quot;);
+
+assertEquals(matches, 0);</code></pre>
+<p>我们可以使用<code>CASE_INSENSITIVE</code>设置为不区分大小写：</p>
+<pre><code class="java">int matches = runTest(&quot;dog&quot;, &quot;This is a Dog&quot;, Pattern.CASE_INSENSITIVE);
+
+assertTrue(matches &gt; 0);</code></pre>
+<p>我们可以使用内联修饰符<code>(?i)</code>，可以使正则表达式的匹配过程忽略大小写，使用<code>(?-i)</code>关闭。</p>
+<pre><code class="java">int matches = runTest(&quot;(?i)d(?-i)og&quot;, &quot;This is a Dog&quot;);
+
+assertTrue(matches &gt; 0);</code></pre>
+<h3 id="Pattern-COMMENTS"><a href="#Pattern-COMMENTS" class="headerlink" title="Pattern.COMMENTS"></a>Pattern.COMMENTS</h3><p>Java API 允许我们在正则表达式中使用“#”添加注释。这有助于为复杂的正则表达式添加文档说明，使其对其他程序员更易理解。</p>
+<p><code>COMMENTS</code>标志可以忽略正则表达式中的任何空白字符或注释。</p>
+<p>在默认匹配模式下，下面这种会无匹配：</p>
+<pre><code class="java">int matches = runTest(&quot;dog$  #check for word dog at end of text&quot;, &quot;This is a dog&quot;);
+
+assertEquals(matches, 0);</code></pre>
+<p>这是因为匹配器会在输入文本中查找整个正则表达式，包括空格和“#”字符。但是当我们使用<code>COMMENTS</code>标志时，它会忽略多余的空格，并且每行中以“#”开头的所有文本都将被视为注释而被忽略：</p>
+<pre><code class="java">int matches = runTest(&quot;dog$  #check end of text&quot;, &quot;This is a dog&quot;, Pattern.COMMENTS);
+
+assertTrue(matches &gt; 0);</code></pre>
+<p>这里也有一个内联修饰符<code>(?x)</code>，可以启用扩展模式，在这种模式下：白空格（如空格、制表符、换行符等）在正则表达式中被忽略；可以使用 # 开始的注释，直到行尾。</p>
+<p>比如：</p>
+<pre><code class="java">int matches = runTest(&quot;(?x)dog$  #check end of text&quot;, &quot;This is a dog&quot;);
+
+assertTrue(matches &gt; 0);</code></pre>
+<h3 id="Pattern-DOTALL"><a href="#Pattern-DOTALL" class="headerlink" title="Pattern.DOTALL"></a>Pattern.DOTALL</h3><p>默认情况下，当我们在正则表达式中使用点“.”表达式时，它会匹配输入字符串中的每个字符，直到遇到换行符为止。使用<code>DOTALL</code>标志后，可以匹配换行符。</p>
+<p>首先，来看默认行为：</p>
+<pre><code class="java">Pattern pattern = Pattern.compile(&quot;(.*)&quot;);
+Matcher matcher = pattern.matcher(&quot;this is a text&quot; + System.getProperty(&quot;line.separator&quot;)
+                + &quot; continued on another line&quot;);
+matcher.find();
+
+assertEquals(&quot;this is a text&quot;, matcher.group(1));</code></pre>
+<p>如我们所见，匹配了换行符之前的部分。如果在<code>DOTALL</code>模式下，整个文本，包括换行符，都会被匹配：</p>
+<pre><code class="java">Pattern pattern = Pattern.compile(&quot;(.*)&quot;, Pattern.DOTALL);
+Matcher matcher = pattern.matcher(&quot;this is a text&quot; + System.getProperty(&quot;line.separator&quot;)
+                + &quot; continued on another line&quot;);
+matcher.find();
+assertEquals(&quot;this is a text&quot; + System.getProperty(&quot;line.separator&quot;)
+                + &quot; continued on another line&quot;, matcher.group(1));</code></pre>
+<p>我们也可以使用内联表达式<code>(?s)</code>开启单行模式，与<code>DOTALL</code>标志行为相同。</p>
+<pre><code class="java">Pattern pattern = Pattern.compile(&quot;(?s)(.*)&quot;);
+Matcher matcher = pattern.matcher(&quot;this is a text&quot; + System.getProperty(&quot;line.separator&quot;)
+                + &quot; continued on another line&quot;);
+matcher.find();
+assertEquals(&quot;this is a text&quot; + System.getProperty(&quot;line.separator&quot;)
+                + &quot; continued on another line&quot;, matcher.group(1));</code></pre>
+<h3 id="Pattern-LITERAL"><a href="#Pattern-LITERAL" class="headerlink" title="Pattern.LITERAL"></a>Pattern.LITERAL</h3><p>在这种模式下，匹配器不会给任何元字符、转义字符或正则表达式语法赋予特殊含义。</p>
+<p>在没有此标志时，匹配器会将以下正则表达式与任何输入字符串进行匹配：</p>
+<pre><code class="java">int matches = runTest(&quot;(.*)&quot;, &quot;text&quot;);
+
+assertTrue(matches &gt; 0);</code></pre>
+<p>使用<code>LITERAL</code>标志时，如果输入字符串与正则表达式字面相同才会匹配，否则不会找到匹配，因为匹配器会查找<code>(.*)</code>而不是对其进行解释：</p>
+<pre><code class="java">int matches = runTest(&quot;(.*)&quot;, &quot;text&quot;, Pattern.LITERAL);
+
+assertEquals(matches, 0);</code></pre>
+<p>上面示例中，如果待匹配字符串变为<code>text(.*)</code>，<code>matches</code>就是1。</p>
+<h3 id="Pattern-MULTILINE"><a href="#Pattern-MULTILINE" class="headerlink" title="Pattern.MULTILINE"></a>Pattern.MULTILINE</h3><p>默认情况下，“^”和“$”元字符分别绝对匹配整个输入字符串的开头和结尾。匹配器会忽略任何换行符：</p>
+<pre><code class="java">int matches = runTest(&quot;dog$&quot;,
+        &quot;This is a dog&quot; + System.getProperty(&quot;line.separator&quot;) + &quot;this is a fox&quot;);
+
+assertEquals(matches, 0);</code></pre>
+<p>这个匹配会失败，因为匹配器在整个字符串的末尾查找“dog”，但是示例中文本是分两行，会认为并没有结束。</p>
+<p>使用<code>MULTILINE</code>标志后，匹配器会考虑换行符，遇到换行符即认为结束：</p>
+<pre><code class="java">int matches = runTest(&quot;dog$&quot;,
+        &quot;This is a dog&quot; + System.getProperty(&quot;line.separator&quot;) + &quot;this is a fox&quot;,
+        Pattern.MULTILINE);
+
+assertTrue(matches &gt; 0);</code></pre>
+<p>我们也可以使用内联表达式<code>(?m)</code>实现相同逻辑：</p>
+<pre><code class="java">int matches = runTest(&quot;(?m)dog$&quot;,
+        &quot;This is a dog&quot; + System.getProperty(&quot;line.separator&quot;) + &quot;this is a fox&quot;);
+
+assertTrue(matches &gt; 0);</code></pre>
+<h2 id="十、Matcher-类方法"><a href="#十、Matcher-类方法" class="headerlink" title="十、Matcher 类方法"></a>十、Matcher 类方法</h2><h3 id="（一）索引方法"><a href="#（一）索引方法" class="headerlink" title="（一）索引方法"></a>（一）索引方法</h3><p>索引方法提供了有用的索引值，能准确地告诉我们在输入字符串中匹配项的位置。</p>
+<p>在以下测试中，我们将确认输入字符串中“dog”的匹配起始和结束索引：</p>
+<pre><code class="java">Pattern pattern = Pattern.compile(&quot;dog&quot;);
+Matcher matcher = pattern.matcher(&quot;This dog is mine&quot;);
+matcher.find();
+
+assertEquals(5, matcher.start());
+assertEquals(8, matcher.end());</code></pre>
+<h3 id="（二）查找方法"><a href="#（二）查找方法" class="headerlink" title="（二）查找方法"></a>（二）查找方法</h3><p>查找方法遍历输入字符串，并返回一个布尔值，指示是否找到模式。常用的方法是<code>matches</code>和<code>lookingAt</code>。</p>
+<p><code>matches</code>和<code>lookingAt</code>方法都尝试将输入序列与模式进行匹配。区别在于<code>matches</code>要求整个输入序列都匹配，而<code>lookingAt</code>不需要。</p>
+<p>这两个方法都从输入字符串的开头开始：</p>
+<pre><code class="java">Pattern pattern = Pattern.compile(&quot;dog&quot;);
+Matcher matcher = pattern.matcher(&quot;dogs are friendly&quot;);
+
+assertTrue(matcher.lookingAt());
+assertFalse(matcher.matches());</code></pre>
+<p>在以下情况下，<code>matches</code>方法将返回 true：</p>
+<pre><code class="java">Pattern pattern = Pattern.compile(&quot;dog&quot;);
+Matcher matcher = pattern.matcher(&quot;dog&quot;);
+
+assertTrue(matcher.matches());</code></pre>
+<h3 id="（三）替换方法"><a href="#（三）替换方法" class="headerlink" title="（三）替换方法"></a>（三）替换方法</h3><p>替换方法用于替换输入字符串中的文本。常用的方法是<code>replaceFirst</code>和<code>replaceAll</code>。</p>
+<p><code>replaceFirst</code>和<code>replaceAll</code>方法替换与给定正则表达式匹配的文本。顾名思义，<code>replaceFirst</code>替换第一次出现的匹配项，<code>replaceAll</code>替换所有匹配项：</p>
+<pre><code class="java">Pattern pattern = Pattern.compile(&quot;dog&quot;);
+Matcher matcher = pattern.matcher(&quot;dogs are domestic animals, dogs are friendly&quot;);
+String newStr = matcher.replaceFirst(&quot;cat&quot;);
+
+assertEquals(&quot;cats are domestic animals, dogs are friendly&quot;, newStr);</code></pre>
+<p>替换所有匹配项：</p>
+<pre><code class="java">Pattern pattern = Pattern.compile(&quot;dog&quot;);
+Matcher matcher = pattern.matcher(&quot;dogs are domestic animals, dogs are friendly&quot;);
+String newStr = matcher.replaceAll(&quot;cat&quot;);
+
+assertEquals(&quot;cats are domestic animals, cats are friendly&quot;, newStr);</code></pre>
+<p><code>replaceAll</code>方法允许我们用相同的替换内容替换所有匹配项。</p>
+<p><code>String</code>类的<code>replaceFirst</code>和<code>replaceAll</code>方法啊，底层也是使用了<code>Matcher</code>的方法。</p>
+<h2 id="文末总结"><a href="#文末总结" class="headerlink" title="文末总结"></a>文末总结</h2><p>正则表达式是一个开发利器，用的好的话，会大大提升我们的开发效率。本文介绍了边界匹配、Pattern模式、Matcher方法。</p>
+<p>青山不改，绿水长流，我们下次见。</p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1732392238946533378" target="_blank" rel="noopener">从小工到专家的 Java 进阶之旅</a></li>
+<li><a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=3757675060425670656#wechat_redirect" target="_blank" rel="noopener">并发编程</a></li>
+<li><a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=3809802644269318145#wechat_redirect" target="_blank" rel="noopener">MapStruct实用手册</a></li>
+<li><a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI4OTU5NTA1Ng==&action=getalbum&album_id=1750195552933199874#wechat_redirect" target="_blank" rel="noopener">一个架构师的素养修炼</a></li>
+<li><a href="https://mp.weixin.qq.com/s/7f5dcjjKLdBYpzS5p7_v7Q" target="_blank" rel="noopener">一文掌握 Java8 Stream 中 Collectors 的 24 个操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/JOLrw7cbVh8z2czePEfLjw" target="_blank" rel="noopener">一文掌握 Java8 的 Optional 的 6 种操作</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Vhw-2lgCvmhNI5aeXOWYNg" target="_blank" rel="noopener">使用 Lambda 表达式实现超强的排序功能</a></li>
+<li><a href="https://mp.weixin.qq.com/s/baBv0mP2JmPE4MoNYESqhA" target="_blank" rel="noopener">Java11 中基于嵌套关系的访问控制优化</a></li>
+<li><a href="https://mp.weixin.qq.com/s/4lOmXnKMHf3YUkYWfK_PYg" target="_blank" rel="noopener">原来OpenFeign功能这么强大</a></li>
+<li><a href="https://mp.weixin.qq.com/s/iVo-Cr8shxjmh9UK_rWQMw" target="_blank" rel="noopener">原来OpenFeign功能这么强大（第二弹）</a></li>
+<li><a href="https://mp.weixin.qq.com/s/_032A7UPP4SgqrpYolSyiQ" target="_blank" rel="noopener">使用OpenFeign的5个步骤和7个高级功能</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Ahsz70-30IYO-9hQ0VDefw" target="_blank" rel="noopener">由浅入深掌握CompletableFuture的七种用法</a></li>
+<li><a href="https://mp.weixin.qq.com/s/mAthOXL3eZNUiuV7SPp7Cw" target="_blank" rel="noopener">全新的HttpClient，现代高效的网络通信利器</a></li>
+<li><a href="https://mp.weixin.qq.com/s/b2WKGF9Z0gUkYYRP7PdybA" target="_blank" rel="noopener">Java 中反射、内省的性能差距居然如此</a></li>
+<li><a href="https://mp.weixin.qq.com/s/vXJxyTm2BWZtUV8Kiwp3NQ" target="_blank" rel="noopener">比反射更好用的内省</a></li>
+<li><a href="https://mp.weixin.qq.com/s/ak_t3qQ7OPI116xHL2RO1w" target="_blank" rel="noopener">异常处理的9条建议</a></li>
+<li><a href="https://mp.weixin.qq.com/s/nkS8bPfyQ1L9knPrpGrxbA" target="_blank" rel="noopener">Java原生支持Lombok了</a></li>
+<li><a href="https://mp.weixin.qq.com/s/ZCm71il_n5FG8gAHSiKCzQ" target="_blank" rel="noopener">MapStruct教程</a></li>
+<li><a href="https://mp.weixin.qq.com/s/KXTzTcxvf3pqXzEe2tdYOg" target="_blank" rel="noopener">手写重试器</a></li>
+<li><a href="https://mp.weixin.qq.com/s/ETg09gegy4a5i_fdgUUx7w" target="_blank" rel="noopener">等待线程完成的三种常用方式</a></li>
+<li><a href="https://mp.weixin.qq.com/s/F3Pv1B5-2XErTxK6qqkoTA" target="_blank" rel="noopener">如何在线程完成时执行回调</a></li>
+<li><a href="https://mp.weixin.qq.com/s/N-cLbHHqBKxUz4bqptMSJg" target="_blank" rel="noopener">由浅入深掌握Future</a></li>
+<li><a href="https://mp.weixin.qq.com/s/Z0hjAKuiRZI2JOd-CUPETQ" target="_blank" rel="noopener">由浅入深掌握ExecutorService</a></li>
+<li><a href="https://mp.weixin.qq.com/s/my64BSuMnJzX8bfhIblwPQ" target="_blank" rel="noopener">Fork/Join框架快速上手指南</a></li>
+<li><a href="https://mp.weixin.qq.com/s/L5NUIde7li1sayF6hTqncw" target="_blank" rel="noopener">如何延迟执行一段代码</a></li>
+</ul>
+<hr>
+<p>你好，我是看山。游于码界，戏享人生。如果文章对您有帮助，请点赞、收藏、关注。我还整理了一些精品学习资料，关注公众号「看山的小屋」，回复“资料”即可获得。</p>
+<ul>
+<li>个人主页：<a href="https://www.howardliu.cn">https://www.howardliu.cn</a></li>
+<li>个人博文：<a href="https://www.howardliu.cn/">正则表达式实用指南（三）：边界匹配、Pattern模式、Matcher方法</a></li>
+<li>CSDN 主页：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">https://kanshan.blog.csdn.net/</a></li>
+<li>CSDN 博文：<a href="https://kanshan.blog.csdn.net/" target="_blank" rel="noopener">正则表达式实用指南（三）：边界匹配、Pattern模式、Matcher方法</a></li>
+</ul>
+<center><b>👇🏻欢迎关注我的公众号「看山的小屋」，领取精选资料👇🏻</b></center>
+
+<p><img src="http://static.howardliu.cn/about/kanshanshuo.png" alt="公众号：看山的小屋"></p>
+
+        </div>
+        
+        <div class="tags">
+            
+            <a href="/tags/java/">java</a>
+            
+            <a href="/tags/regular/">regular</a>
+            
+        </div>
+        
+        
+        <div class="post-nav">
+            
+            
+            <a class="next" href="/regular-expressions-java-2/">
+                <i class="icon-next">正则表达式实用指南（二）：转移字符、量词和捕获小能手</i>
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    <div class="well">
+        <section id="comments">
+            <div id="vcomment" class="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '.comment',
+        notify: "false" === "true",
+        verify: "false" === "true",
+        visitor: "true" === "true",
+        app_id: "8oLP4PUvcvP9832UMNhKJMp4-gzGzoHsz",
+        app_key: "Vub5Jl1Nehop0NlWaRdWVS3S",
+        placeholder: "请评论",
+        avatar:"monsterid"
+    });
+</script>
+
+        </section>
+    </div>
+
+
+<script src="https://readmore.openwrite.cn/js/readmore.js" type="text/javascript"></script>
+<script>
+    const btw = new BTWPlugin();
+    btw.init({
+        id: 'articleContainer',
+        blogId: '19701-1581264117855-495',
+        name: '看山的小屋',
+        qrcode: 'https://static.howardliu.cn/mp-kanshan.jpg',
+        keyword: 'vip',
+    });
+</script>
+                </div>
+                <div class="col-md-4 hidden-xs">
+                    
+<div class="sidebar">
+    <div class="well">
+        <h2>标签云</h2>
+        <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 15px;">微服务</a> <a href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/" style="font-size: 15px;">云计算</a> <a href="/tags/%E6%A6%82%E5%BF%B5/" style="font-size: 15px;">概念</a> <a href="/tags/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/" style="font-size: 15px;">线性代数</a> <a href="/tags/%E7%9F%A9%E9%98%B5/" style="font-size: 15px;">矩阵</a> <a href="/tags/%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95/" style="font-size: 15px;">矩阵乘法</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15px;">算法</a> <a href="/tags/%E5%8F%8C%E6%8C%87%E9%92%88/" style="font-size: 15px;">双指针</a> <a href="/tags/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/" style="font-size: 15px;">滑动窗口</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/%E5%85%AB%E7%9A%87%E5%90%8E%E9%97%AE%E9%A2%98/" style="font-size: 15px;">八皇后问题</a> <a href="/tags/%E6%96%B9%E6%B3%95%E8%AE%BA/" style="font-size: 15px;">方法论</a> <a href="/tags/%E6%9E%B6%E6%9E%84/" style="font-size: 15px;">架构</a> <a href="/tags/%E4%BA%8B%E4%BB%B6%E9%A9%B1%E5%8A%A8/" style="font-size: 15px;">事件驱动</a> <a href="/tags/%E7%BC%93%E5%AD%98/" style="font-size: 15px;">缓存</a> <a href="/tags/%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" style="font-size: 15px;">解决方案</a> <a href="/tags/%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97/" style="font-size: 15px;">任务队列</a> <a href="/tags/%E4%BB%BB%E5%8A%A1/" style="font-size: 15px;">任务</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 15px;">分布式</a> <a href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" style="font-size: 15px;">架构设计</a> <a href="/tags/%E7%9F%AD%E9%93%BE%E6%9C%8D%E5%8A%A1/" style="font-size: 15px;">短链服务</a> <a href="/tags/bug/" style="font-size: 15px;">bug</a> <a href="/tags/%E4%B8%AD%E6%96%87%E5%AD%97%E7%AC%A6/" style="font-size: 15px;">中文字符</a> <a href="/tags/debug/" style="font-size: 15px;">debug</a> <a href="/tags/transmittable/" style="font-size: 15px;">transmittable</a> <a href="/tags/ttl/" style="font-size: 15px;">ttl</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 15px;">设计模式</a> <a href="/tags/DevOps/" style="font-size: 15px;">DevOps</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 15px;">Dockerfile</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/" style="font-size: 15px;">系统运维</a> <a href="/tags/%E9%83%A8%E7%BD%B2/" style="font-size: 15px;">部署</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/weblogic/" style="font-size: 15px;">weblogic</a> <a href="/tags/ModuleException/" style="font-size: 15px;">ModuleException</a> <a href="/tags/eclipse/" style="font-size: 15px;">eclipse</a> <a href="/tags/plugins/" style="font-size: 15px;">plugins</a> <a href="/tags/EOS/" style="font-size: 15px;">EOS</a> <a href="/tags/BPS/" style="font-size: 15px;">BPS</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E6%8A%80%E5%B7%A7/" style="font-size: 15px;">操作技巧</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/%E8%87%AA%E5%8A%A8%E7%99%BB%E5%BD%95/" style="font-size: 15px;">自动登录</a> <a href="/tags/oom/" style="font-size: 15px;">oom</a> <a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/RabbitMQ/" style="font-size: 15px;">RabbitMQ</a> <a href="/tags/CD/" style="font-size: 15px;">CD</a> <a href="/tags/code-quality/" style="font-size: 15px;">code quality</a> <a href="/tags/SonarQube/" style="font-size: 15px;">SonarQube</a> <a href="/tags/Jenkins-Pipeline/" style="font-size: 15px;">Jenkins Pipeline</a> <a href="/tags/os/" style="font-size: 15px;">os</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/passwordless/" style="font-size: 15px;">passwordless</a> <a href="/tags/Phoenix/" style="font-size: 15px;">Phoenix</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/ufw/" style="font-size: 15px;">ufw</a> <a href="/tags/iptable/" style="font-size: 15px;">iptable</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/authority/" style="font-size: 15px;">authority</a> <a href="/tags/go/" style="font-size: 15px;">go</a> <a href="/tags/%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97/" style="font-size: 15px;">开发指南</a> <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" style="font-size: 15px;">大数据</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/yarn/" style="font-size: 15px;">yarn</a> <a href="/tags/%E5%BC%80%E6%BA%90/" style="font-size: 15px;">开源</a> <a href="/tags/hdfs/" style="font-size: 15px;">hdfs</a> <a href="/tags/ha/" style="font-size: 15px;">ha</a> <a href="/tags/QJM/" style="font-size: 15px;">QJM</a> <a href="/tags/rm/" style="font-size: 15px;">rm</a> <a href="/tags/mapreduce/" style="font-size: 15px;">mapreduce</a> <a href="/tags/hbase/" style="font-size: 15px;">hbase</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 15px;">网络</a> <a href="/tags/http/" style="font-size: 15px;">http</a> <a href="/tags/http-%E7%8A%B6%E6%80%81%E7%A0%81/" style="font-size: 15px;">http 状态码</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 15px;">数据一致性</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 15px;">事务</a> <a href="/tags/%E5%8F%AF%E9%9D%A0%E4%BA%8B%E4%BB%B6/" style="font-size: 15px;">可靠事件</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" style="font-size: 15px;">中间件</a> <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" style="font-size: 15px;">消息队列</a> <a href="/tags/%E9%80%89%E5%9E%8B/" style="font-size: 15px;">选型</a> <a href="/tags/%E5%8D%95%E4%BD%93%E6%9E%B6%E6%9E%84/" style="font-size: 15px;">单体架构</a> <a href="/tags/%E9%87%8D%E6%9E%84/" style="font-size: 15px;">重构</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/%E8%8C%83%E5%BC%8F/" style="font-size: 15px;">范式</a> <a href="/tags/mongodb/" style="font-size: 15px;">mongodb</a> <a href="/tags/2PC/" style="font-size: 15px;">2PC</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 15px;">操作系统</a> <a href="/tags/win7/" style="font-size: 15px;">win7</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E6%9B%B4%E6%96%B0/" style="font-size: 15px;">系统更新</a> <a href="/tags/WindowsUpdate-800B0100/" style="font-size: 15px;">WindowsUpdate_800B0100</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%EF%BC%8Clinux/" style="font-size: 15px;">操作系统，linux</a> <a href="/tags/swap/" style="font-size: 15px;">swap</a> <a href="/tags/%E4%BA%A4%E6%8D%A2%E7%A9%BA%E9%97%B4/" style="font-size: 15px;">交换空间</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/%E5%B7%A5%E4%BD%9C%E7%8E%AF%E5%A2%83/" style="font-size: 15px;">工作环境</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/gc/" style="font-size: 15px;">gc</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8/" style="font-size: 15px;">线程安全</a> <a href="/tags/%E6%A8%A1%E5%BC%8F/" style="font-size: 15px;">模式</a>
+    </div>
+</div>
+
+<div class="sidebar ">
+    <div class="well">
+        <h2>最新文章</h2>
+        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/regular-expressions-java-3/">正则表达式实用指南（三）：边界匹配、Pattern模式、Matcher方法</a></li><li class="post-list-item"><a class="post-list-link" href="/regular-expressions-java-2/">正则表达式实用指南（二）：转移字符、量词和捕获小能手</a></li><li class="post-list-item"><a class="post-list-link" href="/regular-expressions-java-1/">正则表达式实用指南（一）：元字符及关系运算</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23-6/">从Java8到Java23值得期待的x个特性（6）：一些可能不会用到的特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23-5/">从Java8到Java23值得期待的x个特性（5）：增强小特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23-4/">从Java8到Java23值得期待的x个特性（4）：垃圾收集器</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23/">从Java8到Java23值得期待的x个特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23-3/">从Java8到Java23值得期待的x个特性（3）：永远学不完的多线程</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23-2/">从Java8到Java23值得期待的x个特性（2）：提升幸福感的特性</a></li><li class="post-list-item"><a class="post-list-link" href="/java/java-features-8-23-1/">从Java8到Java23值得期待的x个特性（1）：有意思的特性</a></li></ul>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="well">
+        <h2>归档</h2>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/01/">2025年01月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">2024年09月</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">2023年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">2022年08月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">2022年07月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">2022年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">2022年05月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">2022年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">2022年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">2022年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">2022年01月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">2021年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">2021年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">2021年10月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">2021年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">2021年08月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">2021年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">2020年03月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">2020年02月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">2017年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">2017年09月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">2017年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">2017年07月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">2017年06月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">2017年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">2017年03月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">2017年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">2016年08月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">2016年07月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">2016年05月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">2016年03月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">2016年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">2015年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">2015年11月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">2015年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">2015年04月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">2015年03月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">2015年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">2015年01月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">2014年12月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">2014年10月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">2014年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">2014年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">2014年06月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">2013年10月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-button-wrap">
+        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
+        <a id="to-home" class="side-button icon-home" href="/."></a>
+        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
+        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
+    </div>
+    <a id="bottom" name="bottom"></a>
+    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
+    <div class="container">
+        <div class="footer">
+            <ul class="social-media">
+                
+                <li>
+                    <a title="github" href="https://github.com/howardliu-cn"
+                       target="_blank">
+                        <i class="fa fa-github fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="StackOverflow"
+                       href="http://stackoverflow.com/users/4417033" target="_blank">
+                        <i class="fa fa-stack-overflow fa-2x"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a title="E-mail" href="mailto:howardliu1988@163.com">
+                        <i class="fa fa-envelope fa-2x"></i>
+                    </a>
+                </li>
+                
+                <li>
+                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark"
+                       target="_blank">
+                        <i class="fa fa-film fa-2x"></i>
+                    </a>
+                </li>
+                
+            </ul>
+            <p> &copy; 2014-2025 Howard Liu 版权所有</p>
+            <div class="">
+<!--                <a class="" href="http://idinfo.zjamr.zj.gov.cn/bscx.do?method=lzxx&amp;id=3301963301080000025024" target="_blank">-->
+<!--                    <img data-src="//gw.alicdn.com/tfs/TB1GxwdSXXXXXa.aXXXXXXXXXXX-65-70.gif"-->
+<!--                         src="//gw.alicdn.com/tfs/TB1GxwdSXXXXXa.aXXXXXXXXXXX-65-70.gif"-->
+<!--                         style="width: 20px;-->
+<!--                                display: inline-block;-->
+<!--                                height: 20px;-->
+<!--                                margin-right: 12px;">-->
+<!--                </a>-->
+<!--                <a class="" href="http://www.beian.gov.cn/portal/registerSystemInfo" target="_blank">-->
+<!--                    <img data-src="//img.alicdn.com/tfs/TB1..50QpXXXXX7XpXXXXXXXXXX-40-40.png"-->
+<!--                         src="//img.alicdn.com/tfs/TB1..50QpXXXXX7XpXXXXXXXXXX-40-40.png"-->
+<!--                         style="width: 20px;-->
+<!--                                display: inline-block;-->
+<!--                                height: 20px;-->
+<!--                                margin-right: 12px;">-->
+<!--                    <span class="" style="height: 20px;-->
+<!--                                        line-height: 20px;-->
+<!--                                        color: #939393;-->
+<!--                                        margin-left: -7px;-->
+<!--                                        font-size: 14px;-->
+<!--                                    ">浙公网安备 33010602009975号</span>-->
+<!--                </a>-->
+                <a class="" href="https://beian.miit.gov.cn/" target="_blank">
+                    <span class="" style="margin-left: 12px;
+                                        height: 20px;
+                                        line-height: 20px;
+                                        color: #939393;
+                                        font-size: 14px;
+                                    ">京ICP备19060080号-1</span>
+                </a>
+            </div>
+            <div style="width:300px;margin:0 auto; padding:20px 0;">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011502006279" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+                    <img src="https://static.howardliu.cn/beian.png" style="float:left;"/>
+                    <p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">京公网安备 11011502006279号</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</div>
+
+<script src="https://static.howardliu.cn/jquery/2.1.4/jquery.min.js"></script>
+
+
+<script src="https://static.howardliu.cn/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
+<script src="https://static.howardliu.cn/highlight.js/11.0.1/highlight.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script src="/js/header.js"></script>
+
+
+<script src="/js/toc.js"></script>
+
+<!--[if lt IE 9]>
+
+<script src="https://static.howardliu.cn/respond.js/1.4.2/respond.min.js"></script>
+
+![endif]-->
+<!--fancybox-->
+
+<script src="https://static.howardliu.cn/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script src="https://static.howardliu.cn/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link href="https://static.howardliu.cn/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $("img").each(function (index, item) {
+            var p = $(item).parents()[0];
+            if($(p).is('a')) {
+                $(p).fancybox();
+                return;
+            }
+            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
+            item.remove();
+            var fancyboxItem = $("#fancybox_id_" + index);
+            fancyboxItem.append($(item));
+            fancyboxItem.fancybox();
+        });
+    });
+</script>
+
+<!--baidu auto-push-->
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+        </script>
+
+<!--google analytics-->
+
+<script>
+    // google analytics
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72122926-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+
+<script color="255,255,255" opacity='0.9' zIndex="-1" count="150" src="https://static.howardliu.cn/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
